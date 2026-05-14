@@ -1,0 +1,14 @@
+{
+  "name": "neo-plus",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "package": "node package.js"
+  },
+  "dependencies": {
+    "esbuild": "^0.24.0",
+    "sass": "^1.80.0"
+  }
+}

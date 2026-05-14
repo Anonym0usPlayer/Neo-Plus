@@ -1,0 +1,13 @@
+@use "manager" as *;
+.neo-palette-ocean {
+    @include palette-common("[data-id="neo-palette-ocean-button"]", "[data-id="neo-scheme-button"]");
+    &[data-theme-mode="dark"] {
+        --b3-base-color: #b8e53f;
+        --b3-theme-primary: #b8e53f;
+        --b3-theme-accent: #b8e53f;
+        --b3-theme-background: #1e253b;
+        --b3-theme-surface: #11172c;
+        --b3-theme-on-background: #ebebeb;
+        --b3-theme-on-surface: #919fb1;
+    }
+}

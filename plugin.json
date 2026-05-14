@@ -1,0 +1,31 @@
+{
+  "name": "Neo+",
+  "author": "QYL",
+  "url": "https://github.com/QYLexpired/Neo-Plus",
+  "version": "1.0.0",
+  "minAppVersion": "3.6.0",
+  "backends": [
+    "all"
+  ],
+  "frontends": [
+    "all"
+  ],
+  "disabledInPublish": false,
+  "displayName": {
+    "default": "Neo+",
+    "zh_CN": "Neo+"
+  },
+  "description": {
+    "default": "A companion plugin for the Neo theme",
+    "zh_CN": "Neo主题的配套插件"
+  },
+  "readme": {
+    "default": "README.md",
+    "zh_CN": "README_zh_CN.md"
+  },
+  "funding": {
+    "custom": [
+      "https://afdian.com/a/QYLexpired"
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+@use "manager" as *;
+.neo-palette-midnight {
+    @include palette-common("[data-id="neo-palette-midnight-button"]", "[data-id="neo-scheme-button"]");
+    &[data-theme-mode="dark"] {
+        --b3-base-color: #4875b3;
+        --b3-theme-primary: #4875b3;
+        --b3-theme-accent: #4875b3;
+        --b3-theme-background: #17181c;
+        --b3-theme-surface: #07080c;
+        --b3-theme-on-background: #fbfdff;
+        --b3-theme-on-surface: #acadb3;
+    }
+}

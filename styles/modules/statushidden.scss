@@ -1,0 +1,60 @@
+.status {
+    &:not(.neo-status-hidden) {
+        animation: neo-status-expand 0.25s cubic-bezier(0, 1.12, 0.58, 1.17);
+        transform-origin: bottom right;
+    }
+    &.neo-status-hidden {
+        &:not(:hover) {
+            height: 18px;
+            width: 32px;
+            overflow: hidden;
+            border-radius: 36px;
+            animation: neo-status-hidden 0.25s cubic-bezier(0, 1.12, 0.58, 1.17);
+            transform-origin: top right;
+            & > * {
+                transition: none;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+            &::before {
+                content: "";
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 4px;
+                height: 4px;
+                background-color: var(--b3-theme-on-surface-light);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                box-shadow: -8px 0 0 0 var(--b3-theme-on-surface-light), 8px 0 0 0 var(--b3-theme-on-surface-light);
+            }
+        }
+        &:hover {
+            overflow: visible;
+            animation: neo-status-expand 0.25s cubic-bezier(0, 1.12, 0.58, 1.17);
+            transform-origin: bottom right;
+            & > * {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+        }
+    }
+}
+@keyframes neo-status-expand {
+    from {
+        transform: scaleX(0.7) scaleY(0.8) translateX(16px);
+    }
+    to {
+        transform: scaleX(1) scaleY(1);
+    }
+}
+@keyframes neo-status-hidden {
+    from {
+        transform: scaleX(1.8) scaleY(1.2) translateX(-16px);;
+    }
+    to {
+        transform: scaleX(1) scaleY(1);
+    }
+}

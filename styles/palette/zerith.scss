@@ -1,0 +1,22 @@
+@use "manager" as *;
+.neo-palette-zerith {
+    @include palette-common("[data-id="neo-palette-zerith-button"]", "[data-id="neo-scheme-button"]");
+    &[data-theme-mode="light"] {
+        --b3-base-color: #cfea00;
+        --b3-theme-primary: #8bc600;
+        --b3-theme-accent: #73a400;
+        --b3-theme-background: #f9fbfc;
+        --b3-theme-surface: #e9edf0;
+        --b3-theme-on-background: #265970;
+        --b3-theme-on-surface: #265970a2;
+    }
+    &[data-theme-mode="dark"] {
+        --b3-base-color: #dbf611;
+        --b3-theme-primary: #dbf611;
+        --b3-theme-accent: #dbf611;
+        --b3-theme-background: #0d1720;
+        --b3-theme-surface: #1c2d3c;
+        --b3-theme-on-background: #bfd1cc;
+        --b3-theme-on-surface: #bfd1cca2;
+    }
+}

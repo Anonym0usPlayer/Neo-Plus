@@ -1,0 +1,13 @@
+@use "manager" as *;
+.neo-palette-sakura {
+    @include palette-common("[data-id="neo-palette-sakura-button"]", "[data-id="neo-scheme-button"]");
+    &[data-theme-mode="light"] {
+        --b3-base-color: #ffcaca;
+        --b3-theme-primary: #e68e94;
+        --b3-theme-accent: #cf8b8b;
+        --b3-theme-background: #fffaf4;
+        --b3-theme-surface: #ffede7;
+        --b3-theme-on-background: #56487c;
+        --b3-theme-on-surface: #7c758d;
+    }
+}

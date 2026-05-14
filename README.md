@@ -1,0 +1,1 @@
+Neo+ is a companion plugin for the Neo theme, providing color schemes and style extensions for the Neo theme.

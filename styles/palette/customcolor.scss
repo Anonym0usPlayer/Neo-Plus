@@ -1,0 +1,38 @@
+@use "manager" as *;
+.neo-palette-custom {
+    @include palette-common("[data-id="neo-custom-color-button"]");
+    [data-id="neo-custom-color-button"] {
+        &::before {
+            content: "";
+        }
+    }
+}
+[data-id="neo-custom-color-button"] {
+    input[type="color"] {
+        visibility: hidden;
+        width: 0;
+        height: 0;
+        padding: 0;
+        margin-left: -2px;
+    }
+    .b3-menu__label {
+        padding-left: 24px;
+    }
+    &::before {
+        position: absolute;
+        left: 9.5px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background-color: var(--neo-custom-base-color);
+    }
+    &:hover,
+    &.b3-menu__item--current {
+        &::before {
+            outline: 1px solid oklch(from var(--neo-menu-item-primary) clamp(0, (0.72 - l) * 10000, 1) 0 0 / 0.7);
+            outline-offset: -1px;
+        }
+    }
+}
