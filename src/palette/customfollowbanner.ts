@@ -71,6 +71,52 @@ function applyColor(hex: string): void {
 function applyFallback(): void {
   applyColor(lastValidHex || FALLBACK_HEX);
 }
+function extractBackgroundColor(el: HTMLElement): string | null {
+  const bgColor = el.style.backgroundColor || '';
+  if (!bgColor) return null;
+  const hslMatch = bgColor.match(/hsla?\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*(?:,\s*[\d.]+)?\s*\)/);
+  if (hslMatch) {
+    const s = +hslMatch[2] / 100;
+    const l = +hslMatch[3] / 100;
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs((+hslMatch[1] / 60) % 2 - 1));
+    const m = l - c / 2;
+    let r = 0, g = 0, b = 0;
+    const h = +hslMatch[1] / 60;
+    if (h < 1) { r = c; g = x; }
+    else if (h < 2) { r = x; g = c; }
+    else if (h < 3) { g = c; b = x; }
+    else if (h < 4) { g = x; b = c; }
+    else if (h < 5) { r = x; b = c; }
+    else { r = c; b = x; }
+    const rgb = {
+      r: Math.round((r + m) * 255),
+      g: Math.round((g + m) * 255),
+      b: Math.round((b + m) * 255),
+    };
+    return rgbToHex(rgb.r, rgb.g, rgb.b);
+  }
+  const parsed = parseColorToRGB(bgColor);
+  if (parsed) return rgbToHex(parsed.r, parsed.g, parsed.b);
+  return null;
+}
+function checkElementBackgroundForGradient(el: HTMLElement): boolean {
+  const style = el.style;
+  const bgImage = style.backgroundImage || style.background || '';
+  const gradientMatch = bgImage.match(/(?:repeating-)?(?:linear|radial|conic)-gradient\([^)]+\)/);
+  if (gradientMatch) {
+    const gradientHex = extractMainColorFromGradient(gradientMatch[0]);
+    if (gradientHex) {
+      const rgb = parseHex(gradientHex);
+      if (rgb && !isInvalidColor(rgb.r, rgb.g, rgb.b) && !isNaN(rgb.r)) {
+        lastValidHex = gradientHex;
+        applyColor(gradientHex);
+        return true;
+      }
+    }
+  }
+  return false;
+}
 async function extractBannerAverageColor(): Promise<void> {
   if (destroyed) return;
   const bannerImg = document.querySelector<HTMLElement>(
@@ -80,6 +126,7 @@ async function extractBannerAverageColor(): Promise<void> {
     applyFallback();
     return;
   }
+  if (checkElementBackgroundForGradient(bannerImg)) return;
   let source: HTMLVideoElement | HTMLImageElement | null =
     bannerImg.querySelector<HTMLVideoElement>('video');
   if (!source) {
@@ -92,7 +139,7 @@ async function extractBannerAverageColor(): Promise<void> {
   if (source instanceof HTMLImageElement) {
     const style = source.style;
     const bgImage = style.backgroundImage || style.background || '';
-    const gradientMatch = bgImage.match(/linear-gradient\([^)]+\)/);
+    const gradientMatch = bgImage.match(/(?:repeating-)?(?:linear|radial|conic)-gradient\([^)]+\)/);
     if (gradientMatch) {
       const gradientHex = extractMainColorFromGradient(gradientMatch[0]);
       if (gradientHex) {
@@ -103,6 +150,17 @@ async function extractBannerAverageColor(): Promise<void> {
           return;
         }
       }
+    }
+    const bgColorHex = extractBackgroundColor(source);
+    if (bgColorHex) {
+      const rgb = parseHex(bgColorHex);
+      if (rgb && !isInvalidColor(rgb.r, rgb.g, rgb.b) && !isNaN(rgb.r)) {
+        lastValidHex = bgColorHex;
+        applyColor(bgColorHex);
+        return;
+      }
+    }
+    if (gradientMatch) {
       applyFallback();
       return;
     }
@@ -145,8 +203,7 @@ async function extractBannerAverageColor(): Promise<void> {
       lastValidHex = result.hex;
       applyColor(result.hex);
     }
-  } catch (e) {
-    console.warn('[Neo+] Failed to extract banner average color:', e);
+  } catch {
     applyFallback();
   }
 }
@@ -164,7 +221,7 @@ function detachListener(): void {
   document.removeEventListener('keyup', debouncedExtract);
   listenerAttached = false;
 }
-export function switchToFollowBanner(plugin: any): void {
+export async function switchToFollowBanner(plugin: any): Promise<void> {
   const mode = getCurrentThemeMode();
   const html = document.documentElement;
   html.className = html.className
@@ -178,7 +235,7 @@ export function switchToFollowBanner(plugin: any): void {
   } else {
     patch['color-plan-light'] = 'followbanner' as any;
   }
-  saveConfig(plugin, patch);
+  await saveConfig(plugin, patch);
   destroyed = false;
   attachListener();
   setTimeout(extractBannerAverageColor, 500);

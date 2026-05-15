@@ -9,7 +9,7 @@ export function getThemeColor(): string {
 export function createColorPickerHTML(plugin?: any): string {
   const currentColor = getThemeColor();
   const callbackName = '__neoColorChange__';
-  (window as any)[callbackName] = (value: string) => {
+  (window as any)[callbackName] = async (value: string) => {
     document.documentElement.style.setProperty('--neo-custom-base-color', value);
     if (plugin) {
       const mode = getCurrentThemeMode();
@@ -20,7 +20,7 @@ export function createColorPickerHTML(plugin?: any): string {
       } else {
         patch['color-plan-light'] = 'custom';
       }
-      saveConfig(plugin, patch);
+      await saveConfig(plugin, patch);
     }
   };
   return `<input type="color" value="${currentColor}" oninput="window.${callbackName}(this.value)">`;

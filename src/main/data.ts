@@ -10,11 +10,27 @@ export interface Config {
   'color-plan-dark'?: 'preset' | 'custom' | 'followtime' | 'followbanner';
   'followtime-base-color-light'?: string;
   'followtime-base-color-dark'?: string;
+  'texture-light'?: string;
+  'texture-dark'?: string;
+  'customimage-url'?: string;
+  'customimage-opacity'?: string;
+  'customimage-blur'?: string;
+  'customimage-frosted'?: string;
+  'customimage-effect'?: string;
+  'customimage-x'?: string;
+  'customimage-y'?: string;
+  'customimage-brightness'?: string;
+  'customimage-saturation'?: string;
+  'customimage-contrast'?: string;
+  'customimage-grayscale'?: string;
+  'customimage-hue-rotate'?: string;
+  'customimage-preset-current-light'?: string;
+  'customimage-preset-current-dark'?: string;
 }
 let configCache: Config = {};
-export function saveConfig(plugin: any, patch: Partial<Config>): void {
+export async function saveConfig(plugin: any, patch: Partial<Config>): Promise<void> {
   configCache = { ...configCache, ...patch };
-  plugin.saveData(DATA_KEY, configCache);
+  await plugin.saveData(DATA_KEY, configCache);
 }
 export function loadConfig(plugin: any): Promise<Config> {
   return plugin.loadData(DATA_KEY).then((data: Config | null) => {
@@ -24,4 +40,10 @@ export function loadConfig(plugin: any): Promise<Config> {
     configCache = {};
     return configCache;
   });
+}
+export async function deleteConfigKeys(plugin: any, keys: string[]): Promise<void> {
+  for (const k of keys) {
+    delete (configCache as any)[k];
+  }
+  await plugin.saveData(DATA_KEY, configCache);
 }

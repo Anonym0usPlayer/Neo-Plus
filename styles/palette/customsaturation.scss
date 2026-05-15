@@ -4,6 +4,11 @@
     .b3-menu__label {
         display: none;
     }
+    .b3-slider {
+    &::-webkit-slider-runnable-track {
+            background: linear-gradient(to right, oklch(from var(--b3-theme-accent) l 0 h / 0.3), oklch(from var(--b3-theme-accent) l c h / 0.3));
+        }
+    }
 }
 .neo-palette-custom [data-id="neo-custom-saturation-button"],
 .neo-palette-followtime [data-id="neo-custom-saturation-button"],

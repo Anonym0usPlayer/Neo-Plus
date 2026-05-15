@@ -1,5 +1,7 @@
 import { Menu } from 'siyuan';
 import { createColorPickerHTML, createFollowTimeColorPickerHTML, createSliderHTML, getPresetMenuItems, switchToCustomAuto, switchToFollowTimeAuto, switchToFollowBannerAuto } from '../palette/manager';
+import { getTextureMenuItems } from '../texture/manager';
+import { showCustomImageSettings } from '../texture/customimage';
 export function buildMenu(
   i18n: Record<string, string>,
   buttonRect: DOMRect,
@@ -50,6 +52,15 @@ export function buildMenu(
     iconHTML: createSliderHTML(plugin, i18n),
     label: '',
     type: 'readonly',
+  });
+  (menu as any).addItem({
+    type: 'separator',
+  });
+  menu.addItem({
+    id: 'neo-texture-button',
+    icon: 'iconNeoTexture',
+    label: i18n.texture,
+    submenu: getTextureMenuItems(i18n, plugin),
   });
   const el2 = (menu as any).element as HTMLElement;
   const input = el2?.querySelector('[data-id="neo-custom-color-button"] input[type="color"]') as HTMLInputElement | null;

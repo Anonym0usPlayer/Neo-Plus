@@ -18,6 +18,8 @@ import { createColorPickerHTML } from './customcolor';
 import { createSliderHTML } from './customsaturation';
 import { switchToFollowTime, initFollowTime, createFollowTimeColorPickerHTML } from './customfollowtime';
 import { switchToFollowBanner, initFollowBanner, destroyFollowBanner } from './customfollowbanner';
+import { applyTexture } from '../texture/manager';
+import { clearCustomImageCss } from '../texture/customimage';
 export type { ThemeMode, Preset, Config };
 export { presets, getCurrentThemeMode, getPresetsByMode, getCurrentPlan, getPresetKey, applyCurrentPlan };
 export function applyPresetAuto(key: string, plugin: any): void {
@@ -97,6 +99,7 @@ function applyConfigForCurrentMode(config: Config): void {
   if (followtimeColor) {
     document.documentElement.style.setProperty('--neo-followtime-base-color', followtimeColor);
   }
+  applyTexture(config);
 }
 export function loadAndApplyConfig(plugin: any): void {
   _plugin = plugin;
@@ -123,12 +126,13 @@ export function destroyPluginEffects(): void {
   const html = document.documentElement;
   html.className = html.className
     .split(' ')
-    .filter((cls) => !cls.startsWith('neo-palette-'))
+    .filter((cls) => !cls.startsWith('neo-palette-') && !cls.startsWith('neo-texture-'))
     .join(' ');
   html.style.removeProperty('--neo-custom-base-color');
   html.style.removeProperty('--neo-custom-saturation');
   html.style.removeProperty('--neo-followtime-base-color');
   html.style.removeProperty('--neo-followbanner-base-color');
+  clearCustomImageCss();
   destroyFollowBanner();
   if (_mutationObserver) {
     _mutationObserver.disconnect();

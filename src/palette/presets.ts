@@ -9,6 +9,7 @@ export interface Preset {
   mode: PresetMode;
 }
 const presets: Preset[] = [
+  { key: 'default', nameKey: 'colorSchemeDefault', mode: 'all' },
   { key: 'amber',  nameKey: 'colorSchemeAmber',  mode: 'all' },
   { key: 'dusk',   nameKey: 'colorSchemeDusk',   mode: 'light' },
   { key: 'gingko',   nameKey: 'colorSchemeGingko',   mode: 'light' },
@@ -51,7 +52,7 @@ export function getCurrentPlan(config: Config, mode: ThemeMode): 'preset' | 'cus
 export function getPresetKey(config: Config, mode: ThemeMode): string | undefined {
   return mode === 'dark' ? config['preset-dark'] : config['preset-light'];
 }
-export function applyPreset(key: string, plugin: any, mode: ThemeMode): void {
+export async function applyPreset(key: string, plugin: any, mode: ThemeMode): Promise<void> {
   destroyFollowBanner();
   const html = document.documentElement;
   html.className = html.className
@@ -67,9 +68,9 @@ export function applyPreset(key: string, plugin: any, mode: ThemeMode): void {
     patch['color-plan-light'] = 'preset';
     patch['preset-light'] = key;
   }
-  saveConfig(plugin, patch);
+  await saveConfig(plugin, patch);
 }
-export function switchToCustom(plugin: any, mode: ThemeMode): void {
+export async function switchToCustom(plugin: any, mode: ThemeMode): Promise<void> {
   destroyFollowBanner();
   const html = document.documentElement;
   html.className = html.className
@@ -83,7 +84,7 @@ export function switchToCustom(plugin: any, mode: ThemeMode): void {
   } else {
     patch['color-plan-light'] = 'custom';
   }
-  saveConfig(plugin, patch);
+  await saveConfig(plugin, patch);
 }
 export function applyCurrentPlan(config: Config, plugin: any): void {
   const mode = getCurrentThemeMode();

@@ -2,7 +2,7 @@ import { destroyFollowBanner } from './customfollowbanner';
 import { saveConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getCurrentThemeMode, getFollowTimeBaseColorKey } from './presets';
-export function switchToFollowTime(plugin: any): void {
+export async function switchToFollowTime(plugin: any): Promise<void> {
   destroyFollowBanner();
   const mode = getCurrentThemeMode();
   const html = document.documentElement;
@@ -17,7 +17,7 @@ export function switchToFollowTime(plugin: any): void {
   } else {
     patch['color-plan-light'] = 'followtime' as any;
   }
-  saveConfig(plugin, patch);
+  await saveConfig(plugin, patch);
 }
 export function initFollowTime(config: Config): void {
   const mode = getCurrentThemeMode();
@@ -38,7 +38,7 @@ export function createFollowTimeColorPickerHTML(plugin?: any): string {
       .getPropertyValue('--neo-default-base-color').trim() ||
     '#ffffff';
   const callbackName = '__neoFollowTimeColorChange__';
-  (window as any)[callbackName] = (value: string) => {
+  (window as any)[callbackName] = async (value: string) => {
     document.documentElement.style.setProperty('--neo-followtime-base-color', value);
     if (plugin) {
       const mode = getCurrentThemeMode();
@@ -49,7 +49,7 @@ export function createFollowTimeColorPickerHTML(plugin?: any): string {
       } else {
         patch['color-plan-light'] = 'followtime' as any;
       }
-      saveConfig(plugin, patch);
+      await saveConfig(plugin, patch);
     }
   };
   return `<input type="color" value="${currentColor}" oninput="window.${callbackName}(this.value)">`;

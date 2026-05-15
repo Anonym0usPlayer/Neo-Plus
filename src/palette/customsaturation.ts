@@ -6,14 +6,14 @@ export function createSliderHTML(plugin?: any, i18n?: Record<string, string>): s
   let currentValue = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--neo-custom-saturation').trim());
   if (isNaN(currentValue)) currentValue = 1;
   const callbackName = '__neoSaturationChange__';
-  (window as any)[callbackName] = (value: string) => {
+  (window as any)[callbackName] = async (value: string) => {
     const num = parseFloat(value);
     document.documentElement.style.setProperty('--neo-custom-saturation', value);
     updateTooltip(num);
     if (plugin) {
       const mode = getCurrentThemeMode();
       const satKey = getCustomSaturationKey(mode);
-      saveConfig(plugin, { [satKey]: num } as Partial<Config>);
+      await saveConfig(plugin, { [satKey]: num } as Partial<Config>);
     }
   };
   const id = `__neo_slider_${Date.now()}`;

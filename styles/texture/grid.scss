@@ -1,0 +1,27 @@
+@use "manager" as *;
+.neo-texture-grid {
+    @include texture-common("[data-id="neo-texture-grid-button"]", "[data-id="neo-texture-button"]");
+    body {
+        &::before {
+            content: "";
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-repeat: repeat;
+            mix-blend-mode: unset;
+            opacity: 0.032;
+            pointer-events: none;
+            z-index: 99;
+            background-image: linear-gradient(var(--b3-theme-on-background) 1px, transparent 1px), linear-gradient(to right, var(--b3-theme-on-background) 1px, transparent 1px);
+            background-size: 32px 32px;
+            background-color: transparent;
+        }
+    }
+    &[data-theme-mode="dark"] {
+        body {
+            &::before {
+                opacity: 0.025;
+            }
+        }
+    }
+}
