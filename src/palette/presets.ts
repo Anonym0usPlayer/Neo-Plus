@@ -1,4 +1,4 @@
-import { destroyFollowBanner } from './customfollowbanner';
+import { Plugin } from 'siyuan';
 import { saveConfig } from '../main/data';
 import type { Config } from '../main/data';
 export type ThemeMode = 'light' | 'dark';
@@ -52,8 +52,7 @@ export function getCurrentPlan(config: Config, mode: ThemeMode): 'preset' | 'cus
 export function getPresetKey(config: Config, mode: ThemeMode): string | undefined {
   return mode === 'dark' ? config['preset-dark'] : config['preset-light'];
 }
-export async function applyPreset(key: string, plugin: any, mode: ThemeMode): Promise<void> {
-  destroyFollowBanner();
+export async function applyPreset(key: string, plugin?: Plugin, mode?: ThemeMode): Promise<void> {
   const html = document.documentElement;
   html.className = html.className
     .split(' ')
@@ -70,8 +69,7 @@ export async function applyPreset(key: string, plugin: any, mode: ThemeMode): Pr
   }
   await saveConfig(plugin, patch);
 }
-export async function switchToCustom(plugin: any, mode: ThemeMode): Promise<void> {
-  destroyFollowBanner();
+export async function switchToCustom(plugin: Plugin, mode: ThemeMode): Promise<void> {
   const html = document.documentElement;
   html.className = html.className
     .split(' ')
@@ -86,13 +84,10 @@ export async function switchToCustom(plugin: any, mode: ThemeMode): Promise<void
   }
   await saveConfig(plugin, patch);
 }
-export function applyCurrentPlan(config: Config, plugin: any): void {
+export function applyCurrentPlan(config: Config, plugin?: Plugin): void {
   const mode = getCurrentThemeMode();
   const plan = getCurrentPlan(config, mode);
   const html = document.documentElement;
-  if (plan !== 'followbanner') {
-    destroyFollowBanner();
-  }
   html.className = html.className
     .split(' ')
     .filter((cls) => !cls.startsWith('neo-palette-'))

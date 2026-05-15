@@ -79,5 +79,9 @@
   "customimagePresetDeleted": "Preset \"${name}\" deleted",
   "customimagePresetUpdated": "Preset \"${name}\" updated",
   "customimagePresetNotSelected": "No preset selected",
-  "customimagePresetSaved": "Preset \"${name}\" saved"
+  "customimagePresetSaved": "Preset \"${name}\" saved",
+  "expand": "Expand",
+  "smoothCaret": "Smooth Caret",
+  "fluidCursor": "Fluid Cursor",
+  "listBulletLine": "List Bullet Line"
 }

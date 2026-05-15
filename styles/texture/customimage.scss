@@ -1,8 +1,6 @@
 @use "manager" as *;
-// ── Active texture body styles ────────────────────
 .neo-texture-customimage {
     @include texture-common('[data-id="neo-texture-customimage-button"]', '[data-id="neo-texture-button"]');
-    // Frosted glass SVG noise texture
     --neo-customimage-frosted-texture: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='noise'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' /></filter><rect width='100%' height='100%' filter='url(%23noise)' /></svg>");
     body {
         &::before {

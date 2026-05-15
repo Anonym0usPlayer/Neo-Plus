@@ -15,15 +15,7 @@ function checkAndToggleStatus(): void {
     statusEl.classList.remove('neo-status-hidden');
   }
 }
-function handleClick(): void {
-  if (debounceTimer) {
-    clearTimeout(debounceTimer);
-  }
-  debounceTimer = setTimeout(() => {
-    checkAndToggleStatus();
-  }, DEBOUNCE_DELAY);
-}
-function handleKeyUp(): void {
+function handleStatusUpdate(): void {
   if (debounceTimer) {
     clearTimeout(debounceTimer);
   }
@@ -33,14 +25,14 @@ function handleKeyUp(): void {
 }
 function startListening(): void {
   if (isListening) return;
-  document.addEventListener('click', handleClick);
-  document.addEventListener('keyup', handleKeyUp);
+  document.addEventListener('click', handleStatusUpdate);
+  document.addEventListener('keyup', handleStatusUpdate);
   isListening = true;
   checkAndToggleStatus();
 }
 function stopListening(): void {
-  document.removeEventListener('click', handleClick);
-  document.removeEventListener('keyup', handleKeyUp);
+  document.removeEventListener('click', handleStatusUpdate);
+  document.removeEventListener('keyup', handleStatusUpdate);
   isListening = false;
   if (debounceTimer) {
     clearTimeout(debounceTimer);
@@ -74,7 +66,3 @@ export function destroyStatusHidden(): void {
     statusObserver = null;
   }
 }
-export default {
-  init: initStatusHidden,
-  destroy: destroyStatusHidden,
-};

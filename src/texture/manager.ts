@@ -1,7 +1,7 @@
-import { getCurrentThemeMode } from '../palette/presets';
-import { saveConfig } from '../main/data';
+import { Plugin } from 'siyuan';
+import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
-import { toggleCustomImage, showCustomImageSettings, applyCustomImageCss } from './customimage';
+import { toggleCustomImage, showCustomImageSettings, applyCustomImageCss, clearCustomImageCss } from './customimage';
 export interface Texture {
   key: string;
   nameKey: string;
@@ -18,10 +18,14 @@ const textures: Texture[] = [
   { key: 'customimage', nameKey: 'textureCustomImage' },
 ];
 export { textures };
+function getCurrentThemeMode(): 'light' | 'dark' {
+  const mode = document.documentElement.getAttribute('data-theme-mode');
+  return mode === 'dark' ? 'dark' : 'light';
+}
 export function getTextureKey(mode: 'light' | 'dark'): 'texture-light' | 'texture-dark' {
   return mode === 'dark' ? 'texture-dark' : 'texture-light';
 }
-function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>, plugin?: any): any {
+function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>, plugin?: Plugin): any {
   return {
     id: `neo-texture-${texture.key}-button`,
     icon: 'iconNeoTexture',
@@ -66,7 +70,7 @@ function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>, pl
     },
   };
 }
-export function getTextureMenuItems(i18n: Record<string, string>, plugin?: any): any[] {
+export function getTextureMenuItems(i18n: Record<string, string>, plugin?: Plugin): any[] {
   const customimageItem = buildTextureMenuItem(
     textures.find(t => t.key === 'customimage')!,
     i18n, plugin,
@@ -93,11 +97,12 @@ export function applyTexture(config: Config): void {
     if (textureKey === 'customimage') {
       html.classList.add('neo-texture-customimage');
       const currentKey = mode === 'dark' ? 'customimage-preset-current-dark' : 'customimage-preset-current-light';
-      const presetName = (config as any)[currentKey] as string | undefined;
+      const presetName = config[currentKey as keyof Config] as string | undefined;
       if (presetName) {
-        const preset = (config as any)[`customimage-preset-${presetName}`] as Record<string, any> | undefined;
+        const presetKey = `customimage-preset-${presetName}` as keyof Config;
+        const preset = config[presetKey] as Record<string, any> | undefined;
         if (preset && typeof preset === 'object') {
-          const merged = { ...config as any };
+          const merged: Record<string, any> = { ...config };
           for (const k of Object.keys(preset)) {
             if (k.startsWith('customimage-')) merged[k] = preset[k];
           }
@@ -112,4 +117,17 @@ export function applyTexture(config: Config): void {
       html.classList.add(`neo-texture-${textureKey}`);
     }
   }
+}
+export function initTexture(plugin: Plugin): void {
+  loadConfig(plugin).then((config) => {
+    applyTexture(config);
+  });
+}
+export function destroyTexture(): void {
+  const html = document.documentElement;
+  html.className = html.className
+    .split(' ')
+    .filter((cls) => !cls.startsWith('neo-texture-'))
+    .join(' ');
+  clearCustomImageCss();
 }

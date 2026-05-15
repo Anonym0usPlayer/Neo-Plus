@@ -1,4 +1,4 @@
-import { Dialog, showMessage } from 'siyuan';
+import { Plugin, Dialog, showMessage } from 'siyuan';
 import { saveConfig, loadConfig, deleteConfigKeys } from '../main/data';
 import type { Config } from '../main/data';
 export interface CustomImageField {
@@ -43,19 +43,20 @@ function getPreset(config: Partial<Config> | null | undefined, name: string): Re
   return (raw && typeof raw === 'object') ? raw : {};
 }
 function getCurrentThemeMode(): 'light' | 'dark' {
-  return (document.documentElement.getAttribute('data-theme-mode') || 'light') as 'light' | 'dark';
+  const mode = document.documentElement.getAttribute('data-theme-mode');
+  return mode === 'dark' ? 'dark' : 'light';
 }
 function getCurrentPresetKey(): string {
   return getCurrentThemeMode() === 'dark' ? CURRENT_PRESET_KEY_DARK : CURRENT_PRESET_KEY_LIGHT;
 }
-export async function toggleCustomImage(plugin: any, enabled: boolean): Promise<void> {
+export async function toggleCustomImage(plugin: Plugin | undefined, enabled: boolean): Promise<void> {
   const config = await loadConfig(plugin);
   if (enabled) {
     document.documentElement.classList.add('neo-texture-customimage');
     const key = getCurrentPresetKey();
     const name = ((config as Record<string, any>)?.[key] as string) || '';
     const preset = getPreset(config, name);
-    const merged: Record<string, any> = { ...config as any };
+    const merged: Record<string, any> = { ...config };
     for (const k of Object.keys(preset)) {
       if (k.startsWith('customimage-')) merged[k] = preset[k];
     }
@@ -214,7 +215,8 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   <button class="b3-button b3-button--text" id="neo-customimage-save-preset">${t(i18n, 'customimageSavePreset')}</button>
 </div>`;
 }
-export function showCustomImageSettings(plugin: any): void {
+export function showCustomImageSettings(plugin: Plugin | undefined): void {
+  if (!plugin) return;
   const dialog = new Dialog({
     title: plugin.i18n.customimageSettings || 'Custom Image Settings',
     content: buildSettingsHTML(plugin.i18n),
@@ -283,7 +285,7 @@ export function showCustomImageSettings(plugin: any): void {
     cd.element.querySelector('#ndc-cancel')?.addEventListener('click', () => cd.destroy());
     cd.element.querySelector('#ndc-confirm')?.addEventListener('click', async () => {
       try {
-        await saveConfig(plugin, { [getCurrentPresetKey()]: '' } as any);
+        await saveConfig(plugin, { [getCurrentPresetKey()]: '' } as Partial<Config>);
         await deleteConfigKeys(plugin, [`customimage-preset-${name}`]);
         const updatedCfg = await loadConfig(plugin);
         if (presetSelect) {
@@ -308,8 +310,8 @@ export function showCustomImageSettings(plugin: any): void {
       [`customimage-preset-${presetName}`]: preset,
       [currentKey]: presetName,
     };
-    await saveConfig(plugin, patch as any);
-    const merged = { ...cfg as any, ...patch };
+    await saveConfig(plugin, patch as Partial<Config>);
+    const merged: Record<string, any> = { ...cfg, ...patch };
     applyCustomImageCss(merged);
   };
   btn('#neo-customimage-update-preset')?.addEventListener('click', async () => {
@@ -352,8 +354,8 @@ export function showCustomImageSettings(plugin: any): void {
       }
       const currentKey = getCurrentPresetKey();
       const patch: Record<string, any> = { ...topLevel, [currentKey]: name };
-      await saveConfig(plugin, patch as any);
-      const merged = { ...cfg as any, ...patch };
+      await saveConfig(plugin, patch as Partial<Config>);
+      const merged: Record<string, any> = { ...cfg, ...patch };
       populateDialog(merged, presetSelect, fieldDom, plugin.i18n);
       applyCustomImageCss(merged);
     } catch {}

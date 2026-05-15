@@ -1,3 +1,4 @@
+import { Plugin } from 'siyuan';
 import { loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import presets, {
@@ -6,7 +7,6 @@ import presets, {
   getCurrentThemeMode,
   getPresetsByMode,
   getCurrentPlan,
-  getPresetKey,
   getCustomColorKey,
   getCustomSaturationKey,
   getFollowTimeBaseColorKey,
@@ -14,16 +14,12 @@ import presets, {
   switchToCustom,
   applyCurrentPlan,
 } from './presets';
-import { createColorPickerHTML } from './customcolor';
-import { createSliderHTML } from './customsaturation';
-import { switchToFollowTime, initFollowTime, createFollowTimeColorPickerHTML } from './customfollowtime';
+import { switchToFollowTime, initFollowTime } from './customfollowtime';
 import { switchToFollowBanner, initFollowBanner, destroyFollowBanner } from './customfollowbanner';
-import { applyTexture } from '../texture/manager';
-import { clearCustomImageCss } from '../texture/customimage';
 export type { ThemeMode, Preset, Config };
-export { presets, getCurrentThemeMode, getPresetsByMode, getCurrentPlan, getPresetKey, applyCurrentPlan };
-export function applyPresetAuto(key: string, plugin: any): void {
+export function applyPresetAuto(key: string, plugin?: Plugin): void {
   const mode = getCurrentThemeMode();
+  destroyFollowBanner();
   if (document.startViewTransition) {
     document.startViewTransition(() => {
       applyPreset(key, plugin, mode);
@@ -32,8 +28,9 @@ export function applyPresetAuto(key: string, plugin: any): void {
     applyPreset(key, plugin, mode);
   }
 }
-export function switchToCustomAuto(plugin: any): void {
+export function switchToCustomAuto(plugin: Plugin): void {
   const mode = getCurrentThemeMode();
+  destroyFollowBanner();
   if (document.startViewTransition) {
     document.startViewTransition(() => {
       switchToCustom(plugin, mode);
@@ -42,7 +39,8 @@ export function switchToCustomAuto(plugin: any): void {
     switchToCustom(plugin, mode);
   }
 }
-export function switchToFollowTimeAuto(plugin: any): void {
+export function switchToFollowTimeAuto(plugin: Plugin): void {
+  destroyFollowBanner();
   if (document.startViewTransition) {
     document.startViewTransition(() => {
       switchToFollowTime(plugin);
@@ -51,7 +49,7 @@ export function switchToFollowTimeAuto(plugin: any): void {
     switchToFollowTime(plugin);
   }
 }
-export function switchToFollowBannerAuto(plugin: any): void {
+export function switchToFollowBannerAuto(plugin: Plugin): void {
   if (document.startViewTransition) {
     document.startViewTransition(() => {
       switchToFollowBanner(plugin);
@@ -60,7 +58,7 @@ export function switchToFollowBannerAuto(plugin: any): void {
     switchToFollowBanner(plugin);
   }
 }
-export function getPresetMenuItems(i18n: Record<string, string>, plugin?: any): any[] {
+export function getPresetMenuItems(i18n: Record<string, string>, plugin?: Plugin): any[] {
   const mode = getCurrentThemeMode();
   const availablePresets = getPresetsByMode(mode);
   return availablePresets.map((preset) => ({
@@ -76,11 +74,14 @@ export function getPresetMenuItems(i18n: Record<string, string>, plugin?: any): 
 export { createColorPickerHTML, getThemeColor } from './customcolor';
 export { createSliderHTML } from './customsaturation';
 export { createFollowTimeColorPickerHTML } from './customfollowtime';
-let _plugin: any;
+let _plugin: Plugin | undefined;
 let _mutationObserver: MutationObserver | null = null;
 function applyConfigForCurrentMode(config: Config): void {
   const mode = getCurrentThemeMode();
   const plan = getCurrentPlan(config, mode);
+  if (plan !== 'followbanner') {
+    destroyFollowBanner();
+  }
   applyCurrentPlan(config, _plugin);
   if (plan === 'followtime') {
     initFollowTime(config);
@@ -99,9 +100,8 @@ function applyConfigForCurrentMode(config: Config): void {
   if (followtimeColor) {
     document.documentElement.style.setProperty('--neo-followtime-base-color', followtimeColor);
   }
-  applyTexture(config);
 }
-export function loadAndApplyConfig(plugin: any): void {
+export function initPalette(plugin: Plugin): void {
   _plugin = plugin;
   loadConfig(plugin).then((config) => {
     applyConfigForCurrentMode(config);
@@ -122,17 +122,16 @@ export function loadAndApplyConfig(plugin: any): void {
     });
   });
 }
-export function destroyPluginEffects(): void {
+export function destroyPalette(): void {
   const html = document.documentElement;
   html.className = html.className
     .split(' ')
-    .filter((cls) => !cls.startsWith('neo-palette-') && !cls.startsWith('neo-texture-'))
+    .filter((cls) => !cls.startsWith('neo-palette-'))
     .join(' ');
   html.style.removeProperty('--neo-custom-base-color');
   html.style.removeProperty('--neo-custom-saturation');
   html.style.removeProperty('--neo-followtime-base-color');
   html.style.removeProperty('--neo-followbanner-base-color');
-  clearCustomImageCss();
   destroyFollowBanner();
   if (_mutationObserver) {
     _mutationObserver.disconnect();

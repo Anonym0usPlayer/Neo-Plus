@@ -1,0 +1,22 @@
+@use "manager" as *;
+.neo-expand-smooth-caret {
+    @include expand-common('[data-id="neo-smooth-caret-button"]', '[data-id="neo-expand-button"]');
+    .protyle-wysiwyg,
+    .protyle-title__input,
+    [data-type="NodeHeading"] {
+        caret-color: transparent !important;
+    }
+    #neo-smooth-caret-item {
+        position: fixed;
+        width: 1.5px;
+        border-radius: 8px;
+        pointer-events: none;
+        opacity: 1;
+        background-color: var(--neo-smooth-caret-color, var(--b3-theme-accent));
+        transition: 0.75s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.3s;
+        will-change: transform, height;
+        &.neo-smooth-caret-hidden {
+        opacity: 0;
+        }
+    }
+}

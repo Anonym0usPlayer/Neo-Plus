@@ -79,5 +79,9 @@
   "customimagePresetDeleted": "「${name}」方案已删除",
   "customimagePresetUpdated": "「${name}」方案已更新",
   "customimagePresetNotSelected": "未选择任何方案",
-  "customimagePresetSaved": "「${name}」方案已保存"
+  "customimagePresetSaved": "「${name}」方案已保存",
+  "expand": "扩展",
+  "smoothCaret": "平滑光标",
+  "fluidCursor": "流体光标",
+  "listBulletLine": "列表子弹线"
 }

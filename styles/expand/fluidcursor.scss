@@ -1,0 +1,4 @@
+@use "manager" as *;
+.neo-expand-fluid-cursor {
+    @include expand-common('[data-id="neo-fluid-cursor-button"]', '[data-id="neo-expand-button"]');
+}

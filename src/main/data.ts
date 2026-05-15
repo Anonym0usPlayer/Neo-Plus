@@ -1,4 +1,5 @@
-const DATA_KEY = 'config';
+import { Plugin } from 'siyuan';
+export const configKey = 'config';
 export interface Config {
   'custom-color-light'?: string;
   'custom-color-dark'?: string;
@@ -26,14 +27,19 @@ export interface Config {
   'customimage-hue-rotate'?: string;
   'customimage-preset-current-light'?: string;
   'customimage-preset-current-dark'?: string;
+  'smooth-caret'?: boolean;
+  'fluid-cursor'?: boolean;
+  'list-bullet-line'?: boolean;
 }
 let configCache: Config = {};
-export async function saveConfig(plugin: any, patch: Partial<Config>): Promise<void> {
+export async function saveConfig(plugin: Plugin | undefined, patch: Partial<Config>): Promise<void> {
+  if (!plugin) return;
   configCache = { ...configCache, ...patch };
-  await plugin.saveData(DATA_KEY, configCache);
+  await plugin.saveData(configKey, configCache);
 }
-export function loadConfig(plugin: any): Promise<Config> {
-  return plugin.loadData(DATA_KEY).then((data: Config | null) => {
+export function loadConfig(plugin: Plugin | undefined): Promise<Config> {
+  if (!plugin) return Promise.resolve(configCache);
+  return plugin.loadData(configKey).then((data: Config | null) => {
     configCache = data || {};
     return configCache;
   }).catch(() => {
@@ -41,9 +47,10 @@ export function loadConfig(plugin: any): Promise<Config> {
     return configCache;
   });
 }
-export async function deleteConfigKeys(plugin: any, keys: string[]): Promise<void> {
+export async function deleteConfigKeys(plugin: Plugin | undefined, keys: string[]): Promise<void> {
+  if (!plugin) return;
   for (const k of keys) {
-    delete (configCache as any)[k];
+    delete (configCache as Record<string, any>)[k];
   }
-  await plugin.saveData(DATA_KEY, configCache);
+  await plugin.saveData(configKey, configCache);
 }

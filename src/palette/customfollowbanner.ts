@@ -1,3 +1,4 @@
+import { Plugin } from 'siyuan';
 import { saveConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getCurrentThemeMode } from './presets';
@@ -221,7 +222,7 @@ function detachListener(): void {
   document.removeEventListener('keyup', debouncedExtract);
   listenerAttached = false;
 }
-export async function switchToFollowBanner(plugin: any): Promise<void> {
+export async function switchToFollowBanner(plugin: Plugin): Promise<void> {
   const mode = getCurrentThemeMode();
   const html = document.documentElement;
   html.className = html.className
@@ -231,9 +232,9 @@ export async function switchToFollowBanner(plugin: any): Promise<void> {
   html.classList.add('neo-palette-followbanner');
   const patch: Partial<Config> = {};
   if (mode === 'dark') {
-    patch['color-plan-dark'] = 'followbanner' as any;
+    patch['color-plan-dark'] = 'followbanner';
   } else {
-    patch['color-plan-light'] = 'followbanner' as any;
+    patch['color-plan-light'] = 'followbanner';
   }
   await saveConfig(plugin, patch);
   destroyed = false;
@@ -242,7 +243,7 @@ export async function switchToFollowBanner(plugin: any): Promise<void> {
 }
 export function initFollowBanner(config: Config): void {
   const mode = getCurrentThemeMode();
-  const plan = config[mode === 'dark' ? 'color-plan-dark' : 'color-plan-light'] as string | undefined;
+  const plan = config[mode === 'dark' ? 'color-plan-dark' : 'color-plan-light'];
   if (plan === 'followbanner') {
     destroyed = false;
     const html = document.documentElement;

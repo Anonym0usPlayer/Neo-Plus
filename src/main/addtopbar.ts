@@ -1,3 +1,4 @@
+import { Plugin } from 'siyuan';
 import { buildMenu } from './addmenu';
 export function addTopBarButton(
   addTopBar: (config: {
@@ -7,8 +8,7 @@ export function addTopBarButton(
     callback: () => void;
   }) => HTMLElement,
   isMobile: boolean,
-  i18n: Record<string, string>,
-  plugin: any,
+  plugin: Plugin,
 ): void {
   const button = addTopBar({
     icon: 'iconNeo',
@@ -16,7 +16,7 @@ export function addTopBarButton(
     position: 'right',
     callback: () => {
       if (isMobile) {
-        const menu = buildMenu(i18n, {} as DOMRect, plugin);
+        const menu = buildMenu(plugin);
         menu.fullscreen();
       } else {
         let rect = button.getBoundingClientRect();
@@ -26,7 +26,7 @@ export function addTopBarButton(
         if (rect.width === 0) {
           rect = document.querySelector('#barPlugins')?.getBoundingClientRect() as DOMRect;
         }
-        const menu = buildMenu(i18n, rect, plugin);
+        const menu = buildMenu(plugin);
         menu.open({ x: rect.right, y: rect.bottom, isLeft: true });
       }
     },

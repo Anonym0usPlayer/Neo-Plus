@@ -1,0 +1,75 @@
+@use "manager" as *;
+@use "sass:map";
+$list-hl: var(--b3-theme-accent);
+$fix-u: 2.25px;
+$fix-o: 10.25px;
+$fix-t: 7.25px;
+$fix-fontsize: calc((var(--b3-font-size-editor) - 16px) * 0.5);
+$types: (
+  "u": $fix-u,
+  "o": $fix-o,
+  "t": $fix-t,
+);
+$selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.protyle-wysiwyg--hl):not([custom-list-view] [neo-listbulletline-current])";
+.neo-expand-listbulletline {
+  @include expand-common(
+    '[data-id="neo-list-bullet-line-button"]',
+    '[data-id="neo-expand-button"]'
+  );
+  #{$selector}::after {
+    content: '';
+    box-sizing: border-box;
+    border-left: calc(1.5px + 0.1 * #{$fix-fontsize}) solid $list-hl;
+    border-bottom: calc(1.5px + 0.1 * #{$fix-fontsize}) solid $list-hl;
+    border-radius: unset;
+    border-bottom-left-radius: 14px;
+    corner-shape: superellipse(1.4);
+    position: absolute;
+    left: -18px;
+  }
+  .protyle-wysiwyg [data-node-id].li {
+    &[data-subtype="o"],
+    &[data-subtype="u"],
+    &[data-subtype="t"] {
+      &[neo-listbulletline-node] > .protyle-action {
+        color: $list-hl;
+        &::before {
+          background-color: $list-hl;
+        }
+        &::after {
+          color: $list-hl;
+        }
+      }
+    }
+  }
+  $width-mod: (
+    "o-o": #{$fix-fontsize},
+    "o-u": #{$fix-fontsize},
+  );
+  @each $parent, $parent-fix in $types {
+    @each $child, $child-fix in $types {
+      $key: "#{$parent}-#{$child}";
+      $extra: 0px;
+      @if map.has-key($width-mod, $key) {
+        $extra: map.get($width-mod, $key);
+      }
+      [data-subtype="#{$parent}"] > [data-subtype="#{$child}"] > #{$selector}::after {
+        --neo-listbulletline-height-fix: calc(#{$parent-fix} + #{$fix-fontsize});
+        --neo-listbulletline-width-fix: calc(#{$child-fix} + #{$fix-fontsize});
+        width: calc(34px - var(--neo-listbulletline-width-fix) + #{$extra});
+        height: calc(var(--neo-listbulletline-height) - var(--neo-listbulletline-height-fix));
+        top: calc(-1 * var(--neo-listbulletline-height) + calc((1.625em + 10px) / 2) + var(--neo-listbulletline-height-fix));
+      }
+    }
+  }
+  @each $parent, $parent-fix in $types {
+    @each $child, $child-fix in $types {
+      [data-subtype="#{$parent}"] > .protyle-action + [data-subtype="#{$child}"] > #{$selector}:first-child::after {
+        top: calc(16.75px + #{$fix-fontsize});
+        left: calc(-18px + #{$parent-fix});
+        width: calc(34px - #{$parent-fix} - var(--neo-listbulletline-width-fix));
+        border-bottom-left-radius: 0px;
+      }
+    }
+  }
+}
