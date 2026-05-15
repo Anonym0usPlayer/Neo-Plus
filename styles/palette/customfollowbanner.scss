@@ -1,0 +1,5 @@
+@use "manager" as *;
+.neo-palette-followbanner {
+    @include palette-common("[data-id='neo-followbanner-button']");
+    --neo-custom-base-color: var(--neo-followbanner-base-color) !important;
+}

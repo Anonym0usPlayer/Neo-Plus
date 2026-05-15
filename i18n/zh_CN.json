@@ -17,5 +17,7 @@
   "colorSchemeAerisland": "空屿",
   "colorSchemeZerith": "零域",
   "colorSchemeStellula": "星漪",
-  "colorSchemeVael": "远岫"
+  "colorSchemeVael": "远岫",
+  "customFollowTime": "主题色随时间变化",
+  "customFollowBanner": "主题色随题头图变化"
 }

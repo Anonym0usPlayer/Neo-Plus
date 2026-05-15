@@ -23,14 +23,24 @@ function handleClick(): void {
     checkAndToggleStatus();
   }, DEBOUNCE_DELAY);
 }
+function handleKeyUp(): void {
+  if (debounceTimer) {
+    clearTimeout(debounceTimer);
+  }
+  debounceTimer = setTimeout(() => {
+    checkAndToggleStatus();
+  }, DEBOUNCE_DELAY);
+}
 function startListening(): void {
   if (isListening) return;
   document.addEventListener('click', handleClick);
+  document.addEventListener('keyup', handleKeyUp);
   isListening = true;
   checkAndToggleStatus();
 }
 function stopListening(): void {
   document.removeEventListener('click', handleClick);
+  document.removeEventListener('keyup', handleKeyUp);
   isListening = false;
   if (debounceTimer) {
     clearTimeout(debounceTimer);

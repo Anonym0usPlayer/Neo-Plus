@@ -1,3 +1,4 @@
+import { destroyFollowBanner } from './customfollowbanner';
 import { saveConfig } from '../main/data';
 import type { Config } from '../main/data';
 export type ThemeMode = 'light' | 'dark';
@@ -39,7 +40,10 @@ export function getCustomColorKey(mode: ThemeMode): 'custom-color-light' | 'cust
 export function getCustomSaturationKey(mode: ThemeMode): 'custom-saturation-light' | 'custom-saturation-dark' {
   return mode === 'dark' ? 'custom-saturation-dark' : 'custom-saturation-light';
 }
-export function getCurrentPlan(config: Config, mode: ThemeMode): 'preset' | 'custom' {
+export function getFollowTimeBaseColorKey(mode: ThemeMode): 'followtime-base-color-light' | 'followtime-base-color-dark' {
+  return mode === 'dark' ? 'followtime-base-color-dark' : 'followtime-base-color-light';
+}
+export function getCurrentPlan(config: Config, mode: ThemeMode): 'preset' | 'custom' | 'followtime' | 'followbanner' {
   return mode === 'dark'
     ? (config['color-plan-dark'] ?? 'preset')
     : (config['color-plan-light'] ?? 'preset');
@@ -48,6 +52,7 @@ export function getPresetKey(config: Config, mode: ThemeMode): string | undefine
   return mode === 'dark' ? config['preset-dark'] : config['preset-light'];
 }
 export function applyPreset(key: string, plugin: any, mode: ThemeMode): void {
+  destroyFollowBanner();
   const html = document.documentElement;
   html.className = html.className
     .split(' ')
@@ -65,6 +70,7 @@ export function applyPreset(key: string, plugin: any, mode: ThemeMode): void {
   saveConfig(plugin, patch);
 }
 export function switchToCustom(plugin: any, mode: ThemeMode): void {
+  destroyFollowBanner();
   const html = document.documentElement;
   html.className = html.className
     .split(' ')
@@ -83,6 +89,9 @@ export function applyCurrentPlan(config: Config, plugin: any): void {
   const mode = getCurrentThemeMode();
   const plan = getCurrentPlan(config, mode);
   const html = document.documentElement;
+  if (plan !== 'followbanner') {
+    destroyFollowBanner();
+  }
   html.className = html.className
     .split(' ')
     .filter((cls) => !cls.startsWith('neo-palette-'))
@@ -92,6 +101,10 @@ export function applyCurrentPlan(config: Config, plugin: any): void {
     if (presetKey) {
       html.classList.add(`neo-palette-${presetKey}`);
     }
+  } else if (plan === 'followtime') {
+    html.classList.add('neo-palette-followtime');
+  } else if (plan === 'followbanner') {
+    html.classList.add('neo-palette-followbanner');
   } else {
     html.classList.add('neo-palette-custom');
   }

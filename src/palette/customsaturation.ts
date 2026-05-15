@@ -2,7 +2,7 @@ import { saveConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getCurrentThemeMode, getCustomSaturationKey } from './presets';
 export function createSliderHTML(plugin?: any, i18n?: Record<string, string>): string {
-  const label = i18n?.customSaturation || 'Saturation';
+  const label = i18n?.customSaturation ?? 'Saturation';
   let currentValue = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--neo-custom-saturation').trim());
   if (isNaN(currentValue)) currentValue = 1;
   const callbackName = '__neoSaturationChange__';

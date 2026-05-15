@@ -6,8 +6,10 @@ export interface Config {
   'custom-saturation-dark'?: number;
   'preset-light'?: string;
   'preset-dark'?: string;
-  'color-plan-light'?: 'preset' | 'custom';
-  'color-plan-dark'?: 'preset' | 'custom';
+  'color-plan-light'?: 'preset' | 'custom' | 'followtime' | 'followbanner';
+  'color-plan-dark'?: 'preset' | 'custom' | 'followtime' | 'followbanner';
+  'followtime-base-color-light'?: string;
+  'followtime-base-color-dark'?: string;
 }
 let configCache: Config = {};
 export function saveConfig(plugin: any, patch: Partial<Config>): void {

@@ -16,8 +16,9 @@ await build({
   outfile: jsOut,
   bundle: true,
   format: 'cjs',
-    platform: 'neutral',
-    external: ['siyuan'],
+  platform: 'neutral',
+  mainFields: ['module', 'main'],
+  external: ['siyuan'],
   target: 'es2020',
   minify: true,
 });

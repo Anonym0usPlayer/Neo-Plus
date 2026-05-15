@@ -1,16 +1,15 @@
 .status {
+    transform-origin: 100% 50%;
     &:not(.neo-status-hidden) {
-        animation: neo-status-expand 0.25s cubic-bezier(0, 1.12, 0.58, 1.17);
-        transform-origin: bottom right;
+        animation: neo-status-expand 0.3s cubic-bezier(0.33, 1.7, 0.69, 0.99);
     }
     &.neo-status-hidden {
         &:not(:hover) {
-            height: 18px;
-            width: 32px;
-            overflow: hidden;
-            border-radius: 36px;
-            animation: neo-status-hidden 0.25s cubic-bezier(0, 1.12, 0.58, 1.17);
-            transform-origin: top right;
+            height: 15px;
+            width: 30px;
+            border-radius: 32px;
+            corner-shape: unset;
+            animation: neo-status-hidden 0.35s cubic-bezier(0.33, 1.7, 0.69, 0.99);
             & > * {
                 transition: none;
                 opacity: 0;
@@ -31,9 +30,7 @@
             }
         }
         &:hover {
-            overflow: visible;
-            animation: neo-status-expand 0.25s cubic-bezier(0, 1.12, 0.58, 1.17);
-            transform-origin: bottom right;
+            animation: neo-status-expand 0.3s cubic-bezier(0.33, 1.7, 0.69, 0.99);
             & > * {
                 opacity: 1;
                 visibility: visible;
@@ -44,7 +41,7 @@
 }
 @keyframes neo-status-expand {
     from {
-        transform: scaleX(0.7) scaleY(0.8) translateX(16px);
+        transform: scaleX(0.3) scaleY(0.8);
     }
     to {
         transform: scaleX(1) scaleY(1);
@@ -52,7 +49,7 @@
 }
 @keyframes neo-status-hidden {
     from {
-        transform: scaleX(1.8) scaleY(1.2) translateX(-16px);;
+        transform: scaleX(1.5) scaleY(1.1);
     }
     to {
         transform: scaleX(1) scaleY(1);

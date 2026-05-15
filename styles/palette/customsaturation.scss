@@ -1,11 +1,13 @@
 [data-id="neo-custom-saturation-button"] {
     opacity: 0.7;
     pointer-events: none;
-    &:is(.neo-palette-custom [data-id="neo-custom-saturation-button"]) {
-        opacity: 1;
-        pointer-events: auto;
-    }
     .b3-menu__label {
         display: none;
     }
+}
+.neo-palette-custom [data-id="neo-custom-saturation-button"],
+.neo-palette-followtime [data-id="neo-custom-saturation-button"],
+.neo-palette-followbanner [data-id="neo-custom-saturation-button"] {
+    opacity: 1;
+    pointer-events: auto;
 }
