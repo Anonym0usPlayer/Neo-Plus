@@ -1,4 +1,4 @@
-import { Plugin } from 'siyuan';
+import { getPlugin } from '../main/guard';
 import { loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import presets, {
@@ -17,48 +17,48 @@ import presets, {
 import { switchToFollowTime, initFollowTime } from './customfollowtime';
 import { switchToFollowBanner, initFollowBanner, destroyFollowBanner } from './customfollowbanner';
 export type { ThemeMode, Preset, Config };
-export function applyPresetAuto(key: string, plugin?: Plugin): void {
+export function applyPresetAuto(key: string): void {
   const mode = getCurrentThemeMode();
   destroyFollowBanner();
   if (document.startViewTransition) {
     document.startViewTransition(() => {
-      applyPreset(key, plugin, mode);
+      applyPreset(key, mode);
     });
   } else {
-    applyPreset(key, plugin, mode);
+    applyPreset(key, mode);
   }
 }
-export function switchToCustomAuto(plugin: Plugin): void {
+export function switchToCustomAuto(): void {
   const mode = getCurrentThemeMode();
   destroyFollowBanner();
   if (document.startViewTransition) {
     document.startViewTransition(() => {
-      switchToCustom(plugin, mode);
+      switchToCustom(mode);
     });
   } else {
-    switchToCustom(plugin, mode);
+    switchToCustom(mode);
   }
 }
-export function switchToFollowTimeAuto(plugin: Plugin): void {
+export function switchToFollowTimeAuto(): void {
   destroyFollowBanner();
   if (document.startViewTransition) {
     document.startViewTransition(() => {
-      switchToFollowTime(plugin);
+      switchToFollowTime();
     });
   } else {
-    switchToFollowTime(plugin);
+    switchToFollowTime();
   }
 }
-export function switchToFollowBannerAuto(plugin: Plugin): void {
+export function switchToFollowBannerAuto(): void {
   if (document.startViewTransition) {
     document.startViewTransition(() => {
-      switchToFollowBanner(plugin);
+      switchToFollowBanner();
     });
   } else {
-    switchToFollowBanner(plugin);
+    switchToFollowBanner();
   }
 }
-export function getPresetMenuItems(i18n: Record<string, string>, plugin?: Plugin): any[] {
+export function getPresetMenuItems(i18n: Record<string, string>): any[] {
   const mode = getCurrentThemeMode();
   const availablePresets = getPresetsByMode(mode);
   return availablePresets.map((preset) => ({
@@ -66,7 +66,7 @@ export function getPresetMenuItems(i18n: Record<string, string>, plugin?: Plugin
     icon: 'iconNeoPalette',
     label: i18n[preset.nameKey],
     click: () => {
-      applyPresetAuto(preset.key, plugin);
+      applyPresetAuto(preset.key);
       return true;
     },
   }));
@@ -74,7 +74,6 @@ export function getPresetMenuItems(i18n: Record<string, string>, plugin?: Plugin
 export { createColorPickerHTML, getThemeColor } from './customcolor';
 export { createSliderHTML } from './customsaturation';
 export { createFollowTimeColorPickerHTML } from './customfollowtime';
-let _plugin: Plugin | undefined;
 let _mutationObserver: MutationObserver | null = null;
 function applyConfigForCurrentMode(config: Config): void {
   const mode = getCurrentThemeMode();
@@ -82,7 +81,7 @@ function applyConfigForCurrentMode(config: Config): void {
   if (plan !== 'followbanner') {
     destroyFollowBanner();
   }
-  applyCurrentPlan(config, _plugin);
+  applyCurrentPlan(config);
   if (plan === 'followtime') {
     initFollowTime(config);
   } else if (plan === 'followbanner') {
@@ -101,12 +100,13 @@ function applyConfigForCurrentMode(config: Config): void {
     document.documentElement.style.setProperty('--neo-followtime-base-color', followtimeColor);
   }
 }
-export function initPalette(plugin: Plugin): void {
-  _plugin = plugin;
-  loadConfig(plugin).then((config) => {
+export function initPalette(): void {
+  const plugin = getPlugin();
+  if (!plugin) return;
+  loadConfig().then((config) => {
     applyConfigForCurrentMode(config);
     _mutationObserver = new MutationObserver(() => {
-      loadConfig(plugin).then((config) => {
+      loadConfig().then((config) => {
         if (document.startViewTransition) {
           document.startViewTransition(() => {
             applyConfigForCurrentMode(config);
@@ -137,5 +137,4 @@ export function destroyPalette(): void {
     _mutationObserver.disconnect();
     _mutationObserver = null;
   }
-  _plugin = undefined;
 }

@@ -1,4 +1,3 @@
-import { Plugin } from 'siyuan';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 let smoothCaretEventHandler: (() => void) | null = null;
@@ -172,25 +171,25 @@ export function destroySmoothCaret(): void {
     throttledCaretEventHandler = null;
   }
 }
-export function initSmoothCaret(plugin: Plugin | undefined): void {
-  loadConfig(plugin).then((config) => {
+export function initSmoothCaret(): void {
+  loadConfig().then((config) => {
     if (config['smooth-caret'] === true) {
       document.documentElement.classList.add('neo-expand-smooth-caret');
       startSmoothCaret();
     }
   });
 }
-export function onSmoothCaretClick(plugin: Plugin | undefined): void {
+export function onSmoothCaretClick(): void {
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-expand-smooth-caret');
   if (isActive) {
     htmlEl.classList.remove('neo-expand-smooth-caret');
-    saveConfig(plugin, { 'smooth-caret': false } as Partial<Config>);
+    saveConfig({ 'smooth-caret': false } as Partial<Config>);
     destroySmoothCaret();
   } else {
     htmlEl.classList.add('neo-expand-smooth-caret');
-    saveConfig(plugin, { 'smooth-caret': true } as Partial<Config>);
+    saveConfig({ 'smooth-caret': true } as Partial<Config>);
     startSmoothCaret();
   }
 }

@@ -1,22 +1,17 @@
-import { Plugin } from 'siyuan';
+import { getPlugin } from './guard';
 import { buildMenu } from './addmenu';
-export function addTopBarButton(
-  addTopBar: (config: {
-    icon: string;
-    title: string;
-    position: 'left' | 'right';
-    callback: () => void;
-  }) => HTMLElement,
-  isMobile: boolean,
-  plugin: Plugin,
-): void {
-  const button = addTopBar({
+let topBarButton: HTMLElement | null = null;
+export function initTopBarButton(): HTMLElement | null {
+  const plugin = getPlugin();
+  if (!plugin) return null;
+  const button = plugin.addTopBar({
     icon: 'iconNeo',
     title: 'Neo+',
     position: 'right',
     callback: () => {
+      const isMobile = false;
       if (isMobile) {
-        const menu = buildMenu(plugin);
+        const menu = buildMenu();
         menu.fullscreen();
       } else {
         let rect = button.getBoundingClientRect();
@@ -26,9 +21,17 @@ export function addTopBarButton(
         if (rect.width === 0) {
           rect = document.querySelector('#barPlugins')?.getBoundingClientRect() as DOMRect;
         }
-        const menu = buildMenu(plugin);
+        const menu = buildMenu();
         menu.open({ x: rect.right, y: rect.bottom, isLeft: true });
       }
     },
   });
+  topBarButton = button;
+  return button;
+}
+export function destroyTopBarButton(): void {
+  if (topBarButton) {
+    topBarButton.remove();
+    topBarButton = null;
+  }
 }

@@ -1,4 +1,3 @@
-import { Plugin } from 'siyuan';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { toggleCustomImage, showCustomImageSettings, applyCustomImageCss, clearCustomImageCss } from './customimage';
@@ -25,7 +24,7 @@ function getCurrentThemeMode(): 'light' | 'dark' {
 export function getTextureKey(mode: 'light' | 'dark'): 'texture-light' | 'texture-dark' {
   return mode === 'dark' ? 'texture-dark' : 'texture-light';
 }
-function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>, plugin?: Plugin): any {
+function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>): any {
   return {
     id: `neo-texture-${texture.key}-button`,
     icon: 'iconNeoTexture',
@@ -36,48 +35,44 @@ function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>, pl
       if (texture.key === 'customimage') {
         const isActive = html.classList.contains(className);
         if (isActive) {
-          toggleCustomImage(plugin, false);
+          toggleCustomImage(false);
         } else {
           html.className = html.className
             .split(' ')
             .filter((cls) => !cls.startsWith('neo-texture-'))
             .join(' ');
-          toggleCustomImage(plugin, true);
-          showCustomImageSettings(plugin);
+          toggleCustomImage(true);
+          showCustomImageSettings();
         }
         return true;
       }
       if (html.classList.contains(className)) {
         html.classList.remove(className);
-        if (plugin) {
-          const mode = getCurrentThemeMode();
-          const texKey = getTextureKey(mode);
-          saveConfig(plugin, { [texKey]: 'none' } as Partial<Config>);
-        }
+        const mode = getCurrentThemeMode();
+        const texKey = getTextureKey(mode);
+        saveConfig({ [texKey]: 'none' } as Partial<Config>);
       } else {
         html.className = html.className
           .split(' ')
           .filter((cls) => !cls.startsWith('neo-texture-'))
           .join(' ');
         html.classList.add(className);
-        if (plugin) {
-          const mode = getCurrentThemeMode();
-          const texKey = getTextureKey(mode);
-          saveConfig(plugin, { [texKey]: texture.key } as Partial<Config>);
-        }
+        const mode = getCurrentThemeMode();
+        const texKey = getTextureKey(mode);
+        saveConfig({ [texKey]: texture.key } as Partial<Config>);
       }
       return true;
     },
   };
 }
-export function getTextureMenuItems(i18n: Record<string, string>, plugin?: Plugin): any[] {
+export function getTextureMenuItems(i18n: Record<string, string>): any[] {
   const customimageItem = buildTextureMenuItem(
     textures.find(t => t.key === 'customimage')!,
-    i18n, plugin,
+    i18n,
   );
   const otherItems = textures
     .filter(t => t.key !== 'customimage')
-    .map(t => buildTextureMenuItem(t, i18n, plugin));
+    .map(t => buildTextureMenuItem(t, i18n));
   return [
     customimageItem,
     { type: 'separator' },
@@ -114,14 +109,12 @@ export function applyTexture(config: Config): void {
     }
   }
 }
-let _plugin: Plugin | undefined;
 let _mutationObserver: MutationObserver | null = null;
-export function initTexture(plugin: Plugin): void {
-  _plugin = plugin;
-  loadConfig(plugin).then((config) => {
+export function initTexture(): void {
+  loadConfig().then((config) => {
     applyTexture(config);
     _mutationObserver = new MutationObserver(() => {
-      loadConfig(plugin).then((config) => {
+      loadConfig().then((config) => {
         applyTexture(config);
       });
     });
@@ -142,5 +135,4 @@ export function destroyTexture(): void {
     _mutationObserver.disconnect();
     _mutationObserver = null;
   }
-  _plugin = undefined;
 }

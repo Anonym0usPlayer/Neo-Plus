@@ -1,5 +1,4 @@
-import { Plugin } from 'siyuan';
-export function createSliderHTML(plugin?: Plugin, i18n?: Record<string, string>): string {
+export function createSliderHTML(i18n?: Record<string, string>): string {
   const label = i18n?.customSaturation ?? 'Saturation';
   let currentValue = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--neo-custom-saturation').trim());
   if (isNaN(currentValue)) currentValue = 1;

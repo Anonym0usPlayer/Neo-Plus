@@ -1,4 +1,8 @@
-export function addNeoIcons(addIcons: (svg: string) => void): void {
+import { getPlugin } from './guard';
+export function initNeoIcons(): void {
+  const plugin = getPlugin();
+  if (!plugin) return;
+  const addIcons = plugin.addIcons.bind(plugin);
   addIcons(`<symbol id="iconNeo" viewBox="-40 -30 340 340">
 <path d="M0,1v278h19L20,2zM240,1v278h19L260,2zM53,1L52,278L71,279L72,38L174,176L176,144L74,3zM187,1L187,243L86,106L83,136L184,276L206,279L207,1z"/>
     </symbol>`);
@@ -29,4 +33,10 @@ export function addNeoIcons(addIcons: (svg: string) => void): void {
 <path d="M64 448m64 0l0 0q64 0 64 64l0 0q0 64-64 64l0 0q-64 0-64-64l0 0q0-64 64-64Z" p-id="31633"></path>
 <path d="M64 704m64 0l0 0q64 0 64 64l0 0q0 64-64 64l0 0q-64 0-64-64l0 0q0-64 64-64Z" p-id="31634"></path>
 </symbol>`);
+}
+export function destroyNeoIcons(): void {
+  const svg = document.querySelector('svg[data-name="Neo-Plus"]');
+  if (svg) {
+    svg.remove();
+  }
 }

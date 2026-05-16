@@ -1,8 +1,7 @@
-import { Plugin } from 'siyuan';
 import { saveConfig } from '../main/data';
 import type { Config } from '../main/data';
-import { getCurrentThemeMode, getFollowTimeBaseColorKey } from './presets';
-export async function switchToFollowTime(plugin: Plugin): Promise<void> {
+import { getCurrentThemeMode } from './presets';
+export async function switchToFollowTime(): Promise<void> {
   const mode = getCurrentThemeMode();
   const html = document.documentElement;
   html.className = html.className
@@ -16,7 +15,7 @@ export async function switchToFollowTime(plugin: Plugin): Promise<void> {
   } else {
     patch['color-plan-light'] = 'followtime';
   }
-  await saveConfig(plugin, patch);
+  await saveConfig(patch);
 }
 export function initFollowTime(config: Config): void {
   const mode = getCurrentThemeMode();
@@ -30,7 +29,7 @@ export function initFollowTime(config: Config): void {
     html.classList.add('neo-palette-followtime');
   }
 }
-export function createFollowTimeColorPickerHTML(plugin?: Plugin): string {
+export function createFollowTimeColorPickerHTML(): string {
   const currentColor = getComputedStyle(document.documentElement)
     .getPropertyValue('--neo-followtime-base-color').trim() ||
     getComputedStyle(document.documentElement)

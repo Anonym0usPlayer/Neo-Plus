@@ -1,4 +1,5 @@
-import { Plugin, Dialog, showMessage } from 'siyuan';
+import { Dialog, showMessage } from 'siyuan';
+import { getPlugin } from '../main/guard';
 import { saveConfig, loadConfig, deleteConfigKeys } from '../main/data';
 import type { Config } from '../main/data';
 export interface CustomImageField {
@@ -10,7 +11,7 @@ export interface CustomImageField {
   event: 'input' | 'change';
   tooltipSuffix: string;
 }
-const FIELD_DEFS: CustomImageField[] = [
+const fieldDefs: CustomImageField[] = [
   { configKey: 'customimage-url',        cssVar: '--neo-customimage-url',        toCss: raw => !raw ? 'unset' : raw.startsWith('url(') ? raw : `url(${raw})`, inputId: 'neo-customimage-path',        tooltipId: '',                             event: 'input',  tooltipSuffix: ''   },
   { configKey: 'customimage-blur',       cssVar: '--neo-customimage-blur',       toCss: raw => (raw ?? '0') + 'px',                                                                            inputId: 'neo-customimage-blur',           tooltipId: 'neo-customimage-blur-tooltip',          event: 'input',  tooltipSuffix: 'px' },
   { configKey: 'customimage-frosted',    cssVar: '--neo-customimage-frosted',    toCss: raw => raw === 'true' ? 'block' : 'none',                                                               inputId: 'neo-customimage-frosted',        tooltipId: '',                             event: 'change', tooltipSuffix: ''   },
@@ -26,17 +27,17 @@ const FIELD_DEFS: CustomImageField[] = [
 ];
 export function applyCustomImageCss(config?: Partial<Config> | null): void {
   const style = document.documentElement.style;
-  for (const field of FIELD_DEFS) {
+  for (const field of fieldDefs) {
     const raw = (config as Record<string, any>)?.[field.configKey] as string | undefined;
     style.setProperty(field.cssVar, field.toCss(raw));
   }
 }
 export function clearCustomImageCss(): void {
   const style = document.documentElement.style;
-  for (const field of FIELD_DEFS) style.removeProperty(field.cssVar);
+  for (const field of fieldDefs) style.removeProperty(field.cssVar);
 }
-const CURRENT_PRESET_KEY_LIGHT = 'customimage-preset-current-light';
-const CURRENT_PRESET_KEY_DARK  = 'customimage-preset-current-dark';
+const currentPresetKeyLight = 'customimage-preset-current-light';
+const currentPresetKeyDark  = 'customimage-preset-current-dark';
 function getPreset(config: Partial<Config> | null | undefined, name: string): Record<string, any> {
   if (!config || !name) return {};
   const raw = (config as Record<string, any>)[`customimage-preset-${name}`];
@@ -47,10 +48,10 @@ function getCurrentThemeMode(): 'light' | 'dark' {
   return mode === 'dark' ? 'dark' : 'light';
 }
 function getCurrentPresetKey(): string {
-  return getCurrentThemeMode() === 'dark' ? CURRENT_PRESET_KEY_DARK : CURRENT_PRESET_KEY_LIGHT;
+  return getCurrentThemeMode() === 'dark' ? currentPresetKeyDark : currentPresetKeyLight;
 }
-export async function toggleCustomImage(plugin: Plugin | undefined, enabled: boolean): Promise<void> {
-  const config = await loadConfig(plugin);
+export async function toggleCustomImage(enabled: boolean): Promise<void> {
+  const config = await loadConfig();
   if (enabled) {
     document.documentElement.classList.add('neo-texture-customimage');
     const key = getCurrentPresetKey();
@@ -58,7 +59,7 @@ export async function toggleCustomImage(plugin: Plugin | undefined, enabled: boo
     const preset = getPreset(config, name);
     applyCustomImageCss(preset);
     const mode = getCurrentThemeMode();
-    await saveConfig(plugin, { [mode === 'dark' ? 'texture-dark' : 'texture-light']: 'customimage' } as Partial<Config>);
+    await saveConfig({ [mode === 'dark' ? 'texture-dark' : 'texture-light']: 'customimage' } as Partial<Config>);
     document.documentElement.className = document.documentElement.className
       .split(' ')
       .filter(cls => !cls.startsWith('neo-texture-') || cls === 'neo-texture-customimage')
@@ -67,7 +68,7 @@ export async function toggleCustomImage(plugin: Plugin | undefined, enabled: boo
     document.documentElement.classList.remove('neo-texture-customimage');
     clearCustomImageCss();
     const mode = getCurrentThemeMode();
-    await saveConfig(plugin, { [mode === 'dark' ? 'texture-dark' : 'texture-light']: 'none' } as Partial<Config>);
+    await saveConfig({ [mode === 'dark' ? 'texture-dark' : 'texture-light']: 'none' } as Partial<Config>);
   }
 }
 interface SliderConfig {
@@ -83,7 +84,7 @@ interface SliderConfig {
   tooltipSuffix: string;
   className: string;
 }
-const SLIDER_DEFS = [
+const sliderDefs = [
   { key: 'customimage-opacity',    defaultVal: 0.12, min: 0, max: 0.8, step: 0.01, suffix: ''   },
   { key: 'customimage-blur',       defaultVal: 0,    min: 0, max: 50,  step: 1,    suffix: 'px' },
   { key: 'customimage-x',          defaultVal: 50,   min: 0, max: 100, step: 1,    suffix: '%'  },
@@ -95,14 +96,14 @@ const SLIDER_DEFS = [
   { key: 'customimage-hue-rotate', defaultVal: 0,    min: 0, max: 360, step: 1,    suffix: 'deg'},
 ];
 function getSliderConfig(key: string): SliderConfig | null {
-  const def = SLIDER_DEFS.find(d => d.key === key);
+  const def = sliderDefs.find(d => d.key === key);
   if (!def) return null;
   const i18nMap: Record<string, string> = {
     'customimage-x': 'customimagePositionX',
     'customimage-y': 'customimagePositionY',
   };
   const i18nKey = i18nMap[key] || ('customimage' + key.replace('customimage-', '').replace(/(^\w|-\w)/g, s => s.replace('-', '').toUpperCase()));
-  const field = FIELD_DEFS.find(f => f.configKey === key);
+  const field = fieldDefs.find(f => f.configKey === key);
   const fallback = field ? field.toCss(undefined) : String(def.defaultVal);
   let val = fallback;
   if (def.suffix && fallback.endsWith(def.suffix)) val = fallback.slice(0, -def.suffix.length);
@@ -218,7 +219,8 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   <button class="b3-button b3-button--text" id="neo-customimage-save-preset">${t(i18n, 'customimageSavePreset')}</button>
 </div>`;
 }
-export function showCustomImageSettings(plugin: Plugin | undefined): void {
+export function showCustomImageSettings(): void {
+  const plugin = getPlugin();
   if (!plugin) return;
   const dialog = new Dialog({
     title: plugin.i18n.customimageSettings || 'Custom Image Settings',
@@ -229,7 +231,7 @@ export function showCustomImageSettings(plugin: Plugin | undefined): void {
   if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-customimage-settings');
   const presetSelect = dialog.element.querySelector('#neo-customimage-preset-select') as HTMLSelectElement | null;
-  const fieldDom = FIELD_DEFS.map(f => ({
+  const fieldDom = fieldDefs.map(f => ({
     field: f,
     input: dialog.element.querySelector('#' + f.inputId) as HTMLInputElement | HTMLSelectElement | null,
     tooltip: f.tooltipId ? dialog.element.querySelector('#' + f.tooltipId) as HTMLElement | null : null,
@@ -246,7 +248,7 @@ export function showCustomImageSettings(plugin: Plugin | undefined): void {
     }
     return preset;
   };
-  loadConfig(plugin).then(c => {
+  loadConfig().then(c => {
     populateDialog(c, presetSelect, fieldDom, plugin.i18n);
   }).catch(() => {});
   const style = document.documentElement.style;
@@ -277,7 +279,7 @@ export function showCustomImageSettings(plugin: Plugin | undefined): void {
   });
   const originalDestroy = dialog.destroy.bind(dialog);
   dialog.destroy = () => {
-    loadConfig(plugin).then(c => {
+    loadConfig().then(c => {
       const mode = document.documentElement.getAttribute('data-theme-mode') === 'dark' ? 'dark' : 'light';
       const texKey = mode === 'dark' ? 'texture-dark' : 'texture-light';
       const textureKey = (c as Record<string, any>)?.[texKey] as string | undefined;
@@ -321,9 +323,9 @@ export function showCustomImageSettings(plugin: Plugin | undefined): void {
     cd.element.querySelector('#ndc-cancel')?.addEventListener('click', () => cd.destroy());
     cd.element.querySelector('#ndc-confirm')?.addEventListener('click', async () => {
       try {
-        await saveConfig(plugin, { [getCurrentPresetKey()]: '' } as Partial<Config>);
-        await deleteConfigKeys(plugin, [`customimage-preset-${name}`]);
-        const updatedCfg = await loadConfig(plugin);
+        await saveConfig({ [getCurrentPresetKey()]: '' } as Partial<Config>);
+        await deleteConfigKeys([`customimage-preset-${name}`]);
+        const updatedCfg = await loadConfig();
         if (presetSelect) {
           Array.from(presetSelect.options).find(o => o.value === name)?.remove();
           presetSelect.value = '';
@@ -335,13 +337,13 @@ export function showCustomImageSettings(plugin: Plugin | undefined): void {
     });
   });
   const savePresetToConfig = async (preset: Record<string, any>, presetName: string): Promise<void> => {
-    const cfg = await loadConfig(plugin);
+    const cfg = await loadConfig();
     const currentKey = getCurrentPresetKey();
     const patch: Record<string, any> = {
       [`customimage-preset-${presetName}`]: preset,
       [currentKey]: presetName,
     };
-    await saveConfig(plugin, patch as Partial<Config>);
+    await saveConfig(patch as Partial<Config>);
     applyCustomImageCss(preset);
   };
   btn('#neo-customimage-update-preset')?.addEventListener('click', async () => {
@@ -376,11 +378,11 @@ export function showCustomImageSettings(plugin: Plugin | undefined): void {
     const name = presetSelect.value;
     if (!name) return;
     try {
-      const cfg = await loadConfig(plugin);
+      const cfg = await loadConfig();
       const preset = getPreset(cfg, name);
       const currentKey = getCurrentPresetKey();
       const patch: Record<string, any> = { [currentKey]: name };
-      await saveConfig(plugin, patch as Partial<Config>);
+      await saveConfig(patch as Partial<Config>);
       populateDialog(cfg, presetSelect, fieldDom, plugin.i18n);
       applyCustomImageCss(preset);
     } catch {}
@@ -397,7 +399,7 @@ function populateDialog(
   if (presetSelect) {
     presetSelect.innerHTML = '';
     if (config) Object.keys(config as Record<string, any>).forEach(k => {
-      if (!k.startsWith('customimage-preset-') || k === CURRENT_PRESET_KEY_LIGHT || k === CURRENT_PRESET_KEY_DARK) return;
+      if (!k.startsWith('customimage-preset-') || k === currentPresetKeyLight || k === currentPresetKeyDark) return;
       const n = k.replace('customimage-preset-', '');
       if (n) {
         const o = document.createElement('option'); o.value = n; o.textContent = n;

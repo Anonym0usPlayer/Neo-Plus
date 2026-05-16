@@ -1,4 +1,4 @@
-import { Plugin } from 'siyuan';
+import { getPlugin } from './guard';
 export const configKey = 'config';
 export interface Config {
   'custom-color-light'?: string;
@@ -32,12 +32,17 @@ export interface Config {
   'list-bullet-line'?: boolean;
 }
 let configCache: Config = {};
-export async function saveConfig(plugin: Plugin | undefined, patch: Partial<Config>): Promise<void> {
+function getPluginOrNull() {
+  return getPlugin();
+}
+export async function saveConfig(patch: Partial<Config>): Promise<void> {
+  const plugin = getPluginOrNull();
   if (!plugin) return;
   configCache = { ...configCache, ...patch };
   await plugin.saveData(configKey, configCache);
 }
-export function loadConfig(plugin: Plugin | undefined): Promise<Config> {
+export function loadConfig(): Promise<Config> {
+  const plugin = getPluginOrNull();
   if (!plugin) return Promise.resolve(configCache);
   return plugin.loadData(configKey).then((data: Config | null) => {
     configCache = data || {};
@@ -47,7 +52,8 @@ export function loadConfig(plugin: Plugin | undefined): Promise<Config> {
     return configCache;
   });
 }
-export async function deleteConfigKeys(plugin: Plugin | undefined, keys: string[]): Promise<void> {
+export async function deleteConfigKeys(keys: string[]): Promise<void> {
+  const plugin = getPluginOrNull();
   if (!plugin) return;
   for (const k of keys) {
     delete (configCache as Record<string, any>)[k];

@@ -1,13 +1,13 @@
-const DEBOUNCE_DELAY = 200;
-const STATUS_SELECTOR = '#status';
-const TARGET_SELECTOR =
+const debounceDelay = 200;
+const statusSelector = '#status';
+const targetSelector =
   '.layout__wnd--active > .layout-tab-container > .fn__flex-1:not(.fn__none):not(.protyle)';
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 let statusObserver: MutationObserver | null = null;
 let isListening = false;
 function checkAndToggleStatus(): void {
-  const target = document.querySelector<HTMLElement>(TARGET_SELECTOR);
-  const statusEl = document.querySelector<HTMLElement>(STATUS_SELECTOR);
+  const target = document.querySelector<HTMLElement>(targetSelector);
+  const statusEl = document.querySelector<HTMLElement>(statusSelector);
   if (!statusEl) return;
   if (target) {
     statusEl.classList.add('neo-status-hidden');
@@ -21,7 +21,7 @@ function handleStatusUpdate(): void {
   }
   debounceTimer = setTimeout(() => {
     checkAndToggleStatus();
-  }, DEBOUNCE_DELAY);
+  }, debounceDelay);
 }
 function startListening(): void {
   if (isListening) return;
@@ -40,12 +40,12 @@ function stopListening(): void {
   }
 }
 function waitForStatusEl(): void {
-  if (document.querySelector(STATUS_SELECTOR)) {
+  if (document.querySelector(statusSelector)) {
     startListening();
     return;
   }
   statusObserver = new MutationObserver((_mutations, observer) => {
-    if (document.querySelector(STATUS_SELECTOR)) {
+    if (document.querySelector(statusSelector)) {
       observer.disconnect();
       statusObserver = null;
       startListening();
@@ -64,5 +64,9 @@ export function destroyStatusHidden(): void {
   if (statusObserver) {
     statusObserver.disconnect();
     statusObserver = null;
+  }
+  const statusEl = document.querySelector<HTMLElement>(statusSelector);
+  if (statusEl) {
+    statusEl.classList.remove('neo-status-hidden');
   }
 }

@@ -1,5 +1,5 @@
-const EXCLUDED_BLOCK_TYPES = ['NodeAttributeView', 'NodeCodeBlock', 'NodeList', 'NodeCallout', 'NodeTable'];
-const DEBOUNCE_DELAY = 200;
+const excludedBlockTypes = ['NodeAttributeView', 'NodeCodeBlock', 'NodeList', 'NodeCallout', 'NodeTable'];
+const debounceDelay = 200;
 let pendingUpdate = false;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 function clearAllFocusBlocks(): void {
@@ -17,7 +17,7 @@ function applyFocusBlock(): void {
   if (!curBlock) return;
   const curBlockType = curBlock.getAttribute('data-type');
   clearAllFocusBlocks();
-  if (!curBlockType || EXCLUDED_BLOCK_TYPES.includes(curBlockType)) return;
+  if (!curBlockType || excludedBlockTypes.includes(curBlockType)) return;
   curBlock.setAttribute('neo-focus-block', '');
 }
 function handleUpdate(): void {
@@ -26,7 +26,7 @@ function handleUpdate(): void {
   }
   debounceTimer = setTimeout(() => {
     if (pendingUpdate) applyFocusBlock();
-  }, DEBOUNCE_DELAY);
+  }, debounceDelay);
 }
 function onSelectionChange(): void {
   pendingUpdate = true;

@@ -1,4 +1,3 @@
-import { Plugin } from 'siyuan';
 import { saveConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getCurrentThemeMode } from './presets';
@@ -13,7 +12,7 @@ function debounce<T extends (...args: any[]) => void>(fn: T, delay: number): T {
 let facInstance: FastAverageColor | null = null;
 let lastValidHex: string | null = null;
 let destroyed = false;
-const FALLBACK_HEX = 'var(--neo-default-base-color)';
+const fallbackHex = 'var(--neo-default-base-color)';
 function parseHex(hex: string): { r: number; g: number; b: number } | null {
   const m = hex.match(/^#?([0-9a-fA-F]{6})$/);
   if (!m) return null;
@@ -70,7 +69,7 @@ function applyColor(hex: string): void {
   document.documentElement.style.setProperty('--neo-followbanner-base-color', hex);
 }
 function applyFallback(): void {
-  applyColor(lastValidHex || FALLBACK_HEX);
+  applyColor(lastValidHex || fallbackHex);
 }
 function extractBackgroundColor(el: HTMLElement): string | null {
   const bgColor = getComputedStyle(el).backgroundColor || '';
@@ -231,7 +230,7 @@ function detachListener(): void {
   document.removeEventListener('keyup', debouncedExtract);
   listenerAttached = false;
 }
-export async function switchToFollowBanner(plugin: Plugin): Promise<void> {
+export async function switchToFollowBanner(): Promise<void> {
   const mode = getCurrentThemeMode();
   const html = document.documentElement;
   html.className = html.className
@@ -245,7 +244,7 @@ export async function switchToFollowBanner(plugin: Plugin): Promise<void> {
   } else {
     patch['color-plan-light'] = 'followbanner';
   }
-  await saveConfig(plugin, patch);
+  await saveConfig(patch);
   destroyed = false;
   attachListener();
   setTimeout(extractBannerAverageColor, 500);

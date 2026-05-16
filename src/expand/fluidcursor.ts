@@ -1,4 +1,4 @@
-import { Plugin, getFrontend } from 'siyuan';
+import { getFrontend } from 'siyuan';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 function isMobile(): boolean {
@@ -238,18 +238,18 @@ export function destroyFluidCursor(): void {
     htmlEl.classList.remove('neo-expand-fluid-cursor');
   }
 }
-export function initFluidCursor(plugin: Plugin | undefined): void {
+export function initFluidCursor(): void {
   if (isMobile()) {
     return;
   }
-  loadConfig(plugin).then((config) => {
+  loadConfig().then((config) => {
     if (config['fluid-cursor'] === true) {
       document.documentElement.classList.add('neo-expand-fluid-cursor');
       startFluidCursor();
     }
   });
 }
-export function onFluidCursorClick(plugin: Plugin | undefined): void {
+export function onFluidCursorClick(): void {
   if (isMobile()) {
     return;
   }
@@ -258,11 +258,11 @@ export function onFluidCursorClick(plugin: Plugin | undefined): void {
   const isActive = htmlEl.classList.contains('neo-expand-fluid-cursor');
   if (isActive) {
     htmlEl.classList.remove('neo-expand-fluid-cursor');
-    saveConfig(plugin, { 'fluid-cursor': false } as Partial<Config>);
+    saveConfig({ 'fluid-cursor': false } as Partial<Config>);
     destroyFluidCursor();
   } else {
     htmlEl.classList.add('neo-expand-fluid-cursor');
-    saveConfig(plugin, { 'fluid-cursor': true } as Partial<Config>);
+    saveConfig({ 'fluid-cursor': true } as Partial<Config>);
     startFluidCursor();
   }
 }

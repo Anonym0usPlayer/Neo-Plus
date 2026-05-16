@@ -1,4 +1,3 @@
-import { Plugin } from 'siyuan';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 let selectionChangeHandler: (() => void) | null = null;
@@ -137,25 +136,25 @@ function unbindSelectionChange(): void {
   selectionChangeHandler = null;
   clearBulletLineMarks();
 }
-export function initListBulletLine(plugin: Plugin | undefined): void {
-  loadConfig(plugin).then((config) => {
+export function initListBulletLine(): void {
+  loadConfig().then((config) => {
     if (config['list-bullet-line'] === true) {
       document.documentElement.classList.add('neo-expand-listbulletline');
       bindSelectionChange();
     }
   });
 }
-export function onListBulletLineClick(plugin: Plugin | undefined): void {
+export function onListBulletLineClick(): void {
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-expand-listbulletline');
   if (isActive) {
     htmlEl.classList.remove('neo-expand-listbulletline');
-    saveConfig(plugin, { 'list-bullet-line': false } as Partial<Config>);
+    saveConfig({ 'list-bullet-line': false } as Partial<Config>);
     unbindSelectionChange();
   } else {
     htmlEl.classList.add('neo-expand-listbulletline');
-    saveConfig(plugin, { 'list-bullet-line': true } as Partial<Config>);
+    saveConfig({ 'list-bullet-line': true } as Partial<Config>);
     bindSelectionChange();
   }
 }
