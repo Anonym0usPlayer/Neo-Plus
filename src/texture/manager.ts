@@ -106,7 +106,10 @@ export function applyTexture(config: Config): void {
       }
     } else {
       html.classList.add(`neo-texture-${textureKey}`);
+      clearCustomImageCss();
     }
+  } else {
+    clearCustomImageCss();
   }
 }
 let _mutationObserver: MutationObserver | null = null;

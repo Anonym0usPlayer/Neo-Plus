@@ -305,7 +305,10 @@ export function showCustomImageSettings(): void {
           }
         } else {
           html.classList.add(`neo-texture-${textureKey}`);
+          clearCustomImageCss();
         }
+      } else {
+        clearCustomImageCss();
       }
     }).catch(() => {});
     originalDestroy();
