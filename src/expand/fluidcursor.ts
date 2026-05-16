@@ -10,7 +10,6 @@ let mouseMoveHandler: ((e: MouseEvent) => void) | null = null;
 let mouseDownHandler: ((e: MouseEvent) => void) | null = null;
 let mouseUpHandler: ((e: MouseEvent) => void) | null = null;
 let mouseLeaveHandler: (() => void) | null = null;
-let colorCheckInterval: number | null = null;
 let hideCursorTimeout: number | null = null;
 let points: { x: number; y: number }[] = [];
 let mouse = { x: -100, y: -100 };
@@ -18,22 +17,34 @@ let lastTime = 0;
 let canvas: HTMLCanvasElement | null = null;
 let ctx: CanvasRenderingContext2D | null = null;
 let isFirstMouseMove = true;
-let cursorColor = '#f44336';
 let isCursorVisible = false;
 let isMouseDown = false;
 let currentHueOffset = 0;
 let targetHueOffset = 0;
+let cachedDisplayColor = '#f44336';
+let cachedBaseColor = '';
 function getCursorColor(): string {
   const computedStyle = getComputedStyle(document.documentElement);
   const color = computedStyle.getPropertyValue('--b3-theme-primary').trim();
   return color || '#f44336';
 }
+function updateDisplayColor(): void {
+  const baseColor = getCursorColor();
+  if (baseColor !== cachedBaseColor) {
+    cachedBaseColor = baseColor;
+  }
+  const baseHue = isMouseDown ? 180 : 0;
+  cachedDisplayColor = `oklch(from ${baseColor} l c calc(h + ${baseHue} + ${currentHueOffset}))`;
+}
 function randomCursorColor(): void {
   const modeRand = Math.random();
   const baseColor = getCursorColor();
+  if (baseColor !== cachedBaseColor) {
+    cachedBaseColor = baseColor;
+  }
+  let randomHue: number;
   if (modeRand < 0.05) {
     const rand = Math.random();
-    let randomHue: number;
     if (rand < 0.8) {
       randomHue = Math.floor(Math.random() * 31) - 15;
     } else if (rand < 0.9) {
@@ -44,12 +55,11 @@ function randomCursorColor(): void {
       randomHue = sign * (Math.floor(Math.random() * 91) + 90);
     }
     const baseHue = isMouseDown ? 180 : 0;
-    cursorColor = `oklch(from ${baseColor} l c calc(h + ${baseHue} + ${randomHue}))`;
+    cachedDisplayColor = `oklch(from ${baseColor} l c calc(h + ${baseHue} + ${randomHue}))`;
     currentHueOffset = randomHue;
     targetHueOffset = randomHue;
   } else {
     const rand = Math.random();
-    let randomHue: number;
     if (rand < 0.6) {
       randomHue = Math.floor(Math.random() * 31) - 15;
     } else if (rand < 0.8) {
@@ -80,6 +90,7 @@ function startFluidCursor(): void {
   document.body.appendChild(canvas);
   ctx = canvas.getContext('2d');
   isMouseDown = false;
+  cachedBaseColor = getCursorColor();
   randomCursorColor();
   mouse = { x: -100, y: -100 };
   points = [];
@@ -147,16 +158,14 @@ function startFluidCursor(): void {
     if (!canvas || !ctx) return;
     const deltaTime = (currentTime - lastTime) / 1000;
     lastTime = currentTime;
-    const timeFactor = deltaTime * 60;
+    const timeFactor = Math.min(deltaTime * 60, 3);
     const diff = targetHueOffset - currentHueOffset;
     if (Math.abs(diff) > 0.5) {
       currentHueOffset += diff * 0.08 * timeFactor;
     } else {
       currentHueOffset = targetHueOffset;
     }
-    const baseColor = getCursorColor();
-    const baseHue = isMouseDown ? 180 : 0;
-    const displayColor = `oklch(from ${baseColor} l c calc(h + ${baseHue} + ${currentHueOffset}))`;
+    updateDisplayColor();
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     if (isFirstMouseMove) {
       animationFrameId = window.requestAnimationFrame(animate);
@@ -170,7 +179,7 @@ function startFluidCursor(): void {
       points[i].x += (points[i - 1].x - points[i].x) * actualTailEase;
       points[i].y += (points[i - 1].y - points[i].y) * actualTailEase;
     }
-    ctx.strokeStyle = displayColor;
+    ctx.strokeStyle = cachedDisplayColor;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     for (let i = 0; i < points.length - 1; i++) {
@@ -185,7 +194,6 @@ function startFluidCursor(): void {
   }
   lastTime = performance.now();
   animationFrameId = window.requestAnimationFrame(animate);
-  colorCheckInterval = window.setInterval(randomCursorColor, 3000);
 }
 export function destroyFluidCursor(): void {
   const existingCanvas = document.getElementById('neo-fluid-cursor-canvas');
@@ -195,10 +203,6 @@ export function destroyFluidCursor(): void {
   if (animationFrameId !== null) {
     window.cancelAnimationFrame(animationFrameId);
     animationFrameId = null;
-  }
-  if (colorCheckInterval !== null) {
-    window.clearInterval(colorCheckInterval);
-    colorCheckInterval = null;
   }
   if (hideCursorTimeout !== null) {
     clearTimeout(hideCursorTimeout);

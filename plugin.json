@@ -2,8 +2,8 @@
   "name": "Neo+",
   "author": "QYL",
   "url": "https://github.com/QYLexpired/Neo-Plus",
-  "version": "1.0.0",
-  "minAppVersion": "3.6.0",
+  "version": "1.0.1",
+  "minAppVersion": "3.7.0",
   "backends": [
     "all"
   ],
@@ -12,8 +12,7 @@
   ],
   "disabledInPublish": false,
   "displayName": {
-    "default": "Neo+",
-    "zh_CN": "Neo+"
+    "default": "Neo+"
   },
   "description": {
     "default": "A companion plugin for the Neo theme",

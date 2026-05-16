@@ -102,25 +102,33 @@ export function applyTexture(config: Config): void {
         const presetKey = `customimage-preset-${presetName}` as keyof Config;
         const preset = config[presetKey] as Record<string, any> | undefined;
         if (preset && typeof preset === 'object') {
-          const merged: Record<string, any> = { ...config };
-          for (const k of Object.keys(preset)) {
-            if (k.startsWith('customimage-')) merged[k] = preset[k];
-          }
-          applyCustomImageCss(merged);
+          applyCustomImageCss(preset);
         } else {
-          applyCustomImageCss(config);
+          clearCustomImageCss();
         }
       } else {
-        applyCustomImageCss(config);
+        clearCustomImageCss();
       }
     } else {
       html.classList.add(`neo-texture-${textureKey}`);
     }
   }
 }
+let _plugin: Plugin | undefined;
+let _mutationObserver: MutationObserver | null = null;
 export function initTexture(plugin: Plugin): void {
+  _plugin = plugin;
   loadConfig(plugin).then((config) => {
     applyTexture(config);
+    _mutationObserver = new MutationObserver(() => {
+      loadConfig(plugin).then((config) => {
+        applyTexture(config);
+      });
+    });
+    _mutationObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme-mode'],
+    });
   });
 }
 export function destroyTexture(): void {
@@ -130,4 +138,9 @@ export function destroyTexture(): void {
     .filter((cls) => !cls.startsWith('neo-texture-'))
     .join(' ');
   clearCustomImageCss();
+  if (_mutationObserver) {
+    _mutationObserver.disconnect();
+    _mutationObserver = null;
+  }
+  _plugin = undefined;
 }

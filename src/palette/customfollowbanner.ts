@@ -73,8 +73,8 @@ function applyFallback(): void {
   applyColor(lastValidHex || FALLBACK_HEX);
 }
 function extractBackgroundColor(el: HTMLElement): string | null {
-  const bgColor = el.style.backgroundColor || '';
-  if (!bgColor) return null;
+  const bgColor = getComputedStyle(el).backgroundColor || '';
+  if (!bgColor || bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent') return null;
   const hslMatch = bgColor.match(/hsla?\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*(?:,\s*[\d.]+)?\s*\)/);
   if (hslMatch) {
     const s = +hslMatch[2] / 100;
@@ -128,6 +128,15 @@ async function extractBannerAverageColor(): Promise<void> {
     return;
   }
   if (checkElementBackgroundForGradient(bannerImg)) return;
+  const containerBgHex = extractBackgroundColor(bannerImg);
+  if (containerBgHex) {
+    const rgb = parseHex(containerBgHex);
+    if (rgb && !isInvalidColor(rgb.r, rgb.g, rgb.b) && !isNaN(rgb.r)) {
+      lastValidHex = containerBgHex;
+      applyColor(containerBgHex);
+      return;
+    }
+  }
   let source: HTMLVideoElement | HTMLImageElement | null =
     bannerImg.querySelector<HTMLVideoElement>('video');
   if (!source) {

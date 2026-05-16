@@ -56,11 +56,7 @@ export async function toggleCustomImage(plugin: Plugin | undefined, enabled: boo
     const key = getCurrentPresetKey();
     const name = ((config as Record<string, any>)?.[key] as string) || '';
     const preset = getPreset(config, name);
-    const merged: Record<string, any> = { ...config };
-    for (const k of Object.keys(preset)) {
-      if (k.startsWith('customimage-')) merged[k] = preset[k];
-    }
-    applyCustomImageCss(merged);
+    applyCustomImageCss(preset);
     const mode = getCurrentThemeMode();
     await saveConfig(plugin, { [mode === 'dark' ? 'texture-dark' : 'texture-light']: 'customimage' } as Partial<Config>);
     document.documentElement.className = document.documentElement.className
@@ -106,12 +102,16 @@ function getSliderConfig(key: string): SliderConfig | null {
     'customimage-y': 'customimagePositionY',
   };
   const i18nKey = i18nMap[key] || ('customimage' + key.replace('customimage-', '').replace(/(^\w|-\w)/g, s => s.replace('-', '').toUpperCase()));
+  const field = FIELD_DEFS.find(f => f.configKey === key);
+  const fallback = field ? field.toCss(undefined) : String(def.defaultVal);
+  let val = fallback;
+  if (def.suffix && fallback.endsWith(def.suffix)) val = fallback.slice(0, -def.suffix.length);
   return {
     id: 'neo-' + key,
     tooltipId: 'neo-' + key + '-tooltip',
     i18nKey,
     i18nTipKey: 'customDefaultValue',
-    min: def.min, max: def.max, step: def.step, val: def.defaultVal,
+    min: def.min, max: def.max, step: def.step, val,
     suffix: def.suffix, tooltipSuffix: def.suffix,
     className: 'config__item-neo-' + key,
   };
@@ -165,12 +165,14 @@ function effectSelectHTML(i18n: Record<string, string>, id: string, className: s
   </label>`;
 }
 function buildSettingsHTML(i18n: Record<string, string>): string {
-  const basicSliderKeys = ['customimage-blur', 'customimage-x', 'customimage-y'];
+  const basicSliderKeys = ['customimage-blur'];
   const basicSliders = basicSliderKeys.map(k => sliderHTML(i18n, getSliderConfig(k)!)).join('');
-  const frosted = switchHTML(i18n, 'neo-customimage-frosted', 'config__item-neo-customimage-frosted', 'customimageFrosted', 'customimageFrostedTip');
   const opacitySlider = sliderHTML(i18n, getSliderConfig('customimage-opacity')!);
   const effectSelect = effectSelectHTML(i18n, 'neo-customimage-effect', 'config__item-neo-customimage-effect', 'customimageEffect');
-  const moreSliderKeys = ['customimage-brightness', 'customimage-saturation', 'customimage-contrast', 'customimage-grayscale', 'customimage-hue-rotate'];
+  const frosted = switchHTML(i18n, 'neo-customimage-frosted', 'config__item-neo-customimage-frosted', 'customimageFrosted', 'customimageFrostedTip');
+  const positionSliderKeys = ['customimage-x', 'customimage-y'];
+  const positionSliders = positionSliderKeys.map(k => sliderHTML(i18n, getSliderConfig(k)!)).join('');
+  const moreSliderKeys = ['customimage-hue-rotate', 'customimage-brightness', 'customimage-saturation', 'customimage-contrast', 'customimage-grayscale'];
   const moreSliders = moreSliderKeys.map(k => sliderHTML(i18n, getSliderConfig(k)!)).join('');
   return `<div class="b3-dialog__content">
   <div class="config__tab-container">
@@ -193,9 +195,10 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
     <b class="config-group__title">${t(i18n, 'customimageBasicParams')}</b>
     <div class="config-group">
       ${basicSliders}
-      ${frosted}
       ${opacitySlider}
       ${effectSelect}
+      ${frosted}
+      ${positionSliders}
     </div>
     <b class="config-group__title">${t(i18n, 'customimageMoreParams')}</b>
     <div class="config-group">
@@ -272,6 +275,39 @@ export function showCustomImageSettings(plugin: Plugin | undefined): void {
       style.setProperty(field.cssVar, def);
     }
   });
+  const originalDestroy = dialog.destroy.bind(dialog);
+  dialog.destroy = () => {
+    loadConfig(plugin).then(c => {
+      const mode = document.documentElement.getAttribute('data-theme-mode') === 'dark' ? 'dark' : 'light';
+      const texKey = mode === 'dark' ? 'texture-dark' : 'texture-light';
+      const textureKey = (c as Record<string, any>)?.[texKey] as string | undefined;
+      const html = document.documentElement;
+      html.className = html.className
+        .split(' ')
+        .filter(cls => !cls.startsWith('neo-texture-'))
+        .join(' ');
+      if (textureKey && textureKey !== 'none') {
+        if (textureKey === 'customimage') {
+          html.classList.add('neo-texture-customimage');
+          const currentKey = mode === 'dark' ? 'customimage-preset-current-dark' : 'customimage-preset-current-light';
+          const presetName = (c as Record<string, any>)?.[currentKey] as string | undefined;
+          if (presetName) {
+            const preset = getPreset(c, presetName);
+            if (preset && typeof preset === 'object') {
+              applyCustomImageCss(preset);
+            } else {
+              clearCustomImageCss();
+            }
+          } else {
+            clearCustomImageCss();
+          }
+        } else {
+          html.classList.add(`neo-texture-${textureKey}`);
+        }
+      }
+    }).catch(() => {});
+    originalDestroy();
+  };
   btn('#neo-customimage-cancel')?.addEventListener('click', () => dialog.destroy());
   btn('#neo-customimage-delete-preset')?.addEventListener('click', async () => {
     if (!presetSelect) return;
@@ -293,26 +329,20 @@ export function showCustomImageSettings(plugin: Plugin | undefined): void {
           presetSelect.value = '';
         }
         populateDialog(updatedCfg, presetSelect, fieldDom, plugin.i18n);
-        applyCustomImageCss(updatedCfg);
+        clearCustomImageCss();
         showMessage((plugin.i18n.customimagePresetDeleted || '').replace('${name}', name), 3000);
       } catch {} finally { cd.destroy(); }
     });
   });
   const savePresetToConfig = async (preset: Record<string, any>, presetName: string): Promise<void> => {
     const cfg = await loadConfig(plugin);
-    const topLevel: Record<string, any> = {};
-    for (const key of Object.keys(preset)) {
-      if (key.startsWith('customimage-')) topLevel[key] = preset[key];
-    }
     const currentKey = getCurrentPresetKey();
     const patch: Record<string, any> = {
-      ...topLevel,
       [`customimage-preset-${presetName}`]: preset,
       [currentKey]: presetName,
     };
     await saveConfig(plugin, patch as Partial<Config>);
-    const merged: Record<string, any> = { ...cfg, ...patch };
-    applyCustomImageCss(merged);
+    applyCustomImageCss(preset);
   };
   btn('#neo-customimage-update-preset')?.addEventListener('click', async () => {
     if (!presetSelect) return;
@@ -348,16 +378,11 @@ export function showCustomImageSettings(plugin: Plugin | undefined): void {
     try {
       const cfg = await loadConfig(plugin);
       const preset = getPreset(cfg, name);
-      const topLevel: Record<string, any> = {};
-      for (const key of Object.keys(preset)) {
-        if (key.startsWith('customimage-')) topLevel[key] = preset[key];
-      }
       const currentKey = getCurrentPresetKey();
-      const patch: Record<string, any> = { ...topLevel, [currentKey]: name };
+      const patch: Record<string, any> = { [currentKey]: name };
       await saveConfig(plugin, patch as Partial<Config>);
-      const merged: Record<string, any> = { ...cfg, ...patch };
-      populateDialog(merged, presetSelect, fieldDom, plugin.i18n);
-      applyCustomImageCss(merged);
+      populateDialog(cfg, presetSelect, fieldDom, plugin.i18n);
+      applyCustomImageCss(preset);
     } catch {}
   });
 }
@@ -385,8 +410,7 @@ function populateDialog(
   const preset = getPreset(config || null, cpk);
   for (const { field, input, tooltip } of fieldDom) {
     if (!input) continue;
-    let raw = preset[field.configKey] as string | undefined;
-    if (raw === undefined || raw === '') raw = (config as Record<string, any>)?.[field.configKey] as string | undefined;
+    const raw = preset[field.configKey] as string | undefined;
     if (raw === undefined || raw === '') continue;
     if (input instanceof HTMLInputElement && input.type === 'checkbox') input.checked = raw === 'true';
     else (input as HTMLInputElement | HTMLSelectElement).value = raw;

@@ -1,5 +1,8 @@
 import { Plugin } from 'siyuan';
 import { initStatusHidden, destroyStatusHidden } from './modules/statushidden';
+import { initHideScrollbar, destroyHideScrollbar } from './modules/hidescrollbar';
+import { initFocusBlock, destroyFocusBlock } from './modules/focusblock';
+import { initSlashNavigation, destroySlashNavigation } from './modules/slashnavigation';
 import { addNeoIcons } from './main/addicons';
 import { addTopBarButton } from './main/addtopbar';
 import { initPalette, destroyPalette } from './palette/manager';
@@ -12,6 +15,9 @@ export default class NeoPlusPlugin extends Plugin {
   onload(): void {
     addNeoIcons(this.addIcons.bind(this));
     initStatusHidden();
+    initHideScrollbar();
+    initFocusBlock();
+    initSlashNavigation();
   }
   onLayoutReady(): void {
     initPalette(this);
@@ -23,6 +29,9 @@ export default class NeoPlusPlugin extends Plugin {
   }
   onunload(): void {
     destroyStatusHidden();
+    destroyHideScrollbar();
+    destroyFocusBlock();
+    destroySlashNavigation();
     destroyPalette();
     destroyTexture();
     destroySmoothCaret();
@@ -30,7 +39,6 @@ export default class NeoPlusPlugin extends Plugin {
     destroyListBulletLine();
   }
   uninstall(): void {
-    this.onunload();
     this.removeData(configKey);
   }
 }
