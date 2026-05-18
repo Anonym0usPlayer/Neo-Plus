@@ -5,6 +5,7 @@ import { getTextureMenuItems } from '../texture/manager';
 import { onSmoothCaretClick } from '../expand/smoothcaret';
 import { onFluidCursorClick } from '../expand/fluidcursor';
 import { onListBulletLineClick } from '../expand/listbulletline';
+import { onFocusBlockIndicatorClick } from '../expand/focusblockindicator';
 import { saveConfig } from './data';
 import type { Config } from './data';
 import { getCurrentThemeMode, getCustomColorKey, getCustomSaturationKey, getFollowTimeBaseColorKey } from '../palette/presets';
@@ -165,6 +166,15 @@ export function buildMenu(
         label: i18n.listBulletLine,
         click: () => {
           onListBulletLineClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-focus-block-indicator-button',
+        icon: 'iconNeoFocusBlockIndicator',
+        label: i18n.focusBlockIndicator,
+        click: () => {
+          onFocusBlockIndicatorClick();
           return true;
         },
       },

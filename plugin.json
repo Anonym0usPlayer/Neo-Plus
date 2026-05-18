@@ -16,11 +16,13 @@
   },
   "description": {
     "default": "A companion plugin for the Neo theme",
-    "zh_CN": "Neo主题的配套插件"
+    "zh_CN": "Neo主题的配套插件",
+    "zh_CHT": "Neo主題的配套插件"
   },
   "readme": {
     "default": "README.md",
-    "zh_CN": "README_zh_CN.md"
+    "zh_CN": "README_zh_CN.md",
+    "zh_CHT": "README_zh_CHT.md"
   },
   "funding": {
     "custom": [

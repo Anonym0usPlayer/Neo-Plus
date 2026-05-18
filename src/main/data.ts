@@ -30,6 +30,7 @@ export interface Config {
   'smooth-caret'?: boolean;
   'fluid-cursor'?: boolean;
   'list-bullet-line'?: boolean;
+  'focus-block-indicator'?: boolean;
 }
 let configCache: Config = {};
 function getPluginOrNull() {

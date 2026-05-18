@@ -83,5 +83,6 @@
   "expand": "扩展",
   "smoothCaret": "平滑光标",
   "fluidCursor": "流体光标",
-  "listBulletLine": "列表子弹线"
+  "listBulletLine": "列表子弹线",
+  "focusBlockIndicator": "聚焦块指示"
 }

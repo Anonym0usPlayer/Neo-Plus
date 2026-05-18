@@ -1,7 +1,6 @@
 import { Plugin } from 'siyuan';
 import { initStatusHidden, destroyStatusHidden } from '../modules/statushidden';
 import { initHideScrollbar, destroyHideScrollbar } from '../modules/hidescrollbar';
-import { initFocusBlock, destroyFocusBlock } from '../modules/focusblock';
 import { initSlashNavigation, destroySlashNavigation } from '../modules/slashnavigation';
 import { initNeoIcons, destroyNeoIcons } from './addicons';
 import { initTopBarButton, destroyTopBarButton } from './addtopbar';
@@ -10,6 +9,7 @@ import { initTexture, destroyTexture } from '../texture/manager';
 import { initSmoothCaret, destroySmoothCaret } from '../expand/smoothcaret';
 import { initFluidCursor, destroyFluidCursor } from '../expand/fluidcursor';
 import { initListBulletLine, destroyListBulletLine } from '../expand/listbulletline';
+import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../expand/focusblockindicator';
 import { destroyMenuEventDelegation } from './addmenu';
 function isNeoTheme(): boolean {
   const mode = document.documentElement.getAttribute('data-theme-mode');
@@ -61,26 +61,26 @@ export class NeoPlusController {
     initTopBarButton();
     initStatusHidden();
     initHideScrollbar();
-    initFocusBlock();
     initSlashNavigation();
     initPalette();
     initTexture();
     initSmoothCaret();
     initFluidCursor();
     initListBulletLine();
+    initFocusBlockIndicator();
   }
   private destroyNeoPlus(): void {
     destroyNeoIcons();
     destroyTopBarButton();
     destroyStatusHidden();
     destroyHideScrollbar();
-    destroyFocusBlock();
     destroySlashNavigation();
     destroyPalette();
     destroyTexture();
     destroySmoothCaret();
     destroyFluidCursor();
     destroyListBulletLine();
+    destroyFocusBlockIndicator();
     destroyMenuEventDelegation();
   }
 }

@@ -1,0 +1,27 @@
+@use "manager" as *;
+.neo-expand-focusblockindicator {
+    @include expand-common('[data-id="neo-focus-block-indicator-button"]', '[data-id="neo-expand-button"]');
+    [neo-focus-block] {
+        &::before {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 3.5px;
+            height: calc(100% - 1em);
+            border-radius: 8px;
+            left: -3.5px;
+            top: 50%;
+            transform: translateY(-50%) scaleY(0);
+            background-color: var(--b3-theme-primary);
+            animation: neo-focusblock-entrance 0.15s cubic-bezier(0.18, 0.89, 0.32, 1.08) forwards;
+        }
+    }
+}
+@keyframes neo-focusblock-entrance {
+    from {
+        transform: translateY(-50%) scaleY(0);
+    }
+    to {
+        transform: translateY(-50%) scaleY(1);
+    }
+}
