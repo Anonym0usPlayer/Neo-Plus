@@ -12,7 +12,7 @@
             left: -3.5px;
             top: 50%;
             transform: translateY(-50%) scaleY(0);
-            background-color: var(--b3-theme-primary);
+            background-color: currentColor;
             animation: neo-focusblock-entrance 0.15s cubic-bezier(0.18, 0.89, 0.32, 1.08) forwards;
         }
     }

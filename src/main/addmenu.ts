@@ -6,6 +6,9 @@ import { onSmoothCaretClick } from '../expand/smoothcaret';
 import { onFluidCursorClick } from '../expand/fluidcursor';
 import { onListBulletLineClick } from '../expand/listbulletline';
 import { onFocusBlockIndicatorClick } from '../expand/focusblockindicator';
+import { onColoredFoldersClick } from '../appearance/coloredfolders';
+import { onColoredListsClick } from '../appearance/coloredlists';
+import { onColoredHeadingsClick } from '../appearance/coloredheadings';
 import { saveConfig } from './data';
 import type { Config } from './data';
 import { getCurrentThemeMode, getCustomColorKey, getCustomSaturationKey, getFollowTimeBaseColorKey } from '../palette/presets';
@@ -138,6 +141,40 @@ export function buildMenu(
     submenu: getTextureMenuItems(i18n),
   });
   menu.addItem({
+    id: 'neo-appearance-button',
+    icon: 'iconNeoAppearance',
+    label: i18n.appearance,
+    submenu: [
+      {
+        id: 'neo-colored-folders-button',
+        icon: 'iconNeoColoredFolders',
+        label: i18n.coloredFolders,
+        click: () => {
+          onColoredFoldersClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-colored-lists-button',
+        icon: 'iconNeoList',
+        label: i18n.coloredLists,
+        click: () => {
+          onColoredListsClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-colored-headings-button',
+        icon: 'iconNeoColoredHeadings',
+        label: i18n.coloredHeadings,
+        click: () => {
+          onColoredHeadingsClick();
+          return true;
+        },
+      },
+    ],
+  });
+  menu.addItem({
     id: 'neo-expand-button',
     icon: 'iconNeoExpand',
     label: i18n.expand,
@@ -162,7 +199,7 @@ export function buildMenu(
       },
       {
         id: 'neo-list-bullet-line-button',
-        icon: 'iconNeoListBulletLine',
+        icon: 'iconNeoList',
         label: i18n.listBulletLine,
         click: () => {
           onListBulletLineClick();

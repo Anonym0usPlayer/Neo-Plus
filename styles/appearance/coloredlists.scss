@@ -1,0 +1,47 @@
+@use "manager" as *;
+.neo-appearance-coloredlists {
+    @include appearance-common('[data-id="neo-colored-lists-button"]', '[data-id="neo-appearance-button"]');
+    .protyle-wysiwyg [data-node-id].list:not(.list .list):not(.protyle-wysiwyg > .li .list) {
+        & > [data-node-id].li {
+            @for $i from 0 through 7 {
+                $hue-offset: #{$i * 45};
+                &:nth-child(8n + #{$i + 1}) {
+                    --neo-coloredlists-color: oklch(from var(--b3-theme-accent) l 0.1 calc(h + #{$hue-offset}));
+                }
+            }
+            .protyle-action--task::before {
+                background-color: var(--neo-coloredlists-color);
+            }
+            & > .protyle-action {
+                color: var(--neo-coloredlists-color);
+                &:hover {
+                    color: var(--neo-coloredlists-color);
+                }
+                & + [data-node-id]:not(.list) {
+                    color: var(--neo-coloredlists-color);
+                    & [spellcheck] {
+                        color: var(--neo-coloredlists-color);
+                    }
+                }
+            }
+            [fold="1"],
+            &[fold="1"] {
+                & > .protyle-action {
+                    color: var(--neo-coloredlists-color);
+                    &::after {
+                        color: var(--neo-coloredlists-color);
+                    }
+                    &:hover {
+                        color: var(--neo-coloredlists-color);
+                        &::after {
+                            color: var(--neo-coloredlists-color);
+                        }
+                    }
+                }
+            }
+        }
+        & [neo-listbulletline-node] {
+            --neo-listbulletline-hl-color: var(--neo-coloredlists-color);
+        }
+    }
+}

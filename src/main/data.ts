@@ -31,6 +31,9 @@ export interface Config {
   'fluid-cursor'?: boolean;
   'list-bullet-line'?: boolean;
   'focus-block-indicator'?: boolean;
+  'colored-folders'?: boolean;
+  'colored-lists'?: boolean;
+  'colored-headings'?: boolean;
 }
 let configCache: Config = {};
 function getPluginOrNull() {

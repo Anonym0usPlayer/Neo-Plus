@@ -1,6 +1,5 @@
 @use "manager" as *;
 @use "sass:map";
-$list-hl: var(--b3-theme-accent);
 $fix-u: 2.25px;
 $fix-o: 10.25px;
 $fix-t: 7.25px;
@@ -16,11 +15,12 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
     '[data-id="neo-list-bullet-line-button"]',
     '[data-id="neo-expand-button"]'
   );
+  --neo-listbulletline-hl-color: var(--b3-theme-accent);
   #{$selector}::after {
     content: '';
     box-sizing: border-box;
-    border-left: calc(1.5px + 0.1 * #{$fix-fontsize}) solid $list-hl;
-    border-bottom: calc(1.5px + 0.1 * #{$fix-fontsize}) solid $list-hl;
+    border-left: calc(1.5px + 0.1 * #{$fix-fontsize}) solid var(--neo-listbulletline-hl-color);
+    border-bottom: calc(1.5px + 0.1 * #{$fix-fontsize}) solid var(--neo-listbulletline-hl-color);
     border-radius: unset;
     border-bottom-left-radius: 14px;
     corner-shape: superellipse(1.4);
@@ -32,12 +32,12 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
     &[data-subtype="u"],
     &[data-subtype="t"] {
       &[neo-listbulletline-node] > .protyle-action {
-        color: $list-hl;
+        color: var(--neo-listbulletline-hl-color);
         &::before {
-          background-color: $list-hl;
+          background-color: var(--neo-listbulletline-hl-color);
         }
         &::after {
-          color: $list-hl;
+          color: var(--neo-listbulletline-hl-color);
         }
       }
     }
