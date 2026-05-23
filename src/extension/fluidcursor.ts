@@ -235,7 +235,7 @@ export function destroyFluidCursor(): void {
   ctx = null;
   const htmlEl = document.documentElement;
   if (htmlEl) {
-    htmlEl.classList.remove('neo-expand-fluid-cursor');
+    htmlEl.classList.remove('neo-extension-fluid-cursor');
   }
 }
 export function initFluidCursor(): void {
@@ -244,7 +244,7 @@ export function initFluidCursor(): void {
   }
   loadConfig().then((config) => {
     if (config['fluid-cursor'] === true) {
-      document.documentElement.classList.add('neo-expand-fluid-cursor');
+      document.documentElement.classList.add('neo-extension-fluid-cursor');
       startFluidCursor();
     }
   });
@@ -255,13 +255,13 @@ export function onFluidCursorClick(): void {
   }
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
-  const isActive = htmlEl.classList.contains('neo-expand-fluid-cursor');
+  const isActive = htmlEl.classList.contains('neo-extension-fluid-cursor');
   if (isActive) {
-    htmlEl.classList.remove('neo-expand-fluid-cursor');
+    htmlEl.classList.remove('neo-extension-fluid-cursor');
     saveConfig({ 'fluid-cursor': false } as Partial<Config>);
     destroyFluidCursor();
   } else {
-    htmlEl.classList.add('neo-expand-fluid-cursor');
+    htmlEl.classList.add('neo-extension-fluid-cursor');
     saveConfig({ 'fluid-cursor': true } as Partial<Config>);
     startFluidCursor();
   }

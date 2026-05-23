@@ -9,6 +9,7 @@ export interface Preset {
 }
 const presets: Preset[] = [
   { key: 'default', nameKey: 'colorSchemeDefault', mode: 'all' },
+  { key: 'meridian', nameKey: 'colorSchemeMeridian', mode: 'all' },
   { key: 'amber',  nameKey: 'colorSchemeAmber',  mode: 'all' },
   { key: 'dusk',   nameKey: 'colorSchemeDusk',   mode: 'light' },
   { key: 'gingko',   nameKey: 'colorSchemeGingko',   mode: 'light' },

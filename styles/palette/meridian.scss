@@ -1,0 +1,47 @@
+@use "manager" as *;
+.neo-palette-meridian {
+    @include palette-common("[data-id="neo-palette-meridian-button"]", "[data-id="neo-scheme-button"]");
+    &[data-theme-mode="light"] {
+        --b3-base-color: #010101;
+        --b3-theme-primary: #010101;
+        --b3-theme-accent: #0050ff;
+        --b3-theme-background: #fefefe;
+        --b3-theme-surface: #ededed;
+        --b3-theme-on-background: #010101;
+        --b3-theme-on-surface: #01010194;
+        --b3-menu-background: var(--b3-theme-background);
+        --b3-list-active: oklch(from var(--b3-theme-primary) l 0 h / 0.12);
+        --neo-main-shadow-light: 0 0 1px oklch(from var(--b3-theme-on-background) l c h / 0.45), 0 0 4px oklch(from var(--b3-theme-on-background) l c h / 0.12);
+        --neo-main-shadow-heavy: 0 0 1px oklch(from var(--b3-theme-on-background) l c h / 0.45), 0 0 4px oklch(from var(--b3-theme-on-background) l c h / 0.18);
+    }
+    &[data-theme-mode="dark"] {
+        --b3-base-color: #fefefe;
+        --b3-theme-primary: #fefefe;
+        --b3-theme-accent: #4fff2d;
+        --b3-theme-background: #010101;
+        --b3-theme-surface: #232323;
+        --b3-theme-on-background: #fefefe;
+        --b3-theme-on-surface: #fefefe92;
+        --b3-menu-background: var(--b3-theme-background);
+        --b3-list-active: oklch(from var(--b3-theme-primary) l 0 h / 0.2);
+        --neo-main-shadow-light: 0 0 1px oklch(from var(--b3-theme-on-background) l c h / 0.65), 0 1px 4px rgba(0, 0, 0, 0.25);
+        --neo-main-shadow-heavy: 0 0 1px oklch(from var(--b3-theme-on-background) l c h / 0.7), 0 2px 6px rgba(0, 0, 0, 0.35);
+        --neo-switch-primary: #7a7a7a;
+        --b3-list-hover: oklch(from var(--b3-theme-on-background) l c h / 0.15);
+    }
+    body {
+        background-color: var(--b3-theme-background);
+    }
+    .b3-dialog__container .config__side,
+    .b3-dialog__container .config__panel .b3-tab-bar,
+    #configBazaarReadme .item__side {
+        background-color: oklch(from var(--b3-theme-background) l c h / 0.7);
+    }
+    #searchList:not(:has(>.b3-list-item:not([data-type=search-item]))),
+    #searchUnRefList, 
+    #searchAssetList {
+        [data-type=search-item].b3-list-item--focus {
+            outline-color: oklch(from var(--b3-theme-accent) l 0 h / 0.3);
+        }
+    }
+}

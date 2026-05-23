@@ -2,13 +2,14 @@ import { Menu } from 'siyuan';
 import { getPlugin } from './guard';
 import { createColorPickerHTML, createFollowTimeColorPickerHTML, createSliderHTML, getPresetMenuItems, switchToCustomAuto, switchToFollowTimeAuto, switchToFollowBannerAuto } from '../palette/manager';
 import { getTextureMenuItems } from '../texture/manager';
-import { onSmoothCaretClick } from '../expand/smoothcaret';
-import { onFluidCursorClick } from '../expand/fluidcursor';
-import { onListBulletLineClick } from '../expand/listbulletline';
-import { onFocusBlockIndicatorClick } from '../expand/focusblockindicator';
-import { onColoredFoldersClick } from '../appearance/coloredfolders';
-import { onColoredListsClick } from '../appearance/coloredlists';
-import { onColoredHeadingsClick } from '../appearance/coloredheadings';
+import { onSmoothCaretClick } from '../extension/smoothcaret';
+import { onFluidCursorClick } from '../extension/fluidcursor';
+import { onListBulletLineClick } from '../extension/listbulletline';
+import { onFocusBlockIndicatorClick } from '../extension/focusblockindicator';
+import { onScrollEffectClick } from '../extension/scrolleffect';
+import { onColoredFoldersClick } from '../extension/coloredfolders';
+import { onColoredListsClick } from '../element/coloredlists';
+import { onColoredHeadingsClick } from '../element/coloredheadings';
 import { saveConfig } from './data';
 import type { Config } from './data';
 import { getCurrentThemeMode, getCustomColorKey, getCustomSaturationKey, getFollowTimeBaseColorKey } from '../palette/presets';
@@ -141,19 +142,10 @@ export function buildMenu(
     submenu: getTextureMenuItems(i18n),
   });
   menu.addItem({
-    id: 'neo-appearance-button',
-    icon: 'iconNeoAppearance',
-    label: i18n.appearance,
+    id: 'neo-element-button',
+    icon: 'iconNeoElement',
+    label: i18n.element,
     submenu: [
-      {
-        id: 'neo-colored-folders-button',
-        icon: 'iconNeoColoredFolders',
-        label: i18n.coloredFolders,
-        click: () => {
-          onColoredFoldersClick();
-          return true;
-        },
-      },
       {
         id: 'neo-colored-lists-button',
         icon: 'iconNeoList',
@@ -175,9 +167,9 @@ export function buildMenu(
     ],
   });
   menu.addItem({
-    id: 'neo-expand-button',
-    icon: 'iconNeoExpand',
-    label: i18n.expand,
+    id: 'neo-extension-button',
+    icon: 'iconNeoExtension',
+    label: i18n.extension,
     submenu: [
       {
         id: 'neo-smooth-caret-button',
@@ -212,6 +204,24 @@ export function buildMenu(
         label: i18n.focusBlockIndicator,
         click: () => {
           onFocusBlockIndicatorClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-scroll-effect-button',
+        icon: 'iconNeoScrollEffect',
+        label: i18n.scrollEffect,
+        click: () => {
+          onScrollEffectClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-colored-folders-button',
+        icon: 'iconNeoColoredFolders',
+        label: i18n.coloredFolders,
+        click: () => {
+          onColoredFoldersClick();
           return true;
         },
       },

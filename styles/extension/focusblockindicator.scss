@@ -1,6 +1,6 @@
 @use "manager" as *;
-.neo-expand-focusblockindicator {
-    @include expand-common('[data-id="neo-focus-block-indicator-button"]', '[data-id="neo-expand-button"]');
+.neo-extension-focusblockindicator {
+    @include extension-common('[data-id="neo-focus-block-indicator-button"]', '[data-id="neo-extension-button"]');
     [neo-focus-block] {
         &::before {
             content: "";

@@ -112,8 +112,13 @@ function startSmoothCaret(): void {
         if (!textColor) {
           textColor = window.getComputedStyle(targetElement).color;
         }
-        if (textColor && textColor !== 'transparent' && !/rgba?\([^)]*,\s*0\s*\)$/i.test(textColor)) {
-          caretElement.style.setProperty('--neo-smooth-caret-color', textColor);
+        if (textColor && textColor !== 'transparent') {
+          const rgbaMatch = textColor.match(/^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)$/);
+          if (rgbaMatch && parseFloat(rgbaMatch[4]) === 0) {
+            caretElement.style.removeProperty('--neo-smooth-caret-color');
+          } else {
+            caretElement.style.setProperty('--neo-smooth-caret-color', textColor);
+          }
         } else {
           caretElement.style.removeProperty('--neo-smooth-caret-color');
         }
@@ -153,7 +158,7 @@ function startSmoothCaret(): void {
 }
 export function destroySmoothCaret(): void {
   document.getElementById('neo-smooth-caret-item')?.remove();
-  document.documentElement.classList.remove('neo-expand-smooth-caret');
+  document.documentElement.classList.remove('neo-extension-smooth-caret');
   throttleTimers.forEach((timer) => clearTimeout(timer));
   throttleTimers = [];
   cachedZIndex = 0;
@@ -174,7 +179,7 @@ export function destroySmoothCaret(): void {
 export function initSmoothCaret(): void {
   loadConfig().then((config) => {
     if (config['smooth-caret'] === true) {
-      document.documentElement.classList.add('neo-expand-smooth-caret');
+      document.documentElement.classList.add('neo-extension-smooth-caret');
       startSmoothCaret();
     }
   });
@@ -182,13 +187,13 @@ export function initSmoothCaret(): void {
 export function onSmoothCaretClick(): void {
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
-  const isActive = htmlEl.classList.contains('neo-expand-smooth-caret');
+  const isActive = htmlEl.classList.contains('neo-extension-smooth-caret');
   if (isActive) {
-    htmlEl.classList.remove('neo-expand-smooth-caret');
+    htmlEl.classList.remove('neo-extension-smooth-caret');
     saveConfig({ 'smooth-caret': false } as Partial<Config>);
     destroySmoothCaret();
   } else {
-    htmlEl.classList.add('neo-expand-smooth-caret');
+    htmlEl.classList.add('neo-extension-smooth-caret');
     saveConfig({ 'smooth-caret': true } as Partial<Config>);
     startSmoothCaret();
   }

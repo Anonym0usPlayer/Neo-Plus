@@ -1,6 +1,6 @@
 @use "manager" as *;
-.neo-appearance-coloredheadings {
-    @include appearance-common('[data-id="neo-colored-headings-button"]', '[data-id="neo-appearance-button"]');
+.neo-element-coloredheadings {
+    @include element-common('[data-id="neo-colored-headings-button"]', '[data-id="neo-element-button"]');
     .b3-typography,
     .protyle-wysiwyg {
         @for $i from 1 through 6 {

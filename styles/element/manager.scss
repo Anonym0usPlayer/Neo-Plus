@@ -1,4 +1,4 @@
-@mixin expand-common($selectors...) {
+@mixin element-common($selectors...) {
     @each $selector in $selectors {
         #{$selector} {
             &:not(.b3-menu__item--show):not(.b3-menu__item--current) {

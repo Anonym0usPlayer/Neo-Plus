@@ -73,7 +73,7 @@ function stopObserving(): void {
 export function initFocusBlockIndicator(): void {
   loadConfig().then((config) => {
     if (config['focus-block-indicator'] === true) {
-      document.documentElement.classList.add('neo-expand-focusblockindicator');
+      document.documentElement.classList.add('neo-extension-focusblockindicator');
       startObserving();
     }
   });
@@ -81,18 +81,18 @@ export function initFocusBlockIndicator(): void {
 export function onFocusBlockIndicatorClick(): void {
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
-  const isActive = htmlEl.classList.contains('neo-expand-focusblockindicator');
+  const isActive = htmlEl.classList.contains('neo-extension-focusblockindicator');
   if (isActive) {
-    htmlEl.classList.remove('neo-expand-focusblockindicator');
+    htmlEl.classList.remove('neo-extension-focusblockindicator');
     saveConfig({ 'focus-block-indicator': false } as Partial<Config>);
     stopObserving();
   } else {
-    htmlEl.classList.add('neo-expand-focusblockindicator');
+    htmlEl.classList.add('neo-extension-focusblockindicator');
     saveConfig({ 'focus-block-indicator': true } as Partial<Config>);
     startObserving();
   }
 }
 export function destroyFocusBlockIndicator(): void {
-  document.documentElement?.classList.remove('neo-expand-focusblockindicator');
+  document.documentElement?.classList.remove('neo-extension-focusblockindicator');
   stopObserving();
 }

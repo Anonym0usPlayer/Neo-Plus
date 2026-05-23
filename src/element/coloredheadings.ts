@@ -3,22 +3,22 @@ import type { Config } from '../main/data';
 export function initColoredHeadings(): void {
   loadConfig().then((config) => {
     if (config['colored-headings'] === true) {
-      document.documentElement.classList.add('neo-appearance-coloredheadings');
+      document.documentElement.classList.add('neo-element-coloredheadings');
     }
   });
 }
 export function onColoredHeadingsClick(): void {
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
-  const isActive = htmlEl.classList.contains('neo-appearance-coloredheadings');
+  const isActive = htmlEl.classList.contains('neo-element-coloredheadings');
   if (isActive) {
     destroyColoredHeadings();
     saveConfig({ 'colored-headings': false } as Partial<Config>);
   } else {
-    htmlEl.classList.add('neo-appearance-coloredheadings');
+    htmlEl.classList.add('neo-element-coloredheadings');
     saveConfig({ 'colored-headings': true } as Partial<Config>);
   }
 }
 export function destroyColoredHeadings(): void {
-  document.documentElement?.classList.remove('neo-appearance-coloredheadings');
+  document.documentElement?.classList.remove('neo-element-coloredheadings');
 }

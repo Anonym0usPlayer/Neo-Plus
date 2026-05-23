@@ -139,7 +139,7 @@ function unbindSelectionChange(): void {
 export function initListBulletLine(): void {
   loadConfig().then((config) => {
     if (config['list-bullet-line'] === true) {
-      document.documentElement.classList.add('neo-expand-listbulletline');
+      document.documentElement.classList.add('neo-extension-listbulletline');
       bindSelectionChange();
     }
   });
@@ -147,18 +147,18 @@ export function initListBulletLine(): void {
 export function onListBulletLineClick(): void {
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
-  const isActive = htmlEl.classList.contains('neo-expand-listbulletline');
+  const isActive = htmlEl.classList.contains('neo-extension-listbulletline');
   if (isActive) {
-    htmlEl.classList.remove('neo-expand-listbulletline');
+    htmlEl.classList.remove('neo-extension-listbulletline');
     saveConfig({ 'list-bullet-line': false } as Partial<Config>);
     unbindSelectionChange();
   } else {
-    htmlEl.classList.add('neo-expand-listbulletline');
+    htmlEl.classList.add('neo-extension-listbulletline');
     saveConfig({ 'list-bullet-line': true } as Partial<Config>);
     bindSelectionChange();
   }
 }
 export function destroyListBulletLine(): void {
-  document.documentElement?.classList.remove('neo-expand-listbulletline');
+  document.documentElement?.classList.remove('neo-extension-listbulletline');
   unbindSelectionChange();
 }

@@ -1,12 +1,16 @@
 @use "manager" as *;
-.neo-appearance-coloredlists {
-    @include appearance-common('[data-id="neo-colored-lists-button"]', '[data-id="neo-appearance-button"]');
+.neo-element-coloredlists {
+    @include element-common('[data-id="neo-colored-lists-button"]', '[data-id="neo-element-button"]');
     .protyle-wysiwyg [data-node-id].list:not(.list .list):not(.protyle-wysiwyg > .li .list) {
         & > [data-node-id].li {
             @for $i from 0 through 7 {
                 $hue-offset: #{$i * 45};
                 &:nth-child(8n + #{$i + 1}) {
                     --neo-coloredlists-color: oklch(from var(--b3-theme-accent) l 0.1 calc(h + #{$hue-offset}));
+                    --neo-kbd-color: var(--neo-coloredlists-color);
+                    --neo-inline-code-color: var(--neo-coloredlists-color);
+                    --neo-tag-color: var(--neo-coloredlists-color);
+                    --neo-inline-memo-color: var(--neo-coloredlists-color);
                 }
             }
             .protyle-action--task::before {

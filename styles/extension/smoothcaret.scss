@@ -1,6 +1,6 @@
 @use "manager" as *;
-.neo-expand-smooth-caret {
-    @include expand-common('[data-id="neo-smooth-caret-button"]', '[data-id="neo-expand-button"]');
+.neo-extension-smooth-caret {
+    @include extension-common('[data-id="neo-smooth-caret-button"]', '[data-id="neo-extension-button"]');
     .protyle-wysiwyg,
     .protyle-title__input,
     [data-type="NodeHeading"] {

@@ -1,8 +1,9 @@
 @use "manager" as *;
 $border-width: 3px;
-.neo-appearance-coloredfolders {
-    @include appearance-common('[data-id="neo-colored-folders-button"]', '[data-id="neo-appearance-button"]');
+.neo-extension-coloredfolders {
+    @include extension-common('[data-id="neo-colored-folders-button"]', '[data-id="neo-extension-button"]');
     .sy__file {
+        --neo-dock-indent-fork-left: -9px;
         & .b3-list-item {
             margin: 1px 0;
             border-radius: 0;

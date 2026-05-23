@@ -10,10 +10,10 @@ $types: (
   "t": $fix-t,
 );
 $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.protyle-wysiwyg--hl):not([custom-list-view] [neo-listbulletline-current])";
-.neo-expand-listbulletline {
-  @include expand-common(
+.neo-extension-listbulletline {
+  @include extension-common(
     '[data-id="neo-list-bullet-line-button"]',
-    '[data-id="neo-expand-button"]'
+    '[data-id="neo-extension-button"]'
   );
   --neo-listbulletline-hl-color: var(--b3-theme-accent);
   #{$selector}::after {

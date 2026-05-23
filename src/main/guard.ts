@@ -6,13 +6,14 @@ import { initNeoIcons, destroyNeoIcons } from './addicons';
 import { initTopBarButton, destroyTopBarButton } from './addtopbar';
 import { initPalette, destroyPalette } from '../palette/manager';
 import { initTexture, destroyTexture } from '../texture/manager';
-import { initColoredFolders, destroyColoredFolders } from '../appearance/coloredfolders';
-import { initColoredLists, destroyColoredLists } from '../appearance/coloredlists';
-import { initColoredHeadings, destroyColoredHeadings } from '../appearance/coloredheadings';
-import { initSmoothCaret, destroySmoothCaret } from '../expand/smoothcaret';
-import { initFluidCursor, destroyFluidCursor } from '../expand/fluidcursor';
-import { initListBulletLine, destroyListBulletLine } from '../expand/listbulletline';
-import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../expand/focusblockindicator';
+import { initColoredLists, destroyColoredLists } from '../element/coloredlists';
+import { initColoredHeadings, destroyColoredHeadings } from '../element/coloredheadings';
+import { initSmoothCaret, destroySmoothCaret } from '../extension/smoothcaret';
+import { initColoredFolders, destroyColoredFolders } from '../extension/coloredfolders';
+import { initScrollEffect, destroyScrollEffect } from '../extension/scrolleffect';
+import { initFluidCursor, destroyFluidCursor } from '../extension/fluidcursor';
+import { initListBulletLine, destroyListBulletLine } from '../extension/listbulletline';
+import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../extension/focusblockindicator';
 import { destroyMenuEventDelegation } from './addmenu';
 function isNeoTheme(): boolean {
   const mode = document.documentElement.getAttribute('data-theme-mode');
@@ -71,6 +72,7 @@ export class NeoPlusController {
     initColoredLists();
     initColoredHeadings();
     initSmoothCaret();
+    initScrollEffect();
     initFluidCursor();
     initListBulletLine();
     initFocusBlockIndicator();
@@ -87,6 +89,7 @@ export class NeoPlusController {
     destroyColoredLists();
     destroyColoredHeadings();
     destroySmoothCaret();
+    destroyScrollEffect();
     destroyFluidCursor();
     destroyListBulletLine();
     destroyFocusBlockIndicator();

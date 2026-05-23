@@ -34,6 +34,7 @@ export interface Config {
   'colored-folders'?: boolean;
   'colored-lists'?: boolean;
   'colored-headings'?: boolean;
+  'scroll-effect'?: boolean;
 }
 let configCache: Config = {};
 function getPluginOrNull() {
