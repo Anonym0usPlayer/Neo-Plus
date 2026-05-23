@@ -8,6 +8,7 @@ let dblclickHandler: ((e: MouseEvent) => void) | null = null;
 const DEFAULT_WIDTH = 150;
 const MIN_WIDTH = 100;
 const MAX_WIDTH = 350;
+let lastWidth: number | null = null;
 function doUpdate(): void {
   if (destroyed) return;
   const wnds = document.querySelectorAll<HTMLElement>('.layout__center [data-type="wnd"]');
@@ -42,9 +43,7 @@ function doUpdate(): void {
   if (targetWnd) {
     const firstFlex = targetWnd.querySelector<HTMLElement>('.fn__flex:first-child');
     if (firstFlex && !firstFlex.classList.contains('fn__none')) {
-      if (!firstFlex.style.width) {
-        firstFlex.style.width = `${DEFAULT_WIDTH}px`;
-      }
+      firstFlex.style.width = `${lastWidth ?? DEFAULT_WIDTH}px`;
       const resizeEl = document.createElement('div');
       resizeEl.className = 'layout__resize--lr layout__resize neo-verticaltabs-resize';
       firstFlex.after(resizeEl);
@@ -73,6 +72,9 @@ function initResizeHandle(): void {
     function onMouseUp() {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
+      if (flexEl) {
+        lastWidth = flexEl.getBoundingClientRect().width;
+      }
     }
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
@@ -85,6 +87,7 @@ function initResizeHandle(): void {
       const firstFlex = wnd.querySelector<HTMLElement>('.fn__flex:first-child');
       if (firstFlex) {
         firstFlex.style.width = `${DEFAULT_WIDTH}px`;
+        lastWidth = DEFAULT_WIDTH;
       }
     }
   };
@@ -122,6 +125,7 @@ export function initVerticalTabs(): void {
     if (config['vertical-tabs'] === true) {
       document.documentElement.classList.add('neo-extension-verticaltabs');
       destroyed = false;
+      lastWidth = null;
       initResizeHandle();
       attachListener();
       doUpdate();
@@ -139,6 +143,7 @@ export function onVerticalTabsClick(): void {
     htmlEl.classList.add('neo-extension-verticaltabs');
     saveConfig({ 'vertical-tabs': true } as Partial<Config>);
     destroyed = false;
+    lastWidth = null;
     initResizeHandle();
     attachListener();
     doUpdate();

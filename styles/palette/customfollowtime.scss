@@ -17,7 +17,7 @@
     [data-id="neo-followtime-button"]::before {
         content: "";
     }
-    animation: neo-followtime-vary 180s steps(180) infinite;
+    animation: neo-followtime-vary 360s steps(180) infinite;
     --neo-custom-base-color: oklch(from var(--neo-followtime-base-color) l c calc(h + var(--neo-followtime-vary, 0))) !important;
 }
 [data-id="neo-followtime-button"] {
