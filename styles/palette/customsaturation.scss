@@ -6,7 +6,7 @@
     }
     .b3-slider {
     &::-webkit-slider-runnable-track {
-            background: linear-gradient(to right, oklch(from var(--b3-theme-accent) l 0 h / 0.3), oklch(from var(--b3-theme-accent) l c h / 0.3));
+            background: linear-gradient(to right, oklch(from var(--b3-theme-accent) l 0 h / 0.5), oklch(from var(--b3-theme-accent) l 0.15 h / 0.5));
         }
     }
 }
