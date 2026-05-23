@@ -1,0 +1,77 @@
+@use "manager" as *;
+@use "../tools" as *;
+body.body--toolbar-hide {
+    [data-id="neo-vertical-tabs-button"] {
+        opacity: 0.38;
+    }
+}
+.neo-extension-verticaltabs {
+    @include extension-common('[data-id="neo-vertical-tabs-button"]', '[data-id="neo-extension-button"]');
+    body:not(.body--toolbar-hide):not(.body--window) {
+        .neo-verticaltabs-wnd {
+            flex-direction: row;
+            .neo-verticaltabs-resize {
+                margin: 0 -1.5px;
+                &:not(:hover)::after {
+                    background-color: var(--b3-border-color-trans);
+                }
+            }
+            & > .fn__flex:first-child {
+                flex-direction: column;
+                height: 100%;
+                animation: none;
+                & > .layout-tab-bar:not(.layout-tab-bar--readonly) {
+                    flex: 1;
+                    flex-direction: column;
+                    overflow-y: scroll;
+                    @include overflow-indicator-fadein-mask($fadeout-size-l, "top bottom");
+                    .item {
+                        margin: 3px 6px;
+                        width: calc(100% - 12px);
+                        max-width: unset;
+                        &:first-child {
+                            margin-top: 6px;
+                        }
+                        &:last-child {
+                            margin-bottom: 6px;
+                        }
+                        .item__icon, .item__graphic, .item__text {
+                            transform: none;
+                        }
+                        .item__text {
+                            max-width: fit-content;
+                        }
+                        .item__close {
+                            margin-left: auto;
+                        }
+                        &::before {
+                            display: none;
+                        }
+                        &.item--pin {
+                            .item__text {
+                                display: flex !important;
+                            }
+                        }
+                    }
+                }
+                & > .layout-tab-bar--readonly {
+                    flex: 0 0 auto;
+                    margin: 0;
+                    & > .item--readonly {
+                        justify-content: center;
+                        & > .fn__flex-1 {
+                            flex: 1;
+                            display: block;
+                        }
+                        & > [data-type="new"] {
+                            margin: 0 0 0 10px;
+                        }
+                        & > [data-type="more"] {
+                            margin: 0 10px 0 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

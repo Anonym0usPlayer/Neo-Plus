@@ -14,6 +14,7 @@ import { initScrollEffect, destroyScrollEffect } from '../extension/scrolleffect
 import { initFluidCursor, destroyFluidCursor } from '../extension/fluidcursor';
 import { initListBulletLine, destroyListBulletLine } from '../extension/listbulletline';
 import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../extension/focusblockindicator';
+import { initVerticalTabs, destroyVerticalTabs } from '../extension/verticaltabs';
 import { destroyMenuEventDelegation } from './addmenu';
 function isNeoTheme(): boolean {
   const mode = document.documentElement.getAttribute('data-theme-mode');
@@ -76,6 +77,7 @@ export class NeoPlusController {
     initFluidCursor();
     initListBulletLine();
     initFocusBlockIndicator();
+    initVerticalTabs();
   }
   private destroyNeoPlus(): void {
     destroyNeoIcons();
@@ -93,6 +95,7 @@ export class NeoPlusController {
     destroyFluidCursor();
     destroyListBulletLine();
     destroyFocusBlockIndicator();
+    destroyVerticalTabs();
     destroyMenuEventDelegation();
   }
 }

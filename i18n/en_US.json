@@ -90,5 +90,6 @@
   "smoothCaret": "Smooth Caret",
   "fluidCursor": "Fluid Cursor",
   "listBulletLine": "List Bullet Line",
-  "focusBlockIndicator": "Focus Block Indicator"
+  "focusBlockIndicator": "Focus Block Indicator",
+  "verticalTabs": "Vertical Tabs"
 }

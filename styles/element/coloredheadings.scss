@@ -8,7 +8,7 @@
             h#{$i},
             [data-type=NodeHeading].h#{$i},
             [data-type=NodeHeading][data-subtype=h#{$i}] [spellcheck] {
-                color: oklch(from var(--b3-theme-accent) l c calc(h + #{$hue-offset}));
+                color: oklch(from var(--b3-theme-accent) l 0.15 calc(h + #{$hue-offset}));
             }
         }
     }
@@ -18,7 +18,7 @@
             .b3-list-item[data-type=NodeHeading][data-subtype=h#{$i}] {
                 .b3-list-item__text,
                 .b3-list-item__graphic {
-                    color: oklch(from var(--b3-theme-accent) l c calc(h + #{$hue-offset}));
+                    color: oklch(from var(--b3-theme-accent) l 0.1 calc(h + #{$hue-offset}));
                 }
             }
         }

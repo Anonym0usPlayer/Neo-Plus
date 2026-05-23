@@ -90,5 +90,6 @@
   "smoothCaret": "平滑游標",
   "fluidCursor": "流體游標",
   "listBulletLine": "列表子彈線",
-  "focusBlockIndicator": "聚焦塊指示"
+  "focusBlockIndicator": "聚焦塊指示",
+  "verticalTabs": "垂直頁籤"
 }

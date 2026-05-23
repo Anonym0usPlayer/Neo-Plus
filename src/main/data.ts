@@ -35,6 +35,7 @@ export interface Config {
   'colored-lists'?: boolean;
   'colored-headings'?: boolean;
   'scroll-effect'?: boolean;
+  'vertical-tabs'?: boolean;
 }
 let configCache: Config = {};
 function getPluginOrNull() {

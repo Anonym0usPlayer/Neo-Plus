@@ -8,6 +8,7 @@ import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick } from '../extension/focusblockindicator';
 import { onScrollEffectClick } from '../extension/scrolleffect';
 import { onColoredFoldersClick } from '../extension/coloredfolders';
+import { onVerticalTabsClick } from '../extension/verticaltabs';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
 import { saveConfig } from './data';
@@ -171,6 +172,15 @@ export function buildMenu(
     icon: 'iconNeoExtension',
     label: i18n.extension,
     submenu: [
+      {
+        id: 'neo-vertical-tabs-button',
+        icon: 'iconNeoVerticalTabs',
+        label: i18n.verticalTabs,
+        click: () => {
+          onVerticalTabsClick();
+          return true;
+        },
+      },
       {
         id: 'neo-smooth-caret-button',
         icon: 'iconNeoSmoothCaret',

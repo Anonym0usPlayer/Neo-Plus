@@ -24,8 +24,8 @@
         --b3-theme-on-surface: #fefefe92;
         --b3-menu-background: var(--b3-theme-background);
         --b3-list-active: oklch(from var(--b3-theme-primary) l 0 h / 0.2);
-        --neo-main-shadow-light: 0 0 1px oklch(from var(--b3-theme-on-background) l c h / 0.65), 0 1px 4px rgba(0, 0, 0, 0.25);
-        --neo-main-shadow-heavy: 0 0 1px oklch(from var(--b3-theme-on-background) l c h / 0.7), 0 2px 6px rgba(0, 0, 0, 0.35);
+        --neo-main-shadow-light: 0 0 1px oklch(from var(--b3-theme-on-background) l c h / 0.75), 0 1px 4px rgba(0, 0, 0, 0.25);
+        --neo-main-shadow-heavy: 0 0 1px oklch(from var(--b3-theme-on-background) l c h / 0.85), 0 2px 6px rgba(0, 0, 0, 0.35);
         --neo-switch-primary: #7a7a7a;
         --b3-list-hover: oklch(from var(--b3-theme-on-background) l c h / 0.15);
     }
