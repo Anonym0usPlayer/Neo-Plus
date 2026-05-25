@@ -1,6 +1,10 @@
 import { Plugin } from 'siyuan';
 import { initStatusHidden, destroyStatusHidden } from '../modules/statushidden';
+import { initFetchMonitor, destroyFetchMonitor } from '../modules/fetchmonitor';
+import { initHasWnd, destroyHasWnd } from '../modules/haswnd';
+import { initHasSearchGroup, destroyHasSearchGroup } from '../modules/hassearchgroup';
 import { initHideScrollbar, destroyHideScrollbar } from '../modules/hidescrollbar';
+import { initPerformanceTuning, destroyPerformanceTuning } from '../modules/performancetuning';
 import { initSlashNavigation, destroySlashNavigation } from '../modules/slashnavigation';
 import { initNeoIcons, destroyNeoIcons } from './addicons';
 import { initTopBarButton, destroyTopBarButton } from './addtopbar';
@@ -78,6 +82,10 @@ export class NeoPlusController {
     initListBulletLine();
     initFocusBlockIndicator();
     initVerticalTabs();
+    initFetchMonitor();
+    initHasWnd();
+    initPerformanceTuning();
+    initHasSearchGroup();
   }
   private destroyNeoPlus(): void {
     destroyNeoIcons();
@@ -97,5 +105,9 @@ export class NeoPlusController {
     destroyFocusBlockIndicator();
     destroyVerticalTabs();
     destroyMenuEventDelegation();
+    destroyPerformanceTuning();
+    destroyHasSearchGroup();
+    destroyHasWnd();
+    destroyFetchMonitor();
   }
 }

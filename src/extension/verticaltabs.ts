@@ -1,8 +1,7 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
-import { getPlugin } from '../main/guard';
+import { onFetch, offFetch } from '../modules/fetchmonitor';
 let destroyed = false;
-let switchProtyleHandler: ((detail: any) => void) | null = null;
 let mousedownHandler: ((e: MouseEvent) => void) | null = null;
 let dblclickHandler: ((e: MouseEvent) => void) | null = null;
 const DEFAULT_WIDTH = 150;
@@ -104,21 +103,18 @@ function destroyResizeHandle(): void {
     dblclickHandler = null;
   }
 }
+let _onSetUILayout: (() => void) | null = null;
 function attachListener(): void {
-  if (switchProtyleHandler) return;
-  const plugin = getPlugin();
-  if (!plugin) return;
-  switchProtyleHandler = () => {
+  _onSetUILayout = () => {
     doUpdate();
   };
-  plugin.eventBus.on('switch-protyle', switchProtyleHandler);
+  onFetch('setUILayout', _onSetUILayout);
 }
 function detachListener(): void {
-  if (!switchProtyleHandler) return;
-  const plugin = getPlugin();
-  if (!plugin) return;
-  plugin.eventBus.off('switch-protyle', switchProtyleHandler);
-  switchProtyleHandler = null;
+  if (_onSetUILayout) {
+    offFetch('setUILayout', _onSetUILayout);
+    _onSetUILayout = null;
+  }
 }
 export function initVerticalTabs(): void {
   loadConfig().then((config) => {
