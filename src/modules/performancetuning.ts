@@ -49,6 +49,55 @@ const _ruleFilters: { filter: StyleRuleFilter; saved: SavedRule[] }[] = [
     },
     saved: [],
   },
+  {
+    filter: {
+      selectorMatch: (s) => s.includes('#documentPropertiesOverlay .row > *'),
+      cssMatch: (c) => c.includes('min-width: 100px'),
+    },
+    saved: [],
+  },
+  {
+    filter: {
+      selectorMatch: (s) => s.includes('#documentPropertiesOverlay .row > *'),
+      cssMatch: (c) => c.includes('text-align: left'),
+    },
+    saved: [],
+  },
+  {
+    filter: {
+      selectorMatch: (s) => s.includes('.rect-to-annotation') && s.includes(':not'),
+      cssMatch: (c) => c.includes('cursor: inherit'),
+    },
+    saved: [],
+  },
+  {
+    filter: {
+      selectorMatch: (s) => s.includes('.grab-to-pan-grab') && s.includes(':not'),
+      cssMatch: (c) => c.includes('cursor: inherit'),
+    },
+    saved: [],
+  },
+  {
+    filter: {
+      selectorMatch: (s) => s.includes('.xfaLayer *') && !s.includes(':required'),
+      cssMatch: (c) => c.includes('color: inherit') && c.includes('font: inherit'),
+    },
+    saved: [],
+  },
+  {
+    filter: {
+      selectorMatch: (s) => s.includes('.xfaLayer *:required'),
+      cssMatch: (c) => c.includes('outline: 1.5px solid red'),
+    },
+    saved: [],
+  },
+  {
+    filter: {
+      selectorMatch: (s) => s === '.katex *',
+      cssMatch: () => true,
+    },
+    saved: [],
+  },
 ];
 function removeMatchingRules(): void {
   for (const entry of _ruleFilters) {
@@ -83,29 +132,54 @@ function restoreAllRules(): void {
     entry.saved = [];
   }
 }
-function removeKatexUniversalRule(): void {
-  const link = document.getElementById('protyleKatexStyle') as HTMLLinkElement | null;
-  if (!link) return;
-  const sheet = link.sheet;
-  if (!sheet) return;
-  const rules = sheet.cssRules || sheet.rules;
-  if (!rules) return;
-  for (let j = 0; j < rules.length; j++) {
-    const rule = rules[j] as CSSStyleRule;
-    if (rule.selectorText && rule.selectorText === '.katex *') {
-      sheet.deleteRule(j);
-      return;
-    }
+let _katexObserver: MutationObserver | null = null;
+function removeKatexRuleFromSheet(): void {
+  for (let i = 0; i < document.styleSheets.length; i++) {
+    const ss = document.styleSheets[i];
+    try {
+      for (let j = 0; j < ss.cssRules.length; j++) {
+        const rule = ss.cssRules[j] as CSSStyleRule;
+        if (rule.selectorText && rule.selectorText === '.katex *') {
+          ss.deleteRule(j);
+          return;
+        }
+      }
+    } catch (_e) {}
   }
 }
 export function initPerformanceTuning(): void {
   removeMatchingRules();
-  removeKatexUniversalRule();
-  const link = document.getElementById('protyleKatexStyle') as HTMLLinkElement | null;
-  if (link && !link.sheet) {
-    link.addEventListener('load', () => removeKatexUniversalRule(), { once: true });
+  removeKatexRuleFromSheet();
+  if (!_katexObserver) {
+    _katexObserver = new MutationObserver(() => {
+      removeKatexRuleFromSheet();
+      // 检查是否已成功删除，如果是则断开观察器
+      let found = false;
+      for (let i = 0; i < document.styleSheets.length; i++) {
+        const ss = document.styleSheets[i];
+        try {
+          for (let j = 0; j < ss.cssRules.length; j++) {
+            const rule = ss.cssRules[j] as CSSStyleRule;
+            if (rule.selectorText && rule.selectorText === '.katex *') {
+              found = true;
+              break;
+            }
+          }
+        } catch (_e) {}
+        if (found) break;
+      }
+      if (!found && _katexObserver) {
+        _katexObserver.disconnect();
+        _katexObserver = null;
+      }
+    });
+    _katexObserver.observe(document.head, { childList: true, subtree: true });
   }
 }
 export function destroyPerformanceTuning(): void {
   restoreAllRules();
+  if (_katexObserver) {
+    _katexObserver.disconnect();
+    _katexObserver = null;
+  }
 }

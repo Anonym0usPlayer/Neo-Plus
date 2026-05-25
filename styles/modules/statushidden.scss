@@ -10,7 +10,10 @@
             border-radius: 32px;
             corner-shape: unset;
             animation: neo-status-hidden 0.35s cubic-bezier(0.33, 1.7, 0.69, 0.99);
-            & > * {
+            & > .toolbar__item,
+            & > .status__msg,
+            & > .status__counter,
+            & > .status__backgroundtask {
                 transition: none;
                 opacity: 0;
                 visibility: hidden;
@@ -31,7 +34,10 @@
         }
         &:hover {
             animation: neo-status-expand 0.3s cubic-bezier(0.33, 1.7, 0.69, 0.99);
-            & > * {
+            & > .toolbar__item,
+            & > .status__msg,
+            & > .status__counter,
+            & > .status__backgroundtask {
                 opacity: 1;
                 visibility: visible;
                 pointer-events: auto;

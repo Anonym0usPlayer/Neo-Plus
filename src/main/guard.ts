@@ -12,6 +12,7 @@ import { initPalette, destroyPalette } from '../palette/manager';
 import { initTexture, destroyTexture } from '../texture/manager';
 import { initColoredLists, destroyColoredLists } from '../element/coloredlists';
 import { initColoredHeadings, destroyColoredHeadings } from '../element/coloredheadings';
+import { initColoredSelection, destroyColoredSelection } from '../element/coloredselection';
 import { initSmoothCaret, destroySmoothCaret } from '../extension/smoothcaret';
 import { initColoredFolders, destroyColoredFolders } from '../extension/coloredfolders';
 import { initScrollEffect, destroyScrollEffect } from '../extension/scrolleffect';
@@ -76,6 +77,7 @@ export class NeoPlusController {
     initColoredFolders();
     initColoredLists();
     initColoredHeadings();
+    initColoredSelection();
     initSmoothCaret();
     initScrollEffect();
     initFluidCursor();
@@ -98,6 +100,7 @@ export class NeoPlusController {
     destroyColoredFolders();
     destroyColoredLists();
     destroyColoredHeadings();
+    destroyColoredSelection();
     destroySmoothCaret();
     destroyScrollEffect();
     destroyFluidCursor();
