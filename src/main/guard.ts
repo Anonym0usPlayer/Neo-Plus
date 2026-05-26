@@ -12,7 +12,6 @@ import { initPalette, destroyPalette } from '../palette/manager';
 import { initTexture, destroyTexture } from '../texture/manager';
 import { initColoredLists, destroyColoredLists } from '../element/coloredlists';
 import { initColoredHeadings, destroyColoredHeadings } from '../element/coloredheadings';
-import { initColoredSelection, destroyColoredSelection } from '../element/coloredselection';
 import { initSmoothCaret, destroySmoothCaret } from '../extension/smoothcaret';
 import { initColoredFolders, destroyColoredFolders } from '../extension/coloredfolders';
 import { initScrollEffect, destroyScrollEffect } from '../extension/scrolleffect';
@@ -21,6 +20,12 @@ import { initListBulletLine, destroyListBulletLine } from '../extension/listbull
 import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../extension/focusblockindicator';
 import { initVerticalTabs, destroyVerticalTabs } from '../extension/verticaltabs';
 import { destroyMenuEventDelegation } from './addmenu';
+function initNeoEnabled(): void {
+  document.documentElement.classList.add('neo-enabled');
+}
+function destroyNeoEnabled(): void {
+  document.documentElement.classList.remove('neo-enabled');
+}
 function isNeoTheme(): boolean {
   const mode = document.documentElement.getAttribute('data-theme-mode');
   if (mode === 'dark') {
@@ -67,6 +72,7 @@ export class NeoPlusController {
     this.isNeoTheme = isNowNeo;
   }
   private initNeoPlus(): void {
+    initNeoEnabled();
     initNeoIcons();
     initTopBarButton();
     initStatusHidden();
@@ -77,7 +83,6 @@ export class NeoPlusController {
     initColoredFolders();
     initColoredLists();
     initColoredHeadings();
-    initColoredSelection();
     initSmoothCaret();
     initScrollEffect();
     initFluidCursor();
@@ -90,6 +95,7 @@ export class NeoPlusController {
     initHasSearchGroup();
   }
   private destroyNeoPlus(): void {
+    destroyNeoEnabled();
     destroyNeoIcons();
     destroyTopBarButton();
     destroyStatusHidden();
@@ -100,7 +106,6 @@ export class NeoPlusController {
     destroyColoredFolders();
     destroyColoredLists();
     destroyColoredHeadings();
-    destroyColoredSelection();
     destroySmoothCaret();
     destroyScrollEffect();
     destroyFluidCursor();

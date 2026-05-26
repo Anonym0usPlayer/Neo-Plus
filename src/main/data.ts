@@ -34,7 +34,6 @@ export interface Config {
   'colored-folders'?: boolean;
   'colored-lists'?: boolean;
   'colored-headings'?: boolean;
-  'colored-selection'?: boolean;
   'scroll-effect'?: boolean;
   'vertical-tabs'?: boolean;
 }

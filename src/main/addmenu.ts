@@ -11,7 +11,6 @@ import { onColoredFoldersClick } from '../extension/coloredfolders';
 import { onVerticalTabsClick } from '../extension/verticaltabs';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
-import { onColoredSelectionClick } from '../element/coloredselection';
 import { saveConfig } from './data';
 import type { Config } from './data';
 import { getCurrentThemeMode, getCustomColorKey, getCustomSaturationKey, getFollowTimeBaseColorKey } from '../palette/presets';
@@ -163,15 +162,6 @@ export function buildMenu(
         label: i18n.coloredHeadings,
         click: () => {
           onColoredHeadingsClick();
-          return true;
-        },
-      },
-      {
-        id: 'neo-colored-selection-button',
-        icon: 'iconNeoColoredSelection',
-        label: i18n.coloredSelection,
-        click: () => {
-          onColoredSelectionClick();
           return true;
         },
       },

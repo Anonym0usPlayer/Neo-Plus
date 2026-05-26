@@ -6,9 +6,9 @@ function updateSearchGroupClass(): void {
   const searchList = document.querySelector('#searchList');
   if (!searchList) return;
   const hasGroup = searchList.querySelector(':scope > .b3-list-item:not([data-type=search-item])');
-  if (hasGroup) {
+  if (hasGroup && !searchList.classList.contains('neo-hassearchgroup')) {
     searchList.classList.add('neo-hassearchgroup');
-  } else {
+  } else if (!hasGroup && searchList.classList.contains('neo-hassearchgroup')) {
     searchList.classList.remove('neo-hassearchgroup');
   }
 }
