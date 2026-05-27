@@ -1,6 +1,6 @@
 import { Menu } from 'siyuan';
 import { getPlugin } from './guard';
-import { createColorPickerHTML, createFollowTimeColorPickerHTML, createSliderHTML, getPresetMenuItems, switchToCustomAuto, switchToFollowTimeAuto, switchToFollowBannerAuto } from '../palette/manager';
+import { createColorPickerHTML, createFollowTimeColorPickerHTML, createSliderHTML, getPresetMenuItems, switchToCustomAuto, switchToFollowTimeAuto, switchToFollowBannerAuto, onInvertClick } from '../palette/manager';
 import { getTextureMenuItems } from '../texture/manager';
 import { onSmoothCaretClick } from '../extension/smoothcaret';
 import { onFluidCursorClick } from '../extension/fluidcursor';
@@ -134,6 +134,15 @@ export function buildMenu(
     iconHTML: createSliderHTML(i18n),
     label: '',
     type: 'readonly',
+  });
+  menu.addItem({
+    id: 'neo-invert-button',
+    icon: 'iconNeoInvert',
+    label: i18n.invertColor,
+    click: () => {
+      onInvertClick();
+      return true;
+    },
   });
   menu.addSeparator();
   menu.addItem({

@@ -16,6 +16,7 @@ import presets, {
 } from './presets';
 import { switchToFollowTime, initFollowTime } from './customfollowtime';
 import { switchToFollowBanner, initFollowBanner, destroyFollowBanner } from './customfollowbanner';
+import { initInvert } from './custominvert';
 export type { ThemeMode, Preset, Config };
 export function applyPresetAuto(key: string): void {
   const mode = getCurrentThemeMode();
@@ -74,6 +75,7 @@ export function getPresetMenuItems(i18n: Record<string, string>): any[] {
 export { createColorPickerHTML, getThemeColor } from './customcolor';
 export { createSliderHTML } from './customsaturation';
 export { createFollowTimeColorPickerHTML } from './customfollowtime';
+export { initInvert, onInvertClick } from './custominvert';
 let _mutationObserver: MutationObserver | null = null;
 function applyConfigForCurrentMode(config: Config): void {
   const mode = getCurrentThemeMode();
@@ -99,6 +101,7 @@ function applyConfigForCurrentMode(config: Config): void {
   if (followtimeColor) {
     document.documentElement.style.setProperty('--neo-followtime-base-color', followtimeColor);
   }
+  initInvert(config);
 }
 export function initPalette(): void {
   const plugin = getPlugin();

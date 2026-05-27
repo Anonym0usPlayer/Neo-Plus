@@ -44,6 +44,9 @@ export function getCustomSaturationKey(mode: ThemeMode): 'custom-saturation-ligh
 export function getFollowTimeBaseColorKey(mode: ThemeMode): 'followtime-base-color-light' | 'followtime-base-color-dark' {
   return mode === 'dark' ? 'followtime-base-color-dark' : 'followtime-base-color-light';
 }
+export function getInvertKey(mode: ThemeMode): 'invert-light' | 'invert-dark' {
+  return mode === 'dark' ? 'invert-dark' : 'invert-light';
+}
 export function getCurrentPlan(config: Config, mode: ThemeMode): 'preset' | 'custom' | 'followtime' | 'followbanner' {
   return mode === 'dark'
     ? (config['color-plan-dark'] ?? 'preset')

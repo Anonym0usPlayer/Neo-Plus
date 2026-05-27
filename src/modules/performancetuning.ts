@@ -10,7 +10,6 @@ interface SavedRule {
 interface RuleFilterEntry {
   filter: StyleRuleFilter;
   saved: SavedRule[];
-  /** If true, re-scan and remove on every setUILayout; otherwise only remove once at init. */
   dynamic?: boolean;
 }
 const _ruleFilters: RuleFilterEntry[] = [

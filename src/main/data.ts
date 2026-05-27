@@ -5,6 +5,8 @@ export interface Config {
   'custom-color-dark'?: string;
   'custom-saturation-light'?: number;
   'custom-saturation-dark'?: number;
+  'invert-light'?: boolean;
+  'invert-dark'?: boolean;
   'preset-light'?: string;
   'preset-dark'?: string;
   'color-plan-light'?: 'preset' | 'custom' | 'followtime' | 'followbanner';
