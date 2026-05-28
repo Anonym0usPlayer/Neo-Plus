@@ -4,6 +4,7 @@ import { initFetchMonitor, destroyFetchMonitor } from '../modules/fetchmonitor';
 import { initHasWnd, destroyHasWnd } from '../modules/haswnd';
 import { initHasSearchGroup, destroyHasSearchGroup } from '../modules/hassearchgroup';
 import { initHideScrollbar, destroyHideScrollbar } from '../modules/hidescrollbar';
+import { initEnv, destroyEnv } from '../modules/env';
 import { initPerformanceTuning, destroyPerformanceTuning } from '../modules/performancetuning';
 import { initSlashNavigation, destroySlashNavigation } from '../modules/slashnavigation';
 import { initNeoIcons, destroyNeoIcons } from './addicons';
@@ -72,6 +73,7 @@ export class NeoPlusController {
   }
   private initNeoPlus(): void {
     initNeoEnabled();
+    initEnv();
     initNeoIcons();
     initTopBarButton();
     initStatusHidden();
@@ -95,6 +97,7 @@ export class NeoPlusController {
   }
   private destroyNeoPlus(): void {
     destroyNeoEnabled();
+    destroyEnv();
     destroyNeoIcons();
     destroyTopBarButton();
     destroyStatusHidden();

@@ -175,7 +175,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   const positionSliders = positionSliderKeys.map(k => sliderHTML(i18n, getSliderConfig(k)!)).join('');
   const moreSliderKeys = ['customimage-hue-rotate', 'customimage-brightness', 'customimage-saturation', 'customimage-contrast', 'customimage-grayscale'];
   const moreSliders = moreSliderKeys.map(k => sliderHTML(i18n, getSliderConfig(k)!)).join('');
-  return `<div class="b3-dialog__content">
+  return `<div class="b3-dialog__content" style="padding: 0">
   <div class="config__tab-container">
     <b class="config-group__title">${t(i18n, 'customimagePresetTip')}</b>
     <div class="config-group">
