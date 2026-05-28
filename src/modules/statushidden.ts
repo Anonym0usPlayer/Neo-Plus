@@ -1,10 +1,9 @@
-const debounceDelay = 200;
+import { onFetch, offFetch } from './fetchmonitor';
 const statusSelector = '#status';
 const targetSelector =
   '.layout__wnd--active > .layout-tab-container > .fn__flex-1:not(.fn__none):not(.protyle)';
-let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 let statusObserver: MutationObserver | null = null;
-let isListening = false;
+let _onSetUILayout: (() => void) | null = null;
 function checkAndToggleStatus(): void {
   const target = document.querySelector<HTMLElement>(targetSelector);
   const statusEl = document.querySelector<HTMLElement>(statusSelector);
@@ -15,40 +14,30 @@ function checkAndToggleStatus(): void {
     statusEl.classList.remove('neo-status-hidden');
   }
 }
-function handleStatusUpdate(): void {
-  if (debounceTimer) {
-    clearTimeout(debounceTimer);
-  }
-  debounceTimer = setTimeout(() => {
+function attachListener(): void {
+  _onSetUILayout = () => {
     checkAndToggleStatus();
-  }, debounceDelay);
+  };
+  onFetch('setUILayout', _onSetUILayout);
 }
-function startListening(): void {
-  if (isListening) return;
-  document.addEventListener('click', handleStatusUpdate);
-  document.addEventListener('keyup', handleStatusUpdate);
-  isListening = true;
-  checkAndToggleStatus();
-}
-function stopListening(): void {
-  document.removeEventListener('click', handleStatusUpdate);
-  document.removeEventListener('keyup', handleStatusUpdate);
-  isListening = false;
-  if (debounceTimer) {
-    clearTimeout(debounceTimer);
-    debounceTimer = null;
+function detachListener(): void {
+  if (_onSetUILayout) {
+    offFetch('setUILayout', _onSetUILayout);
+    _onSetUILayout = null;
   }
 }
 function waitForStatusEl(): void {
   if (document.querySelector(statusSelector)) {
-    startListening();
+    attachListener();
+    checkAndToggleStatus();
     return;
   }
   statusObserver = new MutationObserver((_mutations, observer) => {
     if (document.querySelector(statusSelector)) {
       observer.disconnect();
       statusObserver = null;
-      startListening();
+      attachListener();
+      checkAndToggleStatus();
     }
   });
   statusObserver.observe(document.body, {
@@ -60,7 +49,7 @@ export function initStatusHidden(): void {
   waitForStatusEl();
 }
 export function destroyStatusHidden(): void {
-  stopListening();
+  detachListener();
   if (statusObserver) {
     statusObserver.disconnect();
     statusObserver = null;

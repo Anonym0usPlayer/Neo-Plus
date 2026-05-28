@@ -3,14 +3,14 @@ export const configKey = 'config';
 export interface Config {
   'custom-color-light'?: string;
   'custom-color-dark'?: string;
-  'custom-saturation-light'?: number;
-  'custom-saturation-dark'?: number;
+  'saturation-light'?: number;
+  'saturation-dark'?: number;
   'invert-light'?: boolean;
   'invert-dark'?: boolean;
   'preset-light'?: string;
   'preset-dark'?: string;
-  'color-plan-light'?: 'preset' | 'custom' | 'followtime' | 'followbanner';
-  'color-plan-dark'?: 'preset' | 'custom' | 'followtime' | 'followbanner';
+  'color-plan-light'?: 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem';
+  'color-plan-dark'?: 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem';
   'followtime-base-color-light'?: string;
   'followtime-base-color-dark'?: string;
   'texture-light'?: string;

@@ -1,14 +1,6 @@
-import { saveConfig } from '../main/data';
 import type { Config } from '../main/data';
-import { getCurrentThemeMode } from './presets';
 import { FastAverageColor } from 'fast-average-color';
-function debounce<T extends (...args: any[]) => void>(fn: T, delay: number): T {
-  let timer: ReturnType<typeof setTimeout> | null = null;
-  return ((...args: any[]) => {
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), delay);
-  }) as T;
-}
+import { onFetch, offFetch } from '../modules/fetchmonitor';
 let facInstance: FastAverageColor | null = null;
 let lastValidHex: string | null = null;
 let destroyed = false;
@@ -216,64 +208,41 @@ async function extractBannerAverageColor(): Promise<void> {
     applyFallback();
   }
 }
-const debouncedExtract = debounce(extractBannerAverageColor, 500);
-let listenerAttached = false;
+let _onSetUILayout: (() => void) | null = null;
+let _onSetBlockAttrs: (() => void) | null = null;
 function attachListener(): void {
-  if (listenerAttached) return;
-  document.addEventListener('mouseup', debouncedExtract);
-  document.addEventListener('keyup', debouncedExtract);
-  listenerAttached = true;
+  _onSetUILayout = () => {
+    extractBannerAverageColor();
+  };
+  _onSetBlockAttrs = () => {
+    extractBannerAverageColor();
+  };
+  onFetch('setUILayout', _onSetUILayout);
+  onFetch('setBlockAttrs', _onSetBlockAttrs);
 }
 function detachListener(): void {
-  if (!listenerAttached) return;
-  document.removeEventListener('mouseup', debouncedExtract);
-  document.removeEventListener('keyup', debouncedExtract);
-  listenerAttached = false;
-}
-export async function switchToFollowBanner(): Promise<void> {
-  const mode = getCurrentThemeMode();
-  const html = document.documentElement;
-  html.className = html.className
-    .split(' ')
-    .filter((cls) => !cls.startsWith('neo-palette-'))
-    .join(' ');
-  html.classList.add('neo-palette-followbanner');
-  const patch: Partial<Config> = {};
-  if (mode === 'dark') {
-    patch['color-plan-dark'] = 'followbanner';
-  } else {
-    patch['color-plan-light'] = 'followbanner';
+  if (_onSetUILayout) {
+    offFetch('setUILayout', _onSetUILayout);
+    _onSetUILayout = null;
   }
-  await saveConfig(patch);
+  if (_onSetBlockAttrs) {
+    offFetch('setBlockAttrs', _onSetBlockAttrs);
+    _onSetBlockAttrs = null;
+  }
+}
+export function initFollowBanner(config: Config): void {
   destroyed = false;
   attachListener();
   setTimeout(extractBannerAverageColor, 500);
-}
-export function initFollowBanner(config: Config): void {
-  const mode = getCurrentThemeMode();
-  const plan = config[mode === 'dark' ? 'color-plan-dark' : 'color-plan-light'];
-  if (plan === 'followbanner') {
-    destroyed = false;
-    const html = document.documentElement;
-    html.className = html.className
-      .split(' ')
-      .filter((cls) => !cls.startsWith('neo-palette-'))
-      .join(' ');
-    html.classList.add('neo-palette-followbanner');
-    attachListener();
-    setTimeout(extractBannerAverageColor, 500);
-  } else {
-    destroyed = true;
-    detachListener();
-    document.documentElement.style.removeProperty('--neo-followbanner-base-color');
-  }
 }
 export function destroyFollowBanner(): void {
   destroyed = true;
   detachListener();
   document.documentElement.style.removeProperty('--neo-followbanner-base-color');
   if (facInstance) {
-    facInstance.destroy();
+    try {
+      facInstance.destroy();
+    } catch {}
     facInstance = null;
   }
   lastValidHex = null;

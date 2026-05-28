@@ -1,7 +1,7 @@
 import { onFetch, offFetch } from './fetchmonitor';
-const debounceDelay = 200;
+const _searchDomStableDelay = 200;
 let _onSearchFetch: (() => void) | null = null;
-let _debounceTimer: ReturnType<typeof setTimeout> | null = null;
+let _searchDomStableTimer: ReturnType<typeof setTimeout> | null = null;
 function updateSearchGroupClass(): void {
   const searchList = document.querySelector('#searchList');
   if (!searchList) return;
@@ -12,17 +12,17 @@ function updateSearchGroupClass(): void {
     searchList.classList.remove('neo-hassearchgroup');
   }
 }
-function debouncedUpdate(): void {
-  if (_debounceTimer) {
-    clearTimeout(_debounceTimer);
+function waitSearchDomStable(): void {
+  if (_searchDomStableTimer) {
+    clearTimeout(_searchDomStableTimer);
   }
-  _debounceTimer = setTimeout(() => {
+  _searchDomStableTimer = setTimeout(() => {
     updateSearchGroupClass();
-  }, debounceDelay);
+  }, _searchDomStableDelay);
 }
 export function initHasSearchGroup(): void {
   _onSearchFetch = () => {
-    debouncedUpdate();
+    waitSearchDomStable();
   };
   onFetch('fullTextSearchBlock', _onSearchFetch);
   onFetch('getCriteria', _onSearchFetch);
@@ -34,9 +34,9 @@ export function destroyHasSearchGroup(): void {
     offFetch('getCriteria', _onSearchFetch);
     _onSearchFetch = null;
   }
-  if (_debounceTimer) {
-    clearTimeout(_debounceTimer);
-    _debounceTimer = null;
+  if (_searchDomStableTimer) {
+    clearTimeout(_searchDomStableTimer);
+    _searchDomStableTimer = null;
   }
   const searchList = document.querySelector('#searchList');
   if (searchList) {

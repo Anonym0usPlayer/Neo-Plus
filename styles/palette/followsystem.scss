@@ -1,0 +1,5 @@
+@use "manager" as *;
+.neo-palette-followsystem {
+    @include palette-common("[data-id='neo-followsystem-button']");
+    --neo-custom-base-color: var(--neo-followsystem-base-color) !important;
+}

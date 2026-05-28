@@ -1,4 +1,4 @@
-[data-id="neo-custom-saturation-button"] {
+[data-id="neo-saturation-button"] {
     opacity: 0.7;
     pointer-events: none;
     .b3-menu__label {
@@ -10,9 +10,10 @@
         }
     }
 }
-.neo-palette-custom [data-id="neo-custom-saturation-button"],
-.neo-palette-followtime [data-id="neo-custom-saturation-button"],
-.neo-palette-followbanner [data-id="neo-custom-saturation-button"] {
+.neo-palette-custom [data-id="neo-saturation-button"],
+.neo-palette-followtime [data-id="neo-saturation-button"],
+.neo-palette-followbanner [data-id="neo-saturation-button"],
+.neo-palette-followsystem [data-id="neo-saturation-button"] {
     opacity: 1;
     pointer-events: auto;
 }

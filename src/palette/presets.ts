@@ -27,7 +27,6 @@ const presets: Preset[] = [
   { key: 'stellula', nameKey: 'colorSchemeStellula', mode: 'all' },
   { key: 'vael', nameKey: 'colorSchemeVael', mode: 'all' },
 ];
-export default presets;
 export function getPresetsByMode(mode: ThemeMode): Preset[] {
   return presets.filter((p) => p.mode === 'all' || p.mode === mode);
 }
@@ -38,8 +37,8 @@ export function getCurrentThemeMode(): ThemeMode {
 export function getCustomColorKey(mode: ThemeMode): 'custom-color-light' | 'custom-color-dark' {
   return mode === 'dark' ? 'custom-color-dark' : 'custom-color-light';
 }
-export function getCustomSaturationKey(mode: ThemeMode): 'custom-saturation-light' | 'custom-saturation-dark' {
-  return mode === 'dark' ? 'custom-saturation-dark' : 'custom-saturation-light';
+export function getSaturationKey(mode: ThemeMode): 'saturation-light' | 'saturation-dark' {
+  return mode === 'dark' ? 'saturation-dark' : 'saturation-light';
 }
 export function getFollowTimeBaseColorKey(mode: ThemeMode): 'followtime-base-color-light' | 'followtime-base-color-dark' {
   return mode === 'dark' ? 'followtime-base-color-dark' : 'followtime-base-color-light';
@@ -47,7 +46,7 @@ export function getFollowTimeBaseColorKey(mode: ThemeMode): 'followtime-base-col
 export function getInvertKey(mode: ThemeMode): 'invert-light' | 'invert-dark' {
   return mode === 'dark' ? 'invert-dark' : 'invert-light';
 }
-export function getCurrentPlan(config: Config, mode: ThemeMode): 'preset' | 'custom' | 'followtime' | 'followbanner' {
+export function getCurrentPlan(config: Config, mode: ThemeMode): 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem' {
   return mode === 'dark'
     ? (config['color-plan-dark'] ?? 'preset')
     : (config['color-plan-light'] ?? 'preset');
@@ -55,7 +54,8 @@ export function getCurrentPlan(config: Config, mode: ThemeMode): 'preset' | 'cus
 export function getPresetKey(config: Config, mode: ThemeMode): string | undefined {
   return mode === 'dark' ? config['preset-dark'] : config['preset-light'];
 }
-export async function applyPreset(key: string, mode?: ThemeMode): Promise<void> {
+export function applyPreset(key: string): void {
+  const mode = getCurrentThemeMode();
   const html = document.documentElement;
   html.className = html.className
     .split(' ')
@@ -70,22 +70,14 @@ export async function applyPreset(key: string, mode?: ThemeMode): Promise<void> 
     patch['color-plan-light'] = 'preset';
     patch['preset-light'] = key;
   }
-  await saveConfig(patch);
+  saveConfig(patch);
 }
-export async function switchToCustom(mode: ThemeMode): Promise<void> {
+export function destroyPaletteClasses(): void {
   const html = document.documentElement;
   html.className = html.className
     .split(' ')
     .filter((cls) => !cls.startsWith('neo-palette-'))
     .join(' ');
-  html.classList.add('neo-palette-custom');
-  const patch: Partial<Config> = {};
-  if (mode === 'dark') {
-    patch['color-plan-dark'] = 'custom';
-  } else {
-    patch['color-plan-light'] = 'custom';
-  }
-  await saveConfig(patch);
 }
 export function applyCurrentPlan(config: Config): void {
   const mode = getCurrentThemeMode();
@@ -104,6 +96,8 @@ export function applyCurrentPlan(config: Config): void {
     html.classList.add('neo-palette-followtime');
   } else if (plan === 'followbanner') {
     html.classList.add('neo-palette-followbanner');
+  } else if (plan === 'followsystem') {
+    html.classList.add('neo-palette-followsystem');
   } else {
     html.classList.add('neo-palette-custom');
   }

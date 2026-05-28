@@ -1,63 +1,84 @@
 import { getPlugin } from '../main/guard';
-import { loadConfig } from '../main/data';
+import { loadConfig, saveConfig } from '../main/data';
 import type { Config } from '../main/data';
-import presets, {
+import {
   type ThemeMode,
   type Preset,
   getCurrentThemeMode,
   getPresetsByMode,
   getCurrentPlan,
   getCustomColorKey,
-  getCustomSaturationKey,
+  getSaturationKey,
   getFollowTimeBaseColorKey,
   applyPreset,
-  switchToCustom,
   applyCurrentPlan,
+  destroyPaletteClasses,
 } from './presets';
-import { switchToFollowTime, initFollowTime } from './customfollowtime';
-import { switchToFollowBanner, initFollowBanner, destroyFollowBanner } from './customfollowbanner';
-import { initInvert } from './custominvert';
+import { initCustomColor, destroyCustomColor } from './customcolor';
+import { initFollowTime, destroyFollowTime } from './followtime';
+import { initFollowBanner, destroyFollowBanner } from './followbanner';
+import { initFollowSystem, destroyFollowSystem } from './followsystem';
+import { initSaturation, destroySaturation } from './saturation';
+import { initInvert, destroyInvert } from './invert';
 export type { ThemeMode, Preset, Config };
-export function applyPresetAuto(key: string): void {
+type Plan = 'custom' | 'followtime' | 'followbanner' | 'followsystem';
+let _pendingPlan: string | null = null;
+let _pendingPreset: string | null = null;
+function initPlan(plan: Plan, config: Config): void {
+  switch (plan) {
+    case 'custom': initCustomColor(config); break;
+    case 'followtime': initFollowTime(config); break;
+    case 'followbanner': initFollowBanner(config); break;
+    case 'followsystem': initFollowSystem(config); break;
+  }
+}
+function restorePalette(config: Config): void {
   const mode = getCurrentThemeMode();
+  const plan = getCurrentPlan(config, mode);
+  destroyCustomColor();
+  destroyFollowTime();
   destroyFollowBanner();
-  if (document.startViewTransition) {
-    document.startViewTransition(() => {
-      applyPreset(key, mode);
-    });
-  } else {
-    applyPreset(key, mode);
+  destroyFollowSystem();
+  destroySaturation();
+  destroyInvert();
+  applyCurrentPlan(config);
+  if (plan !== 'preset') {
+    initPlan(plan as Plan, config);
   }
+  initSaturation(config);
+  initInvert(config);
 }
-export function switchToCustomAuto(): void {
+export function switchToPreset(key: string): void {
+  _pendingPreset = key;
+  destroyCustomColor();
+  destroyFollowTime();
+  destroyFollowBanner();
+  destroyFollowSystem();
+  destroySaturation();
+  destroyInvert();
+  applyPreset(key);
+  loadConfig().then((config) => {
+    if (_pendingPreset !== key) return;
+    _pendingPreset = null;
+    initSaturation(config);
+    initInvert(config);
+  }).catch(() => {
+    if (_pendingPreset === key) _pendingPreset = null;
+  });
+}
+export function switchToPlan(plan: Plan): void {
+  _pendingPlan = plan;
   const mode = getCurrentThemeMode();
-  destroyFollowBanner();
-  if (document.startViewTransition) {
-    document.startViewTransition(() => {
-      switchToCustom(mode);
+  const configKey: 'color-plan-light' | 'color-plan-dark' = mode === 'dark' ? 'color-plan-dark' : 'color-plan-light';
+  saveConfig({ [configKey]: plan }).then(() => {
+    loadConfig().then((config) => {
+      if (_pendingPlan !== plan) return;
+      _pendingPlan = null;
+      restorePalette(config);
     });
-  } else {
-    switchToCustom(mode);
-  }
-}
-export function switchToFollowTimeAuto(): void {
-  destroyFollowBanner();
-  if (document.startViewTransition) {
-    document.startViewTransition(() => {
-      switchToFollowTime();
-    });
-  } else {
-    switchToFollowTime();
-  }
-}
-export function switchToFollowBannerAuto(): void {
-  if (document.startViewTransition) {
-    document.startViewTransition(() => {
-      switchToFollowBanner();
-    });
-  } else {
-    switchToFollowBanner();
-  }
+  }).catch(() => {
+    if (_pendingPlan === plan) _pendingPlan = null;
+  });
 }
 export function getPresetMenuItems(i18n: Record<string, string>): any[] {
   const mode = getCurrentThemeMode();
@@ -67,56 +88,78 @@ export function getPresetMenuItems(i18n: Record<string, string>): any[] {
     icon: 'iconNeoPalette',
     label: i18n[preset.nameKey],
     click: () => {
-      applyPresetAuto(preset.key);
+      switchToPreset(preset.key);
       return true;
     },
   }));
 }
-export { createColorPickerHTML, getThemeColor } from './customcolor';
-export { createSliderHTML } from './customsaturation';
-export { createFollowTimeColorPickerHTML } from './customfollowtime';
-export { initInvert, onInvertClick } from './custominvert';
-let _mutationObserver: MutationObserver | null = null;
-function applyConfigForCurrentMode(config: Config): void {
+export function handleColorInput(value: string, cssVar: string, colorKey: string, plan: string): void {
+  document.documentElement.style.setProperty(cssVar, value);
   const mode = getCurrentThemeMode();
-  const plan = getCurrentPlan(config, mode);
-  if (plan !== 'followbanner') {
-    destroyFollowBanner();
-  }
-  applyCurrentPlan(config);
-  if (plan === 'followtime') {
-    initFollowTime(config);
-  } else if (plan === 'followbanner') {
-    initFollowBanner(config);
-  }
-  const colorKey = getCustomColorKey(mode);
-  const satKey = getCustomSaturationKey(mode);
-  if (config[colorKey]) {
-    document.documentElement.style.setProperty('--neo-custom-base-color', config[colorKey]!);
-  }
-  const saturation = config[satKey] ?? 1;
-  document.documentElement.style.setProperty('--neo-custom-saturation', String(saturation));
-  const followtimeColorKey = getFollowTimeBaseColorKey(mode);
-  const followtimeColor = config[followtimeColorKey as keyof Config] as string | undefined;
-  if (followtimeColor) {
-    document.documentElement.style.setProperty('--neo-followtime-base-color', followtimeColor);
-  }
-  initInvert(config);
+  const configKey: 'color-plan-light' | 'color-plan-dark' = mode === 'dark' ? 'color-plan-dark' : 'color-plan-light';
+  saveConfig({ [colorKey]: value, [configKey]: plan } as Partial<Config>);
 }
+let _menuListenerInitialized = false;
+let _inputHandler: ((e: Event) => void) | null = null;
+let _clickHandler: ((e: Event) => void) | null = null;
+export function initPaletteMenuEvents(i18n: Record<string, string>): void {
+  if (_menuListenerInitialized) return;
+  _menuListenerInitialized = true;
+  _inputHandler = (e: Event) => {
+    const target = e.target as HTMLElement;
+    const menuItem = target.closest('[data-id]') as HTMLElement | null;
+    if (!menuItem) return;
+    const dataId = menuItem.getAttribute('data-id');
+    if (dataId === 'neo-custom-color-button' && target instanceof HTMLInputElement && target.type === 'color') {
+      handleColorInput(target.value, '--neo-custom-base-color', getCustomColorKey(getCurrentThemeMode()), 'custom');
+    } else if (dataId === 'neo-followtime-button' && target instanceof HTMLInputElement && target.type === 'color') {
+      handleColorInput(target.value, '--neo-followtime-base-color', getFollowTimeBaseColorKey(getCurrentThemeMode()), 'followtime');
+    } else if (dataId === 'neo-saturation-button' && target instanceof HTMLInputElement && target.type === 'range') {
+      const num = parseFloat(target.value);
+      document.documentElement.style.setProperty('--neo-saturation', target.value);
+      const tooltip = target.closest('.b3-tooltips') as HTMLElement | null;
+      if (tooltip) {
+        const label = i18n.customSaturation ?? 'Saturation';
+        tooltip.setAttribute('aria-label', `${label}：${num.toFixed(2)}`);
+      }
+      const mode = getCurrentThemeMode();
+      const satKey = getSaturationKey(mode);
+      saveConfig({ [satKey]: num } as Partial<Config>);
+    }
+  };
+  _clickHandler = (e: Event) => {
+    const target = e.target as HTMLElement;
+    if (target instanceof HTMLInputElement && target.type === 'color') {
+      e.stopPropagation();
+    }
+  };
+  document.addEventListener('input', _inputHandler, true);
+  document.addEventListener('click', _clickHandler, true);
+}
+export function destroyPaletteMenuEvents(): void {
+  if (_inputHandler) {
+    document.removeEventListener('input', _inputHandler, true);
+    _inputHandler = null;
+  }
+  if (_clickHandler) {
+    document.removeEventListener('click', _clickHandler, true);
+    _clickHandler = null;
+  }
+  _menuListenerInitialized = false;
+}
+export { createColorPickerHTML, getThemeColor } from './customcolor';
+export { createSliderHTML } from './saturation';
+export { createFollowTimeColorPickerHTML } from './followtime';
+export { onInvertClick } from './invert';
+let _mutationObserver: MutationObserver | null = null;
 export function initPalette(): void {
   const plugin = getPlugin();
   if (!plugin) return;
   loadConfig().then((config) => {
-    applyConfigForCurrentMode(config);
+    restorePalette(config);
     _mutationObserver = new MutationObserver(() => {
       loadConfig().then((config) => {
-        if (document.startViewTransition) {
-          document.startViewTransition(() => {
-            applyConfigForCurrentMode(config);
-          });
-        } else {
-          applyConfigForCurrentMode(config);
-        }
+        restorePalette(config);
       });
     });
     _mutationObserver.observe(document.documentElement, {
@@ -126,16 +169,14 @@ export function initPalette(): void {
   });
 }
 export function destroyPalette(): void {
-  const html = document.documentElement;
-  html.className = html.className
-    .split(' ')
-    .filter((cls) => !cls.startsWith('neo-palette-'))
-    .join(' ');
-  html.style.removeProperty('--neo-custom-base-color');
-  html.style.removeProperty('--neo-custom-saturation');
-  html.style.removeProperty('--neo-followtime-base-color');
-  html.style.removeProperty('--neo-followbanner-base-color');
+  destroyCustomColor();
+  destroyFollowTime();
   destroyFollowBanner();
+  destroyFollowSystem();
+  destroySaturation();
+  destroyInvert();
+  destroyPaletteClasses();
+  destroyPaletteMenuEvents();
   if (_mutationObserver) {
     _mutationObserver.disconnect();
     _mutationObserver = null;

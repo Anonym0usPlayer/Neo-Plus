@@ -1,6 +1,17 @@
+import type { Config } from '../main/data';
+import { getCurrentThemeMode, getSaturationKey } from './presets';
+export function initSaturation(config: Config): void {
+  const mode = getCurrentThemeMode();
+  const satKey = getSaturationKey(mode);
+  const saturation = config[satKey] ?? 1;
+  document.documentElement.style.setProperty('--neo-saturation', String(saturation));
+}
+export function destroySaturation(): void {
+  document.documentElement.style.removeProperty('--neo-saturation');
+}
 export function createSliderHTML(i18n?: Record<string, string>): string {
   const label = i18n?.customSaturation ?? 'Saturation';
-  let currentValue = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--neo-custom-saturation').trim());
+  let currentValue = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--neo-saturation').trim());
   if (isNaN(currentValue)) currentValue = 1;
   const id = `neo-saturation-slider-${Date.now()}`;
   return `<div style="display:flex;align-items:center;width:100%;">

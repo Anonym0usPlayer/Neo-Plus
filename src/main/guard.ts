@@ -19,7 +19,6 @@ import { initFluidCursor, destroyFluidCursor } from '../extension/fluidcursor';
 import { initListBulletLine, destroyListBulletLine } from '../extension/listbulletline';
 import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../extension/focusblockindicator';
 import { initVerticalTabs, destroyVerticalTabs } from '../extension/verticaltabs';
-import { destroyMenuEventDelegation } from './addmenu';
 function initNeoEnabled(): void {
   document.documentElement.classList.add('neo-enabled');
 }
@@ -112,7 +111,6 @@ export class NeoPlusController {
     destroyListBulletLine();
     destroyFocusBlockIndicator();
     destroyVerticalTabs();
-    destroyMenuEventDelegation();
     destroyPerformanceTuning();
     destroyHasSearchGroup();
     destroyHasWnd();

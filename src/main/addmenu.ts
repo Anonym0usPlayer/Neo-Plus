@@ -1,6 +1,7 @@
 import { Menu } from 'siyuan';
 import { getPlugin } from './guard';
-import { createColorPickerHTML, createFollowTimeColorPickerHTML, createSliderHTML, getPresetMenuItems, switchToCustomAuto, switchToFollowTimeAuto, switchToFollowBannerAuto, onInvertClick } from '../palette/manager';
+import { loadConfig } from './data';
+import { createColorPickerHTML, createFollowTimeColorPickerHTML, createSliderHTML, getPresetMenuItems, getThemeColor, initPaletteMenuEvents, onInvertClick, switchToPlan } from '../palette/manager';
 import { getTextureMenuItems } from '../texture/manager';
 import { onSmoothCaretClick } from '../extension/smoothcaret';
 import { onFluidCursorClick } from '../extension/fluidcursor';
@@ -11,77 +12,6 @@ import { onColoredFoldersClick } from '../extension/coloredfolders';
 import { onVerticalTabsClick } from '../extension/verticaltabs';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
-import { saveConfig } from './data';
-import type { Config } from './data';
-import { getCurrentThemeMode, getCustomColorKey, getCustomSaturationKey, getFollowTimeBaseColorKey } from '../palette/presets';
-let menuListenerInitialized = false;
-let _inputHandler: ((e: Event) => void) | null = null;
-let _clickHandler: ((e: Event) => void) | null = null;
-function initMenuEventDelegation(i18n: Record<string, string>): void {
-  if (menuListenerInitialized) return;
-  menuListenerInitialized = true;
-  _inputHandler = (e: Event) => {
-    const target = e.target as HTMLElement;
-    const menuItem = target.closest('[data-id]') as HTMLElement | null;
-    if (!menuItem) return;
-    const dataId = menuItem.getAttribute('data-id');
-    if (dataId === 'neo-custom-color-button' && target instanceof HTMLInputElement && target.type === 'color') {
-      const value = target.value;
-      document.documentElement.style.setProperty('--neo-custom-base-color', value);
-      const mode = getCurrentThemeMode();
-      const colorKey = getCustomColorKey(mode);
-      const patch: Partial<Config> = { [colorKey]: value };
-      if (mode === 'dark') {
-        patch['color-plan-dark'] = 'custom';
-      } else {
-        patch['color-plan-light'] = 'custom';
-      }
-      saveConfig(patch);
-    } else if (dataId === 'neo-followtime-button' && target instanceof HTMLInputElement && target.type === 'color') {
-      const value = target.value;
-      document.documentElement.style.setProperty('--neo-followtime-base-color', value);
-      const mode = getCurrentThemeMode();
-      const colorKey = getFollowTimeBaseColorKey(mode);
-      const patch: Partial<Config> = { [colorKey]: value };
-      if (mode === 'dark') {
-        patch['color-plan-dark'] = 'followtime';
-      } else {
-        patch['color-plan-light'] = 'followtime';
-      }
-      saveConfig(patch);
-    } else if (dataId === 'neo-custom-saturation-button' && target instanceof HTMLInputElement && target.type === 'range') {
-      const num = parseFloat(target.value);
-      document.documentElement.style.setProperty('--neo-custom-saturation', target.value);
-      const tooltip = target.closest('.b3-tooltips') as HTMLElement | null;
-      if (tooltip) {
-        const label = i18n.customSaturation ?? 'Saturation';
-        tooltip.setAttribute('aria-label', `${label}：${num.toFixed(2)}`);
-      }
-      const mode = getCurrentThemeMode();
-      const satKey = getCustomSaturationKey(mode);
-      saveConfig({ [satKey]: num } as Partial<Config>);
-    }
-  };
-  _clickHandler = (e: Event) => {
-    const target = e.target as HTMLElement;
-    if (target instanceof HTMLInputElement && target.type === 'color') {
-      e.stopPropagation();
-    }
-  };
-  document.addEventListener('input', _inputHandler, true);
-  document.addEventListener('click', _clickHandler, true);
-}
-export function destroyMenuEventDelegation(): void {
-  if (_inputHandler) {
-    document.removeEventListener('input', _inputHandler, true);
-    _inputHandler = null;
-  }
-  if (_clickHandler) {
-    document.removeEventListener('click', _clickHandler, true);
-    _clickHandler = null;
-  }
-  menuListenerInitialized = false;
-}
 export function buildMenu(
   onClose?: () => void,
 ): Menu {
@@ -99,12 +29,13 @@ export function buildMenu(
     label: i18n.colorScheme,
     submenu: getPresetMenuItems(i18n),
   });
+  const configPromise = loadConfig();
   menu.addItem({
     id: 'neo-custom-color-button',
     iconHTML: createColorPickerHTML(),
     label: i18n.customThemeColor,
     click: () => {
-      switchToCustomAuto();
+      switchToPlan('custom');
       const colorInput = document.querySelector<HTMLInputElement>('[data-id="neo-custom-color-button"] input[type="color"]');
       colorInput?.click();
       return true;
@@ -115,22 +46,42 @@ export function buildMenu(
     iconHTML: createFollowTimeColorPickerHTML(),
     label: i18n.customFollowTime,
     click: () => {
-      switchToFollowTimeAuto();
+      switchToPlan('followtime');
       const colorInput = document.querySelector<HTMLInputElement>('[data-id="neo-followtime-button"] input[type="color"]');
       colorInput?.click();
       return true;
     },
   });
+  configPromise.then((config) => {
+    requestAnimationFrame(() => {
+      const customPicker = document.querySelector<HTMLInputElement>('[data-id="neo-custom-color-button"] input[type="color"]');
+      if (customPicker) {
+        customPicker.value = getThemeColor(config);
+      }
+      const followtimePicker = document.querySelector<HTMLInputElement>('[data-id="neo-followtime-button"] input[type="color"]');
+      if (followtimePicker) {
+        followtimePicker.value = createFollowTimeColorPickerHTML(config).match(/value="([^"]+)"/)?.[1] || followtimePicker.value;
+      }
+    });
+  });
   menu.addItem({
     id: 'neo-followbanner-button',
     label: i18n.customFollowBanner,
     click: () => {
-      switchToFollowBannerAuto();
+      switchToPlan('followbanner');
       return true;
     },
   });
   menu.addItem({
-    id: 'neo-custom-saturation-button',
+    id: 'neo-followsystem-button',
+    label: i18n.customFollowSystem,
+    click: () => {
+      switchToPlan('followsystem');
+      return true;
+    },
+  });
+  menu.addItem({
+    id: 'neo-saturation-button',
     iconHTML: createSliderHTML(i18n),
     label: '',
     type: 'readonly',
@@ -246,6 +197,6 @@ export function buildMenu(
       },
     ],
   });
-  initMenuEventDelegation(i18n);
+  initPaletteMenuEvents(i18n);
   return menu;
 }
