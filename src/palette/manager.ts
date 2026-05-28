@@ -119,7 +119,7 @@ export function initPaletteMenuEvents(i18n: Record<string, string>): void {
       document.documentElement.style.setProperty('--neo-saturation', target.value);
       const tooltip = target.closest('.b3-tooltips') as HTMLElement | null;
       if (tooltip) {
-        const label = i18n.customSaturation ?? 'Saturation';
+        const label = i18n.saturation ?? 'Saturation';
         tooltip.setAttribute('aria-label', `${label}：${num.toFixed(2)}`);
       }
       const mode = getCurrentThemeMode();

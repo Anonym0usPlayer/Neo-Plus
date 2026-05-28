@@ -44,7 +44,7 @@ export function buildMenu(
   menu.addItem({
     id: 'neo-followtime-button',
     iconHTML: createFollowTimeColorPickerHTML(),
-    label: i18n.customFollowTime,
+    label: i18n.followTime,
     click: () => {
       switchToPlan('followtime');
       const colorInput = document.querySelector<HTMLInputElement>('[data-id="neo-followtime-button"] input[type="color"]');
@@ -66,7 +66,7 @@ export function buildMenu(
   });
   menu.addItem({
     id: 'neo-followbanner-button',
-    label: i18n.customFollowBanner,
+    label: i18n.followBanner,
     click: () => {
       switchToPlan('followbanner');
       return true;
@@ -74,7 +74,7 @@ export function buildMenu(
   });
   menu.addItem({
     id: 'neo-followsystem-button',
-    label: i18n.customFollowSystem,
+    label: i18n.followSystem,
     click: () => {
       switchToPlan('followsystem');
       return true;
