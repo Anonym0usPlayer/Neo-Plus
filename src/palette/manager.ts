@@ -20,8 +20,9 @@ import { initFollowBanner, destroyFollowBanner } from './followbanner';
 import { initFollowSystem, destroyFollowSystem } from './followsystem';
 import { initSaturation, destroySaturation } from './saturation';
 import { initInvert, destroyInvert } from './invert';
+import { initRandom, destroyRandom } from './random';
 export type { ThemeMode, Preset, Config };
-type Plan = 'custom' | 'followtime' | 'followbanner' | 'followsystem';
+type Plan = 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random';
 let _pendingPlan: string | null = null;
 let _pendingPreset: string | null = null;
 function initPlan(plan: Plan, config: Config): void {
@@ -30,11 +31,13 @@ function initPlan(plan: Plan, config: Config): void {
     case 'followtime': initFollowTime(config); break;
     case 'followbanner': initFollowBanner(config); break;
     case 'followsystem': initFollowSystem(config); break;
+    case 'random': initRandom(); break;
   }
 }
 function restorePalette(config: Config): void {
   const mode = getCurrentThemeMode();
   const plan = getCurrentPlan(config, mode);
+  destroyRandom();
   destroyCustomColor();
   destroyFollowTime();
   destroyFollowBanner();
@@ -45,11 +48,14 @@ function restorePalette(config: Config): void {
   if (plan !== 'preset') {
     initPlan(plan as Plan, config);
   }
-  initSaturation(config);
-  initInvert(config);
+  if (plan !== 'random') {
+    initSaturation(config);
+    initInvert(config);
+  }
 }
 export function switchToPreset(key: string): void {
   _pendingPreset = key;
+  destroyRandom();
   destroyCustomColor();
   destroyFollowTime();
   destroyFollowBanner();
@@ -169,6 +175,7 @@ export function initPalette(): void {
   });
 }
 export function destroyPalette(): void {
+  destroyRandom();
   destroyCustomColor();
   destroyFollowTime();
   destroyFollowBanner();

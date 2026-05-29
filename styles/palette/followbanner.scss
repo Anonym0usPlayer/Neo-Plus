@@ -2,4 +2,10 @@
 .neo-palette-followbanner {
     @include palette-common("[data-id='neo-followbanner-button']");
     --neo-custom-base-color: var(--neo-followbanner-base-color) !important;
+    [data-id="neo-followbanner-button"]::before {
+        content: "";
+    }
+}
+[data-id="neo-followbanner-button"] {
+    @include palette-base-color-dot
 }

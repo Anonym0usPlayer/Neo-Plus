@@ -1,6 +1,7 @@
 import type { Config } from '../main/data';
 import { FastAverageColor } from 'fast-average-color';
 import { onFetch, offFetch } from '../modules/fetchmonitor';
+import { getFrontend } from 'siyuan';
 let facInstance: FastAverageColor | null = null;
 let lastValidHex: string | null = null;
 let destroyed = false;
@@ -109,11 +110,15 @@ function checkElementBackgroundForGradient(el: HTMLElement): boolean {
   }
   return false;
 }
+function isMobile(): boolean {
+  return getFrontend().endsWith('mobile');
+}
 async function extractBannerAverageColor(): Promise<void> {
   if (destroyed) return;
-  const bannerImg = document.querySelector<HTMLElement>(
-    '.layout__wnd--active > .layout-tab-container > .protyle:not(.fn__none) .protyle-background__img'
-  );
+  const selector = isMobile()
+    ? '#editor .protyle-background__img'
+    : '.layout__wnd--active > .layout-tab-container > .protyle:not(.fn__none) .protyle-background__img';
+  const bannerImg = document.querySelector<HTMLElement>(selector);
   if (!bannerImg) {
     applyFallback();
     return;
@@ -210,6 +215,7 @@ async function extractBannerAverageColor(): Promise<void> {
 }
 let _onSetUILayout: (() => void) | null = null;
 let _onSetBlockAttrs: (() => void) | null = null;
+let _onGetDoc: (() => void) | null = null;
 function attachListener(): void {
   _onSetUILayout = () => {
     extractBannerAverageColor();
@@ -219,6 +225,12 @@ function attachListener(): void {
   };
   onFetch('setUILayout', _onSetUILayout);
   onFetch('setBlockAttrs', _onSetBlockAttrs);
+  if (isMobile()) {
+    _onGetDoc = () => {
+      setTimeout(extractBannerAverageColor, 200);
+    };
+    onFetch('getDocInfo', _onGetDoc);
+  }
 }
 function detachListener(): void {
   if (_onSetUILayout) {
@@ -228,6 +240,10 @@ function detachListener(): void {
   if (_onSetBlockAttrs) {
     offFetch('setBlockAttrs', _onSetBlockAttrs);
     _onSetBlockAttrs = null;
+  }
+  if (_onGetDoc) {
+    offFetch('getDocInfo', _onGetDoc);
+    _onGetDoc = null;
   }
 }
 export function initFollowBanner(config: Config): void {

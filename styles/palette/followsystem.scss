@@ -2,4 +2,10 @@
 .neo-palette-followsystem {
     @include palette-common("[data-id='neo-followsystem-button']");
     --neo-custom-base-color: var(--neo-followsystem-base-color) !important;
+    [data-id="neo-followsystem-button"]::before {
+        content: "";
+    }
+}
+[data-id="neo-followsystem-button"] {
+    @include palette-base-color-dot
 }

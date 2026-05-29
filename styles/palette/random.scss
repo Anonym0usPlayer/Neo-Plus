@@ -1,0 +1,15 @@
+@use "manager" as *;
+.neo-palette-random {
+    @include palette-common("[data-id="neo-random-button"]");
+    [data-id="neo-random-button"]:not(.b3-menu__item--show):not(.b3-menu__item--current) {
+        color: var(--b3-theme-accent) !important;
+        & .b3-menu__icon {
+            color: var(--b3-theme-accent) !important;
+        }
+    }
+    [data-id="neo-saturation-button"],
+    [data-id="neo-invert-button"] {
+        pointer-events: none !important;
+        opacity: 0.38 !important;
+    }
+}

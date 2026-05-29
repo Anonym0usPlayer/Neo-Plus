@@ -24,6 +24,15 @@ export function buildMenu(
     onClose?.();
   });
   menu.addItem({
+    id: 'neo-random-button',
+    icon: 'iconNeoRandom',
+    label: i18n.random,
+    click: () => {
+      switchToPlan('random');
+      return true;
+    },
+  });
+  menu.addItem({
     id: 'neo-scheme-button',
     icon: 'iconNeoPalette',
     label: i18n.colorScheme,

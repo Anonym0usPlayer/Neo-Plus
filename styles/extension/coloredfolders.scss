@@ -2,7 +2,8 @@
 $border-width: 3px;
 .neo-extension-coloredfolders {
     @include extension-common('[data-id="neo-colored-folders-button"]', '[data-id="neo-extension-button"]');
-    .sy__file {
+    .sy__file,
+    [data-type="sidebar-file"] {
         --neo-dock-indent-fork-left: -9px;
         & .b3-list-item {
             margin: 1px 0;

@@ -1,8 +1,15 @@
 @use "manager" as *;
 @use "../tools" as *;
-body.body--toolbar-hide {
-    [data-id="neo-vertical-tabs-button"] {
-        opacity: 0.38;
+body {
+    &.body--toolbar-hide {
+        [data-id="neo-vertical-tabs-button"] {
+            opacity: 0.38;
+        }
+    }
+    &.neo-mobile {
+        [data-id="neo-vertical-tabs-button"] {
+            display: none;
+        }
     }
 }
 .neo-extension-verticaltabs {

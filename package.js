@@ -11,6 +11,7 @@ const files = [
   'index.js',
   'plugin.json',
   'README_zh_CN.md',
+  'README_zh_CHT.md',
   'README.md'
 ];
 for (const file of files) {

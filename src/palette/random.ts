@@ -1,0 +1,94 @@
+import { getCurrentThemeMode, getPresetsByMode } from './presets';
+import type { Preset } from './presets';
+interface LastRandomState {
+  type: 'preset' | 'custom';
+  presetKey?: string;
+  color?: string;
+  saturation?: number;
+  inverted?: boolean;
+}
+let lastState: LastRandomState | null = null;
+function randomHexColor(): string {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+  return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+}
+function randomHexColorDifferentFrom(previous: string): string {
+  let color: string;
+  let attempts = 0;
+  do {
+    color = randomHexColor();
+    attempts++;
+  } while (color === previous && attempts < 20);
+  return color;
+}
+function randomSaturation(): number {
+  return Math.round((Math.random() * 3) * 100) / 100;
+}
+function randomSaturationDifferentFrom(previous: number): number {
+  let saturation: number;
+  let attempts = 0;
+  do {
+    saturation = randomSaturation();
+    attempts++;
+  } while (saturation === previous && attempts < 20);
+  return saturation;
+}
+function randomPick<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+function randomPickDifferentPreset(arr: Preset[], previousKey: string): Preset {
+  const filtered = arr.filter(p => p.key !== previousKey);
+  if (filtered.length === 0) return randomPick(arr);
+  return randomPick(filtered);
+}
+export function destroyRandom(): void {
+  const html = document.documentElement;
+  html.style.removeProperty('--neo-custom-base-color');
+  html.style.removeProperty('--neo-saturation');
+  html.classList.remove('neo-palette-invert');
+}
+export function initRandom(): void {
+  const html = document.documentElement;
+  const mode = getCurrentThemeMode();
+  html.className = html.className
+    .split(' ')
+    .filter((cls) => !cls.startsWith('neo-palette-') || cls === 'neo-palette-random')
+    .join(' ');
+  html.style.removeProperty('--neo-custom-base-color');
+  html.style.removeProperty('--neo-saturation');
+  html.classList.remove('neo-palette-invert');
+  const choosePreset = Math.random() < 0.3;
+  if (choosePreset) {
+    const available = getPresetsByMode(mode);
+    if (available.length > 0) {
+      const preset = lastState?.type === 'preset' && lastState.presetKey
+        ? randomPickDifferentPreset(available, lastState.presetKey)
+        : randomPick(available);
+      html.classList.add(`neo-palette-${preset.key}`);
+      lastState = { type: 'preset', presetKey: preset.key };
+    }
+  } else {
+    html.classList.add('neo-palette-custom');
+    const color = lastState?.type === 'custom' && lastState.color
+      ? randomHexColorDifferentFrom(lastState.color)
+      : randomHexColor();
+    const saturation = lastState?.type === 'custom' && lastState.saturation !== undefined
+      ? randomSaturationDifferentFrom(lastState.saturation)
+      : randomSaturation();
+    const inverted = Math.random() < 0.5;
+    const finalInverted = lastState?.type === 'custom'
+      && color === lastState.color
+      && saturation === lastState.saturation
+      && inverted === lastState.inverted
+      ? !inverted
+      : inverted;
+    html.style.setProperty('--neo-custom-base-color', color);
+    html.style.setProperty('--neo-saturation', String(saturation));
+    if (finalInverted) {
+      html.classList.add('neo-palette-invert');
+    }
+    lastState = { type: 'custom', color, saturation, inverted: finalInverted };
+  }
+}

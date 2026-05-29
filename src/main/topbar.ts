@@ -1,5 +1,5 @@
 import { getPlugin } from './guard';
-import { buildMenu } from './addmenu';
+import { buildMenu } from './menu';
 let topBarButton: HTMLElement | null = null;
 export function initTopBarButton(): HTMLElement | null {
   const plugin = getPlugin();

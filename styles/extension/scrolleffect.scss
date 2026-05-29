@@ -2,8 +2,7 @@
 .neo-extension-scrolleffect {
     @include extension-common('[data-id="neo-scroll-effect-button"]', '[data-id="neo-extension-button"]');
     #preview [data-node-id],
-    .protyle-wysiwyg [data-type=NodeBlockQueryEmbed][data-node-id],
-    .card__main [data-node-id] {
+    .protyle-wysiwyg [data-type=NodeBlockQueryEmbed][data-node-id] {
         animation: none !important;
     }
     .protyle[data-loading="finished"] {

@@ -7,8 +7,9 @@ import { initHideScrollbar, destroyHideScrollbar } from '../modules/hidescrollba
 import { initEnv, destroyEnv } from '../modules/env';
 import { initPerformanceTuning, destroyPerformanceTuning } from '../modules/performancetuning';
 import { initSlashNavigation, destroySlashNavigation } from '../modules/slashnavigation';
-import { initNeoIcons, destroyNeoIcons } from './addicons';
-import { initTopBarButton, destroyTopBarButton } from './addtopbar';
+import { initNeoIcons, destroyNeoIcons } from './icons';
+import { initTopBarButton, destroyTopBarButton } from './topbar';
+import { initShortcuts, destroyShortcuts } from './shortcut';
 import { initPalette, destroyPalette } from '../palette/manager';
 import { initTexture, destroyTexture } from '../texture/manager';
 import { initColoredLists, destroyColoredLists } from '../element/coloredlists';
@@ -76,6 +77,7 @@ export class NeoPlusController {
     initEnv();
     initNeoIcons();
     initTopBarButton();
+    initShortcuts();
     initStatusHidden();
     initHideScrollbar();
     initSlashNavigation();
@@ -100,6 +102,7 @@ export class NeoPlusController {
     destroyEnv();
     destroyNeoIcons();
     destroyTopBarButton();
+    destroyShortcuts();
     destroyStatusHidden();
     destroyHideScrollbar();
     destroySlashNavigation();

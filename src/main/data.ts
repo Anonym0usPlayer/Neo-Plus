@@ -9,8 +9,8 @@ export interface Config {
   'invert-dark'?: boolean;
   'preset-light'?: string;
   'preset-dark'?: string;
-  'color-plan-light'?: 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem';
-  'color-plan-dark'?: 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem';
+  'color-plan-light'?: 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random';
+  'color-plan-dark'?: 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random';
   'followtime-base-color-light'?: string;
   'followtime-base-color-dark'?: string;
   'texture-light'?: string;
@@ -40,6 +40,7 @@ export interface Config {
   'vertical-tabs'?: boolean;
 }
 let configCache: Config = {};
+let pendingLoadConfig: Promise<Config> | null = null;
 function getPluginOrNull() {
   return getPlugin();
 }
@@ -50,15 +51,23 @@ export async function saveConfig(patch: Partial<Config>): Promise<void> {
   await plugin.saveData(configKey, configCache);
 }
 export function loadConfig(): Promise<Config> {
+  if (pendingLoadConfig) return pendingLoadConfig;
   const plugin = getPluginOrNull();
-  if (!plugin) return Promise.resolve(configCache);
-  return plugin.loadData(configKey).then((data: Config | null) => {
+  if (!plugin) {
+    configCache = {};
+    pendingLoadConfig = Promise.resolve(configCache);
+    pendingLoadConfig.finally(() => { pendingLoadConfig = null; });
+    return pendingLoadConfig;
+  }
+  pendingLoadConfig = plugin.loadData(configKey).then((data: Config | null) => {
     configCache = data || {};
     return configCache;
   }).catch(() => {
     configCache = {};
     return configCache;
   });
+  pendingLoadConfig.finally(() => { pendingLoadConfig = null; });
+  return pendingLoadConfig;
 }
 export async function deleteConfigKeys(keys: string[]): Promise<void> {
   const plugin = getPluginOrNull();

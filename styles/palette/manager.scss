@@ -8,5 +8,44 @@
                 }
             }
         }
+        &.neo-palette-random #{$selector} {
+            &:not(.b3-menu__item--show):not(.b3-menu__item--current) {
+                color: var(--b3-theme-on-background);
+                & .b3-menu__icon {
+                    color: var(--b3-theme-on-background);
+                }
+            }
+        }
+    }
+}
+@mixin palette-base-color-input {
+    input[type="color"] {
+        visibility: hidden;
+        width: 0;
+        height: 0;
+        padding: 0;
+        margin-left: -2px;
+    }
+    .b3-menu__label {
+        padding-left: 24px;
+    }
+}
+@mixin palette-base-color-dot {
+    &::before {
+        position: absolute;
+        left: 9.5px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background-color: var(--b3-base-color);
+    }
+    &:hover,
+    &.b3-menu__item--current {
+        &::before {
+            outline: 1px solid oklch(from var(--neo-menu-item-primary) clamp(0, (0.72 - l) * 10000, 1) 0 0 / 0.7);
+            outline-offset: -1px;
+        }
     }
 }
