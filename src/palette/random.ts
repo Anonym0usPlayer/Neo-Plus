@@ -24,7 +24,14 @@ function randomHexColorDifferentFrom(previous: string): string {
   return color;
 }
 function randomSaturation(): number {
-  return Math.round((Math.random() * 3) * 100) / 100;
+  const r = Math.random();
+  if (r < 0.45) {
+    return Math.round((Math.random() * 1.5) * 100) / 100;
+  } else if (r < 0.9) {
+    return Math.round((1.5 + Math.random() * 1.5) * 100) / 100;
+  } else {
+    return Math.round((3 + Math.random() * 2) * 100) / 100;
+  }
 }
 function randomSaturationDifferentFrom(previous: number): number {
   let saturation: number;

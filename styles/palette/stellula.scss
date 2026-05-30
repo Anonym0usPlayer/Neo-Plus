@@ -2,7 +2,7 @@
 .neo-palette-stellula {
     @include palette-common("[data-id="neo-palette-stellula-button"]", "[data-id="neo-scheme-button"]");
     &[data-theme-mode="light"] {
-        --b3-base-color: #7ed5db;
+        --b3-base-color: #86d6dc;
         --b3-theme-primary: #48b2ba;
         --b3-theme-accent: #3ea2a9;
         --b3-theme-background: #fff8f2;
@@ -11,7 +11,7 @@
         --b3-theme-on-surface: #373379a2;
     }
     &[data-theme-mode="dark"] {
-        --b3-base-color: #fc8b60;
+        --b3-base-color: #41959bcc;
         --b3-theme-primary: #fc8b60;
         --b3-theme-accent: #fc8b60;
         --b3-theme-background: #232227;

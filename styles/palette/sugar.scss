@@ -1,0 +1,16 @@
+@use "manager" as *;
+.neo-palette-sugar {
+    @include palette-common("[data-id="neo-palette-sugar-button"]", "[data-id="neo-scheme-button"]");
+    &[data-theme-mode="light"] {
+        --b3-base-color: #ea566b;
+        --b3-theme-primary: #ea566b;
+        --b3-theme-accent: #ea566b;
+        --b3-theme-background: #f9f8f5;
+        --b3-theme-surface: #f3ede8;
+        --b3-theme-on-background: #37352f;
+        --b3-theme-on-surface: #8a8682;
+        --neo-switch-primary: #86b175;
+        --neo-button-primary: #86b175;
+        --neo-input-primary: #86b175;
+    }
+}

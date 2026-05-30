@@ -17,7 +17,7 @@ export function createSliderHTML(i18n?: Record<string, string>): string {
   return `<div style="display:flex;align-items:center;width:100%;">
     <svg class="b3-menu__icon"><use xlink:href="#iconNeoSaturation"></use></svg>
     <div aria-label="${label}：${currentValue.toFixed(2)}" class="b3-tooltips b3-tooltips__n" id="${id}" style="flex:1;">
-      <input type="range" class="b3-slider" id="${id}-input" min="0" max="3" value="${currentValue}" step="0.01">
+      <input type="range" class="b3-slider" id="${id}-input" min="0" max="5" value="${currentValue}" step="0.01">
     </div>
   </div>`;
 }

@@ -26,6 +26,10 @@ const presets: Preset[] = [
   { key: 'zerith', nameKey: 'colorSchemeZerith', mode: 'all' },
   { key: 'stellula', nameKey: 'colorSchemeStellula', mode: 'all' },
   { key: 'vael', nameKey: 'colorSchemeVael', mode: 'all' },
+  { key: 'savor', nameKey: 'colorSchemeSavor', mode: 'all' },
+  { key: 'sugar', nameKey: 'colorSchemeSugar', mode: 'light' },
+  { key: 'salt', nameKey: 'colorSchemeSalt', mode: 'light' },
+  { key: 'starry', nameKey: 'colorSchemeStarry', mode: 'dark' },
 ];
 export function getPresetsByMode(mode: ThemeMode): Preset[] {
   return presets.filter((p) => p.mode === 'all' || p.mode === mode);

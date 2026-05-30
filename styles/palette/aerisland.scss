@@ -2,7 +2,7 @@
 .neo-palette-aerisland {
     @include palette-common("[data-id="neo-palette-aerisland-button"]", "[data-id="neo-scheme-button"]");
     &[data-theme-mode="light"] {
-        --b3-base-color: #8febe1;
+        --b3-base-color: #a3e3cf;
         --b3-theme-primary: #4fbdb0;
         --b3-theme-accent: #2ea5a2;
         --b3-theme-background: #f7fcf5;
