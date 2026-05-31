@@ -47,6 +47,7 @@ body {
                         }
                         .item__text {
                             max-width: fit-content;
+                            margin-right: -22px;
                         }
                         .item__close {
                             margin-left: auto;
@@ -57,6 +58,11 @@ body {
                         &.item--pin {
                             .item__text {
                                 display: flex !important;
+                            }
+                        }
+                        &:hover {
+                            .item__text {
+                                margin-right: 0;
                             }
                         }
                     }

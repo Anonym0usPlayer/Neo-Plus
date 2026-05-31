@@ -7,7 +7,7 @@
     }
     .protyle[data-loading="finished"] {
         .protyle-title,
-        .protyle-wysiwyg [data-node-id],
+        .protyle-wysiwyg [data-node-id]:not([fold="1"]),
         .protyle-wysiwyg [data-node-id].li > .protyle-action,
         .protyle-wysiwyg .callout-info {
             animation: neo-content-scroll-reveal cubic-bezier(0.46, 0.03, 0.52, 0.96) both;
