@@ -1,9 +1,6 @@
 [data-id="neo-saturation-button"] {
     opacity: 0.38;
     pointer-events: none;
-    .b3-menu__label {
-        display: none;
-    }
     .b3-slider {
     &::-webkit-slider-runnable-track {
             background: linear-gradient(to right, oklch(from var(--b3-theme-accent) l 0 h / 0.5), oklch(from var(--b3-theme-accent) l 0.15 h / 0.5));

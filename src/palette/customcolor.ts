@@ -15,7 +15,7 @@ export function getThemeColor(config?: Config): string {
 export function createColorPickerHTML(config?: Config): string {
   const currentColor = getThemeColor(config);
   const id = `neo-color-input-${Date.now()}`;
-  return `<input type="color" id="${id}" value="${currentColor}">`;
+  return `<svg class="b3-menu__icon"><use xlink:href="#"></use></svg><input type="color" id="${id}" value="${currentColor}">`;
 }
 export function initCustomColor(config: Config): void {
   const mode = getCurrentThemeMode();

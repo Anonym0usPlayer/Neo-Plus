@@ -27,5 +27,5 @@ export function createFollowTimeColorPickerHTML(config?: Config): string {
         .getPropertyValue('--neo-default-base-color').trim() ||
       '#ffffff';
   }
-  return `<input type="color" value="${currentColor}">`;
+  return `<svg class="b3-menu__icon"><use xlink:href="#"></use></svg><input type="color" value="${currentColor}">`;
 }

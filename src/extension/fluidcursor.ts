@@ -1,9 +1,6 @@
-import { getFrontend } from 'siyuan';
+import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
-function isMobile(): boolean {
-  return getFrontend().endsWith('mobile');
-}
 let animationFrameId: number | null = null;
 let resizeHandler: (() => void) | null = null;
 let mouseMoveHandler: ((e: MouseEvent) => void) | null = null;
@@ -239,9 +236,7 @@ export function destroyFluidCursor(): void {
   }
 }
 export function initFluidCursor(): void {
-  if (isMobile()) {
-    return;
-  }
+  if (isMobile()) return;
   loadConfig().then((config) => {
     if (config['fluid-cursor'] === true) {
       document.documentElement.classList.add('neo-extension-fluid-cursor');
@@ -250,9 +245,7 @@ export function initFluidCursor(): void {
   });
 }
 export function onFluidCursorClick(): void {
-  if (isMobile()) {
-    return;
-  }
+  if (isMobile()) return;
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-extension-fluid-cursor');

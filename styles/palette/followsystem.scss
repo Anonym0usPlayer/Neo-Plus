@@ -1,4 +1,9 @@
 @use "manager" as *;
+body.neo-desktop {
+    [data-id="neo-followsystem-button"] {
+        display: block;
+    }
+}
 .neo-palette-followsystem {
     @include palette-common("[data-id='neo-followsystem-button']");
     --neo-custom-base-color: var(--neo-followsystem-base-color) !important;
@@ -7,5 +12,6 @@
     }
 }
 [data-id="neo-followsystem-button"] {
-    @include palette-base-color-dot
+    @include palette-base-color-dot;
+    display: none;
 }

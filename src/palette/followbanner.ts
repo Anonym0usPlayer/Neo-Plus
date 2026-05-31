@@ -1,7 +1,7 @@
 import type { Config } from '../main/data';
 import { FastAverageColor } from 'fast-average-color';
 import { onFetch, offFetch } from '../modules/fetchmonitor';
-import { getFrontend } from 'siyuan';
+import { isMobile } from '../modules/env';
 let facInstance: FastAverageColor | null = null;
 let lastValidHex: string | null = null;
 let destroyed = false;
@@ -109,9 +109,6 @@ function checkElementBackgroundForGradient(el: HTMLElement): boolean {
     }
   }
   return false;
-}
-function isMobile(): boolean {
-  return getFrontend().endsWith('mobile');
 }
 async function extractBannerAverageColor(): Promise<void> {
   if (destroyed) return;

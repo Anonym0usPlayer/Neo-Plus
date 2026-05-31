@@ -1,4 +1,11 @@
 @use "manager" as *;
+body {
+    &.neo-mobile {
+        [data-id="neo-fluid-cursor-button"] {
+            display: none;
+        }
+    }
+}
 .neo-extension-fluid-cursor {
     @include extension-common('[data-id="neo-fluid-cursor-button"]', '[data-id="neo-extension-button"]');
 }

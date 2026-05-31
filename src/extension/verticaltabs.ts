@@ -1,10 +1,7 @@
+import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { onFetch, offFetch } from '../modules/fetchmonitor';
-import { getFrontend } from 'siyuan';
-function isMobile(): boolean {
-  return getFrontend().endsWith('mobile');
-}
 let destroyed = false;
 let mouseDownHandler: ((e: MouseEvent) => void) | null = null;
 let dblClickHandler: ((e: MouseEvent) => void) | null = null;

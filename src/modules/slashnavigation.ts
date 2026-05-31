@@ -1,4 +1,4 @@
-import { getFrontend } from 'siyuan';
+import { isMobile } from '../modules/env';
 type Direction = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 interface CenterPoint {
   el: HTMLElement;
@@ -12,9 +12,6 @@ let activeMenuElement: HTMLElement | null = null;
 let menuObserver: MutationObserver | null = null;
 let keydownHandler: ((evt: KeyboardEvent) => void) | null = null;
 let cachedCenters: CenterPoint[] = [];
-function isMobile(): boolean {
-  return getFrontend().endsWith('mobile');
-}
 function findHintMenu(): HTMLElement | null {
   return document.querySelector('.protyle-hint.hint--menu:not(.fn__none)');
 }

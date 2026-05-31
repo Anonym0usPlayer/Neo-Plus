@@ -24,10 +24,7 @@
         width: 0;
         height: 0;
         padding: 0;
-        margin-left: -2px;
-    }
-    .b3-menu__label {
-        padding-left: 24px;
+        position: absolute;
     }
 }
 @mixin palette-base-color-dot {

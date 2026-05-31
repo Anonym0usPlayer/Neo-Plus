@@ -75,6 +75,7 @@ export function buildMenu(
   });
   menu.addItem({
     id: 'neo-followbanner-button',
+    icon: '',
     label: i18n.followBanner,
     click: () => {
       switchToPlan('followbanner');
@@ -83,6 +84,7 @@ export function buildMenu(
   });
   menu.addItem({
     id: 'neo-followsystem-button',
+    icon: '',
     label: i18n.followSystem,
     click: () => {
       switchToPlan('followsystem');
@@ -91,8 +93,8 @@ export function buildMenu(
   });
   menu.addItem({
     id: 'neo-saturation-button',
-    iconHTML: createSliderHTML(i18n),
-    label: '',
+    icon: 'iconNeoSaturation',
+    label: createSliderHTML(i18n),
     type: 'readonly',
   });
   menu.addItem({

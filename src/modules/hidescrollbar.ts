@@ -1,11 +1,8 @@
-import { getFrontend } from 'siyuan';
+import { isMac } from '../modules/env';
 const styleId = 'neo-hide-scrollbar-style';
-function isMacDesktop(): boolean {
-  return getFrontend() === 'desktop' && navigator.platform.includes('Mac');
-}
 let _savedScrollbarRules: { sheetIndex: number; cssText: string }[] = [];
 function removeScrollbarStyles(): void {
-  if (!isMacDesktop()) return;
+  if (!isMac()) return;
   _savedScrollbarRules = [];
   for (let i = 0; i < document.styleSheets.length; i++) {
     const ss = document.styleSheets[i];
