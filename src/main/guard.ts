@@ -1,8 +1,8 @@
 import { Plugin } from 'siyuan';
 import { initStatusHidden, destroyStatusHidden } from '../modules/statushidden';
 import { initFetchMonitor, destroyFetchMonitor } from '../modules/fetchmonitor';
-import { initHasWnd, destroyHasWnd } from '../modules/haswnd';
-import { initHasSearchGroup, destroyHasSearchGroup } from '../modules/hassearchgroup';
+import { initHasWnd, destroyHasWnd } from '../modules/layout';
+import { initHasSearchGroup, destroyHasSearchGroup } from '../modules/cardsearchlist';
 import { initHideScrollbar, destroyHideScrollbar } from '../modules/hidescrollbar';
 import { initEnv, destroyEnv } from '../modules/env';
 import { initPerformanceTuning, destroyPerformanceTuning } from '../modules/performancetuning';

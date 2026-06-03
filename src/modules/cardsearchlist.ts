@@ -6,10 +6,10 @@ function updateSearchGroupClass(): void {
   const searchList = document.querySelector('#searchList');
   if (!searchList) return;
   const hasGroup = searchList.querySelector(':scope > .b3-list-item:not([data-type=search-item])');
-  if (hasGroup && !searchList.classList.contains('neo-hassearchgroup')) {
-    searchList.classList.add('neo-hassearchgroup');
-  } else if (!hasGroup && searchList.classList.contains('neo-hassearchgroup')) {
-    searchList.classList.remove('neo-hassearchgroup');
+  if (!hasGroup && !searchList.classList.contains('neo-notsearchgroup')) {
+    searchList.classList.add('neo-notsearchgroup');
+  } else if (hasGroup && searchList.classList.contains('neo-notsearchgroup')) {
+    searchList.classList.remove('neo-notsearchgroup');
   }
 }
 function waitSearchDomStable(): void {
@@ -40,6 +40,6 @@ export function destroyHasSearchGroup(): void {
   }
   const searchList = document.querySelector('#searchList');
   if (searchList) {
-    searchList.classList.remove('neo-hassearchgroup');
+    searchList.classList.remove('neo-notsearchgroup');
   }
 }
