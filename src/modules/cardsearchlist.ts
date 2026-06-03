@@ -2,7 +2,7 @@ import { onFetch, offFetch } from './fetchmonitor';
 const _searchDomStableDelay = 200;
 let _onSearchFetch: (() => void) | null = null;
 let _searchDomStableTimer: ReturnType<typeof setTimeout> | null = null;
-function updateSearchGroupClass(): void {
+function updateCardSearchListClass(): void {
   const searchList = document.querySelector('#searchList');
   if (!searchList) return;
   const hasGroup = searchList.querySelector(':scope > .b3-list-item:not([data-type=search-item])');
@@ -17,18 +17,18 @@ function waitSearchDomStable(): void {
     clearTimeout(_searchDomStableTimer);
   }
   _searchDomStableTimer = setTimeout(() => {
-    updateSearchGroupClass();
+    updateCardSearchListClass();
   }, _searchDomStableDelay);
 }
-export function initHasSearchGroup(): void {
+export function initCardSearchList(): void {
   _onSearchFetch = () => {
     waitSearchDomStable();
   };
   onFetch('fullTextSearchBlock', _onSearchFetch);
   onFetch('getCriteria', _onSearchFetch);
-  updateSearchGroupClass();
+  updateCardSearchListClass();
 }
-export function destroyHasSearchGroup(): void {
+export function destroyCardSearchList(): void {
   if (_onSearchFetch) {
     offFetch('fullTextSearchBlock', _onSearchFetch);
     offFetch('getCriteria', _onSearchFetch);

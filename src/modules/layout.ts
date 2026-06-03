@@ -1,6 +1,6 @@
 import { onFetch, offFetch } from './fetchmonitor';
 let _onSetUILayout: (() => void) | null = null;
-function updateWndClass(): void {
+function updateHasWndClass(): void {
   const currentHaswnd = new Set(document.querySelectorAll('.neo-haswnd'));
   const shouldHaswnd = new Set<Element>();
   document.querySelectorAll('[data-type="wnd"]').forEach((wnd) => {
@@ -36,14 +36,14 @@ function updateWndClass(): void {
     });
   });
 }
-export function initHasWnd(): void {
+export function initLayout(): void {
   _onSetUILayout = () => {
-    updateWndClass();
+    updateHasWndClass();
   };
   onFetch('setUILayout', _onSetUILayout);
-  updateWndClass();
+  updateHasWndClass();
 }
-export function destroyHasWnd(): void {
+export function destroyLayout(): void {
   if (_onSetUILayout) {
     offFetch('setUILayout', _onSetUILayout);
     _onSetUILayout = null;
