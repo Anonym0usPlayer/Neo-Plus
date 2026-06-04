@@ -1,0 +1,13 @@
+@use "manager" as *;
+.neo-palette-abyss {
+    @include palette-common("[data-id="neo-palette-abyss-button"]", "[data-id="neo-scheme-button"]");
+    &[data-theme-mode="dark"] {
+        --b3-base-color: #28ece9;
+        --b3-theme-primary: #28ece9;
+        --b3-theme-accent: #28ece9;
+        --b3-theme-background: #001e26;
+        --b3-theme-surface: #032731;
+        --b3-theme-on-background: #d4eff1;
+        --b3-theme-on-surface: #a1bcbe;
+    }
+}
