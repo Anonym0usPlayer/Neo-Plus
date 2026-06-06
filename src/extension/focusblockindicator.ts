@@ -15,7 +15,8 @@ function clearAllFocusBlocks(): void {
 function applyFocusBlock(): void {
   pendingUpdate = false;
   const selection = window.getSelection();
-  const range = selection?.getRangeAt(0);
+  if (!selection || selection.rangeCount === 0) return;
+  const range = selection.getRangeAt(0);
   if (!range) return;
   const curNode = range.commonAncestorContainer;
   const curBlock = (curNode.nodeType === Node.ELEMENT_NODE ? curNode as Element : curNode.parentElement)?.closest('[data-node-id]');

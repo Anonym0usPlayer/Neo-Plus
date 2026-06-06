@@ -1,7 +1,8 @@
 type FetchCallback = (response: Response, url: string, init?: RequestInit) => void;
-let originalFetch: typeof window.fetch | null = null;
 let rules: Map<string, Set<FetchCallback>> = new Map();
-let isInitialized = false;
+let patchedFetch: (typeof window.fetch) | null = null;
+let downstreamFetch: (typeof window.fetch) | null = null;
+let isPatched = false;
 export function onFetch(name: string, callback: FetchCallback): void {
   if (!rules.has(name)) {
     rules.set(name, new Set());
@@ -36,18 +37,19 @@ export function fetchListener() {
   };
 }
 export function initFetchMonitor(): void {
-  if (isInitialized) return;
-  isInitialized = true;
-  originalFetch = window.fetch;
-  const interceptedFetch: typeof window.fetch = function (
-    input: RequestInfo | URL,
-    init?: RequestInit
-  ): Promise<Response> {
+  if (isPatched) return;
+  downstreamFetch = window.fetch;
+  patchedFetch = function (input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
     if (rules.size === 0) {
-      return originalFetch!.call(window, input, init);
+      return downstreamFetch!.call(window, input, init);
     }
-    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
-    const fetchPromise = originalFetch!.call(window, input, init);
+    const url =
+      typeof input === 'string'
+        ? input
+        : input instanceof URL
+          ? input.href
+          : input.url;
+    const fetchPromise = downstreamFetch!.call(window, input, init);
     const matchedCallbacks: FetchCallback[] = [];
     rules.forEach((callbacks, name) => {
       if (url.includes(name)) {
@@ -66,14 +68,16 @@ export function initFetchMonitor(): void {
     }
     return fetchPromise;
   };
-  window.fetch = interceptedFetch;
+  window.fetch = patchedFetch;
+  isPatched = true;
 }
 export function destroyFetchMonitor(): void {
-  if (!isInitialized) return;
-  if (originalFetch) {
-    window.fetch = originalFetch;
-    originalFetch = null;
+  if (!isPatched) return;
+  if (window.fetch === patchedFetch) {
+    window.fetch = downstreamFetch!;
   }
   rules.clear();
-  isInitialized = false;
+  patchedFetch = null;
+  downstreamFetch = null;
+  isPatched = false;
 }

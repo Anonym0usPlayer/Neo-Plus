@@ -7,6 +7,7 @@ import { initHideScrollbar, destroyHideScrollbar } from '../modules/hidescrollba
 import { initEnv, destroyEnv } from '../modules/env';
 import { initPerformanceTuning, destroyPerformanceTuning } from '../modules/performancetuning';
 import { initSlashNavigation, destroySlashNavigation } from '../modules/slashnavigation';
+import { initSvgFilter, destroySvgFilter } from '../modules/svgfilter';
 import { initNeoIcons, destroyNeoIcons } from './icons';
 import { initTopBarButton, destroyTopBarButton } from './topbar';
 import { initShortcuts, destroyShortcuts } from './shortcut';
@@ -96,6 +97,7 @@ export class NeoPlusController {
     initLayout();
     initPerformanceTuning();
     initCardSearchList();
+    initSvgFilter();
   }
   private destroyNeoPlus(): void {
     destroyNeoEnabled();
@@ -117,9 +119,10 @@ export class NeoPlusController {
     destroyListBulletLine();
     destroyFocusBlockIndicator();
     destroyVerticalTabs();
+    destroyFetchMonitor();
+    destroyLayout();
     destroyPerformanceTuning();
     destroyCardSearchList();
-    destroyLayout();
-    destroyFetchMonitor();
+    destroySvgFilter();
   }
 }
