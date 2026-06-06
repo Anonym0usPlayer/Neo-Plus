@@ -1,7 +1,7 @@
 import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
-import { onFetch, offFetch } from '../modules/fetchmonitor';
+import { fetchListener } from '../modules/fetchmonitor';
 let destroyed = false;
 let mouseDownHandler: ((e: MouseEvent) => void) | null = null;
 let dblClickHandler: ((e: MouseEvent) => void) | null = null;
@@ -112,19 +112,8 @@ function destroyResizeHandle(): void {
     dblClickHandler = null;
   }
 }
-let onSetUILayout: (() => void) | null = null;
-function attachListener(): void {
-  onSetUILayout = () => {
-    doUpdate();
-  };
-  onFetch('setUILayout', onSetUILayout);
-}
-function detachListener(): void {
-  if (onSetUILayout) {
-    offFetch('setUILayout', onSetUILayout);
-    onSetUILayout = null;
-  }
-}
+const _fetchListener = fetchListener();
+_fetchListener.on('setUILayout', () => { doUpdate(); });
 export function initVerticalTabs(): void {
   if (isMobile()) return;
   loadConfig().then((config) => {
@@ -133,7 +122,7 @@ export function initVerticalTabs(): void {
       destroyed = false;
       lastWidth = null;
       initResizeHandle();
-      attachListener();
+      _fetchListener.attach();
       doUpdate();
     }
   });
@@ -152,13 +141,13 @@ export function onVerticalTabsClick(): void {
     destroyed = false;
     lastWidth = null;
     initResizeHandle();
-    attachListener();
+    _fetchListener.attach();
     doUpdate();
   }
 }
 export function destroyVerticalTabs(): void {
   destroyed = true;
-  detachListener();
+  _fetchListener.detach();
   destroyResizeHandle();
   document.documentElement?.classList.remove('neo-extension-verticaltabs');
   document.querySelectorAll<HTMLElement>('.layout__center [data-type="wnd"]')

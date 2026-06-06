@@ -1,10 +1,13 @@
 import type { Config } from '../main/data';
 import { FastAverageColor } from 'fast-average-color';
-import { onFetch, offFetch } from '../modules/fetchmonitor';
+import { fetchListener } from '../modules/fetchmonitor';
 import { isMobile } from '../modules/env';
 let facInstance: FastAverageColor | null = null;
 let lastValidHex: string | null = null;
 let destroyed = false;
+const _fetchListener = fetchListener();
+_fetchListener.on('setUILayout', () => { extractBannerAverageColor(); });
+_fetchListener.on('setBlockAttrs', () => { extractBannerAverageColor(); });
 const fallbackHex = 'var(--neo-default-base-color)';
 function parseHex(hex: string): { r: number; g: number; b: number } | null {
   const m = hex.match(/^#?([0-9a-fA-F]{6})$/);
@@ -210,47 +213,17 @@ async function extractBannerAverageColor(): Promise<void> {
     applyFallback();
   }
 }
-let _onSetUILayout: (() => void) | null = null;
-let _onSetBlockAttrs: (() => void) | null = null;
-let _onGetDoc: (() => void) | null = null;
-function attachListener(): void {
-  _onSetUILayout = () => {
-    extractBannerAverageColor();
-  };
-  _onSetBlockAttrs = () => {
-    extractBannerAverageColor();
-  };
-  onFetch('setUILayout', _onSetUILayout);
-  onFetch('setBlockAttrs', _onSetBlockAttrs);
-  if (isMobile()) {
-    _onGetDoc = () => {
-      setTimeout(extractBannerAverageColor, 200);
-    };
-    onFetch('getDocInfo', _onGetDoc);
-  }
-}
-function detachListener(): void {
-  if (_onSetUILayout) {
-    offFetch('setUILayout', _onSetUILayout);
-    _onSetUILayout = null;
-  }
-  if (_onSetBlockAttrs) {
-    offFetch('setBlockAttrs', _onSetBlockAttrs);
-    _onSetBlockAttrs = null;
-  }
-  if (_onGetDoc) {
-    offFetch('getDocInfo', _onGetDoc);
-    _onGetDoc = null;
-  }
-}
 export function initFollowBanner(config: Config): void {
   destroyed = false;
-  attachListener();
+  if (isMobile()) {
+    _fetchListener.on('getDocInfo', () => { setTimeout(extractBannerAverageColor, 200); });
+  }
+  _fetchListener.attach();
   setTimeout(extractBannerAverageColor, 500);
 }
 export function destroyFollowBanner(): void {
   destroyed = true;
-  detachListener();
+  _fetchListener.detach();
   document.documentElement.style.removeProperty('--neo-followbanner-base-color');
   if (facInstance) {
     try {

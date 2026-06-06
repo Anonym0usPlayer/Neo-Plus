@@ -1,5 +1,5 @@
-import { onFetch, offFetch } from './fetchmonitor';
-let _onSetUILayout: (() => void) | null = null;
+import { fetchListener } from './fetchmonitor';
+const _fetchListener = fetchListener();
 function updateHasWndClass(): void {
   const currentHaswnd = new Set(document.querySelectorAll('.neo-haswnd'));
   const shouldHaswnd = new Set<Element>();
@@ -36,18 +36,13 @@ function updateHasWndClass(): void {
     });
   });
 }
+_fetchListener.on('setUILayout', () => { updateHasWndClass(); });
 export function initLayout(): void {
-  _onSetUILayout = () => {
-    updateHasWndClass();
-  };
-  onFetch('setUILayout', _onSetUILayout);
+  _fetchListener.attach();
   updateHasWndClass();
 }
 export function destroyLayout(): void {
-  if (_onSetUILayout) {
-    offFetch('setUILayout', _onSetUILayout);
-    _onSetUILayout = null;
-  }
+  _fetchListener.detach();
   document.querySelectorAll('.neo-haswnd').forEach((el) => {
     el.classList.remove('neo-haswnd');
   });

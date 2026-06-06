@@ -58,6 +58,12 @@ body {
                         &.item--pin {
                             .item__text {
                                 display: flex !important;
+                                margin-right: -22px !important;
+                            }
+                            .item__close {
+                                display: flex !important;
+                                visibility: hidden;
+                                pointer-events: none;
                             }
                         }
                         &:hover {

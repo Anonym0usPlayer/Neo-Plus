@@ -21,6 +21,20 @@ export function offFetch(name: string, callback?: FetchCallback): void {
     rules.delete(name);
   }
 }
+export function fetchListener() {
+  const callbacks: Array<{ name: string; cb: FetchCallback }> = [];
+  return {
+    on(name: string, cb: FetchCallback): void {
+      callbacks.push({ name, cb });
+    },
+    attach(): void {
+      callbacks.forEach(({ name, cb }) => onFetch(name, cb));
+    },
+    detach(): void {
+      callbacks.forEach(({ name, cb }) => offFetch(name, cb));
+    },
+  };
+}
 export function initFetchMonitor(): void {
   if (isInitialized) return;
   isInitialized = true;

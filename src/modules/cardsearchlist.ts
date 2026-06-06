@@ -1,45 +1,50 @@
-import { onFetch, offFetch } from './fetchmonitor';
-const _searchDomStableDelay = 200;
-let _onSearchFetch: (() => void) | null = null;
-let _searchDomStableTimer: ReturnType<typeof setTimeout> | null = null;
+import { fetchListener } from './fetchmonitor';
+const _searchMaxAttempts = 5;
+const _searchInterval = 10;
+let _searchAttempts = 0;
+let _searchTimer: number | null = null;
+const _fetchListener = fetchListener();
+_fetchListener.on('fullTextSearchBlock', () => { waitSearchDomStable(); });
+_fetchListener.on('getCriteria', () => { waitSearchDomStable(); });
+_fetchListener.on('fullTextSearchAssetContent', () => { waitSearchDomStable(); });
+_fetchListener.on('setLocalStorageVal', () => { waitSearchDomStable(); });
+_fetchListener.on('getAssetContent', () => { waitSearchDomStable(); });
+_fetchListener.on('getRecentUpdatedBlocks', () => { waitSearchDomStable(); });
 function updateCardSearchListClass(): void {
   const searchList = document.querySelector('#searchList');
-  if (!searchList) return;
-  const hasGroup = searchList.querySelector(':scope > .b3-list-item:not([data-type=search-item])');
-  if (!hasGroup && !searchList.classList.contains('neo-notsearchgroup')) {
-    searchList.classList.add('neo-notsearchgroup');
-  } else if (hasGroup && searchList.classList.contains('neo-notsearchgroup')) {
-    searchList.classList.remove('neo-notsearchgroup');
+  const searchAssetList = document.querySelector('#searchAssetList');
+  if (!searchList && !searchAssetList) return;
+  if (searchList) {
+    const isCard = searchList.firstElementChild?.matches('[data-type="search-item"]');
+    searchList.classList.toggle('neo-cardsearchlist', !!isCard);
+  }
+  if (searchAssetList) {
+    const isCard = searchAssetList.firstElementChild?.matches('[data-type="search-item"]');
+    searchAssetList.classList.toggle('neo-cardsearchlist', !!isCard);
   }
 }
 function waitSearchDomStable(): void {
-  if (_searchDomStableTimer) {
-    clearTimeout(_searchDomStableTimer);
-  }
-  _searchDomStableTimer = setTimeout(() => {
+  if (_searchTimer) return;
+  _searchAttempts = 0;
+  _searchTimer = window.setInterval(() => {
+    _searchAttempts++;
     updateCardSearchListClass();
-  }, _searchDomStableDelay);
+    if (_searchAttempts >= _searchMaxAttempts) {
+      if (_searchTimer !== null) window.clearInterval(_searchTimer!);
+      _searchTimer = null;
+    }
+  }, _searchInterval);
 }
 export function initCardSearchList(): void {
-  _onSearchFetch = () => {
-    waitSearchDomStable();
-  };
-  onFetch('fullTextSearchBlock', _onSearchFetch);
-  onFetch('getCriteria', _onSearchFetch);
+  _fetchListener.attach();
   updateCardSearchListClass();
 }
 export function destroyCardSearchList(): void {
-  if (_onSearchFetch) {
-    offFetch('fullTextSearchBlock', _onSearchFetch);
-    offFetch('getCriteria', _onSearchFetch);
-    _onSearchFetch = null;
+  _fetchListener.detach();
+  if (_searchTimer !== null) {
+    window.clearInterval(_searchTimer!);
+    _searchTimer = null;
   }
-  if (_searchDomStableTimer) {
-    clearTimeout(_searchDomStableTimer);
-    _searchDomStableTimer = null;
-  }
-  const searchList = document.querySelector('#searchList');
-  if (searchList) {
-    searchList.classList.remove('neo-notsearchgroup');
-  }
+  document.querySelector('#searchList')?.classList.remove('neo-cardsearchlist');
+  document.querySelector('#searchAssetList')?.classList.remove('neo-cardsearchlist');
 }

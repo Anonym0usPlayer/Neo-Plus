@@ -1,9 +1,10 @@
-import { onFetch, offFetch } from './fetchmonitor';
+import { fetchListener } from './fetchmonitor';
 const statusSelector = '#status';
 const targetSelector =
   '.layout__wnd--active > .layout-tab-container > .fn__flex-1:not(.fn__none):not(.protyle)';
 let statusObserver: MutationObserver | null = null;
-let _onSetUILayout: (() => void) | null = null;
+const _fetchListener = fetchListener();
+_fetchListener.on('setUILayout', () => { checkAndToggleStatus(); });
 function checkAndToggleStatus(): void {
   const target = document.querySelector<HTMLElement>(targetSelector);
   const statusEl = document.querySelector<HTMLElement>(statusSelector);
@@ -14,21 +15,9 @@ function checkAndToggleStatus(): void {
     statusEl.classList.remove('neo-status-hidden');
   }
 }
-function attachListener(): void {
-  _onSetUILayout = () => {
-    checkAndToggleStatus();
-  };
-  onFetch('setUILayout', _onSetUILayout);
-}
-function detachListener(): void {
-  if (_onSetUILayout) {
-    offFetch('setUILayout', _onSetUILayout);
-    _onSetUILayout = null;
-  }
-}
 function waitForStatusEl(): void {
   if (document.querySelector(statusSelector)) {
-    attachListener();
+    _fetchListener.attach();
     checkAndToggleStatus();
     return;
   }
@@ -36,7 +25,7 @@ function waitForStatusEl(): void {
     if (document.querySelector(statusSelector)) {
       observer.disconnect();
       statusObserver = null;
-      attachListener();
+      _fetchListener.attach();
       checkAndToggleStatus();
     }
   });
@@ -49,7 +38,7 @@ export function initStatusHidden(): void {
   waitForStatusEl();
 }
 export function destroyStatusHidden(): void {
-  detachListener();
+  _fetchListener.detach();
   if (statusObserver) {
     statusObserver.disconnect();
     statusObserver = null;
