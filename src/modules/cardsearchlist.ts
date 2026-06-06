@@ -10,18 +10,15 @@ _fetchListener.on('fullTextSearchAssetContent', () => { waitSearchDomStable(); }
 _fetchListener.on('setLocalStorageVal', () => { waitSearchDomStable(); });
 _fetchListener.on('getAssetContent', () => { waitSearchDomStable(); });
 _fetchListener.on('getRecentUpdatedBlocks', () => { waitSearchDomStable(); });
+const _searchListSelectors = ['#searchList', '#searchAssetList', '#searchUnRefList'];
+
 function updateCardSearchListClass(): void {
-  const searchList = document.querySelector('#searchList');
-  const searchAssetList = document.querySelector('#searchAssetList');
-  if (!searchList && !searchAssetList) return;
-  if (searchList) {
-    const isCard = searchList.firstElementChild?.matches('[data-type="search-item"]');
-    searchList.classList.toggle('neo-cardsearchlist', !!isCard);
-  }
-  if (searchAssetList) {
-    const isCard = searchAssetList.firstElementChild?.matches('[data-type="search-item"]');
-    searchAssetList.classList.toggle('neo-cardsearchlist', !!isCard);
-  }
+  const results = _searchListSelectors.map(selector => document.querySelector(selector)).filter(Boolean);
+  if (results.length === 0) return;
+  results.forEach(el => {
+    const isCard = el!.firstElementChild?.matches('[data-type="search-item"]');
+    el!.classList.toggle('neo-cardsearchlist', !!isCard);
+  });
 }
 function waitSearchDomStable(): void {
   if (_searchTimer) return;
@@ -45,6 +42,7 @@ export function destroyCardSearchList(): void {
     window.clearInterval(_searchTimer!);
     _searchTimer = null;
   }
-  document.querySelector('#searchList')?.classList.remove('neo-cardsearchlist');
-  document.querySelector('#searchAssetList')?.classList.remove('neo-cardsearchlist');
+  _searchListSelectors.forEach(selector => {
+    document.querySelector(selector)?.classList.remove('neo-cardsearchlist');
+  });
 }
