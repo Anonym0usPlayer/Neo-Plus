@@ -199,7 +199,7 @@ export function buildMenu(
       },
       {
         id: 'neo-colored-folders-button',
-        icon: 'iconNeoColoredFolders',
+        icon: 'iconFiles',
         label: i18n.coloredFolders,
         click: () => {
           onColoredFoldersClick();
