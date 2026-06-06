@@ -14,6 +14,9 @@ const textures: Texture[] = [
   { key: 'crossdot', nameKey: 'textureCrossdot' },
   { key: 'wood', nameKey: 'textureWood' },
   { key: 'camouflage', nameKey: 'textureCamouflage' },
+  { key: 'granule', nameKey: 'textureGranule' },
+  { key: 'feathery', nameKey: 'textureFeathery' },
+  { key: 'velvet', nameKey: 'textureVelvet' },
   { key: 'customimage', nameKey: 'textureCustomImage' },
 ];
 export { textures };
