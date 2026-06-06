@@ -7,43 +7,45 @@
     }
 }
 .neo-enabled {
-    .status {
-        transform-origin: 100% 50%;
-        &:not(.neo-status-hidden) {
-            animation: neo-status-expand 0.3s cubic-bezier(0.33, 1.7, 0.69, 0.99);
-        }
-        &.neo-status-hidden {
-            &:not(:hover) {
-                height: 15px;
-                width: 30px;
-                border-radius: 32px;
-                corner-shape: unset;
-                animation: neo-status-hidden 0.35s cubic-bezier(0.33, 1.7, 0.69, 0.99);
-                @include status-child {
-                    transition: none;
-                    opacity: 0;
-                    visibility: hidden;
-                    pointer-events: none;
-                }
-                &::before {
-                    content: "";
-                    position: absolute;
-                    left: 50%;
-                    top: 50%;
-                    width: 4px;
-                    height: 4px;
-                    background-color: var(--b3-theme-on-surface-light);
-                    border-radius: 50%;
-                    transform: translate(-50%, -50%);
-                    box-shadow: -8px 0 0 0 var(--b3-theme-on-surface-light), 8px 0 0 0 var(--b3-theme-on-surface-light);
-                }
-            }
-            &:hover {
+    @supports (bottom: anchor(--a bottom)) {
+        .status {
+            transform-origin: 100% 50%;
+            &:not(.neo-status-hidden) {
                 animation: neo-status-expand 0.3s cubic-bezier(0.33, 1.7, 0.69, 0.99);
-                @include status-child {
-                    opacity: 1;
-                    visibility: visible;
-                    pointer-events: auto;
+            }
+            &.neo-status-hidden {
+                &:not(:hover) {
+                    height: 15px;
+                    width: 30px;
+                    border-radius: 32px;
+                    corner-shape: unset;
+                    animation: neo-status-hidden 0.35s cubic-bezier(0.33, 1.7, 0.69, 0.99);
+                    @include status-child {
+                        transition: none;
+                        opacity: 0;
+                        visibility: hidden;
+                        pointer-events: none;
+                    }
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        left: 50%;
+                        top: 50%;
+                        width: 4px;
+                        height: 4px;
+                        background-color: var(--b3-theme-on-surface-light);
+                        border-radius: 50%;
+                        transform: translate(-50%, -50%);
+                        box-shadow: -8px 0 0 0 var(--b3-theme-on-surface-light), 8px 0 0 0 var(--b3-theme-on-surface-light);
+                    }
+                }
+                &:hover {
+                    animation: neo-status-expand 0.3s cubic-bezier(0.33, 1.7, 0.69, 0.99);
+                    @include status-child {
+                        opacity: 1;
+                        visibility: visible;
+                        pointer-events: auto;
+                    }
                 }
             }
         }

@@ -11,7 +11,6 @@ _fetchListener.on('setLocalStorageVal', () => { waitSearchDomStable(); });
 _fetchListener.on('getAssetContent', () => { waitSearchDomStable(); });
 _fetchListener.on('getRecentUpdatedBlocks', () => { waitSearchDomStable(); });
 const _searchListSelectors = ['#searchList', '#searchAssetList', '#searchUnRefList'];
-
 function updateCardSearchListClass(): void {
   const results = _searchListSelectors.map(selector => document.querySelector(selector)).filter(Boolean);
   if (results.length === 0) return;
