@@ -1,5 +1,6 @@
 {
   "invertColor": "反轉",
+  "highContrast": "高對比",
   "customThemeColor": "自訂主題色",
   "saturation": "飽和度",
   "colorScheme": "预设配色",
@@ -27,6 +28,7 @@
   "colorSchemeStarry": "星穹",
   "colorSchemeTundra": "苔原",
   "colorSchemeAbyss": "深淵",
+  "colorSchemeViolet": "紫羅蘭",
   "followTime": "跟隨時間",
   "followBanner": "跟隨題頭圖",
   "followSystem": "跟隨系統",
@@ -103,5 +105,6 @@
   "fluidCursor": "流體游標",
   "listBulletLine": "列表子彈線",
   "focusBlockIndicator": "聚焦塊指示",
-  "verticalTabs": "垂直頁籤"
+  "verticalTabs": "垂直頁籤",
+  "immersiveMode": "沉浸模式"
 }

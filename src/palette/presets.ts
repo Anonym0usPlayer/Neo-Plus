@@ -32,6 +32,7 @@ const presets: Preset[] = [
   { key: 'starry', nameKey: 'colorSchemeStarry', mode: 'dark' },
   { key: 'tundra', nameKey: 'colorSchemeTundra', mode: 'light' },
   { key: 'abyss', nameKey: 'colorSchemeAbyss', mode: 'dark' },
+  { key: 'violet', nameKey: 'colorSchemeViolet', mode: 'all' },
 ];
 export function getPresetsByMode(mode: ThemeMode): Preset[] {
   return presets.filter((p) => p.mode === 'all' || p.mode === mode);
@@ -51,6 +52,9 @@ export function getFollowTimeBaseColorKey(mode: ThemeMode): 'followtime-base-col
 }
 export function getInvertKey(mode: ThemeMode): 'invert-light' | 'invert-dark' {
   return mode === 'dark' ? 'invert-dark' : 'invert-light';
+}
+export function getHighContrastKey(mode: ThemeMode): 'highcontrast-light' | 'highcontrast-dark' {
+  return mode === 'dark' ? 'highcontrast-dark' : 'highcontrast-light';
 }
 export function getCurrentPlan(config: Config, mode: ThemeMode): 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random' {
   return mode === 'dark'

@@ -1,5 +1,6 @@
 {
   "invertColor": "Invert",
+  "highContrast": "High Contrast",
   "customThemeColor": "Custom Theme Color",
   "saturation": "Saturation",
   "colorScheme": "Color Schemes",
@@ -27,6 +28,7 @@
   "colorSchemeStarry": "Starry",
   "colorSchemeTundra": "Tundra",
   "colorSchemeAbyss": "Abyss",
+  "colorSchemeViolet": "Violet",
   "followTime": "Follow Time",
   "followBanner": "Follow Banner",
   "followSystem": "Follow System",
@@ -103,5 +105,6 @@
   "fluidCursor": "Fluid Cursor",
   "listBulletLine": "List Bullet Line",
   "focusBlockIndicator": "Focus Block Indicator",
-  "verticalTabs": "Vertical Tabs"
+  "verticalTabs": "Vertical Tabs",
+  "immersiveMode": "Immersive Mode"
 }

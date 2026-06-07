@@ -1,7 +1,7 @@
 import { Menu } from 'siyuan';
 import { getPlugin } from './guard';
 import { loadConfig } from './data';
-import { createColorPickerHTML, createFollowTimeColorPickerHTML, createSliderHTML, getPresetMenuItems, getThemeColor, initPaletteMenuEvents, onInvertClick, switchToPlan } from '../palette/manager';
+import { createColorPickerHTML, createFollowTimeColorPickerHTML, createSliderHTML, getPresetMenuItems, getThemeColor, initPaletteMenuEvents, onInvertClick, onHighContrastClick, switchToPlan } from '../palette/manager';
 import { getTextureMenuItems } from '../texture/manager';
 import { onSmoothCaretClick } from '../extension/smoothcaret';
 import { onFluidCursorClick } from '../extension/fluidcursor';
@@ -10,6 +10,7 @@ import { onFocusBlockIndicatorClick } from '../extension/focusblockindicator';
 import { onScrollEffectClick } from '../extension/scrolleffect';
 import { onColoredFoldersClick } from '../extension/coloredfolders';
 import { onVerticalTabsClick } from '../extension/verticaltabs';
+import { onImmersiveModeClick } from '../extension/immersivemode';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
 export function buildMenu(
@@ -106,6 +107,15 @@ export function buildMenu(
       return true;
     },
   });
+  menu.addItem({
+    id: 'neo-highcontrast-button',
+    icon: 'iconNeoContrast',
+    label: i18n.highContrast,
+    click: () => {
+      onHighContrastClick();
+      return true;
+    },
+  });
   menu.addSeparator();
   menu.addItem({
     id: 'neo-texture-button',
@@ -149,6 +159,15 @@ export function buildMenu(
         label: i18n.verticalTabs,
         click: () => {
           onVerticalTabsClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-immersive-mode-button',
+        icon: 'iconNeoImmersiveMode',
+        label: i18n.immersiveMode,
+        click: () => {
+          onImmersiveModeClick();
           return true;
         },
       },

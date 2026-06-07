@@ -22,6 +22,7 @@ import { initFluidCursor, destroyFluidCursor } from '../extension/fluidcursor';
 import { initListBulletLine, destroyListBulletLine } from '../extension/listbulletline';
 import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../extension/focusblockindicator';
 import { initVerticalTabs, destroyVerticalTabs } from '../extension/verticaltabs';
+import { initImmersiveMode, destroyImmersiveMode } from '../extension/immersivemode';
 function initNeoEnabled(): void {
   document.documentElement.classList.add('neo-enabled');
 }
@@ -94,6 +95,7 @@ export class NeoPlusController {
     initFocusBlockIndicator();
     initVerticalTabs();
     initFetchMonitor();
+    initImmersiveMode();
     initLayout();
     initPerformanceTuning();
     initCardSearchList();
@@ -119,6 +121,7 @@ export class NeoPlusController {
     destroyListBulletLine();
     destroyFocusBlockIndicator();
     destroyVerticalTabs();
+    destroyImmersiveMode();
     destroyFetchMonitor();
     destroyLayout();
     destroyPerformanceTuning();

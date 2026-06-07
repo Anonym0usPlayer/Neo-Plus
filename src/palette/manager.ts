@@ -20,6 +20,7 @@ import { initFollowBanner, destroyFollowBanner } from './followbanner';
 import { initFollowSystem, destroyFollowSystem } from './followsystem';
 import { initSaturation, destroySaturation } from './saturation';
 import { initInvert, destroyInvert } from './invert';
+import { initHighContrast, destroyHighContrast } from './highcontrast';
 import { initRandom, destroyRandom } from './random';
 export type { ThemeMode, Preset, Config };
 type Plan = 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random';
@@ -44,6 +45,7 @@ function restorePalette(config: Config): void {
   destroyFollowSystem();
   destroySaturation();
   destroyInvert();
+  destroyHighContrast();
   applyCurrentPlan(config);
   if (plan !== 'preset') {
     initPlan(plan as Plan, config);
@@ -51,6 +53,7 @@ function restorePalette(config: Config): void {
   if (plan !== 'random') {
     initSaturation(config);
     initInvert(config);
+    initHighContrast(config);
   }
 }
 export function switchToPreset(key: string): void {
@@ -62,12 +65,14 @@ export function switchToPreset(key: string): void {
   destroyFollowSystem();
   destroySaturation();
   destroyInvert();
+  destroyHighContrast();
   applyPreset(key);
   loadConfig().then((config) => {
     if (_pendingPreset !== key) return;
     _pendingPreset = null;
     initSaturation(config);
     initInvert(config);
+    initHighContrast(config);
   }).catch(() => {
     if (_pendingPreset === key) _pendingPreset = null;
   });
@@ -157,6 +162,7 @@ export { createColorPickerHTML, getThemeColor } from './customcolor';
 export { createSliderHTML } from './saturation';
 export { createFollowTimeColorPickerHTML } from './followtime';
 export { onInvertClick } from './invert';
+export { onHighContrastClick } from './highcontrast';
 let _mutationObserver: MutationObserver | null = null;
 export function initPalette(): void {
   const plugin = getPlugin();
@@ -182,6 +188,7 @@ export function destroyPalette(): void {
   destroyFollowSystem();
   destroySaturation();
   destroyInvert();
+  destroyHighContrast();
   destroyPaletteClasses();
   destroyPaletteMenuEvents();
   if (_mutationObserver) {

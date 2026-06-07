@@ -7,6 +7,8 @@ export interface Config {
   'saturation-dark'?: number;
   'invert-light'?: boolean;
   'invert-dark'?: boolean;
+  'highcontrast-light'?: boolean;
+  'highcontrast-dark'?: boolean;
   'preset-light'?: string;
   'preset-dark'?: string;
   'color-plan-light'?: 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random';
@@ -38,6 +40,7 @@ export interface Config {
   'colored-headings'?: boolean;
   'scroll-effect'?: boolean;
   'vertical-tabs'?: boolean;
+  'immersive-mode'?: boolean;
 }
 let configCache: Config = {};
 let pendingLoadConfig: Promise<Config> | null = null;

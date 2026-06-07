@@ -1,0 +1,109 @@
+@use "manager" as *;
+@use "../tools" as *;
+[data-theme-mode="dark"] [data-id="neo-highcontrast-button"] {
+    display: none;
+}
+@mixin neo-highcontrast-icon {
+    color: var(--neo-highcontrast-on-bg);
+    background-color: transparent !important;
+    &:hover {
+        background-color: oklch(from var(--neo-highcontrast-on-bg) l c h / 0.12) !important;
+        color: var(--neo-highcontrast-on-bg);
+        box-shadow: unset;
+    }
+}
+.neo-palette-highcontrast {
+    @include palette-common("[data-id="neo-highcontrast-button"]");
+    &[data-theme-mode="light"] {
+        --neo-highcontrast-bg: oklch(from var(--b3-base-color) min(0.5, l) calc(var(--neo-saturation, 2) * 0.03) h);
+        --neo-highcontrast-on-bg: var(--b3-theme-background);
+        body:not(.body--window) {
+            background-color: var(--neo-highcontrast-bg);
+        }
+        .layout__resize {
+            --_resize-hl: var(--b3-theme-background);
+        }
+        #toolbar .toolbar__item {
+            @include neo-highcontrast-icon;
+        }
+        .toolbar #drag {
+            color: var(--neo-highcontrast-on-bg);
+        }
+        .dock__item {
+            @include neo-highcontrast-icon;
+        }
+        .dock__item--active,
+        .dock__item--activefocus {
+            background-color: var(--b3-theme-background) !important;
+            color: var(--neo-highcontrast-bg) !important;
+            &:hover {
+                background-color: var(--b3-theme-background) !important;
+                color: var(--neo-highcontrast-bg) !important;
+            }
+        }
+        .dock__split::after {
+            background-color: oklch(from var(--b3-theme-background) l c h / 0.5) !important;
+        }
+        .status {
+            color: var(--neo-highcontrast-on-bg);
+            background-color: var(--neo-highcontrast-bg) !important;
+            --b3-theme-on-surface: oklch(from var(--neo-highcontrast-on-bg) l c h / 0.65);
+            --b3-theme-on-background: var(--neo-highcontrast-on-bg);
+            .toolbar__item {
+                @include neo-highcontrast-icon;
+            }
+        }
+        .body--toolbar-hide {
+            .layout__center [data-type=wnd] {
+                & > .fn__flex:first-child {
+                    & > .layout-tab-bar:not(.layout-tab-bar--readonly) {
+                        .item {
+                            &::before {
+                                background-color: oklch(from var(--b3-theme-background) l c h / 0.5);
+                            }
+                            .item__icon,
+                            .item__graphic,
+                            .item__text {
+                                color: var(--neo-highcontrast-on-bg) !important;
+                            }
+                            .item__close {
+                                svg {
+                                    color: var(--neo-highcontrast-on-bg) !important;
+                                }
+                                &:hover {
+                                    svg {
+                                        background-color: oklch(from var(--neo-highcontrast-on-bg) l c h / 0.12);
+                                    }
+                                }
+                            }
+                            &.item--focus {
+                                background-color: var(--neo-highcontrast-on-bg) !important;
+                                .item__icon,
+                                .item__graphic,
+                                .item__text {
+                                    color: var(--neo-highcontrast-bg) !important;
+                                }
+                                .item__close {
+                                    svg {
+                                        color: var(--neo-highcontrast-bg) !important;
+                                    }
+                                    &:hover {
+                                        svg {
+                                            color: var(--b3-theme-error) !important;
+                                            background-color: transparent;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    & > .layout-tab-bar--readonly {
+                        .block__icon {
+                            @include neo-highcontrast-icon;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

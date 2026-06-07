@@ -8,7 +8,8 @@
         }
     }
     [data-id="neo-saturation-button"],
-    [data-id="neo-invert-button"] {
+    [data-id="neo-invert-button"],
+    [data-id="neo-highcontrast-button"] {
         pointer-events: none !important;
         opacity: 0.38 !important;
     }

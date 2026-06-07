@@ -6,6 +6,7 @@ interface LastRandomState {
   color?: string;
   saturation?: number;
   inverted?: boolean;
+  highContrast?: boolean;
 }
 let lastState: LastRandomState | null = null;
 function randomHexColor(): string {
@@ -55,6 +56,7 @@ export function destroyRandom(): void {
   html.style.removeProperty('--neo-custom-base-color');
   html.style.removeProperty('--neo-saturation');
   html.classList.remove('neo-palette-invert');
+  html.classList.remove('neo-palette-highcontrast');
 }
 export function initRandom(): void {
   const html = document.documentElement;
@@ -66,6 +68,7 @@ export function initRandom(): void {
   html.style.removeProperty('--neo-custom-base-color');
   html.style.removeProperty('--neo-saturation');
   html.classList.remove('neo-palette-invert');
+  html.classList.remove('neo-palette-highcontrast');
   const choosePreset = Math.random() < 0.3;
   if (choosePreset) {
     const available = getPresetsByMode(mode);
@@ -91,11 +94,21 @@ export function initRandom(): void {
       && inverted === lastState.inverted
       ? !inverted
       : inverted;
+    const highContrast = Math.random() < 0.15;
+    const finalHighContrast = lastState?.type === 'custom'
+      && color === lastState.color
+      && saturation === lastState.saturation
+      && highContrast === lastState.highContrast
+      ? !highContrast
+      : highContrast;
     html.style.setProperty('--neo-custom-base-color', color);
     html.style.setProperty('--neo-saturation', String(saturation));
     if (finalInverted) {
       html.classList.add('neo-palette-invert');
     }
-    lastState = { type: 'custom', color, saturation, inverted: finalInverted };
+    if (finalHighContrast) {
+      html.classList.add('neo-palette-highcontrast');
+    }
+    lastState = { type: 'custom', color, saturation, inverted: finalInverted, highContrast: finalHighContrast };
   }
 }

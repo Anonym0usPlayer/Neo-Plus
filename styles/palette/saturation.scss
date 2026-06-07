@@ -7,10 +7,13 @@
         }
     }
 }
-.neo-palette-custom [data-id="neo-saturation-button"],
-.neo-palette-followtime [data-id="neo-saturation-button"],
-.neo-palette-followbanner [data-id="neo-saturation-button"],
-.neo-palette-followsystem [data-id="neo-saturation-button"] {
-    opacity: 1;
-    pointer-events: auto;
+.neo-palette-custom,
+.neo-palette-followtime,
+.neo-palette-followbanner,
+.neo-palette-followsystem,
+.neo-palette-highcontrast[data-theme-mode="light"] {
+    [data-id="neo-saturation-button"] {
+        opacity: 1;
+        pointer-events: auto;
+    }
 }
