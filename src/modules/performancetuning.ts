@@ -1,4 +1,4 @@
-import { onFetch, offFetch } from './fetchmonitor';
+import { fetchListener } from './fetchmonitor';
 interface StyleRuleFilter {
   selectorMatch: (selector: string) => boolean;
   cssMatch: (cssText: string) => boolean;
@@ -227,27 +227,18 @@ function restoreAllRules(): void {
     entry.saved = [];
   }
 }
-let _onSetUILayout: (() => void) | null = null;
-function attachListener(): void {
-  _onSetUILayout = () => {
-    const dynamicEntries = _ruleFilters.filter((e) => e.dynamic);
-    if (dynamicEntries.length > 0) {
-      removeMatchingRules(dynamicEntries);
-    }
-  };
-  onFetch('setUILayout', _onSetUILayout);
-}
-function detachListener(): void {
-  if (_onSetUILayout) {
-    offFetch('setUILayout', _onSetUILayout);
-    _onSetUILayout = null;
+const _fetchListener = fetchListener();
+_fetchListener.on('setUILayout', () => {
+  const dynamicEntries = _ruleFilters.filter((e) => e.dynamic);
+  if (dynamicEntries.length > 0) {
+    removeMatchingRules(dynamicEntries);
   }
-}
+});
 export function initPerformanceTuning(): void {
   removeMatchingRules();
-  attachListener();
+  _fetchListener.attach();
 }
 export function destroyPerformanceTuning(): void {
-  detachListener();
+  _fetchListener.detach();
   restoreAllRules();
 }
