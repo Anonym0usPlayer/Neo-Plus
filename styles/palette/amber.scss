@@ -18,5 +18,9 @@
 		--b3-theme-surface: #423939;
 		--b3-theme-on-background: #f4e6d2;
 		--b3-theme-on-surface: #9d8b8b;
+		&.neo-palette-invert {
+			--b3-theme-background: #423939;
+			--b3-theme-surface: #221e1e;
+		}
     }
 }

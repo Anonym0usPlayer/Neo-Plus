@@ -28,6 +28,10 @@
         --neo-main-shadow-heavy: 0 0 1px oklch(from var(--b3-theme-on-background) l c h / 0.85), 0 2px 6px rgba(0, 0, 0, 0.35);
         --neo-switch-primary: #7a7a7a;
         --b3-list-hover: oklch(from var(--b3-theme-on-background) l c h / 0.15);
+        &.neo-palette-invert {
+            --b3-theme-background: #010101;
+            --b3-theme-surface: #232323;
+        }
     }
     body {
         background-color: var(--b3-theme-background);

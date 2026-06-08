@@ -37,11 +37,20 @@ function updateHasWndClass(): void {
   });
 }
 _fetchListener.on('setUILayout', () => { updateHasWndClass(); });
+let _fallbackTimer: ReturnType<typeof setTimeout> | null = null;
 export function initLayout(): void {
   _fetchListener.attach();
   updateHasWndClass();
+  _fallbackTimer = setTimeout(() => {
+    updateHasWndClass();
+    _fallbackTimer = null;
+  }, 200);
 }
 export function destroyLayout(): void {
+  if (_fallbackTimer !== null) {
+    clearTimeout(_fallbackTimer);
+    _fallbackTimer = null;
+  }
   _fetchListener.detach();
   document.querySelectorAll('.neo-haswnd').forEach((el) => {
     el.classList.remove('neo-haswnd');

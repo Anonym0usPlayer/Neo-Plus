@@ -15,7 +15,7 @@
 .neo-palette-highcontrast {
     @include palette-common("[data-id="neo-highcontrast-button"]");
     &[data-theme-mode="light"] {
-        --neo-highcontrast-bg: oklch(from var(--b3-base-color) min(0.5, l) calc(var(--neo-saturation, 2) * 0.03) h);
+        --neo-highcontrast-bg: oklch(from var(--b3-base-color) min(0.68, l) calc(var(--neo-saturation, 2) * 0.03) h);
         --neo-highcontrast-on-bg: var(--b3-theme-background);
         body:not(.body--window) {
             background-color: var(--neo-highcontrast-bg);
@@ -25,6 +25,12 @@
         }
         #toolbar .toolbar__item {
             @include neo-highcontrast-icon;
+            &#barWorkspace {
+                &:hover {
+                    background-color: var(--b3-theme-background) !important;
+                    color: var(--neo-highcontrast-bg) !important;
+                }
+            }
         }
         .toolbar #drag {
             color: var(--neo-highcontrast-on-bg);
@@ -45,10 +51,14 @@
             background-color: oklch(from var(--b3-theme-background) l c h / 0.5) !important;
         }
         .status {
+            box-shadow: unset;
             color: var(--neo-highcontrast-on-bg);
             background-color: var(--neo-highcontrast-bg) !important;
             --b3-theme-on-surface: oklch(from var(--neo-highcontrast-on-bg) l c h / 0.65);
             --b3-theme-on-background: var(--neo-highcontrast-on-bg);
+            &::before {
+                --b3-theme-on-surface-light: var(--neo-highcontrast-on-bg);
+            }
             .toolbar__item {
                 @include neo-highcontrast-icon;
             }

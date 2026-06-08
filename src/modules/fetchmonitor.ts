@@ -40,8 +40,12 @@ export function initFetchMonitor(): void {
   if (isPatched) return;
   downstreamFetch = window.fetch;
   patchedFetch = function (input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+    const currentDownstream = downstreamFetch;
+    if (!currentDownstream) {
+      return window.fetch(input, init);
+    }
     if (rules.size === 0) {
-      return downstreamFetch!.call(window, input, init);
+      return currentDownstream.call(window, input, init);
     }
     const url =
       typeof input === 'string'
@@ -49,7 +53,7 @@ export function initFetchMonitor(): void {
         : input instanceof URL
           ? input.href
           : input.url;
-    const fetchPromise = downstreamFetch!.call(window, input, init);
+    const fetchPromise = currentDownstream.call(window, input, init);
     const matchedCallbacks: FetchCallback[] = [];
     rules.forEach((callbacks, name) => {
       if (url.includes(name)) {

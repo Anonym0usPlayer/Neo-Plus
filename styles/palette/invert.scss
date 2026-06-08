@@ -2,17 +2,6 @@
 [data-theme-mode="light"] [data-id="neo-invert-button"] {
     display: none;
 }
-.neo-palette-custom,
-.neo-palette-followtime,
-.neo-palette-followbanner,
-.neo-palette-followsystem {
-    [data-id="neo-invert-button"] {
-        opacity: 1;
-    }
-}
-[data-id="neo-invert-button"] {
-    opacity: 0.38;
-}
 .neo-palette-invert {
     @include palette-common("[data-id="neo-invert-button"]");
 }

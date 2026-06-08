@@ -16,7 +16,11 @@
 		--b3-theme-accent: #ebc3bc;
 		--b3-theme-background: #151320;
 		--b3-theme-surface: #1f1d2e;
-		--b3-theme-on-background: #e0def4;
-		--b3-theme-on-surface: #8d89a6;
+        --b3-theme-on-background: #e0def4;
+        --b3-theme-on-surface: #8d89a6;
+        &.neo-palette-invert {
+            --b3-theme-background: #1f1d2e;
+            --b3-theme-surface: #151320;
+        }
     }
 }

@@ -25,5 +25,9 @@
         --neo-switch-primary: #2eaadc;
         --neo-button-primary: #2eaadc;
         --neo-input-primary: #2eaadc;
+        &.neo-palette-invert {
+            --b3-theme-background: #202528;
+            --b3-theme-surface: #2f3437;
+        }
     }
 }
