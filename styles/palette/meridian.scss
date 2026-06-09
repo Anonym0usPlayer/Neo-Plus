@@ -48,4 +48,9 @@
             outline-color: oklch(from var(--b3-theme-accent) l 0 h / 0.3);
         }
     }
+    @supports (bottom: anchor(--a bottom)) {
+        .status {
+            background-color: oklch(from var(--b3-theme-background) l c h / 0.65) !important;
+        }
+    }
 }
