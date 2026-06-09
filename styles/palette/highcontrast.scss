@@ -15,7 +15,7 @@
 .neo-palette-highcontrast {
     @include palette-common("[data-id="neo-highcontrast-button"]");
     &[data-theme-mode="light"] {
-        --neo-highcontrast-bg: oklch(from var(--b3-base-color) min(0.68, l) calc(var(--neo-saturation, 2) * 0.03) h);
+        --neo-highcontrast-bg: oklch(from var(--b3-base-color) min(0.65, l) calc(var(--neo-saturation, 2) * 0.03) h);
         --neo-highcontrast-on-bg: var(--b3-theme-background);
         body:not(.body--window) {
             background-color: var(--neo-highcontrast-bg);
@@ -54,7 +54,7 @@
             box-shadow: unset;
             color: var(--neo-highcontrast-on-bg);
             background-color: var(--neo-highcontrast-bg) !important;
-            --b3-theme-on-surface: oklch(from var(--neo-highcontrast-on-bg) l c h / 0.65);
+            --b3-theme-on-surface: oklch(from var(--neo-highcontrast-on-bg) l c h / 0.75);
             --b3-theme-on-background: var(--neo-highcontrast-on-bg);
             &::before {
                 --b3-theme-on-surface-light: var(--neo-highcontrast-on-bg);

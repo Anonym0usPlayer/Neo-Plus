@@ -11,7 +11,7 @@
         .status {
             transform-origin: 100% 50%;
             &:not(.neo-status-hidden) {
-                animation: neo-status-expand 0.3s cubic-bezier(0.33, 1.7, 0.69, 0.99);
+                animation: neo-status-expand 0.25s cubic-bezier(0.33, 1.7, 0.69, 0.99);
             }
             &.neo-status-hidden {
                 &:not(:hover) {
@@ -40,7 +40,7 @@
                     }
                 }
                 &:hover {
-                    animation: neo-status-expand 0.3s cubic-bezier(0.33, 1.7, 0.69, 0.99);
+                    animation: neo-status-expand 0.25s cubic-bezier(0.33, 1.7, 0.69, 0.99);
                     @include status-child {
                         opacity: 1;
                         visibility: visible;

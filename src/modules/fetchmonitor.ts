@@ -44,33 +44,38 @@ export function initFetchMonitor(): void {
     if (!currentDownstream) {
       return window.fetch(input, init);
     }
-    if (rules.size === 0) {
-      return currentDownstream.call(window, input, init);
-    }
-    const url =
-      typeof input === 'string'
-        ? input
-        : input instanceof URL
-          ? input.href
-          : input.url;
-    const fetchPromise = currentDownstream.call(window, input, init);
-    const matchedCallbacks: FetchCallback[] = [];
-    rules.forEach((callbacks, name) => {
-      if (url.includes(name)) {
-        callbacks.forEach((cb) => matchedCallbacks.push(cb));
+    window.fetch = currentDownstream;
+    try {
+      if (rules.size === 0) {
+        return currentDownstream.call(window, input, init);
       }
-    });
-    if (matchedCallbacks.length > 0) {
-      fetchPromise.then((response) => {
-        const clonedResponse = response.clone();
-        matchedCallbacks.forEach((callback) => {
-          try {
-            callback(clonedResponse, url, init);
-          } catch (_e) {}
-        });
+      const url =
+        typeof input === 'string'
+          ? input
+          : input instanceof URL
+            ? input.href
+            : input.url;
+      const fetchPromise = currentDownstream.call(window, input, init);
+      const matchedCallbacks: FetchCallback[] = [];
+      rules.forEach((callbacks, name) => {
+        if (url.includes(name)) {
+          callbacks.forEach((cb) => matchedCallbacks.push(cb));
+        }
       });
+      if (matchedCallbacks.length > 0) {
+        fetchPromise.then((response) => {
+          const clonedResponse = response.clone();
+          matchedCallbacks.forEach((callback) => {
+            try {
+              callback(clonedResponse, url, init);
+            } catch (_e) {}
+          });
+        });
+      }
+      return fetchPromise;
+    } finally {
+      window.fetch = patchedFetch!;
     }
-    return fetchPromise;
   };
   window.fetch = patchedFetch;
   isPatched = true;
