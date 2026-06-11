@@ -1,9 +1,10 @@
 [data-id="neo-saturation-button"] {
     opacity: 0.38;
     pointer-events: none;
+    filter: saturate(0);
     .b3-slider {
     &::-webkit-slider-runnable-track {
-            background: linear-gradient(to right, oklch(from var(--b3-theme-accent) l 0 h / 0.5), oklch(from var(--b3-theme-accent) l 0.15 h / 0.5));
+            background: linear-gradient(to right, oklch(from var(--b3-theme-accent) l 0 h / 0.3), oklch(from var(--b3-theme-accent) l 0.2 h / 0.3));
         }
     }
 }
@@ -15,5 +16,6 @@
     [data-id="neo-saturation-button"] {
         opacity: 1;
         pointer-events: auto;
+        filter: unset;
     }
 }

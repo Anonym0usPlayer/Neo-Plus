@@ -1,6 +1,6 @@
 @use "manager" as *;
 @use "sass:map";
-$fix-u: 2.25px;
+$fix-u: 0.25px;
 $fix-o: 10.25px;
 $fix-t: 7.25px;
 $fix-fontsize: calc((var(--b3-font-size-editor) - 16px) * 0.5);
@@ -26,6 +26,7 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
     corner-shape: superellipse(1.4);
     position: absolute;
     left: -18px;
+    animation: neo-listbulletline-entrance 0.3s;
   }
   .protyle-wysiwyg [data-node-id].li {
     &[data-subtype="o"],
@@ -72,4 +73,12 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
       }
     }
   }
+}
+@keyframes neo-listbulletline-entrance {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
 }

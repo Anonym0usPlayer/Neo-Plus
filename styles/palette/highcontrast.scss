@@ -5,11 +5,8 @@
 }
 @mixin neo-highcontrast-icon {
     color: var(--neo-highcontrast-on-bg);
-    background-color: transparent !important;
     &:hover {
-        background-color: oklch(from var(--neo-highcontrast-on-bg) l c h / 0.12) !important;
-        color: var(--neo-highcontrast-on-bg);
-        box-shadow: unset;
+        color: white;
     }
 }
 .neo-palette-highcontrast {
