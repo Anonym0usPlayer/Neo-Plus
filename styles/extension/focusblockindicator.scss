@@ -1,7 +1,7 @@
 @use "manager" as *;
 .neo-extension-focusblockindicator {
     @include extension-common('[data-id="neo-focus-block-indicator-button"]', '[data-id="neo-extension-button"]');
-    [neo-focus-block] {
+    .protyle-wysiwyg [neo-focus-block] {
         &::before {
             content: "";
             display: block;
