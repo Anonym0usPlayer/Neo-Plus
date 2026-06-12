@@ -9,8 +9,8 @@
             width: 100%;
             height: 100%;
             background-image: var(--neo-customimage-url, unset);
-            background-repeat: no-repeat;
-            background-size: cover;
+            background-repeat: var(--neo-customimage-repeat, no-repeat);
+            background-size: var(--neo-customimage-size, cover);
             background-position: var(--neo-customimage-x, 50%) var(--neo-customimage-y, 50%);
             background-color: var(--b3-theme-background);
             mix-blend-mode: var(--neo-customimage-effect, normal);

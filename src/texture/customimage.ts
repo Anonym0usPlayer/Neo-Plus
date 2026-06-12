@@ -24,6 +24,8 @@ const fieldDefs: CustomImageField[] = [
   { configKey: 'customimage-contrast',   cssVar: '--neo-customimage-contrast',   toCss: raw => raw ?? '1',                                                                                    inputId: 'neo-customimage-contrast',       tooltipId: 'neo-customimage-contrast-tooltip',      event: 'input',  tooltipSuffix: ''   },
   { configKey: 'customimage-grayscale',  cssVar: '--neo-customimage-grayscale',  toCss: raw => raw ?? '0',                                                                                    inputId: 'neo-customimage-grayscale',      tooltipId: 'neo-customimage-grayscale-tooltip',     event: 'input',  tooltipSuffix: ''   },
   { configKey: 'customimage-hue-rotate', cssVar: '--neo-customimage-hue-rotate', toCss: raw => (raw ?? '0') + 'deg',                                                                         inputId: 'neo-customimage-hue-rotate',     tooltipId: 'neo-customimage-hue-rotate-tooltip',    event: 'input',  tooltipSuffix: 'deg'},
+  { configKey: 'customimage-fill-mode', cssVar: '--neo-customimage-repeat',      toCss: raw => raw === 'tile' ? 'repeat' : 'no-repeat',                                                       inputId: 'neo-customimage-fill-mode',      tooltipId: '',                             event: 'change', tooltipSuffix: ''   },
+  { configKey: 'customimage-fill-mode', cssVar: '--neo-customimage-size',        toCss: raw => raw === 'tile' ? 'auto' : 'cover',                                                             inputId: 'neo-customimage-fill-mode',      tooltipId: '',                             event: 'change', tooltipSuffix: ''   },
 ];
 export function applyCustomImageCss(config?: Partial<Config> | null): void {
   const style = document.documentElement.style;
@@ -165,6 +167,19 @@ function effectSelectHTML(i18n: Record<string, string>, id: string, className: s
     <select class="b3-select fn__flex-center fn__size200" id="${id}">${opts}</select>
   </label>`;
 }
+function fillModeSelectHTML(i18n: Record<string, string>, id: string, className: string, i18nKey: string): string {
+  const opts = ['scale', 'tile']
+    .map(v => `<option value="${v}">${t(i18n, `customimageFillMode${v.charAt(0).toUpperCase() + v.slice(1)}`)}</option>`)
+    .join('');
+  return `<label class="fn__flex b3-label ${className}">
+    <div class="fn__flex-1">
+      ${t(i18n, i18nKey)}
+      <div class="b3-label__text">${t(i18n, 'customDefaultValue')}${t(i18n, 'customimageFillModeScale')}</div>
+    </div>
+    <span class="fn__space"></span>
+    <select class="b3-select fn__flex-center fn__size200" id="${id}">${opts}</select>
+  </label>`;
+}
 function buildSettingsHTML(i18n: Record<string, string>): string {
   const basicSliderKeys = ['customimage-blur'];
   const basicSliders = basicSliderKeys.map(k => sliderHTML(i18n, getSliderConfig(k)!)).join('');
@@ -195,6 +210,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
     </div>
     <b class="config-group__title">${t(i18n, 'customimageBasicParams')}</b>
     <div class="config-group">
+      ${fillModeSelectHTML(i18n, 'neo-customimage-fill-mode', 'config__item-neo-customimage-fill-mode', 'customimageFillMode')}
       ${basicSliders}
       ${opacitySlider}
       ${effectSelect}
@@ -265,7 +281,7 @@ export function showCustomImageSettings(): void {
   const btn = (id: string) => dialog.element.querySelector(id) as HTMLButtonElement | null;
   btn('#neo-customimage-reset-preset')?.addEventListener('click', () => {
     for (const { field, input, tooltip } of fieldDom) {
-      if (!input || field.configKey === 'customimage-url') continue;
+      if (!input || field.configKey === 'customimage-url' || field.configKey === 'customimage-fill-mode') continue;
       const def = field.toCss(undefined);
       let disp = def;
       if (input instanceof HTMLInputElement && input.type === 'checkbox') input.checked = def === 'block';
@@ -275,6 +291,12 @@ export function showCustomImageSettings(): void {
       }
       if (tooltip && field.tooltipSuffix !== undefined) tooltip.setAttribute('aria-label', def);
       style.setProperty(field.cssVar, def);
+    }
+    const fillModeInput = dialog.element.querySelector('#neo-customimage-fill-mode') as HTMLSelectElement | null;
+    if (fillModeInput) {
+      fillModeInput.value = 'scale';
+      style.setProperty('--neo-customimage-repeat', 'no-repeat');
+      style.setProperty('--neo-customimage-size', 'cover');
     }
   });
   const originalDestroy = dialog.destroy.bind(dialog);

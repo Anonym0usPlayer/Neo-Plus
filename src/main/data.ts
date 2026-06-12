@@ -29,6 +29,7 @@ export interface Config {
   'customimage-contrast'?: string;
   'customimage-grayscale'?: string;
   'customimage-hue-rotate'?: string;
+  'customimage-fill-mode'?: string;
   'customimage-preset-current-light'?: string;
   'customimage-preset-current-dark'?: string;
   'smooth-caret'?: boolean;
