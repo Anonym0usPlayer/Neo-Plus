@@ -1,7 +1,6 @@
 Neo+ is a companion plugin for the Neo theme, providing color schemes and style extensions for the Neo theme.
 #### Changelog
-- Fixed conflict with Kmind plugin
-- All dark mode color schemes now support the "Invert" function
+See Neo theme introduction page
 #### Important Notice
 - Neo+ is a companion plugin for the Neo theme and only takes effect when using the Neo theme.
 - Neo+ does not write or modify any document data; it only makes appearance modifications.

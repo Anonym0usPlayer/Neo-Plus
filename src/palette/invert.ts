@@ -4,10 +4,17 @@ import { getCurrentThemeMode, getInvertKey } from './presets';
 export function onInvertClick(): void {
   const html = document.documentElement;
   const enabled = html.classList.contains('neo-palette-invert');
-  if (enabled) {
-    html.classList.remove('neo-palette-invert');
+  const callback = () => {
+    if (enabled) {
+      html.classList.remove('neo-palette-invert');
+    } else {
+      html.classList.add('neo-palette-invert');
+    }
+  };
+  if (document.startViewTransition) {
+    document.startViewTransition(callback);
   } else {
-    html.classList.add('neo-palette-invert');
+    callback();
   }
   const mode = getCurrentThemeMode();
   const key = getInvertKey(mode);

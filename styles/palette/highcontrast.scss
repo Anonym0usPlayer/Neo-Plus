@@ -5,8 +5,15 @@
 }
 @mixin neo-highcontrast-icon {
     color: var(--neo-highcontrast-on-bg);
+    svg {
+        color: var(--neo-highcontrast-on-bg);
+    }
     &:hover {
         color: white;
+        background-color: oklch(from var(--neo-highcontrast-on-bg) l c h / 0.12) !important;
+        svg {
+            color: white;
+        }
     }
 }
 .neo-palette-highcontrast {
@@ -39,9 +46,15 @@
         .dock__item--activefocus {
             background-color: var(--b3-theme-background) !important;
             color: var(--neo-highcontrast-bg) !important;
+            svg {
+                color: var(--neo-highcontrast-bg) !important;
+            }
             &:hover {
                 background-color: var(--b3-theme-background) !important;
                 color: var(--neo-highcontrast-bg) !important;
+                svg {
+                    color: black !important;
+                }
             }
         }
         .dock__split::after {

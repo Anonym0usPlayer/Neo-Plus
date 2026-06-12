@@ -4,10 +4,17 @@ import { getCurrentThemeMode, getHighContrastKey } from './presets';
 export function onHighContrastClick(): void {
   const html = document.documentElement;
   const enabled = html.classList.contains('neo-palette-highcontrast');
-  if (enabled) {
-    html.classList.remove('neo-palette-highcontrast');
+  const callback = () => {
+    if (enabled) {
+      html.classList.remove('neo-palette-highcontrast');
+    } else {
+      html.classList.add('neo-palette-highcontrast');
+    }
+  };
+  if (document.startViewTransition) {
+    document.startViewTransition(callback);
   } else {
-    html.classList.add('neo-palette-highcontrast');
+    callback();
   }
   const mode = getCurrentThemeMode();
   const key = getHighContrastKey(mode);
