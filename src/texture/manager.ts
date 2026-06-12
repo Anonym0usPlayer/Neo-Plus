@@ -27,28 +27,32 @@ function getCurrentThemeMode(): 'light' | 'dark' {
 export function getTextureKey(mode: 'light' | 'dark'): 'texture-light' | 'texture-dark' {
   return mode === 'dark' ? 'texture-dark' : 'texture-light';
 }
+function createCustomImageLabelHTML(i18n: Record<string, string>): string {
+  return `<span class="fn__flex fn__pointer">
+    <span>${i18n.textureCustomImage}</span>
+    <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.customimageSettings}" onclick="event.stopPropagation();__neoOpenCustomImageSettings()"><use xlink:href="#iconSettings"></use></svg>
+  </span>`;
+}
 function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>): any {
+  const html = document.documentElement;
+  const className = `neo-texture-${texture.key}`;
+  if (texture.key === 'customimage') {
+    return {
+      id: `neo-texture-${texture.key}-button`,
+      icon: 'iconNeoTexture',
+      label: createCustomImageLabelHTML(i18n),
+      click: () => {
+        const isCurrentlyActive = document.documentElement.classList.contains('neo-texture-customimage');
+        toggleCustomImage(!isCurrentlyActive);
+        return true;
+      },
+    };
+  }
   return {
     id: `neo-texture-${texture.key}-button`,
     icon: 'iconNeoTexture',
     label: i18n[texture.nameKey],
     click: () => {
-      const html = document.documentElement;
-      const className = `neo-texture-${texture.key}`;
-      if (texture.key === 'customimage') {
-        const isActive = html.classList.contains(className);
-        if (isActive) {
-          toggleCustomImage(false);
-        } else {
-          html.className = html.className
-            .split(' ')
-            .filter((cls) => !cls.startsWith('neo-texture-'))
-            .join(' ');
-          toggleCustomImage(true);
-          showCustomImageSettings();
-        }
-        return true;
-      }
       if (html.classList.contains(className)) {
         html.classList.remove(className);
         const mode = getCurrentThemeMode();
@@ -117,6 +121,7 @@ export function applyTexture(config: Config): void {
 }
 let _mutationObserver: MutationObserver | null = null;
 export function initTexture(): void {
+  (window as any).__neoOpenCustomImageSettings = showCustomImageSettings;
   loadConfig().then((config) => {
     applyTexture(config);
     _mutationObserver = new MutationObserver(() => {
@@ -131,6 +136,7 @@ export function initTexture(): void {
   });
 }
 export function destroyTexture(): void {
+  delete (window as any).__neoOpenCustomImageSettings;
   const html = document.documentElement;
   html.className = html.className
     .split(' ')
