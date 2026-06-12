@@ -11,6 +11,7 @@ import { onScrollEffectClick } from '../extension/scrolleffect';
 import { onColoredFoldersClick } from '../extension/coloredfolders';
 import { onVerticalTabsClick } from '../extension/verticaltabs';
 import { onImmersiveModeClick } from '../extension/immersivemode';
+import { onSuperFusionClick } from '../extension/superfusion';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
 export function buildMenu(
@@ -159,6 +160,15 @@ export function buildMenu(
         label: i18n.verticalTabs,
         click: () => {
           onVerticalTabsClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-super-fusion-button',
+        icon: 'iconNeoSuperFusion',
+        label: i18n.superFusion,
+        click: () => {
+          onSuperFusionClick();
           return true;
         },
       },

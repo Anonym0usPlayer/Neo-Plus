@@ -42,6 +42,7 @@ export interface Config {
   'scroll-effect'?: boolean;
   'vertical-tabs'?: boolean;
   'immersive-mode'?: boolean;
+  'super-fusion'?: boolean;
 }
 let configCache: Config = {};
 let pendingLoadConfig: Promise<Config> | null = null;
