@@ -1,5 +1,12 @@
 @use "manager" as *;
 @use "../tools" as *;
+body {
+    &.neo-mobile {
+        [data-id="neo-super-fusion-button"] {
+            display: none;
+        }
+    }
+}
 .neo-extension-superfusion {
     @include extension-common('[data-id="neo-super-fusion-button"]', '[data-id="neo-extension-button"]');
     .protyle {
