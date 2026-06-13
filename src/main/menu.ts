@@ -10,7 +10,7 @@ import { onFocusBlockIndicatorClick } from '../extension/focusblockindicator';
 import { onScrollEffectClick } from '../layout/scrolleffect';
 import { onColoredFoldersClick } from '../layout/coloredfolders';
 import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../layout/verticaltabs';
-import { onImmersiveModeClick } from '../extension/immersivemode';
+import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
 import { onSuperFusionClick } from '../layout/superfusion';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
@@ -200,7 +200,7 @@ export function buildMenu(
       {
         id: 'neo-immersive-mode-button',
         icon: 'iconNeoImmersiveMode',
-        label: i18n.immersiveMode,
+        label: createImmersiveModeLabelHTML(i18n),
         click: () => {
           onImmersiveModeClick();
           return true;

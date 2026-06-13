@@ -43,6 +43,8 @@ export interface Config {
   'vertical-tabs'?: boolean;
   'vertical-tabs-mode'?: 'topLeftOnly' | 'all';
   'immersive-mode'?: boolean;
+  'immersive-typewriter'?: boolean;
+  'immersive-highlight'?: boolean;
   'super-fusion'?: boolean;
 }
 let configCache: Config = {};

@@ -158,7 +158,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   const modeOptions = ['topLeftOnly', 'all']
     .map(v => `<option value="${v}">${i18n[`verticaltabsMode${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
     .join('');
-  return `<div class="b3-dialog__content" style="padding: 0">
+  return `<div class="b3-dialog__content">
     <div class="config__tab-container">
       <div class="config-group">
         <label class="fn__flex b3-label">
