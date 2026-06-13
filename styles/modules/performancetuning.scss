@@ -1,0 +1,27 @@
+// 替换.textLayer :is(span, br)
+.textLayer span,
+.textLayer br {
+    color: rgba(0,0,0,0);
+    position: absolute;
+    white-space: pre;
+    cursor: text;
+    transform-origin: 0% 0%
+}
+// 替换.spread :is(.page,.dummyPage),.pdfViewer:is(.scrollHorizontal,.scrollWrapped) :is(.page,.spread)
+.spread {
+    .page,
+    .dummyPage {
+        display: inline-block;
+        vertical-align: middle
+    }
+}
+.pdfViewer {
+    &.scrollHorizontal,
+    &.scrollWrapped {
+        .page,
+        .dummyPage {
+            display: inline-block;
+            vertical-align: middle
+        }
+    }
+}

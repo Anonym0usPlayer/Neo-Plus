@@ -2,6 +2,7 @@ import { fetchListener } from './fetchmonitor';
 interface StyleRuleFilter {
   selectorMatch: (selector: string) => boolean;
   cssMatch: (cssText: string) => boolean;
+  mediaMatch?: (conditionText: string) => boolean;
 }
 interface SavedRule {
   sheetIndex: number;
@@ -92,7 +93,7 @@ const _ruleFilters: RuleFilterEntry[] = [
   },
   {
     filter: {
-      selectorMatch: (s) => s.includes('.xfaLayer *:required'),
+      selectorMatch: (s) => s.includes('.xfaLayer *:required') || s.includes('.xfaLayer :required'),
       cssMatch: () => true,
     },
     saved: [],
@@ -171,8 +172,37 @@ const _ruleFilters: RuleFilterEntry[] = [
   },
   {
     filter: {
-      selectorMatch: (s) => s.includes('.xfaLayer') && (s.includes('div') || s.includes('svg')),
+      selectorMatch: (s) => s.includes('.xfaLayer'),
       cssMatch: (c) => c.includes('pointer-events: none'),
+    },
+    saved: [],
+  },
+  {
+    filter: {
+      mediaMatch: (c) => c.includes('forced-colors'),
+      selectorMatch: (s) => s.includes(':root') || s.includes('.xfaLayer :required'),
+      cssMatch: (c) => c.includes('--xfa-focus-outline') || c.includes('outline: selecteditem'),
+    },
+    saved: [],
+  },
+  {
+    filter: {
+      selectorMatch: (s) => s.includes('#layersView') && s.includes('treeItem') && s.includes('a') && s.includes('>'),
+      cssMatch: (c) => c.includes('cursor: pointer'),
+    },
+    saved: [],
+  },
+  {
+    filter: {
+      selectorMatch: (s) => s.includes('.textLayer') && s.includes(':is(') && s.includes('span') && s.includes('br'),
+      cssMatch: (c) => c.includes('transform-origin'),
+    },
+    saved: [],
+  },
+  {
+    filter: {
+      selectorMatch: (s) => s.includes('.spread') && s.includes(':is(') && s.includes('.page') && s.includes('.pdfViewer') && s.includes('.scrollHorizontal'),
+      cssMatch: (c) => c.includes('vertical-align'),
     },
     saved: [],
   },
@@ -182,12 +212,20 @@ function processRules(
   sheetIndex: number,
   entry: RuleFilterEntry,
   parentRule: CSSRule | null,
+  inMatchingMedia?: boolean,
 ): void {
   for (let j = 0; j < rules.length; j++) {
     const rule = rules[j];
     if (rule instanceof CSSMediaRule) {
-      processRules(rule.cssRules, sheetIndex, entry, rule);
+      const hasMediaFilter = typeof entry.filter.mediaMatch === 'function';
+      const mediaMatches = hasMediaFilter
+        ? entry.filter.mediaMatch!(rule.conditionText)
+        : true;
+      processRules(rule.cssRules, sheetIndex, entry, rule, mediaMatches);
     } else if (rule instanceof CSSStyleRule) {
+      if (parentRule instanceof CSSMediaRule && !inMatchingMedia) {
+        continue;
+      }
       if (rule.selectorText && entry.filter.selectorMatch(rule.selectorText)) {
         if (entry.filter.cssMatch(rule.cssText)) {
           entry.saved.push({ sheetIndex, cssText: rule.cssText });

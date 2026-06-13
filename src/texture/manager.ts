@@ -39,7 +39,7 @@ function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>): a
   if (texture.key === 'customimage') {
     return {
       id: `neo-texture-${texture.key}-button`,
-      icon: 'iconNeoTexture',
+      icon: 'iconNeoCustomImage',
       label: createCustomImageLabelHTML(i18n),
       click: () => {
         const isCurrentlyActive = document.documentElement.classList.contains('neo-texture-customimage');

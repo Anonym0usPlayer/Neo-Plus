@@ -5,14 +5,12 @@
     .protyle-wysiwyg [data-type=NodeBlockQueryEmbed][data-node-id] {
         animation: none !important;
     }
-    .protyle[data-loading="finished"] {
-        .protyle-title,
-        .protyle-wysiwyg [data-node-id]:not([fold="1"]),
-        .protyle-wysiwyg [data-node-id].li > .protyle-action,
-        .protyle-wysiwyg .callout-info {
-            animation: neo-content-scroll-reveal cubic-bezier(0.46, 0.03, 0.52, 0.96) both;
-            animation-timeline: view(block);
-        }
+    .protyle-wysiwyg [data-node-id],
+    .protyle-title,
+    .protyle-action,
+    .callout-info {
+        animation: neo-content-scroll-reveal cubic-bezier(0.46, 0.03, 0.52, 0.96) both;
+        animation-timeline: view(block);
     }
     //.b3-card,
     .config-group > .b3-label {
