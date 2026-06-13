@@ -10,17 +10,4 @@
         --b3-theme-on-background: #160045;
         --b3-theme-on-surface: #5b4785;
     }
-    &[data-theme-mode="dark"] {
-        --b3-base-color: #9e6c87;
-        --b3-theme-primary: #9e6c87;
-        --b3-theme-accent: #9e6c87;
-        --b3-theme-background: #100c1d;
-        --b3-theme-surface: #211f31;
-        --b3-theme-on-background: #fcf6ff;
-        --b3-theme-on-surface: #9d90a4;
-        &.neo-palette-invert {
-            --b3-theme-background: #211f31;
-            --b3-theme-surface: #100c1d;
-        }
-    }
 }

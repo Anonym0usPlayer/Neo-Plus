@@ -207,34 +207,40 @@ const _ruleFilters: RuleFilterEntry[] = [
     saved: [],
   },
 ];
-function processRules(
+function processAllRules(
   rules: CSSRuleList,
   sheetIndex: number,
-  entry: RuleFilterEntry,
+  entries: RuleFilterEntry[],
   parentRule: CSSRule | null,
-  inMatchingMedia?: boolean,
+  mediaContext: Map<RuleFilterEntry, boolean> | null,
 ): void {
   for (let j = 0; j < rules.length; j++) {
     const rule = rules[j];
     if (rule instanceof CSSMediaRule) {
-      const hasMediaFilter = typeof entry.filter.mediaMatch === 'function';
-      const mediaMatches = hasMediaFilter
-        ? entry.filter.mediaMatch!(rule.conditionText)
-        : true;
-      processRules(rule.cssRules, sheetIndex, entry, rule, mediaMatches);
-    } else if (rule instanceof CSSStyleRule) {
-      if (parentRule instanceof CSSMediaRule && !inMatchingMedia) {
-        continue;
+      const childContext = new Map<RuleFilterEntry, boolean>();
+      for (const entry of entries) {
+        const parentMatch = mediaContext?.get(entry) ?? true;
+        const selfMatch = entry.filter.mediaMatch?.(rule.conditionText) ?? true;
+        childContext.set(entry, parentMatch && selfMatch);
       }
-      if (rule.selectorText && entry.filter.selectorMatch(rule.selectorText)) {
-        if (entry.filter.cssMatch(rule.cssText)) {
-          entry.saved.push({ sheetIndex, cssText: rule.cssText });
-          if (parentRule instanceof CSSMediaRule) {
-            parentRule.deleteRule(j);
-          } else {
-            (rule.parentStyleSheet as CSSStyleSheet).deleteRule(j);
+      processAllRules(rule.cssRules, sheetIndex, entries, rule, childContext);
+    } else if (rule instanceof CSSStyleRule) {
+      for (const entry of entries) {
+        const inMatchingMedia = mediaContext?.get(entry) ?? true;
+        if (parentRule instanceof CSSMediaRule && !inMatchingMedia) {
+          continue;
+        }
+        if (rule.selectorText && entry.filter.selectorMatch(rule.selectorText)) {
+          if (entry.filter.cssMatch(rule.cssText)) {
+            entry.saved.push({ sheetIndex, cssText: rule.cssText });
+            if (parentRule instanceof CSSMediaRule) {
+              parentRule.deleteRule(j);
+            } else {
+              (rule.parentStyleSheet as CSSStyleSheet).deleteRule(j);
+            }
+            j--;
+            break;
           }
-          j--;
         }
       }
     }
@@ -244,12 +250,12 @@ function removeMatchingRules(entries?: RuleFilterEntry[]): void {
   const targets = entries ?? _ruleFilters;
   for (const entry of targets) {
     entry.saved = [];
-    for (let i = 0; i < document.styleSheets.length; i++) {
-      const ss = document.styleSheets[i];
-      try {
-        processRules(ss.cssRules, i, entry, null);
-      } catch (_e) {}
-    }
+  }
+  for (let i = 0; i < document.styleSheets.length; i++) {
+    const ss = document.styleSheets[i];
+    try {
+      processAllRules(ss.cssRules, i, targets, null, null);
+    } catch (_e) {}
   }
 }
 function restoreAllRules(): void {
