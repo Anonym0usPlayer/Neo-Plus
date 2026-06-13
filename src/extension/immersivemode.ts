@@ -270,12 +270,10 @@ export function initImmersiveMode(): void {
   (window as any).__neoOpenImmersiveModeSettings = showImmersiveModeSettings;
   loadConfig().then((config) => {
     if (config['immersive-typewriter'] !== undefined) typewriterEnabled = config['immersive-typewriter'];
-    if (config['immersive-highlight'] !== undefined) {
-      highlightEnabled = config['immersive-highlight'];
-      document.body.classList.toggle('neo-extension-immersivemode-highlight', highlightEnabled);
-    }
+    if (config['immersive-highlight'] !== undefined) highlightEnabled = config['immersive-highlight'];
     if (config['immersive-mode'] === true) {
       document.documentElement.classList.add('neo-extension-immersivemode');
+      document.body.classList.toggle('neo-extension-immersivemode-highlight', highlightEnabled);
       startObserving();
     }
   });
@@ -287,6 +285,7 @@ export function onImmersiveModeClick(): void {
   const isActive = htmlEl.classList.contains('neo-extension-immersivemode');
   if (isActive) {
     htmlEl.classList.remove('neo-extension-immersivemode');
+    document.body.classList.remove('neo-extension-immersivemode-highlight');
     saveConfig({ 'immersive-mode': false } as Partial<Config>);
     stopObserving();
   } else {
@@ -298,5 +297,6 @@ export function onImmersiveModeClick(): void {
 export function destroyImmersiveMode(): void {
   delete (window as any).__neoOpenImmersiveModeSettings;
   document.documentElement?.classList.remove('neo-extension-immersivemode');
+  document.body.classList.remove('neo-extension-immersivemode-highlight');
   stopObserving();
 }
