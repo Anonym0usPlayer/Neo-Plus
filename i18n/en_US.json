@@ -111,5 +111,10 @@
   "focusBlockIndicator": "Focus Block Indicator",
   "verticalTabs": "Vertical Tabs",
   "immersiveMode": "Immersive Mode",
-  "superFusion": "Super Fusion"
+  "superFusion": "Super Fusion",
+  "verticaltabsSettings": "Vertical Tabs Settings",
+  "verticaltabsMode": "Mode",
+  "verticaltabsModeTip": "Set the application mode for vertical tabs",
+  "verticaltabsModeTopLeftOnly": "Top-left window only",
+  "verticaltabsModeAll": "All windows"
 }

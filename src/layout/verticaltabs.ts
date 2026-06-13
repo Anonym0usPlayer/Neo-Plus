@@ -2,33 +2,39 @@ import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { fetchListener } from '../modules/fetchmonitor';
+import { Dialog } from 'siyuan';
+import { getPlugin } from '../main/guard';
 let destroyed = false;
 let mouseDownHandler: ((e: MouseEvent) => void) | null = null;
 let dblClickHandler: ((e: MouseEvent) => void) | null = null;
 const defaultWidth = 150;
 const minWidth = 100;
 const maxWidth = 350;
-let lastWidth: number | null = null;
-function clearLayout(): void {
-  document.querySelectorAll<HTMLElement>('.layout__center [data-type="wnd"]').forEach((wnd) => {
+let topLeftOnlyLastWidth: number | null = null;
+let currentMode: 'topLeftOnly' | 'all' = 'topLeftOnly';
+const wndSelector = '.layout__center [data-type="wnd"]';
+function queryWnds(): NodeListOf<HTMLElement> {
+  return document.querySelectorAll<HTMLElement>(wndSelector);
+}
+function addResizeElement(wnd: HTMLElement, firstFlex: HTMLElement): void {
+  if (!wnd.querySelector('.neo-verticaltabs-resize')) {
+    const resizeEl = document.createElement('div');
+    resizeEl.className = 'layout__resize--lr layout__resize neo-verticaltabs-resize';
+    firstFlex.after(resizeEl);
+  }
+}
+function clearVerticalTabsLayout(): void {
+  queryWnds().forEach((wnd) => {
     wnd.classList.remove('neo-verticaltabs-wnd');
     const firstFlex = wnd.querySelector<HTMLElement>('.fn__flex:first-child');
     if (firstFlex) firstFlex.style.width = '';
   });
   document.querySelectorAll('.neo-verticaltabs-resize').forEach((el) => el.remove());
 }
-function doUpdate(): void {
-  if (destroyed) return;
-  if (document.body?.classList.contains('body--toolbar-hide') || document.body?.classList.contains('body--window')) {
-    clearLayout();
-    return;
-  }
-  const wnds = document.querySelectorAll<HTMLElement>('.layout__center [data-type="wnd"]');
-  if (wnds.length === 0) {
-    clearLayout();
-    return;
-  }
-  clearLayout();
+function doUpdateTopLeftOnly(): void {
+  clearVerticalTabsLayout();
+  const wnds = queryWnds();
+  if (wnds.length === 0) return;
   let topLeftWnd: HTMLElement | null = null;
   let topLeftRect: DOMRect | null = null;
   for (let i = 0; i < wnds.length; i++) {
@@ -44,18 +50,46 @@ function doUpdate(): void {
       topLeftRect = rect;
     }
   }
-  if (topLeftWnd) {
-    topLeftWnd.classList.add('neo-verticaltabs-wnd');
-  }
-  const targetWnd = document.querySelector<HTMLElement>('.neo-verticaltabs-wnd');
-  if (targetWnd) {
-    const firstFlex = targetWnd.querySelector<HTMLElement>('.fn__flex:first-child');
+  if (!topLeftWnd) return;
+  topLeftWnd.classList.add('neo-verticaltabs-wnd');
+  const firstFlex = topLeftWnd.querySelector<HTMLElement>('.fn__flex:first-child');
+  if (!firstFlex || firstFlex.classList.contains('fn__none')) return;
+  firstFlex.style.width = `${topLeftOnlyLastWidth ?? defaultWidth}px`;
+  addResizeElement(topLeftWnd, firstFlex);
+}
+function doUpdateAll(): void {
+  queryWnds().forEach((wnd) => {
+    wnd.classList.remove('neo-verticaltabs-wnd');
+  });
+  document.querySelectorAll('.neo-verticaltabs-resize').forEach((el) => el.remove());
+  const wnds = queryWnds();
+  if (wnds.length === 0) return;
+  wnds.forEach((wnd) => {
+    wnd.classList.add('neo-verticaltabs-wnd');
+    const firstFlex = wnd.querySelector<HTMLElement>('.fn__flex:first-child');
     if (firstFlex && !firstFlex.classList.contains('fn__none')) {
-      firstFlex.style.width = `${lastWidth ?? defaultWidth}px`;
-      const resizeEl = document.createElement('div');
-      resizeEl.className = 'layout__resize--lr layout__resize neo-verticaltabs-resize';
-      firstFlex.after(resizeEl);
+      if (!firstFlex.style.width) {
+        firstFlex.style.width = `${defaultWidth}px`;
+      }
+      addResizeElement(wnd, firstFlex);
     }
+  });
+}
+function doUpdate(): void {
+  if (destroyed) return;
+  if (document.body?.classList.contains('body--toolbar-hide') || document.body?.classList.contains('body--window')) {
+    clearVerticalTabsLayout();
+    return;
+  }
+  const wnds = queryWnds();
+  if (wnds.length === 0) {
+    clearVerticalTabsLayout();
+    return;
+  }
+  if (currentMode === 'all') {
+    doUpdateAll();
+  } else {
+    doUpdateTopLeftOnly();
   }
 }
 function initResizeHandle(): void {
@@ -64,7 +98,7 @@ function initResizeHandle(): void {
     const target = e.target as HTMLElement;
     if (!target.classList.contains('neo-verticaltabs-resize')) return;
     e.preventDefault();
-    const wnd = document.querySelector<HTMLElement>('.neo-verticaltabs-wnd');
+    const wnd = target.closest<HTMLElement>('.neo-verticaltabs-wnd');
     if (!wnd) return;
     const firstFlex = wnd.querySelector<HTMLElement>('.fn__flex:first-child');
     if (!firstFlex) return;
@@ -80,8 +114,8 @@ function initResizeHandle(): void {
     function onMouseUp() {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      if (flexEl) {
-        lastWidth = flexEl.getBoundingClientRect().width;
+      if (currentMode === 'topLeftOnly' && flexEl) {
+        topLeftOnlyLastWidth = flexEl.getBoundingClientRect().width;
       }
     }
     document.addEventListener('mousemove', onMouseMove);
@@ -90,12 +124,14 @@ function initResizeHandle(): void {
   dblClickHandler = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
     if (!target.classList.contains('neo-verticaltabs-resize')) return;
-    const wnd = document.querySelector<HTMLElement>('.neo-verticaltabs-wnd');
+    const wnd = target.closest<HTMLElement>('.neo-verticaltabs-wnd');
     if (wnd) {
       const firstFlex = wnd.querySelector<HTMLElement>('.fn__flex:first-child');
       if (firstFlex) {
         firstFlex.style.width = `${defaultWidth}px`;
-        lastWidth = defaultWidth;
+        if (currentMode === 'topLeftOnly') {
+          topLeftOnlyLastWidth = defaultWidth;
+        }
       }
     }
   };
@@ -112,15 +148,83 @@ function destroyResizeHandle(): void {
     dblClickHandler = null;
   }
 }
+function createVerticalTabsLabelHTML(i18n: Record<string, string>): string {
+  return `<span class="fn__flex fn__pointer">
+    <span>${i18n.verticalTabs}</span>
+    <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.verticaltabsSettings}" onclick="event.stopPropagation();__neoOpenVerticalTabsSettings()"><use xlink:href="#iconSettings"></use></svg>
+  </span>`;
+}
+function buildSettingsHTML(i18n: Record<string, string>): string {
+  const modeOptions = ['topLeftOnly', 'all']
+    .map(v => `<option value="${v}">${i18n[`verticaltabsMode${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
+    .join('');
+  return `<div class="b3-dialog__content" style="padding: 0">
+    <div class="config__tab-container">
+      <div class="config-group">
+        <label class="fn__flex b3-label">
+          <div class="fn__flex-1">
+            ${i18n.verticaltabsMode}
+            <div class="b3-label__text">${i18n.verticaltabsModeTip}</div>
+          </div>
+          <span class="fn__space"></span>
+          <select class="b3-select fn__flex-center fn__size200" id="neo-verticaltabs-mode">
+            ${modeOptions}
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="b3-dialog__action">
+    <button class="b3-button b3-button--cancel" id="neo-verticaltabs-cancel">${i18n.cancel}</button>
+    <span class="fn__space"></span>
+    <button class="b3-button b3-button--text" id="neo-verticaltabs-confirm">${i18n.confirm}</button>
+  </div>`;
+}
+export function showVerticalTabsSettings(): void {
+  const plugin = getPlugin();
+  if (!plugin) return;
+  const dialog = new Dialog({
+    title: plugin.i18n.verticaltabsSettings || 'Vertical Tabs Settings',
+    content: buildSettingsHTML(plugin.i18n),
+    width: '90vw',
+  });
+  const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
+  if (container) container.style.maxWidth = '600px';
+  dialog.element.setAttribute('data-key', 'dialog-neo-verticaltabs-settings');
+  const modeSelect = dialog.element.querySelector('#neo-verticaltabs-mode') as HTMLSelectElement;
+  if (modeSelect) modeSelect.value = currentMode;
+  dialog.element.querySelector('#neo-verticaltabs-cancel')?.addEventListener('click', () => dialog.destroy());
+  dialog.element.querySelector('#neo-verticaltabs-confirm')?.addEventListener('click', () => {
+    if (modeSelect) {
+      const newMode = modeSelect.value as 'topLeftOnly' | 'all';
+      if (newMode !== currentMode) {
+        queryWnds().forEach((wnd) => {
+          const firstFlex = wnd.querySelector<HTMLElement>('.fn__flex:first-child');
+          if (firstFlex) firstFlex.style.width = '';
+        });
+        topLeftOnlyLastWidth = null;
+      }
+      currentMode = newMode;
+      saveConfig({ 'vertical-tabs-mode': newMode } as Partial<Config>);
+      if (document.documentElement.classList.contains('neo-layout-verticaltabs')) {
+        doUpdate();
+      }
+    }
+    dialog.destroy();
+  });
+}
 const _fetchListener = fetchListener();
 _fetchListener.on('setUILayout', () => { doUpdate(); });
+export { createVerticalTabsLabelHTML };
 export function initVerticalTabs(): void {
   if (isMobile()) return;
+  (window as any).__neoOpenVerticalTabsSettings = showVerticalTabsSettings;
   loadConfig().then((config) => {
     if (config['vertical-tabs'] === true) {
       document.documentElement.classList.add('neo-layout-verticaltabs');
       destroyed = false;
-      lastWidth = null;
+      topLeftOnlyLastWidth = null;
+      currentMode = config['vertical-tabs-mode'] || 'topLeftOnly';
       initResizeHandle();
       _fetchListener.attach();
       doUpdate();
@@ -139,24 +243,20 @@ export function onVerticalTabsClick(): void {
     htmlEl.classList.add('neo-layout-verticaltabs');
     saveConfig({ 'vertical-tabs': true } as Partial<Config>);
     destroyed = false;
-    lastWidth = null;
+    topLeftOnlyLastWidth = null;
     initResizeHandle();
     _fetchListener.attach();
-    doUpdate();
+    loadConfig().then((config) => {
+      currentMode = config['vertical-tabs-mode'] || 'topLeftOnly';
+      doUpdate();
+    });
   }
 }
 export function destroyVerticalTabs(): void {
   destroyed = true;
+  delete (window as any).__neoOpenVerticalTabsSettings;
   _fetchListener.detach();
   destroyResizeHandle();
   document.documentElement?.classList.remove('neo-layout-verticaltabs');
-  document.querySelectorAll<HTMLElement>('.layout__center [data-type="wnd"]')
-    .forEach((wnd) => {
-      wnd.classList.remove('neo-verticaltabs-wnd');
-      const firstFlex = wnd.querySelector<HTMLElement>('.fn__flex:first-child');
-      if (firstFlex) {
-        firstFlex.style.width = '';
-      }
-    });
-  document.querySelectorAll('.neo-verticaltabs-resize').forEach((el) => el.remove());
+  clearVerticalTabsLayout();
 }

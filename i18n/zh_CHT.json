@@ -111,5 +111,10 @@
   "focusBlockIndicator": "聚焦塊指示",
   "verticalTabs": "垂直頁籤",
   "immersiveMode": "沉浸模式",
-  "superFusion": "超級融合"
+  "superFusion": "超級融合",
+  "verticaltabsSettings": "配置垂直頁籤",
+  "verticaltabsMode": "模式",
+  "verticaltabsModeTip": "設定垂直頁籤的應用模式",
+  "verticaltabsModeTopLeftOnly": "僅左上角窗口",
+  "verticaltabsModeAll": "全部窗口"
 }

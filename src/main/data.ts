@@ -41,6 +41,7 @@ export interface Config {
   'colored-headings'?: boolean;
   'scroll-effect'?: boolean;
   'vertical-tabs'?: boolean;
+  'vertical-tabs-mode'?: 'topLeftOnly' | 'all';
   'immersive-mode'?: boolean;
   'super-fusion'?: boolean;
 }

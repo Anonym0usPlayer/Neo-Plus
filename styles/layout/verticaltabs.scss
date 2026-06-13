@@ -14,7 +14,7 @@ body {
 }
 .neo-layout-verticaltabs {
     @include layout-common('[data-id="neo-vertical-tabs-button"]', '[data-id="neo-layout-button"]');
-    body:not(.body--toolbar-hide):not(.body--window) {
+    body:not(.body--toolbar-hide) {
         .neo-verticaltabs-wnd {
             flex-direction: row;
             .neo-verticaltabs-resize {

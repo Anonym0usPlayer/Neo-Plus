@@ -111,5 +111,10 @@
   "focusBlockIndicator": "聚焦块指示",
   "verticalTabs": "垂直页签",
   "immersiveMode": "沉浸模式",
-  "superFusion": "超级融合"
+  "superFusion": "超级融合",
+  "verticaltabsSettings": "配置垂直页签",
+  "verticaltabsMode": "模式",
+  "verticaltabsModeTip": "设置垂直页签的应用模式",
+  "verticaltabsModeTopLeftOnly": "仅左上角窗口",
+  "verticaltabsModeAll": "全部窗口"
 }

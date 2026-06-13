@@ -9,7 +9,7 @@ import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick } from '../extension/focusblockindicator';
 import { onScrollEffectClick } from '../layout/scrolleffect';
 import { onColoredFoldersClick } from '../layout/coloredfolders';
-import { onVerticalTabsClick } from '../layout/verticaltabs';
+import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../layout/verticaltabs';
 import { onImmersiveModeClick } from '../extension/immersivemode';
 import { onSuperFusionClick } from '../layout/superfusion';
 import { onColoredListsClick } from '../element/coloredlists';
@@ -126,7 +126,7 @@ export function buildMenu(
       {
         id: 'neo-vertical-tabs-button',
         icon: 'iconNeoVerticalTabs',
-        label: i18n.verticalTabs,
+        label: createVerticalTabsLabelHTML(i18n),
         click: () => {
           onVerticalTabsClick();
           return true;
