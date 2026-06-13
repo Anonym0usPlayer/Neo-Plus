@@ -118,7 +118,7 @@ export function initVerticalTabs(): void {
   if (isMobile()) return;
   loadConfig().then((config) => {
     if (config['vertical-tabs'] === true) {
-      document.documentElement.classList.add('neo-extension-verticaltabs');
+      document.documentElement.classList.add('neo-layout-verticaltabs');
       destroyed = false;
       lastWidth = null;
       initResizeHandle();
@@ -131,12 +131,12 @@ export function onVerticalTabsClick(): void {
   if (isMobile()) return;
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
-  const isActive = htmlEl.classList.contains('neo-extension-verticaltabs');
+  const isActive = htmlEl.classList.contains('neo-layout-verticaltabs');
   if (isActive) {
     destroyVerticalTabs();
     saveConfig({ 'vertical-tabs': false } as Partial<Config>);
   } else {
-    htmlEl.classList.add('neo-extension-verticaltabs');
+    htmlEl.classList.add('neo-layout-verticaltabs');
     saveConfig({ 'vertical-tabs': true } as Partial<Config>);
     destroyed = false;
     lastWidth = null;
@@ -149,7 +149,7 @@ export function destroyVerticalTabs(): void {
   destroyed = true;
   _fetchListener.detach();
   destroyResizeHandle();
-  document.documentElement?.classList.remove('neo-extension-verticaltabs');
+  document.documentElement?.classList.remove('neo-layout-verticaltabs');
   document.querySelectorAll<HTMLElement>('.layout__center [data-type="wnd"]')
     .forEach((wnd) => {
       wnd.classList.remove('neo-verticaltabs-wnd');

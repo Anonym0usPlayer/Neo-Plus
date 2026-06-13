@@ -7,18 +7,20 @@ body {
         }
     }
 }
-.neo-extension-superfusion {
-    @include extension-common('[data-id="neo-super-fusion-button"]', '[data-id="neo-extension-button"]');
+$breadcrumb-height: 42px;
+$breadcrumb-offset: 6px;
+$tab-height: 41px;
+$tab-offset: 6px;
+.neo-layout-superfusion {
+    @include layout-common('[data-id="neo-super-fusion-button"]', '[data-id="neo-layout-button"]');
     .protyle {
-        --neo-superfusion-breadcrumb-height: 42px;
-        --neo-superfusion-breadcrumb-padding-offset: 6px;
         .protyle-scroll {
-            top: calc(30px + var(--neo-superfusion-breadcrumb-height));
-            bottom: calc(9px + var(--neo-superfusion-breadcrumb-height));
+            top: calc(30px + $breadcrumb-height);
+            bottom: calc(9px + $breadcrumb-height);
         }
         & > .protyle-breadcrumb {
-            margin-top: calc(var(--neo-superfusion-breadcrumb-height) * -1);
-            padding-top: calc(var(--neo-superfusion-breadcrumb-height) + var(--neo-superfusion-breadcrumb-padding-offset));
+            margin-top: calc($breadcrumb-height * -1);
+            padding-top: calc($breadcrumb-height + $breadcrumb-offset);
             z-index: 2;
             .protyle-breadcrumb__bar {
                 @include superellipse(6px);
@@ -44,10 +46,10 @@ body {
             }
         }
         & > .protyle-content {
-            margin-top: calc(var(--neo-superfusion-breadcrumb-height) * -1 + var(--neo-superfusion-breadcrumb-padding-offset));
-            padding-top: var(--neo-superfusion-breadcrumb-height);
+            margin-top: calc($breadcrumb-height * -1 + $breadcrumb-offset);
+            padding-top: $breadcrumb-height;
             .protyle-background {
-                margin-top: calc(var(--neo-superfusion-breadcrumb-height) * -1);
+                margin-top: calc($breadcrumb-height * -1);
             }
             .protyle-background__img {
                 &::after {
@@ -61,10 +63,10 @@ body {
                     pointer-events: none;
                 }
                 .protyle-icons {
-                    top: var(--neo-superfusion-breadcrumb-height);
+                    top: $breadcrumb-height;
                 }
                 &.fn__none + .protyle-background__ia {
-                    padding-top: calc(var(--neo-superfusion-breadcrumb-height) + var(--neo-superfusion-breadcrumb-padding-offset));
+                    padding-top: calc($breadcrumb-height + $breadcrumb-offset);
                     z-index: 2;
                 }
                 &:not(.fn__none) + .protyle-background__ia {
@@ -73,14 +75,12 @@ body {
             }
         }
     }
-    &:not(.neo-extension-verticaltabs) body:not(.body--toolbar-hide),
+    &:not(.neo-layout-verticaltabs) body:not(.body--toolbar-hide),
     .body--window  {
-        --neo-superfusion-tab-height: 41px;
-        --neo-superfusion-tab-padding-offset: 6px;
         .layout__center [data-type="wnd"] > .fn__flex:first-child {
             background-color: transparent;
             z-index: 3;
-            margin-bottom: calc(var(--neo-superfusion-tab-height) * -1);
+            margin-bottom: calc($tab-height * -1);
             .layout-tab-bar {
                 background-color: transparent;
                 .item {
@@ -112,37 +112,37 @@ body {
                         top: 0;
                         left: 0;
                         width: 100%;
-                        height: calc(var(--neo-superfusion-tab-height) * 1.5);
+                        height: calc($tab-height * 1.5);
                         pointer-events: none;
                         backdrop-filter: blur(6px);
                         background-color: transparent;
-                        mask: linear-gradient(black var(--neo-superfusion-tab-height), transparent);
+                        mask: linear-gradient(black $tab-height, transparent);
                         z-index: 2;
                     }
                     .protyle-scroll {
-                        top: calc(30px + var(--neo-superfusion-breadcrumb-height) + var(--neo-superfusion-tab-height));
-                        bottom: calc(9px + var(--neo-superfusion-breadcrumb-height) + var(--neo-superfusion-tab-height));
+                        top: calc(30px + $breadcrumb-height + $tab-height);
+                        bottom: calc(9px + $breadcrumb-height + $tab-height);
                     }
                     & > .protyle-breadcrumb {
-                        padding-top: calc(var(--neo-superfusion-breadcrumb-height) + var(--neo-superfusion-breadcrumb-padding-offset) + var(--neo-superfusion-tab-height) - var(--neo-superfusion-breadcrumb-padding-offset));
+                        padding-top: calc($breadcrumb-height + $breadcrumb-offset + $tab-height - $breadcrumb-offset);
                     }
                     & > .protyle-content {
-                        margin-top: calc(var(--neo-superfusion-breadcrumb-height) * -1 + var(--neo-superfusion-breadcrumb-padding-offset) - var(--neo-superfusion-tab-height) + var(--neo-superfusion-breadcrumb-padding-offset));
+                        margin-top: calc($breadcrumb-height * -1 + $breadcrumb-offset - $tab-height + $breadcrumb-offset);
                         .protyle-background {
-                            margin-top: calc(var(--neo-superfusion-breadcrumb-height) * -1);
+                            margin-top: calc($breadcrumb-height * -1);
                         }
                         .protyle-background__img {
                             .protyle-icons {
-                                top: calc(var(--neo-superfusion-breadcrumb-height) + var(--neo-superfusion-tab-height));
+                                top: calc($breadcrumb-height + $tab-height);
                             }
                             &.fn__none + .protyle-background__ia {
-                                padding-top: calc(var(--neo-superfusion-breadcrumb-height) + var(--neo-superfusion-breadcrumb-padding-offset) + var(--neo-superfusion-tab-height) + var(--neo-superfusion-breadcrumb-padding-offset));
+                                padding-top: calc($breadcrumb-height + $breadcrumb-offset + $tab-height + $breadcrumb-offset);
                             }
                         }
                     }
                 }
                 & > .fn__flex-1:not(.protyle) {
-                    margin-top: var(--neo-superfusion-tab-height);
+                    margin-top: $tab-height;
                 }
             }
         }

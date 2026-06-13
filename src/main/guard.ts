@@ -21,9 +21,9 @@ import { initScrollEffect, destroyScrollEffect } from '../extension/scrolleffect
 import { initFluidCursor, destroyFluidCursor } from '../extension/fluidcursor';
 import { initListBulletLine, destroyListBulletLine } from '../extension/listbulletline';
 import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../extension/focusblockindicator';
-import { initVerticalTabs, destroyVerticalTabs } from '../extension/verticaltabs';
+import { initVerticalTabs, destroyVerticalTabs } from '../layout/verticaltabs';
 import { initImmersiveMode, destroyImmersiveMode } from '../extension/immersivemode';
-import { initSuperFusion, destroySuperFusion } from '../extension/superfusion';
+import { initSuperFusion, destroySuperFusion } from '../layout/superfusion';
 function initNeoEnabled(): void {
   document.documentElement.classList.add('neo-enabled');
 }

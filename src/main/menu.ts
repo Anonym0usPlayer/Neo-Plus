@@ -9,9 +9,9 @@ import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick } from '../extension/focusblockindicator';
 import { onScrollEffectClick } from '../extension/scrolleffect';
 import { onColoredFoldersClick } from '../extension/coloredfolders';
-import { onVerticalTabsClick } from '../extension/verticaltabs';
+import { onVerticalTabsClick } from '../layout/verticaltabs';
 import { onImmersiveModeClick } from '../extension/immersivemode';
-import { onSuperFusionClick } from '../extension/superfusion';
+import { onSuperFusionClick } from '../layout/superfusion';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
 export function buildMenu(
@@ -119,6 +119,31 @@ export function buildMenu(
   });
   menu.addSeparator();
   menu.addItem({
+    id: 'neo-layout-button',
+    icon: 'iconNeoLayout',
+    label: i18n.layout,
+    submenu: [
+      {
+        id: 'neo-vertical-tabs-button',
+        icon: 'iconNeoVerticalTabs',
+        label: i18n.verticalTabs,
+        click: () => {
+          onVerticalTabsClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-super-fusion-button',
+        icon: 'iconNeoSuperFusion',
+        label: i18n.superFusion,
+        click: () => {
+          onSuperFusionClick();
+          return true;
+        },
+      },
+    ],
+  });
+  menu.addItem({
     id: 'neo-texture-button',
     icon: 'iconNeoTexture',
     label: i18n.texture,
@@ -154,24 +179,6 @@ export function buildMenu(
     icon: 'iconNeoExtension',
     label: i18n.extension,
     submenu: [
-      {
-        id: 'neo-vertical-tabs-button',
-        icon: 'iconNeoVerticalTabs',
-        label: i18n.verticalTabs,
-        click: () => {
-          onVerticalTabsClick();
-          return true;
-        },
-      },
-      {
-        id: 'neo-super-fusion-button',
-        icon: 'iconNeoSuperFusion',
-        label: i18n.superFusion,
-        click: () => {
-          onSuperFusionClick();
-          return true;
-        },
-      },
       {
         id: 'neo-immersive-mode-button',
         icon: 'iconNeoImmersiveMode',

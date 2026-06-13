@@ -5,7 +5,7 @@ export function initSuperFusion(): void {
   if (isMobile()) return;
   loadConfig().then((config) => {
     if (config['super-fusion'] === true) {
-      document.documentElement.classList.add('neo-extension-superfusion');
+      document.documentElement.classList.add('neo-layout-superfusion');
     }
   });
 }
@@ -13,15 +13,15 @@ export function onSuperFusionClick(): void {
   if (isMobile()) return;
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
-  const isActive = htmlEl.classList.contains('neo-extension-superfusion');
+  const isActive = htmlEl.classList.contains('neo-layout-superfusion');
   if (isActive) {
     destroySuperFusion();
     saveConfig({ 'super-fusion': false } as Partial<Config>);
   } else {
-    htmlEl.classList.add('neo-extension-superfusion');
+    htmlEl.classList.add('neo-layout-superfusion');
     saveConfig({ 'super-fusion': true } as Partial<Config>);
   }
 }
 export function destroySuperFusion(): void {
-  document.documentElement?.classList.remove('neo-extension-superfusion');
+  document.documentElement?.classList.remove('neo-layout-superfusion');
 }
