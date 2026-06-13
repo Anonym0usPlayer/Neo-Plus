@@ -3,22 +3,22 @@ import type { Config } from '../main/data';
 export function initColoredFolders(): void {
   loadConfig().then((config) => {
     if (config['colored-folders'] === true) {
-      document.documentElement.classList.add('neo-extension-coloredfolders');
+      document.documentElement.classList.add('neo-layout-coloredfolders');
     }
   });
 }
 export function onColoredFoldersClick(): void {
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
-  const isActive = htmlEl.classList.contains('neo-extension-coloredfolders');
+  const isActive = htmlEl.classList.contains('neo-layout-coloredfolders');
   if (isActive) {
     destroyColoredFolders();
     saveConfig({ 'colored-folders': false } as Partial<Config>);
   } else {
-    htmlEl.classList.add('neo-extension-coloredfolders');
+    htmlEl.classList.add('neo-layout-coloredfolders');
     saveConfig({ 'colored-folders': true } as Partial<Config>);
   }
 }
 export function destroyColoredFolders(): void {
-  document.documentElement?.classList.remove('neo-extension-coloredfolders');
+  document.documentElement?.classList.remove('neo-layout-coloredfolders');
 }

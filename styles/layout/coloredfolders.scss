@@ -1,7 +1,7 @@
 @use "manager" as *;
 $border-width: 3px;
-.neo-extension-coloredfolders {
-    @include extension-common('[data-id="neo-colored-folders-button"]', '[data-id="neo-extension-button"]');
+.neo-layout-coloredfolders {
+    @include layout-common('[data-id="neo-colored-folders-button"]', '[data-id="neo-layout-button"]');
     .sy__file,
     [data-type="sidebar-file"] {
         --neo-dock-indent-fork-left: -9px;

@@ -7,8 +7,8 @@ import { onSmoothCaretClick } from '../extension/smoothcaret';
 import { onFluidCursorClick } from '../extension/fluidcursor';
 import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick } from '../extension/focusblockindicator';
-import { onScrollEffectClick } from '../extension/scrolleffect';
-import { onColoredFoldersClick } from '../extension/coloredfolders';
+import { onScrollEffectClick } from '../layout/scrolleffect';
+import { onColoredFoldersClick } from '../layout/coloredfolders';
 import { onVerticalTabsClick } from '../layout/verticaltabs';
 import { onImmersiveModeClick } from '../extension/immersivemode';
 import { onSuperFusionClick } from '../layout/superfusion';
@@ -141,6 +141,24 @@ export function buildMenu(
           return true;
         },
       },
+      {
+        id: 'neo-scroll-effect-button',
+        icon: 'iconNeoScrollEffect',
+        label: i18n.scrollEffect,
+        click: () => {
+          onScrollEffectClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-colored-folders-button',
+        icon: 'iconFiles',
+        label: i18n.coloredFolders,
+        click: () => {
+          onColoredFoldersClick();
+          return true;
+        },
+      },
     ],
   });
   menu.addItem({
@@ -221,24 +239,6 @@ export function buildMenu(
         label: i18n.focusBlockIndicator,
         click: () => {
           onFocusBlockIndicatorClick();
-          return true;
-        },
-      },
-      {
-        id: 'neo-scroll-effect-button',
-        icon: 'iconNeoScrollEffect',
-        label: i18n.scrollEffect,
-        click: () => {
-          onScrollEffectClick();
-          return true;
-        },
-      },
-      {
-        id: 'neo-colored-folders-button',
-        icon: 'iconFiles',
-        label: i18n.coloredFolders,
-        click: () => {
-          onColoredFoldersClick();
           return true;
         },
       },

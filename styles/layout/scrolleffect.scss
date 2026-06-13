@@ -1,6 +1,6 @@
 @use "manager" as *;
-.neo-extension-scrolleffect {
-    @include extension-common('[data-id="neo-scroll-effect-button"]', '[data-id="neo-extension-button"]');
+.neo-layout-scrolleffect {
+    @include layout-common('[data-id="neo-scroll-effect-button"]', '[data-id="neo-layout-button"]');
     #preview [data-node-id],
     .protyle-wysiwyg [data-type=NodeBlockQueryEmbed][data-node-id] {
         animation: none !important;

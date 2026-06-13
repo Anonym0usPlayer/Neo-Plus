@@ -3,22 +3,22 @@ import type { Config } from '../main/data';
 export function initScrollEffect(): void {
   loadConfig().then((config) => {
     if (config['scroll-effect'] === true) {
-      document.documentElement.classList.add('neo-extension-scrolleffect');
+      document.documentElement.classList.add('neo-layout-scrolleffect');
     }
   });
 }
 export function onScrollEffectClick(): void {
   const htmlEl = document.documentElement;
   if (!htmlEl) return;
-  const isActive = htmlEl.classList.contains('neo-extension-scrolleffect');
+  const isActive = htmlEl.classList.contains('neo-layout-scrolleffect');
   if (isActive) {
     destroyScrollEffect();
     saveConfig({ 'scroll-effect': false } as Partial<Config>);
   } else {
-    htmlEl.classList.add('neo-extension-scrolleffect');
+    htmlEl.classList.add('neo-layout-scrolleffect');
     saveConfig({ 'scroll-effect': true } as Partial<Config>);
   }
 }
 export function destroyScrollEffect(): void {
-  document.documentElement?.classList.remove('neo-extension-scrolleffect');
+  document.documentElement?.classList.remove('neo-layout-scrolleffect');
 }
