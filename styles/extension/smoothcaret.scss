@@ -19,4 +19,16 @@
         opacity: 0;
         }
     }
+    body.neo-extension-smooth-caret-breathing {
+        #neo-smooth-caret-item {
+            animation: neo-mooth-caret-breathing 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;;
+        }
+    }
+}
+@keyframes neo-mooth-caret-breathing {
+    0%   { opacity: 1; }
+    45%  { opacity: 1; }
+    50%  { opacity: 0; }
+    55%  { opacity: 0; }
+    100% { opacity: 1; }
 }

@@ -3,7 +3,7 @@ import { getPlugin } from './guard';
 import { loadConfig } from './data';
 import { createColorPickerHTML, createFollowTimeColorPickerHTML, createSliderHTML, getPresetMenuItems, getThemeColor, initPaletteMenuEvents, onInvertClick, onHighContrastClick, switchToPlan } from '../palette/manager';
 import { getTextureMenuItems } from '../texture/manager';
-import { onSmoothCaretClick } from '../extension/smoothcaret';
+import { onSmoothCaretClick, createSmoothCaretLabelHTML } from '../extension/smoothcaret';
 import { onFluidCursorClick } from '../extension/fluidcursor';
 import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick } from '../extension/focusblockindicator';
@@ -209,7 +209,7 @@ export function buildMenu(
       {
         id: 'neo-smooth-caret-button',
         icon: 'iconNeoSmoothCaret',
-        label: i18n.smoothCaret,
+        label: createSmoothCaretLabelHTML(i18n),
         click: () => {
           onSmoothCaretClick();
           return true;

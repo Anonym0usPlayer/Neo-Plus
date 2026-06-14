@@ -1,5 +1,7 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
+import { getPlugin } from '../main/guard';
+import { Dialog } from 'siyuan';
 let smoothCaretEventHandler: (() => void) | null = null;
 let throttledCaretEventHandler: (() => void) | null = null;
 let throttleTimers: number[] = [];
@@ -7,6 +9,10 @@ let cachedZIndex = 0;
 let lastTargetElement: Element | null = null;
 let cachedScrollContainer: HTMLElement | null = null;
 let cachedFocusElement: Element | null = null;
+let smoothCaretStatus: 'static' | 'breathing' = 'static';
+function applySmoothCaretStatus(): void {
+  document.body.classList.toggle('neo-extension-smooth-caret-breathing', smoothCaretStatus === 'breathing');
+}
 function startSmoothCaret(): void {
   document.getElementById('neo-smooth-caret-item')?.remove();
   const caretElement = document.createElement('div');
@@ -156,9 +162,69 @@ function startSmoothCaret(): void {
   document.addEventListener('mouseup', handleThrottledCaretUpdate);
   updateCaretPosition();
 }
+export function createSmoothCaretLabelHTML(i18n: Record<string, string>): string {
+  return `<span class="fn__flex fn__pointer">
+    <span>${i18n.smoothCaret}</span>
+    <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.smoothCaretSettings}" onclick="event.stopPropagation();__neoOpenSmoothCaretSettings()"><use xlink:href="#iconSettings"></use></svg>
+  </span>`;
+}
+function buildSettingsHTML(i18n: Record<string, string>): string {
+  const statusOptions = ['static', 'breathing']
+    .map(v => `<option value="${v}">${i18n[`smoothCaretStatus${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
+    .join('');
+  return `<div class="b3-dialog__content">
+    <div class="config__tab-container">
+      <div class="config-group">
+        <label class="fn__flex b3-label">
+          <div class="fn__flex-1">
+            ${i18n.smoothCaretStatus}
+            <div class="b3-label__text">${i18n.smoothCaretStatusTip}</div>
+          </div>
+          <span class="fn__space"></span>
+          <select class="b3-select fn__flex-center fn__size200" id="neo-smooth-caret-status">
+            ${statusOptions}
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="b3-dialog__action">
+    <button class="b3-button b3-button--cancel" id="neo-smooth-caret-cancel">${i18n.cancel}</button>
+    <span class="fn__space"></span>
+    <button class="b3-button b3-button--text" id="neo-smooth-caret-confirm">${i18n.confirm}</button>
+  </div>`;
+}
+export function showSmoothCaretSettings(): void {
+  const plugin = getPlugin();
+  if (!plugin) return;
+  const dialog = new Dialog({
+    title: plugin.i18n.smoothCaretSettings || 'Smooth Caret Settings',
+    content: buildSettingsHTML(plugin.i18n),
+    width: '90vw',
+  });
+  const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
+  if (container) container.style.maxWidth = '600px';
+  dialog.element.setAttribute('data-key', 'dialog-neo-smooth-caret-settings');
+  const statusSelect = dialog.element.querySelector('#neo-smooth-caret-status') as HTMLSelectElement;
+  if (statusSelect) statusSelect.value = smoothCaretStatus;
+  dialog.element.querySelector('#neo-smooth-caret-cancel')?.addEventListener('click', () => dialog.destroy());
+  dialog.element.querySelector('#neo-smooth-caret-confirm')?.addEventListener('click', () => {
+    if (statusSelect) {
+      const newStatus = statusSelect.value as 'static' | 'breathing';
+      if (newStatus !== smoothCaretStatus) {
+        smoothCaretStatus = newStatus;
+        applySmoothCaretStatus();
+        saveConfig({ 'smooth-caret-status': newStatus } as Partial<Config>);
+      }
+    }
+    dialog.destroy();
+  });
+}
 export function destroySmoothCaret(): void {
+  delete (window as any).__neoOpenSmoothCaretSettings;
   document.getElementById('neo-smooth-caret-item')?.remove();
   document.documentElement.classList.remove('neo-extension-smooth-caret');
+  document.body.classList.remove('neo-extension-smooth-caret-breathing');
   throttleTimers.forEach((timer) => clearTimeout(timer));
   throttleTimers = [];
   cachedZIndex = 0;
@@ -178,8 +244,11 @@ export function destroySmoothCaret(): void {
 }
 export function initSmoothCaret(): void {
   loadConfig().then((config) => {
+    smoothCaretStatus = config['smooth-caret-status'] || 'static';
     if (config['smooth-caret'] === true) {
       document.documentElement.classList.add('neo-extension-smooth-caret');
+      applySmoothCaretStatus();
+      (window as any).__neoOpenSmoothCaretSettings = showSmoothCaretSettings;
       startSmoothCaret();
     }
   });
@@ -194,7 +263,9 @@ export function onSmoothCaretClick(): void {
     destroySmoothCaret();
   } else {
     htmlEl.classList.add('neo-extension-smooth-caret');
+    applySmoothCaretStatus();
     saveConfig({ 'smooth-caret': true } as Partial<Config>);
+    (window as any).__neoOpenSmoothCaretSettings = showSmoothCaretSettings;
     startSmoothCaret();
   }
 }

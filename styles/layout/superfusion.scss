@@ -11,6 +11,8 @@ $breadcrumb-height: 42px;
 $breadcrumb-offset: 6px;
 $tab-height: 41px;
 $tab-offset: 6px;
+$text-shadow: 0 0 1px var(--b3-theme-background), 0 0 2px var(--b3-theme-background), 0 0 1px var(--b3-theme-background),0 0 1px var(--b3-theme-background);
+$svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background));
 .neo-layout-superfusion {
     @include layout-common('[data-id="neo-super-fusion-button"]', '[data-id="neo-layout-button"]');
     .protyle {
@@ -30,19 +32,19 @@ $tab-offset: 6px;
                     visibility: hidden;
                 }
                 svg {
-                    filter: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background));
+                    filter: $svg-shadow;
                 }
                 .protyle-breadcrumb__text {
-                    text-shadow: 0 0 0.5px var(--b3-theme-background), 0.5px 0.5px 0.5px var(--b3-theme-background);
+                    text-shadow: $text-shadow;
                 }
             }
             .block__icon {
                 svg {
-                    filter: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background));
+                    filter: $svg-shadow;
                 }
             }
             .protyle-breadcrumb__icon {
-                text-shadow: 0 0 0.5px var(--b3-theme-background), 0 0 1px var(--b3-theme-background), 0 0 1px var(--b3-theme-background);
+                text-shadow: $text-shadow;
             }
         }
         & > .protyle-content {
@@ -85,18 +87,19 @@ $tab-offset: 6px;
                 background-color: transparent;
                 .item {
                     &::before {
-                        filter: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background));
+                        filter: $svg-shadow;
+                        background-color: oklch(from var(--b3-theme-on-background) l c h / 0.3);
                     }
                     .item__text {
-                        text-shadow: 0 0 0.5px var(--b3-theme-background), 0.5px 0.5px 0.5px var(--b3-theme-background);
+                        text-shadow: $text-shadow;
                     }
                     .item__icon,
                     .item__graphic {
-                        filter: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background));
+                        filter: $svg-shadow;
                     }
                     .item__close {
                         svg {
-                            filter: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background));
+                            filter: $svg-shadow;
                         }
                     }
                     &.item--focus {
@@ -105,7 +108,7 @@ $tab-offset: 6px;
                 }
                 .block__icon {
                     svg {
-                        filter: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background));
+                        filter: $svg-shadow;
                     }
                 }
             }
@@ -117,9 +120,9 @@ $tab-offset: 6px;
                         top: 0;
                         left: 0;
                         width: 100%;
-                        height: calc($tab-height * 1.5);
+                        height: calc($tab-height * 2);
                         pointer-events: none;
-                        backdrop-filter: blur(6px);
+                        backdrop-filter: blur(3px);
                         background-color: transparent;
                         mask: linear-gradient(black $tab-height, transparent);
                         z-index: 2;

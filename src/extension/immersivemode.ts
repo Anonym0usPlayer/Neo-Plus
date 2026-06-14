@@ -236,6 +236,9 @@ function clearHighlightCss(): void {
     el.style.removeProperty('--neo-immersive-text-color');
   });
 }
+function applyHighlightState(): void {
+  document.body.classList.toggle('neo-extension-immersivemode-highlight', highlightEnabled);
+}
 export function showImmersiveModeSettings(): void {
   const plugin = getPlugin();
   if (!plugin) return;
@@ -261,7 +264,7 @@ export function showImmersiveModeSettings(): void {
     if (!newHighlight) {
       clearHighlightCss();
     }
-    document.body.classList.toggle('neo-extension-immersivemode-highlight', newHighlight);
+    applyHighlightState();
     dialog.destroy();
   });
 }
@@ -273,7 +276,7 @@ export function initImmersiveMode(): void {
     if (config['immersive-highlight'] !== undefined) highlightEnabled = config['immersive-highlight'];
     if (config['immersive-mode'] === true) {
       document.documentElement.classList.add('neo-extension-immersivemode');
-      document.body.classList.toggle('neo-extension-immersivemode-highlight', highlightEnabled);
+      applyHighlightState();
       startObserving();
     }
   });
@@ -290,6 +293,7 @@ export function onImmersiveModeClick(): void {
     stopObserving();
   } else {
     htmlEl.classList.add('neo-extension-immersivemode');
+    applyHighlightState();
     saveConfig({ 'immersive-mode': true } as Partial<Config>);
     startObserving();
   }

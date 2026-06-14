@@ -47,13 +47,13 @@ function startObserving(): void {
   selectionChangeHandler = () => {
     onSelectionChange();
   };
-  document.addEventListener('mouseup', mouseUpHandler);
+  document.addEventListener('mousedown', mouseUpHandler);
   document.addEventListener('keyup', keyUpHandler);
   document.addEventListener('selectionchange', selectionChangeHandler);
 }
 function stopObserving(): void {
   if (mouseUpHandler) {
-    document.removeEventListener('mouseup', mouseUpHandler);
+    document.removeEventListener('mousedown', mouseUpHandler);
     mouseUpHandler = null;
   }
   if (keyUpHandler) {

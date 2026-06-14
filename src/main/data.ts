@@ -33,6 +33,7 @@ export interface Config {
   'customimage-preset-current-light'?: string;
   'customimage-preset-current-dark'?: string;
   'smooth-caret'?: boolean;
+  'smooth-caret-status'?: 'static' | 'breathing';
   'fluid-cursor'?: boolean;
   'list-bullet-line'?: boolean;
   'focus-block-indicator'?: boolean;
