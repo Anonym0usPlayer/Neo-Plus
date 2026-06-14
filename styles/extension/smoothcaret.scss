@@ -1,4 +1,9 @@
 @use "manager" as *;
+@property --neo-smooth-caret-rainbow-hue {
+    syntax: '<integer>';
+    inherits: false;
+    initial-value: 0;
+}
 .neo-extension-smooth-caret {
     @include extension-common('[data-id="neo-smooth-caret-button"]', '[data-id="neo-extension-button"]');
     .protyle-wysiwyg,
@@ -8,7 +13,7 @@
     }
     #neo-smooth-caret-item {
         position: fixed;
-        width: 1.5px;
+        width: 2px;
         border-radius: 8px;
         pointer-events: none;
         opacity: 1;
@@ -21,7 +26,18 @@
     }
     body.neo-extension-smooth-caret-breathing {
         #neo-smooth-caret-item {
-            animation: neo-mooth-caret-breathing 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;;
+            animation: neo-mooth-caret-breathing 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+    }
+    body.neo-extension-smooth-caret-neon {
+        #neo-smooth-caret-item {
+            box-shadow: 0 0 4px var(--neo-smooth-caret-color, var(--b3-theme-accent)), 0 0 10px var(--neo-smooth-caret-color, var(--b3-theme-accent)), 0 0 20px var(--neo-smooth-caret-color, var(--b3-theme-accent));
+        }
+    }
+    body.neo-extension-smooth-caret-rainbow {
+        #neo-smooth-caret-item {
+            animation: neo-smooth-caret-rainbow-hue 6s linear infinite;
+            background-color: oklch(from var(--b3-theme-accent) l c calc(h + var(--neo-smooth-caret-rainbow-hue, 0)));
         }
     }
 }
@@ -31,4 +47,12 @@
     50%  { opacity: 0; }
     55%  { opacity: 0; }
     100% { opacity: 1; }
+}
+@keyframes neo-smooth-caret-rainbow-hue {
+    0% {
+        --neo-smooth-caret-rainbow-hue: 0;
+    }
+    100% {
+        --neo-smooth-caret-rainbow-hue: 360;
+    }
 }

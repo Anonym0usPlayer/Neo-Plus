@@ -111,6 +111,8 @@
   "smoothCaretStatusTip": "設定平滑遊標的顯示狀態",
   "smoothCaretStatusStatic": "靜態",
   "smoothCaretStatusBreathing": "呼吸",
+  "smoothCaretStatusNeon": "霓虹",
+  "smoothCaretStatusRainbow": "彩虹",
   "fluidCursor": "流體遊標",
   "listBulletLine": "列表子彈線",
   "focusBlockIndicator": "聚焦塊指示",

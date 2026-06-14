@@ -30,6 +30,7 @@ export function getTextureKey(mode: 'light' | 'dark'): 'texture-light' | 'textur
 function createCustomImageLabelHTML(i18n: Record<string, string>): string {
   return `<span class="fn__flex fn__pointer">
     <span>${i18n.textureCustomImage}</span>
+    <span class="fn__space fn__flex-1 neo-menu-item-second-icon-space"></span>
     <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.customimageSettings}" onclick="event.stopPropagation();__neoOpenCustomImageSettings()"><use xlink:href="#iconSettings"></use></svg>
   </span>`;
 }

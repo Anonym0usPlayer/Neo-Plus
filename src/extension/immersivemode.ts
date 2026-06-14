@@ -190,6 +190,7 @@ function stopObserving(): void {
 export function createImmersiveModeLabelHTML(i18n: Record<string, string>): string {
   return `<span class="fn__flex fn__pointer">
     <span>${i18n.immersiveMode}</span>
+    <span class="fn__space fn__flex-1 neo-menu-item-second-icon-space"></span>
     <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.immersiveModeSettings}" onclick="event.stopPropagation();__neoOpenImmersiveModeSettings()"><use xlink:href="#iconSettings"></use></svg>
   </span>`;
 }
@@ -249,7 +250,7 @@ export function showImmersiveModeSettings(): void {
     width: '90vw',
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
-  if (container) container.style.maxWidth = '600px';
+  if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-immersive-settings');
   const typewriterSelect = dialog.element.querySelector('#neo-immersive-typewriter') as HTMLSelectElement;
   const highlightSelect = dialog.element.querySelector('#neo-immersive-highlight') as HTMLSelectElement;

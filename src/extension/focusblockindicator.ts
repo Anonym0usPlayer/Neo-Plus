@@ -2,7 +2,6 @@ import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
 import { Dialog } from 'siyuan';
-const excludedBlockTypes = ['NodeAttributeView', 'NodeCodeBlock', 'NodeList', 'NodeCallout', 'NodeTable'];
 const debounceDelay = 200;
 let focusBlockEffect: 'vertical-line' | 'shadow' | 'background' = 'vertical-line';
 let pendingUpdate = false;
@@ -29,9 +28,7 @@ function applyFocusBlock(): void {
   const curNode = range.commonAncestorContainer;
   const curBlock = (curNode.nodeType === Node.ELEMENT_NODE ? curNode as Element : curNode.parentElement)?.closest('[data-node-id]');
   if (!curBlock) return;
-  const curBlockType = curBlock.getAttribute('data-type');
   clearAllFocusBlocks();
-  if (!curBlockType || excludedBlockTypes.includes(curBlockType)) return;
   curBlock.setAttribute('neo-focus-block', '');
 }
 function handleUpdate(): void {
@@ -44,6 +41,7 @@ function handleUpdate(): void {
 }
 function onSelectionChange(): void {
   pendingUpdate = true;
+  handleUpdate();
 }
 function startObserving(): void {
   mouseUpHandler = () => {
@@ -142,7 +140,7 @@ export function showFocusBlockIndicatorSettings(): void {
     width: '90vw',
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
-  if (container) container.style.maxWidth = '600px';
+  if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-focus-block-indicator-settings');
   const effectSelect = dialog.element.querySelector('#neo-focus-block-effect') as HTMLSelectElement;
   if (effectSelect) effectSelect.value = focusBlockEffect;
@@ -162,6 +160,7 @@ export function showFocusBlockIndicatorSettings(): void {
 export function createFocusBlockIndicatorLabelHTML(i18n: Record<string, string>): string {
   return `<span class="fn__flex fn__pointer">
     <span>${i18n.focusBlockIndicator}</span>
+    <span class="fn__space fn__flex-1 neo-menu-item-second-icon-space"></span>
     <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.focusBlockIndicatorSettings}" onclick="event.stopPropagation();__neoOpenFocusBlockIndicatorSettings()"><use xlink:href="#iconSettings"></use></svg>
   </span>`;
 }

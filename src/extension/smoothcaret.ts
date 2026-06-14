@@ -9,10 +9,12 @@ let cachedZIndex = 0;
 let lastTargetElement: Element | null = null;
 let cachedScrollContainer: HTMLElement | null = null;
 let cachedFocusElement: Element | null = null;
-let smoothCaretStatus: 'static' | 'breathing' = 'static';
+let smoothCaretStatus: 'static' | 'breathing' | 'neon' | 'rainbow' = 'static';
 function applySmoothCaretStatus(): void {
   document.body.classList.toggle('neo-extension-smooth-caret-breathing', smoothCaretStatus === 'breathing');
   document.body.classList.toggle('neo-extension-smooth-caret-static', smoothCaretStatus === 'static');
+  document.body.classList.toggle('neo-extension-smooth-caret-neon', smoothCaretStatus === 'neon');
+  document.body.classList.toggle('neo-extension-smooth-caret-rainbow', smoothCaretStatus === 'rainbow');
 }
 function startSmoothCaret(): void {
   document.getElementById('neo-smooth-caret-item')?.remove();
@@ -166,11 +168,12 @@ function startSmoothCaret(): void {
 export function createSmoothCaretLabelHTML(i18n: Record<string, string>): string {
   return `<span class="fn__flex fn__pointer">
     <span>${i18n.smoothCaret}</span>
+    <span class="fn__space fn__flex-1 neo-menu-item-second-icon-space"></span>
     <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.smoothCaretSettings}" onclick="event.stopPropagation();__neoOpenSmoothCaretSettings()"><use xlink:href="#iconSettings"></use></svg>
   </span>`;
 }
 function buildSettingsHTML(i18n: Record<string, string>): string {
-  const statusOptions = ['static', 'breathing']
+  const statusOptions = ['static', 'breathing', 'neon', 'rainbow']
     .map(v => `<option value="${v}">${i18n[`smoothCaretStatus${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
     .join('');
   return `<div class="b3-dialog__content">
@@ -204,14 +207,14 @@ export function showSmoothCaretSettings(): void {
     width: '90vw',
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
-  if (container) container.style.maxWidth = '600px';
+  if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-smooth-caret-settings');
   const statusSelect = dialog.element.querySelector('#neo-smooth-caret-status') as HTMLSelectElement;
   if (statusSelect) statusSelect.value = smoothCaretStatus;
   dialog.element.querySelector('#neo-smooth-caret-cancel')?.addEventListener('click', () => dialog.destroy());
   dialog.element.querySelector('#neo-smooth-caret-confirm')?.addEventListener('click', () => {
     if (statusSelect) {
-      const newStatus = statusSelect.value as 'static' | 'breathing';
+      const newStatus = statusSelect.value as 'static' | 'breathing' | 'neon' | 'rainbow';
       if (newStatus !== smoothCaretStatus) {
         smoothCaretStatus = newStatus;
         applySmoothCaretStatus();
@@ -226,6 +229,8 @@ export function destroySmoothCaret(): void {
   document.documentElement.classList.remove('neo-extension-smooth-caret');
   document.body.classList.remove('neo-extension-smooth-caret-breathing');
   document.body.classList.remove('neo-extension-smooth-caret-static');
+  document.body.classList.remove('neo-extension-smooth-caret-neon');
+  document.body.classList.remove('neo-extension-smooth-caret-rainbow');
   throttleTimers.forEach((timer) => clearTimeout(timer));
   throttleTimers = [];
   cachedZIndex = 0;

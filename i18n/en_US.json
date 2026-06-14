@@ -111,6 +111,8 @@
   "smoothCaretStatusTip": "Set the display state of the smooth caret",
   "smoothCaretStatusStatic": "Static",
   "smoothCaretStatusBreathing": "Breathing",
+  "smoothCaretStatusNeon": "Neon",
+  "smoothCaretStatusRainbow": "Rainbow",
   "fluidCursor": "Fluid Cursor",
   "listBulletLine": "List Bullet Line",
   "focusBlockIndicator": "Focus Block Indicator",

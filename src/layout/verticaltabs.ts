@@ -151,6 +151,7 @@ function destroyResizeHandle(): void {
 function createVerticalTabsLabelHTML(i18n: Record<string, string>): string {
   return `<span class="fn__flex fn__pointer">
     <span>${i18n.verticalTabs}</span>
+    <span class="fn__space fn__flex-1 neo-menu-item-second-icon-space"></span>
     <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.verticaltabsSettings}" onclick="event.stopPropagation();__neoOpenVerticalTabsSettings()"><use xlink:href="#iconSettings"></use></svg>
   </span>`;
 }
@@ -189,7 +190,7 @@ export function showVerticalTabsSettings(): void {
     width: '90vw',
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
-  if (container) container.style.maxWidth = '600px';
+  if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-verticaltabs-settings');
   const modeSelect = dialog.element.querySelector('#neo-verticaltabs-mode') as HTMLSelectElement;
   if (modeSelect) modeSelect.value = currentMode;
