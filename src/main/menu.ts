@@ -6,7 +6,7 @@ import { getTextureMenuItems } from '../texture/manager';
 import { onSmoothCaretClick, createSmoothCaretLabelHTML } from '../extension/smoothcaret';
 import { onFluidCursorClick } from '../extension/fluidcursor';
 import { onListBulletLineClick } from '../extension/listbulletline';
-import { onFocusBlockIndicatorClick } from '../extension/focusblockindicator';
+import { onFocusBlockIndicatorClick, createFocusBlockIndicatorLabelHTML } from '../extension/focusblockindicator';
 import { onScrollEffectClick } from '../layout/scrolleffect';
 import { onColoredFoldersClick } from '../layout/coloredfolders';
 import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../layout/verticaltabs';
@@ -236,7 +236,7 @@ export function buildMenu(
       {
         id: 'neo-focus-block-indicator-button',
         icon: 'iconNeoFocusBlockIndicator',
-        label: i18n.focusBlockIndicator,
+        label: createFocusBlockIndicatorLabelHTML(i18n),
         click: () => {
           onFocusBlockIndicatorClick();
           return true;

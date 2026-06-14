@@ -12,6 +12,7 @@ let cachedFocusElement: Element | null = null;
 let smoothCaretStatus: 'static' | 'breathing' = 'static';
 function applySmoothCaretStatus(): void {
   document.body.classList.toggle('neo-extension-smooth-caret-breathing', smoothCaretStatus === 'breathing');
+  document.body.classList.toggle('neo-extension-smooth-caret-static', smoothCaretStatus === 'static');
 }
 function startSmoothCaret(): void {
   document.getElementById('neo-smooth-caret-item')?.remove();
@@ -221,10 +222,10 @@ export function showSmoothCaretSettings(): void {
   });
 }
 export function destroySmoothCaret(): void {
-  delete (window as any).__neoOpenSmoothCaretSettings;
   document.getElementById('neo-smooth-caret-item')?.remove();
   document.documentElement.classList.remove('neo-extension-smooth-caret');
   document.body.classList.remove('neo-extension-smooth-caret-breathing');
+  document.body.classList.remove('neo-extension-smooth-caret-static');
   throttleTimers.forEach((timer) => clearTimeout(timer));
   throttleTimers = [];
   cachedZIndex = 0;
@@ -243,12 +244,12 @@ export function destroySmoothCaret(): void {
   }
 }
 export function initSmoothCaret(): void {
+  (window as any).__neoOpenSmoothCaretSettings = showSmoothCaretSettings;
   loadConfig().then((config) => {
     smoothCaretStatus = config['smooth-caret-status'] || 'static';
     if (config['smooth-caret'] === true) {
       document.documentElement.classList.add('neo-extension-smooth-caret');
       applySmoothCaretStatus();
-      (window as any).__neoOpenSmoothCaretSettings = showSmoothCaretSettings;
       startSmoothCaret();
     }
   });
@@ -258,14 +259,12 @@ export function onSmoothCaretClick(): void {
   if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-extension-smooth-caret');
   if (isActive) {
-    htmlEl.classList.remove('neo-extension-smooth-caret');
     saveConfig({ 'smooth-caret': false } as Partial<Config>);
     destroySmoothCaret();
   } else {
     htmlEl.classList.add('neo-extension-smooth-caret');
     applySmoothCaretStatus();
     saveConfig({ 'smooth-caret': true } as Partial<Config>);
-    (window as any).__neoOpenSmoothCaretSettings = showSmoothCaretSettings;
     startSmoothCaret();
   }
 }

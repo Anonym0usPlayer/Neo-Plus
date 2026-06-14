@@ -37,6 +37,7 @@ export interface Config {
   'fluid-cursor'?: boolean;
   'list-bullet-line'?: boolean;
   'focus-block-indicator'?: boolean;
+  'focus-block-effect'?: 'vertical-line' | 'shadow';
   'colored-folders'?: boolean;
   'colored-lists'?: boolean;
   'colored-headings'?: boolean;
@@ -63,13 +64,12 @@ export function loadConfig(): Promise<Config> {
   if (pendingLoadConfig) return pendingLoadConfig;
   const plugin = getPluginOrNull();
   if (!plugin) {
-    configCache = {};
     pendingLoadConfig = Promise.resolve(configCache);
     pendingLoadConfig.finally(() => { pendingLoadConfig = null; });
     return pendingLoadConfig;
   }
   pendingLoadConfig = plugin.loadData(configKey).then((data: Config | null) => {
-    configCache = data || {};
+    configCache = { ...(data || {}), ...configCache };
     return configCache;
   }).catch(() => {
     configCache = {};

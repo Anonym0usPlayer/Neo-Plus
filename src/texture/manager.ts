@@ -136,7 +136,6 @@ export function initTexture(): void {
   });
 }
 export function destroyTexture(): void {
-  delete (window as any).__neoOpenCustomImageSettings;
   const html = document.documentElement;
   html.className = html.className
     .split(' ')

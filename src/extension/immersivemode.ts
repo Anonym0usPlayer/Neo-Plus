@@ -238,6 +238,7 @@ function clearHighlightCss(): void {
 }
 function applyHighlightState(): void {
   document.body.classList.toggle('neo-extension-immersivemode-highlight', highlightEnabled);
+  document.body.classList.toggle('neo-extension-immersivemode-no-highlight', !highlightEnabled);
 }
 export function showImmersiveModeSettings(): void {
   const plugin = getPlugin();
@@ -287,10 +288,8 @@ export function onImmersiveModeClick(): void {
   if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-extension-immersivemode');
   if (isActive) {
-    htmlEl.classList.remove('neo-extension-immersivemode');
-    document.body.classList.remove('neo-extension-immersivemode-highlight');
     saveConfig({ 'immersive-mode': false } as Partial<Config>);
-    stopObserving();
+    destroyImmersiveMode();
   } else {
     htmlEl.classList.add('neo-extension-immersivemode');
     applyHighlightState();
@@ -299,8 +298,8 @@ export function onImmersiveModeClick(): void {
   }
 }
 export function destroyImmersiveMode(): void {
-  delete (window as any).__neoOpenImmersiveModeSettings;
   document.documentElement?.classList.remove('neo-extension-immersivemode');
   document.body.classList.remove('neo-extension-immersivemode-highlight');
+  document.body.classList.remove('neo-extension-immersivemode-no-highlight');
   stopObserving();
 }

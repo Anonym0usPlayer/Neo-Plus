@@ -203,11 +203,11 @@ export function showVerticalTabsSettings(): void {
           if (firstFlex) firstFlex.style.width = '';
         });
         topLeftOnlyLastWidth = null;
-      }
-      currentMode = newMode;
-      saveConfig({ 'vertical-tabs-mode': newMode } as Partial<Config>);
-      if (document.documentElement.classList.contains('neo-layout-verticaltabs')) {
-        doUpdate();
+        currentMode = newMode;
+        saveConfig({ 'vertical-tabs-mode': newMode } as Partial<Config>);
+        if (document.documentElement.classList.contains('neo-layout-verticaltabs')) {
+          doUpdate();
+        }
       }
     }
     dialog.destroy();
@@ -246,15 +246,11 @@ export function onVerticalTabsClick(): void {
     topLeftOnlyLastWidth = null;
     initResizeHandle();
     _fetchListener.attach();
-    loadConfig().then((config) => {
-      currentMode = config['vertical-tabs-mode'] || 'topLeftOnly';
-      doUpdate();
-    });
+    doUpdate();
   }
 }
 export function destroyVerticalTabs(): void {
   destroyed = true;
-  delete (window as any).__neoOpenVerticalTabsSettings;
   _fetchListener.detach();
   destroyResizeHandle();
   document.documentElement?.classList.remove('neo-layout-verticaltabs');
