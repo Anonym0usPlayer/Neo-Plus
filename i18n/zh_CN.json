@@ -119,6 +119,7 @@
   "focusBlockEffectTip": "设置聚焦块指示的具体效果",
   "focusBlockEffectVerticalLine": "竖线标识",
   "focusBlockEffectShadow": "阴影",
+  "focusBlockEffectBackground": "背景色",
   "verticalTabs": "垂直页签",
   "immersiveMode": "沉浸模式",
   "superFusion": "超级融合",

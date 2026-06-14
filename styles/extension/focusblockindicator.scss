@@ -24,6 +24,12 @@
             transition: box-shadow var(--b3-transition);
         }
     }
+    body.neo-extension-focusblockindicator-background {
+        .protyle-wysiwyg [neo-focus-block] {
+            background-color: oklch(from var(--b3-theme-on-background) l c h / 0.12);
+            transition: background-color var(--b3-transition);
+        }
+    }
 }
 @keyframes neo-focusblock-entrance {
     from {

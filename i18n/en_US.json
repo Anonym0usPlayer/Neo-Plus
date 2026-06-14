@@ -119,6 +119,7 @@
   "focusBlockEffectTip": "Set the specific effect of the focus block indicator",
   "focusBlockEffectVerticalLine": "Vertical Line",
   "focusBlockEffectShadow": "Shadow",
+  "focusBlockEffectBackground": "Background",
   "verticalTabs": "Vertical Tabs",
   "immersiveMode": "Immersive Mode",
   "superFusion": "Super Fusion",

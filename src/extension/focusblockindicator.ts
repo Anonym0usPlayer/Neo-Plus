@@ -4,7 +4,7 @@ import { getPlugin } from '../main/guard';
 import { Dialog } from 'siyuan';
 const excludedBlockTypes = ['NodeAttributeView', 'NodeCodeBlock', 'NodeList', 'NodeCallout', 'NodeTable'];
 const debounceDelay = 200;
-let focusBlockEffect: 'vertical-line' | 'shadow' = 'vertical-line';
+let focusBlockEffect: 'vertical-line' | 'shadow' | 'background' = 'vertical-line';
 let pendingUpdate = false;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 let mouseUpHandler: (() => void) | null = null;
@@ -13,6 +13,7 @@ let selectionChangeHandler: (() => void) | null = null;
 function applyFocusBlockEffect(): void {
   document.body.classList.toggle('neo-extension-focusblockindicator-shadow', focusBlockEffect === 'shadow');
   document.body.classList.toggle('neo-extension-focusblockindicator-vertical-line', focusBlockEffect === 'vertical-line');
+  document.body.classList.toggle('neo-extension-focusblockindicator-background', focusBlockEffect === 'background');
 }
 function clearAllFocusBlocks(): void {
   document.querySelectorAll('[neo-focus-block]').forEach((el) => {
@@ -107,7 +108,7 @@ function toPascalCase(str: string): string {
   return str.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('');
 }
 function buildSettingsHTML(i18n: Record<string, string>): string {
-  const effectOptions = ['vertical-line', 'shadow']
+  const effectOptions = ['vertical-line', 'shadow', 'background']
     .map(v => `<option value="${v}">${i18n[`focusBlockEffect${toPascalCase(v)}`]}</option>`)
     .join('');
   return `<div class="b3-dialog__content">
@@ -148,7 +149,7 @@ export function showFocusBlockIndicatorSettings(): void {
   dialog.element.querySelector('#neo-focus-block-indicator-cancel')?.addEventListener('click', () => dialog.destroy());
   dialog.element.querySelector('#neo-focus-block-indicator-confirm')?.addEventListener('click', () => {
     if (effectSelect) {
-      const newEffect = effectSelect.value as 'vertical-line' | 'shadow';
+      const newEffect = effectSelect.value as 'vertical-line' | 'shadow' | 'background';
       if (newEffect !== focusBlockEffect) {
         focusBlockEffect = newEffect;
         applyFocusBlockEffect();
@@ -168,5 +169,6 @@ export function destroyFocusBlockIndicator(): void {
   document.documentElement?.classList.remove('neo-extension-focusblockindicator');
   document.body.classList.remove('neo-extension-focusblockindicator-shadow');
   document.body.classList.remove('neo-extension-focusblockindicator-vertical-line');
+  document.body.classList.remove('neo-extension-focusblockindicator-background');
   stopObserving();
 }
