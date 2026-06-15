@@ -262,8 +262,8 @@ export function onImmersiveModeClick(): void {
   const htmlEl = document.documentElement;
   const isActive = htmlEl.classList.contains('neo-extension-immersivemode');
   if (isActive) {
-    saveConfig({ 'immersive-mode': false } as Partial<Config>);
     destroyImmersiveMode();
+    saveConfig({ 'immersive-mode': false } as Partial<Config>);
   } else {
     htmlEl.classList.add('neo-extension-immersivemode');
     applyHighlightState();
