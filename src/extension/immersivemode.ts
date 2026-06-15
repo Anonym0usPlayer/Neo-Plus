@@ -37,15 +37,13 @@ function getCursorRect(): DOMRect | null {
   if (rects.length > 0 && rects[0].height > 0) {
     return rects[0];
   }
+  let textNode: Text | null = null;
   try {
     const cloneRange = range.cloneRange();
-    const textNode = document.createTextNode('\u200B');
+    textNode = document.createTextNode('\u200B');
     cloneRange.insertNode(textNode);
     cloneRange.selectNode(textNode);
     const rect = cloneRange.getBoundingClientRect();
-    if (textNode.parentNode) {
-      textNode.parentNode.removeChild(textNode);
-    }
     if (rect && rect.height > 0) {
       return rect;
     }
@@ -53,6 +51,10 @@ function getCursorRect(): DOMRect | null {
       return new DOMRect(rect.left, rect.top, 0, rect.height);
     }
   } catch {
+  } finally {
+    if (textNode?.parentNode) {
+      textNode.parentNode.removeChild(textNode);
+    }
   }
   return null;
 }
