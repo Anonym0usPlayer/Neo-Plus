@@ -9,7 +9,6 @@ export function initScrollEffect(): void {
 }
 export function onScrollEffectClick(): void {
   const htmlEl = document.documentElement;
-  if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-layout-scrolleffect');
   if (isActive) {
     destroyScrollEffect();

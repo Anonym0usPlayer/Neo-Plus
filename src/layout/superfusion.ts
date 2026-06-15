@@ -12,7 +12,6 @@ export function initSuperFusion(): void {
 export function onSuperFusionClick(): void {
   if (isMobile()) return;
   const htmlEl = document.documentElement;
-  if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-layout-superfusion');
   if (isActive) {
     destroySuperFusion();

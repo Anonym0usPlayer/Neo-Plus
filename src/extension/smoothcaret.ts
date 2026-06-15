@@ -227,11 +227,10 @@ export function initSmoothCaret(): void {
 }
 export function onSmoothCaretClick(): void {
   const htmlEl = document.documentElement;
-  if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-extension-smooth-caret');
   if (isActive) {
-    saveConfig({ 'smooth-caret': false } as Partial<Config>);
     destroySmoothCaret();
+    saveConfig({ 'smooth-caret': false } as Partial<Config>);
   } else {
     htmlEl.classList.add('neo-extension-smooth-caret');
     applySmoothCaretStatus();

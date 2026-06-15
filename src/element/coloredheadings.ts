@@ -9,7 +9,6 @@ export function initColoredHeadings(): void {
 }
 export function onColoredHeadingsClick(): void {
   const htmlEl = document.documentElement;
-  if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-element-coloredheadings');
   if (isActive) {
     destroyColoredHeadings();

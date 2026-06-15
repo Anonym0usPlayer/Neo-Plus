@@ -84,11 +84,10 @@ export function initFocusBlockIndicator(): void {
 }
 export function onFocusBlockIndicatorClick(): void {
   const htmlEl = document.documentElement;
-  if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-extension-focusblockindicator');
   if (isActive) {
-    saveConfig({ 'focus-block-indicator': false } as Partial<Config>);
     destroyFocusBlockIndicator();
+    saveConfig({ 'focus-block-indicator': false } as Partial<Config>);
   } else {
     htmlEl.classList.add('neo-extension-focusblockindicator');
     applyFocusBlockEffect();

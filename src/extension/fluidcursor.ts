@@ -247,12 +247,10 @@ export function initFluidCursor(): void {
 export function onFluidCursorClick(): void {
   if (isMobile()) return;
   const htmlEl = document.documentElement;
-  if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-extension-fluid-cursor');
   if (isActive) {
-    htmlEl.classList.remove('neo-extension-fluid-cursor');
-    saveConfig({ 'fluid-cursor': false } as Partial<Config>);
     destroyFluidCursor();
+    saveConfig({ 'fluid-cursor': false } as Partial<Config>);
   } else {
     htmlEl.classList.add('neo-extension-fluid-cursor');
     saveConfig({ 'fluid-cursor': true } as Partial<Config>);

@@ -1,4 +1,3 @@
-import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
@@ -154,7 +153,7 @@ function stopObserving(): void {
     selectionChangeHandler = null;
   }
   if (scrollHandler) {
-    document.removeEventListener('scroll', scrollHandler);
+    document.removeEventListener('scroll', scrollHandler, { capture: true, passive: true } as EventListenerOptions);
     scrollHandler = null;
   }
   isScrolling = false;
@@ -248,7 +247,6 @@ export function showImmersiveModeSettings(): void {
   });
 }
 export function initImmersiveMode(): void {
-  if (isMobile()) return;
   (window as any).__neoOpenImmersiveModeSettings = showImmersiveModeSettings;
   loadConfig().then((config) => {
     if (config['immersive-typewriter'] !== undefined) typewriterEnabled = config['immersive-typewriter'];
@@ -261,9 +259,7 @@ export function initImmersiveMode(): void {
   });
 }
 export function onImmersiveModeClick(): void {
-  if (isMobile()) return;
   const htmlEl = document.documentElement;
-  if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-extension-immersivemode');
   if (isActive) {
     saveConfig({ 'immersive-mode': false } as Partial<Config>);

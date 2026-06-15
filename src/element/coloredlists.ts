@@ -9,7 +9,6 @@ export function initColoredLists(): void {
 }
 export function onColoredListsClick(): void {
   const htmlEl = document.documentElement;
-  if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-element-coloredlists');
   if (isActive) {
     destroyColoredLists();

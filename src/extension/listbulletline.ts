@@ -146,12 +146,10 @@ export function initListBulletLine(): void {
 }
 export function onListBulletLineClick(): void {
   const htmlEl = document.documentElement;
-  if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-extension-listbulletline');
   if (isActive) {
-    htmlEl.classList.remove('neo-extension-listbulletline');
+    destroyListBulletLine();
     saveConfig({ 'list-bullet-line': false } as Partial<Config>);
-    unbindSelectionChange();
   } else {
     htmlEl.classList.add('neo-extension-listbulletline');
     saveConfig({ 'list-bullet-line': true } as Partial<Config>);

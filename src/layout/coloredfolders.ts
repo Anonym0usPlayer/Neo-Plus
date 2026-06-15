@@ -9,7 +9,6 @@ export function initColoredFolders(): void {
 }
 export function onColoredFoldersClick(): void {
   const htmlEl = document.documentElement;
-  if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-layout-coloredfolders');
   if (isActive) {
     destroyColoredFolders();

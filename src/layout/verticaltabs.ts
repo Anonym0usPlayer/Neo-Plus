@@ -235,7 +235,6 @@ export function initVerticalTabs(): void {
 export function onVerticalTabsClick(): void {
   if (isMobile()) return;
   const htmlEl = document.documentElement;
-  if (!htmlEl) return;
   const isActive = htmlEl.classList.contains('neo-layout-verticaltabs');
   if (isActive) {
     destroyVerticalTabs();
