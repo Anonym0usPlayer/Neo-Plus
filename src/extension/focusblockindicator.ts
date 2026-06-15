@@ -1,7 +1,7 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
-import { getTextColor, getScrollContainer } from '../modules/getselection';
+import { getTextColor } from '../modules/getselection';
 import { Dialog } from 'siyuan';
 const debounceDelay = 200;
 let focusBlockEffect: 'vertical-line' | 'shadow' | 'background' = 'vertical-line';
@@ -32,8 +32,7 @@ function applyFocusBlock(): void {
   clearAllFocusBlocks();
   curBlock.setAttribute('neo-focus-block', '');
   if (focusBlockEffect === 'background') {
-    const scrollContainer = getScrollContainer();
-    const textColor = getTextColor(focusNode, scrollContainer || curBlock);
+    const textColor = getTextColor(focusNode, curBlock);
     if (textColor) {
       document.documentElement.style.setProperty('--neo-focusblock-text-color', textColor);
     } else {
