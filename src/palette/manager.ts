@@ -24,8 +24,6 @@ import { initHighContrast, destroyHighContrast } from './highcontrast';
 import { initRandom, destroyRandom } from './random';
 export type { ThemeMode, Preset, Config };
 type Plan = 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random';
-let _pendingPlan: string | null = null;
-let _pendingPreset: string | null = null;
 function withViewTransition(callback: () => void): void {
   if (document.startViewTransition) {
     document.startViewTransition(callback);
@@ -64,10 +62,7 @@ function restorePalette(config: Config): void {
   }
 }
 export function switchToPreset(key: string): void {
-  _pendingPreset = key;
   loadConfig().then((config) => {
-    if (_pendingPreset !== key) return;
-    _pendingPreset = null;
     withViewTransition(() => {
       destroyRandom();
       destroyCustomColor();
@@ -82,25 +77,18 @@ export function switchToPreset(key: string): void {
       initInvert(config);
       initHighContrast(config);
     });
-  }).catch(() => {
-    if (_pendingPreset === key) _pendingPreset = null;
-  });
+  }).catch(() => {});
 }
 export function switchToPlan(plan: Plan): void {
-  _pendingPlan = plan;
   const mode = getCurrentThemeMode();
   const configKey: 'color-plan-light' | 'color-plan-dark' = mode === 'dark' ? 'color-plan-dark' : 'color-plan-light';
   saveConfig({ [configKey]: plan }).then(() => {
     loadConfig().then((config) => {
-      if (_pendingPlan !== plan) return;
-      _pendingPlan = null;
       withViewTransition(() => {
         restorePalette(config);
       });
     });
-  }).catch(() => {
-    if (_pendingPlan === plan) _pendingPlan = null;
-  });
+  }).catch(() => {});
 }
 export function getPresetMenuItems(i18n: Record<string, string>): any[] {
   const mode = getCurrentThemeMode();

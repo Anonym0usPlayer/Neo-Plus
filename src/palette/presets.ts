@@ -64,13 +64,14 @@ export function getCurrentPlan(config: Config, mode: ThemeMode): 'preset' | 'cus
 export function getPresetKey(config: Config, mode: ThemeMode): string | undefined {
   return mode === 'dark' ? config['preset-dark'] : config['preset-light'];
 }
+function removePaletteClasses(html: HTMLElement): void {
+  const classesToRemove = Array.from(html.classList).filter((cls) => cls.startsWith('neo-palette-'));
+  html.classList.remove(...classesToRemove);
+}
 export function applyPreset(key: string): void {
   const mode = getCurrentThemeMode();
   const html = document.documentElement;
-  html.className = html.className
-    .split(' ')
-    .filter((cls) => !cls.startsWith('neo-palette-'))
-    .join(' ');
+  removePaletteClasses(html);
   html.classList.add(`neo-palette-${key}`);
   const patch: Partial<Config> = {};
   if (mode === 'dark') {
@@ -84,19 +85,13 @@ export function applyPreset(key: string): void {
 }
 export function destroyPaletteClasses(): void {
   const html = document.documentElement;
-  html.className = html.className
-    .split(' ')
-    .filter((cls) => !cls.startsWith('neo-palette-'))
-    .join(' ');
+  removePaletteClasses(html);
 }
 export function applyCurrentPlan(config: Config): void {
   const mode = getCurrentThemeMode();
   const plan = getCurrentPlan(config, mode);
   const html = document.documentElement;
-  html.className = html.className
-    .split(' ')
-    .filter((cls) => !cls.startsWith('neo-palette-'))
-    .join(' ');
+  removePaletteClasses(html);
   if (plan === 'preset') {
     const presetKey = getPresetKey(config, mode);
     if (presetKey) {
