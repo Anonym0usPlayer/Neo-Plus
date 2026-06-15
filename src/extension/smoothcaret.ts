@@ -1,6 +1,7 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
+import { getCursorRect, getTextColor, getScrollContainer } from '../modules/getselection';
 import { Dialog } from 'siyuan';
 let smoothCaretEventHandler: (() => void) | null = null;
 let throttledCaretEventHandler: (() => void) | null = null;
@@ -67,27 +68,11 @@ function startSmoothCaret(): void {
       focusElement?.closest('[contenteditable="true"]') ||
       (focusElement?.closest('.protyle-title') ? focusElement : null);
     if (sel?.rangeCount && targetElement) {
-      const range = sel.getRangeAt(0);
-      let rect = range.getClientRects()[0];
-      if (!rect || rect.height === 0) {
-        let textNode: Text | null = null;
-        try {
-          const cloneRange = range.cloneRange();
-          textNode = document.createTextNode('\u200B');
-          cloneRange.insertNode(textNode);
-          cloneRange.selectNode(textNode);
-          rect = cloneRange.getBoundingClientRect();
-        } catch {
-        } finally {
-          if (textNode?.parentNode) {
-            textNode.parentNode.removeChild(textNode);
-          }
-        }
-      }
+      const rect = getCursorRect();
       if (rect) {
         if (focusElement !== cachedFocusElement) {
           cachedFocusElement = focusElement ?? null;
-          cachedScrollContainer = focusElement?.closest('.protyle-content') as HTMLElement | null;
+          cachedScrollContainer = getScrollContainer();
         }
         if (cachedScrollContainer) {
           const containerRect = cachedScrollContainer.getBoundingClientRect();
@@ -106,28 +91,9 @@ function startSmoothCaret(): void {
         caretElement.style.height = `${rect.height * 1.05}px`;
         const baseZIndex = calculateCaretZIndex(targetElement);
         caretElement.style.zIndex = (baseZIndex + 1).toString();
-        let textColor: string | null = null;
-        const focusNode = sel.focusNode;
-        if (focusNode) {
-          if (focusNode.nodeType === Node.TEXT_NODE) {
-            const parentElement = focusNode.parentElement;
-            if (parentElement) {
-              textColor = window.getComputedStyle(parentElement).color;
-            }
-          } else if (focusNode.nodeType === Node.ELEMENT_NODE) {
-            textColor = window.getComputedStyle(focusNode as Element).color;
-          }
-        }
-        if (!textColor) {
-          textColor = window.getComputedStyle(targetElement).color;
-        }
-        if (textColor && textColor !== 'transparent') {
-          const rgbaMatch = textColor.match(/^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)$/);
-          if (rgbaMatch && parseFloat(rgbaMatch[4]) === 0) {
-            caretElement.style.removeProperty('--neo-smooth-caret-color');
-          } else {
-            caretElement.style.setProperty('--neo-smooth-caret-color', textColor);
-          }
+        const textColor = getTextColor(sel.focusNode, targetElement);
+        if (textColor) {
+          caretElement.style.setProperty('--neo-smooth-caret-color', textColor);
         } else {
           caretElement.style.removeProperty('--neo-smooth-caret-color');
         }

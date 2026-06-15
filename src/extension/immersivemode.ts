@@ -2,6 +2,7 @@ import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
+import { getCursorRect, getTextColor, getScrollContainer } from '../modules/getselection';
 import { Dialog } from 'siyuan';
 const scrollDuration = 600;
 const scrollThrottle = 100;
@@ -9,84 +10,25 @@ const centerThreshold = 40;
 let typewriterEnabled = true;
 let highlightEnabled = true;
 let selectionChangeHandler: (() => void) | null = null;
+let scrollHandler: (() => void) | null = null;
 let scrollTimeout: number | null = null;
+let scrollEndTimer: number | null = null;
 let rafId: number | null = null;
-let loopRafId: number | null = null;
+let scrollRafId: number | null = null;
 let lastMaskPosition: string | null = null;
 let lastMaskHeight: string | null = null;
 let isScrolling = false;
 let pendingUpdate = false;
-function getScrollContainer(): HTMLElement | null {
-  const sel = window.getSelection();
-  if (!sel || sel.rangeCount === 0) return null;
-  const startContainer = sel.getRangeAt(0).startContainer;
-  let element: HTMLElement | null = startContainer instanceof HTMLElement ? startContainer : startContainer.parentElement;
-  while (element && element !== document.body) {
-    if (element.classList.contains('protyle-content')) {
-      return element;
-    }
-    element = element.parentElement;
-  }
-  return null;
-}
-function getCursorRect(): DOMRect | null {
-  const sel = window.getSelection();
-  if (!sel || sel.rangeCount === 0) return null;
-  const range = sel.getRangeAt(0);
-  const rects = range.getClientRects();
-  if (rects.length > 0 && rects[0].height > 0) {
-    return rects[0];
-  }
-  let textNode: Text | null = null;
-  try {
-    const cloneRange = range.cloneRange();
-    textNode = document.createTextNode('\u200B');
-    cloneRange.insertNode(textNode);
-    cloneRange.selectNode(textNode);
-    const rect = cloneRange.getBoundingClientRect();
-    if (rect && rect.height > 0) {
-      return rect;
-    }
-    if (rect) {
-      return new DOMRect(rect.left, rect.top, 0, rect.height);
-    }
-  } catch {
-  } finally {
-    if (textNode?.parentNode) {
-      textNode.parentNode.removeChild(textNode);
-    }
-  }
-  return null;
-}
+let isAnimationFramePending = false;
 function updateMaskPosition(cursorRect: DOMRect, containerRect: DOMRect, scrollContainer: HTMLElement): void {
   const cursorCenterY = cursorRect.top + cursorRect.height / 2;
   const cursorRelativeY = cursorCenterY - containerRect.top;
   const positionPercent = (cursorRelativeY / containerRect.height) * 100;
   const newMaskPosition = `${positionPercent}%`;
   const newMaskHeight = `${cursorRect.height * 0.75}px`;
-  let textColor: string | null = null;
-  const sel = window.getSelection();
-  const focusNode = sel?.focusNode;
-  if (focusNode) {
-    if (focusNode.nodeType === Node.TEXT_NODE) {
-      const parentElement = focusNode.parentElement;
-      if (parentElement) {
-        textColor = window.getComputedStyle(parentElement).color;
-      }
-    } else if (focusNode.nodeType === Node.ELEMENT_NODE) {
-      textColor = window.getComputedStyle(focusNode as Element).color;
-    }
-  }
-  if (!textColor) {
-    textColor = window.getComputedStyle(scrollContainer).color;
-  }
-  if (textColor && textColor !== 'transparent') {
-    const rgbaMatch = textColor.match(/^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)$/);
-    if (rgbaMatch && parseFloat(rgbaMatch[4]) === 0) {
-      scrollContainer.style.removeProperty('--neo-immersive-text-color');
-    } else {
-      scrollContainer.style.setProperty('--neo-immersive-text-color', textColor);
-    }
+  const textColor = getTextColor(window.getSelection()?.focusNode ?? null, scrollContainer);
+  if (textColor) {
+    scrollContainer.style.setProperty('--neo-immersive-text-color', textColor);
   } else {
     scrollContainer.style.removeProperty('--neo-immersive-text-color');
   }
@@ -105,8 +47,8 @@ function scrollToLineCenter(cursorRect: DOMRect, container: HTMLElement, contain
   if (distance === 0) return;
   isScrolling = true;
   const startTime = performance.now();
-  if (rafId !== null) {
-    cancelAnimationFrame(rafId);
+  if (scrollRafId !== null) {
+    cancelAnimationFrame(scrollRafId);
   }
   function animateScroll(currentTime: number): void {
     const elapsed = currentTime - startTime;
@@ -116,9 +58,9 @@ function scrollToLineCenter(cursorRect: DOMRect, container: HTMLElement, contain
       : 1 - Math.pow(-2 * progress + 2, 3) / 2;
     container.scrollTop = startScrollTop + distance * easeProgress;
     if (progress < 1) {
-      rafId = requestAnimationFrame(animateScroll);
+      scrollRafId = requestAnimationFrame(animateScroll);
     } else {
-      rafId = null;
+      scrollRafId = null;
       if (highlightEnabled) {
         const currentRect = getCursorRect();
         if (currentRect) {
@@ -134,10 +76,7 @@ function scrollToLineCenter(cursorRect: DOMRect, container: HTMLElement, contain
       }, scrollThrottle);
     }
   }
-  rafId = requestAnimationFrame(animateScroll);
-}
-function handleSelectionChange(): void {
-  pendingUpdate = true;
+  scrollRafId = requestAnimationFrame(animateScroll);
 }
 function applyPendingUpdate(): void {
   if (!pendingUpdate) return;
@@ -151,29 +90,60 @@ function applyPendingUpdate(): void {
   const cursorCenterY = cursorRect.top + cursorRect.height / 2;
   const containerCenterY = containerRect.top + containerRect.height / 2;
   const distFromCenter = Math.abs(cursorCenterY - containerCenterY);
-  if (!isScrolling && typewriterEnabled && distFromCenter > centerThreshold && rafId === null) {
+  if (!isScrolling && typewriterEnabled && distFromCenter > centerThreshold && scrollRafId === null) {
     scrollToLineCenter(cursorRect, container, containerRect);
   } else if (highlightEnabled) {
     updateMaskPosition(cursorRect, containerRect, container);
   }
 }
-function startObserving(): void {
-  selectionChangeHandler = handleSelectionChange;
-  document.addEventListener('selectionchange', selectionChangeHandler);
-  function rafLoop(): void {
-    applyPendingUpdate();
-    loopRafId = requestAnimationFrame(rafLoop);
+function applyMaskUpdate(): void {
+  if (!highlightEnabled) return;
+  const cursorRect = getCursorRect();
+  if (!cursorRect) return;
+  const container = getScrollContainer();
+  if (!container) return;
+  updateMaskPosition(cursorRect, container.getBoundingClientRect(), container);
+}
+function scheduleUpdate(): void {
+  if (!typewriterEnabled && !highlightEnabled) return;
+  pendingUpdate = true;
+  if (!isAnimationFramePending) {
+    window.requestAnimationFrame(() => {
+      isAnimationFramePending = false;
+      applyPendingUpdate();
+    });
+    isAnimationFramePending = true;
   }
-  loopRafId = requestAnimationFrame(rafLoop);
+}
+function scheduleMaskUpdate(): void {
+  if (!highlightEnabled) return;
+  if (scrollEndTimer !== null) {
+    clearTimeout(scrollEndTimer);
+  }
+  scrollEndTimer = window.setTimeout(() => {
+    scrollEndTimer = null;
+    applyMaskUpdate();
+  }, 50);
+}
+function startObserving(): void {
+  selectionChangeHandler = scheduleUpdate;
+  scrollHandler = scheduleMaskUpdate;
+  document.addEventListener('selectionchange', selectionChangeHandler);
+  document.addEventListener('scroll', scrollHandler, { capture: true, passive: true });
+  scheduleUpdate();
 }
 function stopObserving(): void {
-  if (loopRafId !== null) {
-    cancelAnimationFrame(loopRafId);
-    loopRafId = null;
+  if (scrollRafId !== null) {
+    cancelAnimationFrame(scrollRafId);
+    scrollRafId = null;
   }
   if (rafId !== null) {
     cancelAnimationFrame(rafId);
     rafId = null;
+  }
+  if (scrollEndTimer !== null) {
+    clearTimeout(scrollEndTimer);
+    scrollEndTimer = null;
   }
   if (scrollTimeout !== null) {
     clearTimeout(scrollTimeout);
@@ -183,8 +153,13 @@ function stopObserving(): void {
     document.removeEventListener('selectionchange', selectionChangeHandler);
     selectionChangeHandler = null;
   }
+  if (scrollHandler) {
+    document.removeEventListener('scroll', scrollHandler);
+    scrollHandler = null;
+  }
   isScrolling = false;
   pendingUpdate = false;
+  isAnimationFramePending = false;
   lastMaskPosition = null;
   lastMaskHeight = null;
   clearHighlightCss();
