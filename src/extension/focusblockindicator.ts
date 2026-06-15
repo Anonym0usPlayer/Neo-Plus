@@ -96,12 +96,9 @@ export function onFocusBlockIndicatorClick(): void {
     startObserving();
   }
 }
-function toPascalCase(str: string): string {
-  return str.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('');
-}
 function buildSettingsHTML(i18n: Record<string, string>): string {
   const effectOptions = ['vertical-line', 'shadow', 'background']
-    .map(v => `<option value="${v}">${i18n[`focusBlockEffect${toPascalCase(v)}`]}</option>`)
+    .map(v => `<option value="${v}">${i18n[`focusBlockEffect${v.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('')}`]}</option>`)
     .join('');
   return `<div class="b3-dialog__content">
     <div class="config__tab-container">
