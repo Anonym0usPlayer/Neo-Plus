@@ -1,18 +1,20 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
+import { getTextColor, getScrollContainer } from '../modules/getselection';
 import { Dialog } from 'siyuan';
 const debounceDelay = 200;
 let focusBlockEffect: 'vertical-line' | 'shadow' | 'background' = 'vertical-line';
 let pendingUpdate = false;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-let mouseUpHandler: (() => void) | null = null;
-let keyUpHandler: (() => void) | null = null;
 let selectionChangeHandler: (() => void) | null = null;
 function applyFocusBlockEffect(): void {
   document.body.classList.toggle('neo-extension-focusblockindicator-shadow', focusBlockEffect === 'shadow');
   document.body.classList.toggle('neo-extension-focusblockindicator-vertical-line', focusBlockEffect === 'vertical-line');
   document.body.classList.toggle('neo-extension-focusblockindicator-background', focusBlockEffect === 'background');
+  if (focusBlockEffect !== 'background') {
+    document.documentElement?.style.removeProperty('--neo-focusblock-text-color');
+  }
 }
 function clearAllFocusBlocks(): void {
   document.querySelectorAll('[neo-focus-block]').forEach((el) => {
@@ -23,13 +25,21 @@ function applyFocusBlock(): void {
   pendingUpdate = false;
   const selection = window.getSelection();
   if (!selection || selection.rangeCount === 0) return;
-  const range = selection.getRangeAt(0);
-  if (!range) return;
-  const curNode = range.commonAncestorContainer;
-  const curBlock = (curNode.nodeType === Node.ELEMENT_NODE ? curNode as Element : curNode.parentElement)?.closest('[data-node-id]');
+  const focusNode = selection.focusNode;
+  if (!focusNode) return;
+  const curBlock = (focusNode.nodeType === Node.ELEMENT_NODE ? focusNode as Element : focusNode.parentElement)?.closest('[data-node-id]');
   if (!curBlock) return;
   clearAllFocusBlocks();
   curBlock.setAttribute('neo-focus-block', '');
+  if (focusBlockEffect === 'background') {
+    const scrollContainer = getScrollContainer();
+    const textColor = getTextColor(focusNode, scrollContainer || curBlock);
+    if (textColor) {
+      document.documentElement.style.setProperty('--neo-focusblock-text-color', textColor);
+    } else {
+      document.documentElement.style.removeProperty('--neo-focusblock-text-color');
+    }
+  }
 }
 function handleUpdate(): void {
   if (debounceTimer) {
@@ -44,28 +54,12 @@ function onSelectionChange(): void {
   handleUpdate();
 }
 function startObserving(): void {
-  mouseUpHandler = () => {
-    handleUpdate();
-  };
-  keyUpHandler = () => {
-    handleUpdate();
-  };
   selectionChangeHandler = () => {
     onSelectionChange();
   };
-  document.addEventListener('mousedown', mouseUpHandler);
-  document.addEventListener('keyup', keyUpHandler);
   document.addEventListener('selectionchange', selectionChangeHandler);
 }
 function stopObserving(): void {
-  if (mouseUpHandler) {
-    document.removeEventListener('mousedown', mouseUpHandler);
-    mouseUpHandler = null;
-  }
-  if (keyUpHandler) {
-    document.removeEventListener('keyup', keyUpHandler);
-    keyUpHandler = null;
-  }
   if (selectionChangeHandler) {
     document.removeEventListener('selectionchange', selectionChangeHandler);
     selectionChangeHandler = null;
@@ -76,6 +70,7 @@ function stopObserving(): void {
   }
   pendingUpdate = false;
   clearAllFocusBlocks();
+  document.documentElement?.style.removeProperty('--neo-focusblock-text-color');
 }
 export function initFocusBlockIndicator(): void {
   (window as any).__neoOpenFocusBlockIndicatorSettings = showFocusBlockIndicatorSettings;
@@ -169,5 +164,6 @@ export function destroyFocusBlockIndicator(): void {
   document.body.classList.remove('neo-extension-focusblockindicator-shadow');
   document.body.classList.remove('neo-extension-focusblockindicator-vertical-line');
   document.body.classList.remove('neo-extension-focusblockindicator-background');
+  document.documentElement?.style.removeProperty('--neo-focusblock-text-color');
   stopObserving();
 }
