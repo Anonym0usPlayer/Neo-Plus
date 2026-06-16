@@ -13,6 +13,7 @@ import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../layout/vert
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
 import { onSuperFusionClick } from '../layout/superfusion';
 import { onColoredListsClick } from '../element/coloredlists';
+import { onPinnedToolbarClick, createPinnedToolbarLabelHTML } from '../extension/pinnedtoolbar';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
 export function buildMenu(
   onClose?: () => void,
@@ -239,6 +240,15 @@ export function buildMenu(
         label: createFocusBlockIndicatorLabelHTML(i18n),
         click: () => {
           onFocusBlockIndicatorClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-pinned-toolbar-button',
+        icon: 'iconNeoPinnedToolbar',
+        label: createPinnedToolbarLabelHTML(i18n),
+        click: () => {
+          onPinnedToolbarClick();
           return true;
         },
       },

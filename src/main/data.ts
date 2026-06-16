@@ -48,6 +48,9 @@ export interface Config {
   'immersive-typewriter'?: boolean;
   'immersive-highlight'?: boolean;
   'super-fusion'?: boolean;
+  'pinned-toolbar'?: boolean;
+  'pinned-toolbar-position'?: 'top' | 'bottom' | 'left' | 'right';
+  'pinned-toolbar-liquid-glass'?: boolean;
 }
 let configCache: Config = {};
 let pendingLoadConfig: Promise<Config> | null = null;

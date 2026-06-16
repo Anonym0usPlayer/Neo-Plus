@@ -1,0 +1,140 @@
+@use "manager" as *;
+.neo-extension-pinnedtoolbar {
+    @include extension-common('[data-id="neo-pinned-toolbar-button"]', '[data-id="neo-extension-button"]');
+    --_protyle-toolbar-top: 42px;
+    --_protyle-toolbar-left: 10px;
+    --_protyle-toolbar-bottom: 42px;
+    --_protyle-toolbar-right: 42px;
+    &.neo-layout-superfusion {
+        --_protyle-toolbar-top: 75px;
+        &.neo-layout-verticaltabs {
+            --_protyle-toolbar-top: 42px;
+        }
+        .body--toolbar-hid {
+            --_protyle-toolbar-top: 42px;
+        }
+    }
+    .fn__flex-1.protyle > .protyle-toolbar.neo-extension-pinnedtoolbar-enable {
+        display: flex !important;
+        position: absolute;
+        z-index: 1;
+        .protyle-toolbar__item {
+            transition-property: color;
+        }
+        &.neo-extension-pinnedtoolbar-position-top {
+            flex-direction: row;
+            top: var(--_protyle-toolbar-top) !important;
+            left: 50% !important;
+            transform: translateX(-50%);
+            animation: neo-protyle-toolbar-entrance-top 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.8);
+            .protyle-toolbar__item {
+                &::after {
+                    top: 100%;
+                    bottom: auto;
+                    margin-top: 5px;
+                }
+            }
+        }
+        &.neo-extension-pinnedtoolbar-position-left {
+            flex-direction: column;
+            top: 50% !important;
+            left: var(--_protyle-toolbar-left) !important;
+            transform: translateY(-50%) ;
+            animation: neo-protyle-toolbar-entrance-left 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.8);
+            .protyle-toolbar__divider {
+                border-left: none;
+                border-top: 1px solid var(--b3-border-color-trans);
+                margin: 4px 6px;
+            }
+            .protyle-toolbar__item {
+                margin: 2px 0;
+                &::after {
+                    left: 100%;
+                    right: auto;
+                    top: 0;
+                    bottom: auto;
+                    transform: none;
+                    margin: 0;
+                    margin-left: 5px;
+                }
+            }
+        }
+        &.neo-extension-pinnedtoolbar-position-bottom {
+            flex-direction: row;
+            top: auto !important;
+            left: 50% !important;
+            bottom: var(--_protyle-toolbar-bottom);
+            transform: translateX(-50%);
+            animation: neo-protyle-toolbar-entrance-bottom 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.8);
+        }
+        &.neo-extension-pinnedtoolbar-position-right {
+            flex-direction: column;
+            top: 50% !important;
+            left: auto !important;
+            right: var(--_protyle-toolbar-right);
+            transform: translateY(-50%);
+            animation: neo-protyle-toolbar-entrance-right 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.8);
+            .protyle-toolbar__divider {
+                border-left: none;
+                border-top: 1px solid var(--b3-border-color-trans);
+                margin: 4px 6px;
+            }
+            .protyle-toolbar__item {
+                margin: 2px 0;
+                &::after {
+                    left: auto;
+                    right: 100%;
+                    top: 0;
+                    bottom: auto;
+                    transform: none;
+                    margin: 0;
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
+}
+.neo-extension-pinnedtoolbar-liquid-glass {
+    .fn__flex-1.protyle > .protyle-toolbar {
+        &.neo-extension-pinnedtoolbar-position-top,
+        &.neo-extension-pinnedtoolbar-position-bottom {
+            backdrop-filter: url(#neo-pinnedtoolbar-liquid-glass-row);
+        }
+        &.neo-extension-pinnedtoolbar-position-left,
+        &.neo-extension-pinnedtoolbar-position-right {
+            backdrop-filter: url(#neo-pinnedtoolbar-liquid-glass-column);
+        }
+    }
+}
+@keyframes neo-protyle-toolbar-entrance-top {
+    from {
+        transform: scale(0.97) translateX(-50%);
+    }
+    to {
+        transform: scale(1) translateX(-50%);
+    }
+}
+@keyframes neo-protyle-toolbar-entrance-left {
+    from {
+        transform: scale(0.97) translateY(-50%);
+    }
+    to {
+        transform: scale(1) translateY(-50%);
+    }
+}
+@keyframes neo-protyle-toolbar-entrance-bottom {
+    from {
+        transform: scale(0.97) translateX(-50%);
+    }
+    to {
+        transform: scale(1) translateX(-50%);
+    }
+}
+@keyframes neo-protyle-toolbar-entrance-right {
+    from {
+        transform: scale(0.97) translateY(-50%);
+    }
+    to {
+        transform: scale(1) translateY(-50%);
+    }
+}

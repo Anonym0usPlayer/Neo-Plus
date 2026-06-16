@@ -1,0 +1,188 @@
+import { saveConfig, loadConfig } from '../main/data';
+import type { Config } from '../main/data';
+import { getPlugin } from '../main/guard';
+import { Dialog } from 'siyuan';
+const positionCycle: Array<'top' | 'bottom' | 'left' | 'right'> = ['top', 'left', 'bottom', 'right'];
+let pollTimer: ReturnType<typeof setInterval> | null = null;
+let pinnedToolbarPosition: 'top' | 'bottom' | 'left' | 'right' = 'top';
+let pinnedToolbarLiquidGlass: boolean = false;
+let contextMenuHandler: ((e: MouseEvent) => void) | null = null;
+function setEnableState(el: HTMLElement): void {
+  const content = el.parentElement?.querySelector('.protyle-content');
+  if (!content) {
+    el.classList.remove('neo-extension-pinnedtoolbar-enable');
+    return;
+  }
+  const wysiwyg = content.querySelector('.protyle-wysiwyg');
+  const isEditable = wysiwyg?.getAttribute('data-readonly') === 'false';
+  el.classList.toggle('neo-extension-pinnedtoolbar-enable', isEditable);
+}
+function applyLiquidGlass(): void {
+  document.body.classList.toggle('neo-extension-pinnedtoolbar-liquid-glass', pinnedToolbarLiquidGlass);
+}
+function applyPosition(force: boolean = false): void {
+  const targetClass = `neo-extension-pinnedtoolbar-position-${pinnedToolbarPosition}`;
+  const toolbars = document.querySelectorAll<HTMLElement>('.protyle-toolbar');
+  toolbars.forEach((el) => {
+    setEnableState(el);
+    if (force) {
+      el.classList.remove('neo-extension-pinnedtoolbar-position-top', 'neo-extension-pinnedtoolbar-position-bottom', 'neo-extension-pinnedtoolbar-position-left', 'neo-extension-pinnedtoolbar-position-right');
+      el.classList.add(targetClass);
+    } else if (!el.classList.contains('neo-extension-pinnedtoolbar-position-top') && !el.classList.contains('neo-extension-pinnedtoolbar-position-bottom') && !el.classList.contains('neo-extension-pinnedtoolbar-position-left') && !el.classList.contains('neo-extension-pinnedtoolbar-position-right')) {
+      el.classList.add(targetClass);
+    }
+  });
+}
+function cyclePosition(el: HTMLElement): void {
+  const currentClass = Array.from(el.classList).find(c => c.startsWith('neo-extension-pinnedtoolbar-position-'));
+  let currentPosition = 'top';
+  if (currentClass) {
+    const match = currentClass.match(/neo-extension-pinnedtoolbar-position-(top|bottom|left|right)/);
+    if (match) currentPosition = match[1];
+  }
+  const currentIndex = positionCycle.indexOf(currentPosition as 'top' | 'bottom' | 'left' | 'right');
+  const nextPosition = positionCycle[(currentIndex + 1) % positionCycle.length];
+  el.classList.remove('neo-extension-pinnedtoolbar-position-top', 'neo-extension-pinnedtoolbar-position-bottom', 'neo-extension-pinnedtoolbar-position-left', 'neo-extension-pinnedtoolbar-position-right');
+  el.classList.add(`neo-extension-pinnedtoolbar-position-${nextPosition}`);
+}
+export function initPinnedToolbar(): void {
+  (window as any).__neoOpenPinnedToolbarSettings = showPinnedToolbarSettings;
+  loadConfig().then((config) => {
+    pinnedToolbarPosition = config['pinned-toolbar-position'] || 'top';
+    pinnedToolbarLiquidGlass = config['pinned-toolbar-liquid-glass'] === true;
+    if (config['pinned-toolbar'] === true) {
+      document.documentElement.classList.add('neo-extension-pinnedtoolbar');
+      startObserving();
+    }
+  });
+}
+export function onPinnedToolbarClick(): void {
+  const htmlEl = document.documentElement;
+  const isActive = htmlEl.classList.contains('neo-extension-pinnedtoolbar');
+  if (isActive) {
+    destroyPinnedToolbar();
+    saveConfig({ 'pinned-toolbar': false } as Partial<Config>);
+  } else {
+    htmlEl.classList.add('neo-extension-pinnedtoolbar');
+    saveConfig({ 'pinned-toolbar': true } as Partial<Config>);
+    startObserving();
+  }
+}
+export function createPinnedToolbarLabelHTML(i18n: Record<string, string>): string {
+  return `<span class="fn__flex fn__pointer">
+    <span>${i18n.pinnedToolbar}</span>
+    <span class="fn__space fn__flex-1 neo-menu-item-second-icon-space"></span>
+    <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.pinnedToolbarSettings}" onclick="event.stopPropagation();__neoOpenPinnedToolbarSettings()"><use xlink:href="#iconSettings"></use></svg>
+  </span>`;
+}
+function startObserving(): void {
+  applyPosition();
+  applyLiquidGlass();
+  if (pollTimer) return;
+  pollTimer = setInterval(applyPosition, 250);
+  if (!contextMenuHandler) {
+    contextMenuHandler = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('.protyle-toolbar');
+      if (!target) return;
+      e.preventDefault();
+      cyclePosition(target as HTMLElement);
+    };
+    document.addEventListener('contextmenu', contextMenuHandler);
+  }
+}
+function stopObserving(): void {
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
+  if (contextMenuHandler) {
+    document.removeEventListener('contextmenu', contextMenuHandler);
+    contextMenuHandler = null;
+  }
+}
+function buildSettingsHTML(i18n: Record<string, string>): string {
+  const positionOptions = ['top', 'bottom', 'left', 'right']
+    .map(v => `<option value="${v}">${i18n[`pinnedToolbarPosition${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
+    .join('');
+  const optionOnOff = [i18n.on, i18n.off]
+    .map(v => `<option value="${v}">${v}</option>`)
+    .join('');
+  return `<div class="b3-dialog__content">
+    <div class="config__tab-container">
+      <div class="config-group">
+        <label class="fn__flex b3-label">
+          <div class="fn__flex-1">
+            ${i18n.pinnedToolbarPosition}
+            <div class="b3-label__text">${i18n.pinnedToolbarPositionTip}</div>
+          </div>
+          <span class="fn__space"></span>
+          <select class="b3-select fn__flex-center fn__size200" id="neo-pinned-toolbar-position">
+            ${positionOptions}
+          </select>
+        </label>
+        <label class="fn__flex b3-label">
+          <div class="fn__flex-1">
+            ${i18n.pinnedToolbarLiquidGlass}
+            <div class="b3-label__text">${i18n.pinnedToolbarLiquidGlassTip}</div>
+          </div>
+          <span class="fn__space"></span>
+          <select class="b3-select fn__flex-center fn__size200" id="neo-pinned-toolbar-liquid-glass">
+            ${optionOnOff}
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="b3-dialog__action">
+    <button class="b3-button b3-button--cancel" id="neo-pinned-toolbar-cancel">${i18n.cancel}</button>
+    <span class="fn__space"></span>
+    <button class="b3-button b3-button--text" id="neo-pinned-toolbar-confirm">${i18n.confirm}</button>
+  </div>`;
+}
+export function showPinnedToolbarSettings(): void {
+  const plugin = getPlugin();
+  if (!plugin) return;
+  const dialog = new Dialog({
+    title: plugin.i18n.pinnedToolbarSettings || 'Pinned Toolbar Settings',
+    content: buildSettingsHTML(plugin.i18n),
+    width: '90vw',
+  });
+  const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
+  if (container) container.style.maxWidth = '800px';
+  dialog.element.setAttribute('data-key', 'dialog-neo-pinned-toolbar-settings');
+  const positionSelect = dialog.element.querySelector('#neo-pinned-toolbar-position') as HTMLSelectElement;
+  if (positionSelect) positionSelect.value = pinnedToolbarPosition;
+  const liquidGlassSelect = dialog.element.querySelector('#neo-pinned-toolbar-liquid-glass') as HTMLSelectElement;
+  if (liquidGlassSelect) liquidGlassSelect.value = pinnedToolbarLiquidGlass ? plugin.i18n.on : plugin.i18n.off;
+  dialog.element.querySelector('#neo-pinned-toolbar-cancel')?.addEventListener('click', () => dialog.destroy());
+  dialog.element.querySelector('#neo-pinned-toolbar-confirm')?.addEventListener('click', () => {
+    if (positionSelect) {
+      const newPosition = positionSelect.value as 'top' | 'bottom' | 'left' | 'right';
+      if (newPosition !== pinnedToolbarPosition) {
+        pinnedToolbarPosition = newPosition;
+        if (document.documentElement.classList.contains('neo-extension-pinnedtoolbar')) {
+          applyPosition(true);
+        }
+        saveConfig({ 'pinned-toolbar-position': newPosition } as Partial<Config>);
+      }
+    }
+    if (liquidGlassSelect) {
+      const newLiquidGlass = liquidGlassSelect.value === plugin.i18n.on;
+      if (newLiquidGlass !== pinnedToolbarLiquidGlass) {
+        pinnedToolbarLiquidGlass = newLiquidGlass;
+        applyLiquidGlass();
+        saveConfig({ 'pinned-toolbar-liquid-glass': newLiquidGlass } as Partial<Config>);
+      }
+    }
+    dialog.destroy();
+  });
+}
+export function destroyPinnedToolbar(): void {
+  document.documentElement?.classList.remove('neo-extension-pinnedtoolbar');
+  stopObserving();
+  const toolbars = document.querySelectorAll<HTMLElement>('.protyle-toolbar');
+  toolbars.forEach((el) => {
+    el.classList.remove('neo-extension-pinnedtoolbar-position-top', 'neo-extension-pinnedtoolbar-position-bottom', 'neo-extension-pinnedtoolbar-position-left', 'neo-extension-pinnedtoolbar-position-right', 'neo-extension-pinnedtoolbar-enable');
+  });
+  document.body.classList.remove('neo-extension-pinnedtoolbar-liquid-glass');
+}

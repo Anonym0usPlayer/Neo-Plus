@@ -136,5 +136,16 @@
   "verticaltabsMode": "模式",
   "verticaltabsModeTip": "設定垂直頁籤的應用模式",
   "verticaltabsModeTopLeftOnly": "僅左上角窗口",
-  "verticaltabsModeAll": "全部窗口"
+  "verticaltabsModeAll": "全部窗口",
+  "pinnedToolbar": "釘住工具欄",
+  "pinnedToolbarSettings": "配置釘住工具欄",
+  "pinnedToolbarSettingsTip": "配置釘住工具欄設置",
+  "pinnedToolbarPosition": "位置",
+  "pinnedToolbarPositionTip": "設置工具欄相對編輯器的默認釘住位置",
+  "pinnedToolbarPositionTop": "頂部",
+  "pinnedToolbarPositionBottom": "底部",
+  "pinnedToolbarPositionLeft": "左側",
+  "pinnedToolbarPositionRight": "右側",
+  "pinnedToolbarLiquidGlass": "液態玻璃",
+  "pinnedToolbarLiquidGlassTip": "為釘住的工具欄添加液態玻璃效果"
 }

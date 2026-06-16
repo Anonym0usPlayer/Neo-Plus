@@ -136,5 +136,16 @@
   "verticaltabsMode": "Mode",
   "verticaltabsModeTip": "Set the application mode for vertical tabs",
   "verticaltabsModeTopLeftOnly": "Top-left window only",
-  "verticaltabsModeAll": "All windows"
+  "verticaltabsModeAll": "All windows",
+  "pinnedToolbar": "Pinned Toolbar",
+  "pinnedToolbarSettings": "Pinned Toolbar Settings",
+  "pinnedToolbarSettingsTip": "Configure the pinned toolbar settings",
+  "pinnedToolbarPosition": "Position",
+  "pinnedToolbarPositionTip": "Set the default pinned position of the toolbar relative to the editor",
+  "pinnedToolbarPositionTop": "Top",
+  "pinnedToolbarPositionBottom": "Bottom",
+  "pinnedToolbarPositionLeft": "Left",
+  "pinnedToolbarPositionRight": "Right",
+  "pinnedToolbarLiquidGlass": "Liquid Glass",
+  "pinnedToolbarLiquidGlassTip": "Add liquid glass effect to the pinned toolbar"
 }
