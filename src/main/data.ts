@@ -51,6 +51,7 @@ export interface Config {
   'pinned-toolbar'?: boolean;
   'pinned-toolbar-position'?: 'top' | 'bottom' | 'left' | 'right';
   'pinned-toolbar-liquid-glass'?: boolean;
+  'multicolumn-slash-menu'?: boolean;
 }
 let configCache: Config = {};
 let pendingLoadConfig: Promise<Config> | null = null;

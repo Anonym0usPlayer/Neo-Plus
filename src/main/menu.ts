@@ -12,6 +12,7 @@ import { onColoredFoldersClick } from '../layout/coloredfolders';
 import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../layout/verticaltabs';
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
 import { onSuperFusionClick } from '../layout/superfusion';
+import { onMulticolumnSlashMenuClick } from '../layout/multicolumnslashmenu';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onPinnedToolbarClick, createPinnedToolbarLabelHTML } from '../extension/pinnedtoolbar';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
@@ -157,6 +158,15 @@ export function buildMenu(
         label: i18n.coloredFolders,
         click: () => {
           onColoredFoldersClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-multicolumn-slash-menu-button',
+        icon: 'iconNeoMulticolumnSlashMenu',
+        label: i18n.multicolumnSlashMenu,
+        click: () => {
+          onMulticolumnSlashMenuClick();
           return true;
         },
       },

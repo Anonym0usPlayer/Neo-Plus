@@ -1,3 +1,4 @@
+import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
@@ -46,6 +47,7 @@ function cyclePosition(el: HTMLElement): void {
   el.classList.add(`neo-extension-pinnedtoolbar-position-${nextPosition}`);
 }
 export function initPinnedToolbar(): void {
+  if (isMobile()) return;
   (window as any).__neoOpenPinnedToolbarSettings = showPinnedToolbarSettings;
   loadConfig().then((config) => {
     pinnedToolbarPosition = config['pinned-toolbar-position'] || 'top';
@@ -57,6 +59,7 @@ export function initPinnedToolbar(): void {
   });
 }
 export function onPinnedToolbarClick(): void {
+  if (isMobile()) return;
   const htmlEl = document.documentElement;
   const isActive = htmlEl.classList.contains('neo-extension-pinnedtoolbar');
   if (isActive) {

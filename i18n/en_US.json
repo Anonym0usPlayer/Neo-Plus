@@ -147,5 +147,6 @@
   "pinnedToolbarPositionLeft": "Left",
   "pinnedToolbarPositionRight": "Right",
   "pinnedToolbarLiquidGlass": "Liquid Glass",
-  "pinnedToolbarLiquidGlassTip": "Add liquid glass effect to the pinned toolbar"
+  "pinnedToolbarLiquidGlassTip": "Add liquid glass effect to the pinned toolbar",
+  "multicolumnSlashMenu": "Multicolumn Slash Menu"
 }

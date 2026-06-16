@@ -147,5 +147,6 @@
   "pinnedToolbarPositionLeft": "左側",
   "pinnedToolbarPositionRight": "右側",
   "pinnedToolbarLiquidGlass": "液態玻璃",
-  "pinnedToolbarLiquidGlassTip": "為釘住的工具欄添加液態玻璃效果"
+  "pinnedToolbarLiquidGlassTip": "為釘住的工具欄添加液態玻璃效果",
+  "multicolumnSlashMenu": "多列斜槓選單"
 }

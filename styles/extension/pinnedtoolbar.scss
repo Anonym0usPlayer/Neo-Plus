@@ -1,4 +1,11 @@
 @use "manager" as *;
+body {
+    &.neo-mobile {
+        [data-id="neo-pinned-toolbar-button"] {
+            display: none;
+        }
+    }
+}
 .neo-extension-pinnedtoolbar {
     @include extension-common('[data-id="neo-pinned-toolbar-button"]', '[data-id="neo-extension-button"]');
     --_protyle-toolbar-top: 42px;

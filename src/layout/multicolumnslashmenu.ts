@@ -1,4 +1,6 @@
 import { isMobile } from '../modules/env';
+import { saveConfig, loadConfig } from '../main/data';
+import type { Config } from '../main/data';
 type Direction = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 interface CenterPoint {
   el: HTMLElement;
@@ -241,22 +243,39 @@ const onKeyDownCapture = (evt: KeyboardEvent): void => {
     moveFocus(fallbackTarget);
   }
 };
-function startListening(): void {
-  if (keydownHandler) return;
-  keydownHandler = onKeyDownCapture;
-  document.addEventListener('keydown', keydownHandler, { capture: true });
+export function initMulticolumnSlashMenu(): void {
+  if (isMobile()) return;
+  loadConfig().then((config) => {
+    if (config['multicolumn-slash-menu'] === true) {
+      document.documentElement.classList.add('neo-layout-multicolumnslashmenu');
+      if (!keydownHandler) {
+        keydownHandler = onKeyDownCapture;
+        document.addEventListener('keydown', keydownHandler, { capture: true });
+      }
+    }
+  });
 }
-function stopListening(): void {
+export function onMulticolumnSlashMenuClick(): void {
+  if (isMobile()) return;
+  const htmlEl = document.documentElement;
+  const isActive = htmlEl.classList.contains('neo-layout-multicolumnslashmenu');
+  if (isActive) {
+    destroyMulticolumnSlashMenu();
+    saveConfig({ 'multicolumn-slash-menu': false } as Partial<Config>);
+  } else {
+    htmlEl.classList.add('neo-layout-multicolumnslashmenu');
+    if (!keydownHandler) {
+      keydownHandler = onKeyDownCapture;
+      document.addEventListener('keydown', keydownHandler, { capture: true });
+    }
+    saveConfig({ 'multicolumn-slash-menu': true } as Partial<Config>);
+  }
+}
+export function destroyMulticolumnSlashMenu(): void {
   if (keydownHandler) {
     document.removeEventListener('keydown', keydownHandler, { capture: true });
     keydownHandler = null;
   }
   endSession();
-}
-export function initSlashNavigation(): void {
-  if (isMobile()) return;
-  startListening();
-}
-export function destroySlashNavigation(): void {
-  stopListening();
+  document.documentElement?.classList.remove('neo-layout-multicolumnslashmenu');
 }
