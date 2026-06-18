@@ -1,5 +1,5 @@
 @use "manager" as *;
-@use "../tools" as *;
+@use "../utils" as *;
 body {
     &.body--toolbar-hide {
         [data-id="neo-vertical-tabs-button"] {

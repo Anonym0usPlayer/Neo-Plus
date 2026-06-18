@@ -33,7 +33,7 @@ body {
             top: var(--_protyle-toolbar-top) !important;
             left: 50% !important;
             transform: translateX(-50%);
-            animation: neo-protyle-toolbar-entrance-top 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.8);
+            animation: neo-protyle-toolbar-entrance-top 0.45s var(--neo-ease-spring-2);
             .protyle-toolbar__item {
                 &::after {
                     top: 100%;
@@ -46,8 +46,9 @@ body {
             flex-direction: column;
             top: 50% !important;
             left: var(--_protyle-toolbar-left) !important;
-            transform: translateY(-50%) ;
-            animation: neo-protyle-toolbar-entrance-left 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.8);
+            transform: translateY(-50%);
+            transform-origin: 150% 50%;
+            animation: neo-protyle-toolbar-entrance-left 0.45s var(--neo-ease-spring-2);
             .protyle-toolbar__divider {
                 border-left: none;
                 border-top: 1px solid var(--b3-border-color-trans);
@@ -72,7 +73,7 @@ body {
             left: 50% !important;
             bottom: var(--_protyle-toolbar-bottom);
             transform: translateX(-50%);
-            animation: neo-protyle-toolbar-entrance-bottom 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.8);
+            animation: neo-protyle-toolbar-entrance-bottom 0.45s var(--neo-ease-spring-2);
         }
         &.neo-extension-pinnedtoolbar-position-right {
             flex-direction: column;
@@ -80,7 +81,8 @@ body {
             left: auto !important;
             right: var(--_protyle-toolbar-right);
             transform: translateY(-50%);
-            animation: neo-protyle-toolbar-entrance-right 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.8);
+            transform-origin: 150% 50%;
+            animation: neo-protyle-toolbar-entrance-right 0.45s var(--neo-ease-spring-2);
             .protyle-toolbar__divider {
                 border-left: none;
                 border-top: 1px solid var(--b3-border-color-trans);
@@ -106,10 +108,12 @@ body {
         &.neo-extension-pinnedtoolbar-position-top,
         &.neo-extension-pinnedtoolbar-position-bottom {
             backdrop-filter: url(#neo-pinnedtoolbar-liquid-glass-row);
+            background-color: oklch(from var(--b3-theme-surface) l c h / 0.7) !important;
         }
         &.neo-extension-pinnedtoolbar-position-left,
         &.neo-extension-pinnedtoolbar-position-right {
             backdrop-filter: url(#neo-pinnedtoolbar-liquid-glass-column);
+            background-color: oklch(from var(--b3-theme-surface) l c h / 0.7) !important;
         }
     }
 }

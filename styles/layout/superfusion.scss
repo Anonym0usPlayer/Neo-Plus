@@ -1,5 +1,5 @@
 @use "manager" as *;
-@use "../tools" as *;
+@use "../utils" as *;
 body {
     &.neo-mobile {
         [data-id="neo-super-fusion-button"] {

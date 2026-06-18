@@ -4,6 +4,8 @@
     inherits: false;
     initial-value: 0;
 }
+$smooth-caret-trans: 0.75s cubic-bezier(0.1, 0.9, 0.2, 1);
+$smooth-caret-breathing: 1s cubic-bezier(0.4, 0, 0.2, 1);
 .neo-extension-smooth-caret {
     @include extension-common('[data-id="neo-smooth-caret-button"]', '[data-id="neo-extension-button"]');
     .protyle-wysiwyg,
@@ -18,7 +20,7 @@
         pointer-events: none;
         opacity: 1;
         background-color: var(--neo-smooth-caret-color, var(--b3-theme-accent));
-        transition: 0.75s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.3s;
+        transition: $smooth-caret-trans, opacity 0.3s;
         will-change: transform, height;
         &.neo-smooth-caret-hidden {
             opacity: 0;
@@ -26,7 +28,7 @@
     }
     body.neo-extension-smooth-caret-breathing {
         #neo-smooth-caret-item {
-            animation: neo-mooth-caret-breathing 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation: neo-mooth-caret-breathing $smooth-caret-breathing infinite;
         }
     }
     body.neo-extension-smooth-caret-neon {

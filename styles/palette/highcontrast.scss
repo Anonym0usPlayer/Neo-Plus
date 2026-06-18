@@ -1,18 +1,18 @@
 @use "manager" as *;
-@use "../tools" as *;
+@use "../utils" as *;
 [data-theme-mode="dark"] [data-id="neo-highcontrast-button"] {
     display: none;
 }
 @mixin neo-highcontrast-icon {
-    color: var(--neo-highcontrast-on-bg);
+    color: var(--neo-highcontrast-on-bg) !important;
     svg {
-        color: var(--neo-highcontrast-on-bg);
+        color: var(--neo-highcontrast-on-bg) !important;
     }
     &:hover {
-        color: white;
+        color: white !important;
         background-color: oklch(from var(--neo-highcontrast-on-bg) l c h / 0.12) !important;
         svg {
-            color: white;
+            color: white !important;
         }
     }
 }
