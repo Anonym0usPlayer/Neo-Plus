@@ -3,8 +3,8 @@ import { getPlugin } from './guard';
 import { loadConfig } from './data';
 import { createColorPickerHTML, createFollowTimeColorPickerHTML, createSliderHTML, getPresetMenuItems, getThemeColor, initPaletteMenuEvents, onInvertClick, onHighContrastClick, switchToPlan } from '../palette/manager';
 import { getTextureMenuItems } from '../texture/manager';
-import { onSmoothCaretClick, createSmoothCaretLabelHTML } from '../extension/smoothcaret';
-import { onFluidCursorClick } from '../extension/fluidcursor';
+import { onSmoothCaretClick, createSmoothCaretLabelHTML } from '../visual/smoothcaret';
+import { onFluidCursorClick } from '../visual/fluidcursor';
 import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick, createFocusBlockIndicatorLabelHTML } from '../extension/focusblockindicator';
 import { onScrollEffectClick } from '../visual/scrolleffect';
@@ -170,6 +170,24 @@ export function buildMenu(
           return true;
         },
       },
+      {
+        id: 'neo-smooth-caret-button',
+        icon: 'iconNeoSmoothCaret',
+        label: createSmoothCaretLabelHTML(i18n),
+        click: () => {
+          onSmoothCaretClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-fluid-cursor-button',
+        icon: 'iconNeoFluidCursor',
+        label: i18n.fluidCursor,
+        click: () => {
+          onFluidCursorClick();
+          return true;
+        },
+      },
     ],
   });
   menu.addItem({
@@ -214,24 +232,6 @@ export function buildMenu(
         label: createImmersiveModeLabelHTML(i18n),
         click: () => {
           onImmersiveModeClick();
-          return true;
-        },
-      },
-      {
-        id: 'neo-smooth-caret-button',
-        icon: 'iconNeoSmoothCaret',
-        label: createSmoothCaretLabelHTML(i18n),
-        click: () => {
-          onSmoothCaretClick();
-          return true;
-        },
-      },
-      {
-        id: 'neo-fluid-cursor-button',
-        icon: 'iconNeoFluidCursor',
-        label: i18n.fluidCursor,
-        click: () => {
-          onFluidCursorClick();
           return true;
         },
       },

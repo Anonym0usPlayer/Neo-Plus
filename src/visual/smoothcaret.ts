@@ -12,10 +12,10 @@ let cachedScrollContainer: HTMLElement | null = null;
 let cachedFocusElement: Element | null = null;
 let smoothCaretStatus: 'static' | 'breathing' | 'neon' | 'rainbow' = 'static';
 function applySmoothCaretStatus(): void {
-  document.body.classList.toggle('neo-extension-smooth-caret-breathing', smoothCaretStatus === 'breathing');
-  document.body.classList.toggle('neo-extension-smooth-caret-static', smoothCaretStatus === 'static');
-  document.body.classList.toggle('neo-extension-smooth-caret-neon', smoothCaretStatus === 'neon');
-  document.body.classList.toggle('neo-extension-smooth-caret-rainbow', smoothCaretStatus === 'rainbow');
+  document.body.classList.toggle('neo-visual-smooth-caret-breathing', smoothCaretStatus === 'breathing');
+  document.body.classList.toggle('neo-visual-smooth-caret-static', smoothCaretStatus === 'static');
+  document.body.classList.toggle('neo-visual-smooth-caret-neon', smoothCaretStatus === 'neon');
+  document.body.classList.toggle('neo-visual-smooth-caret-rainbow', smoothCaretStatus === 'rainbow');
 }
 function startSmoothCaret(): void {
   document.getElementById('neo-smooth-caret-item')?.remove();
@@ -192,11 +192,11 @@ export function showSmoothCaretSettings(): void {
 }
 export function destroySmoothCaret(): void {
   document.getElementById('neo-smooth-caret-item')?.remove();
-  document.documentElement.classList.remove('neo-extension-smooth-caret');
-  document.body.classList.remove('neo-extension-smooth-caret-breathing');
-  document.body.classList.remove('neo-extension-smooth-caret-static');
-  document.body.classList.remove('neo-extension-smooth-caret-neon');
-  document.body.classList.remove('neo-extension-smooth-caret-rainbow');
+  document.documentElement.classList.remove('neo-visual-smooth-caret');
+  document.body.classList.remove('neo-visual-smooth-caret-breathing');
+  document.body.classList.remove('neo-visual-smooth-caret-static');
+  document.body.classList.remove('neo-visual-smooth-caret-neon');
+  document.body.classList.remove('neo-visual-smooth-caret-rainbow');
   throttleTimers.forEach((timer) => clearTimeout(timer));
   throttleTimers = [];
   cachedZIndex = 0;
@@ -219,7 +219,7 @@ export function initSmoothCaret(): void {
   loadConfig().then((config) => {
     smoothCaretStatus = config['smooth-caret-status'] || 'static';
     if (config['smooth-caret'] === true) {
-      document.documentElement.classList.add('neo-extension-smooth-caret');
+      document.documentElement.classList.add('neo-visual-smooth-caret');
       applySmoothCaretStatus();
       startSmoothCaret();
     }
@@ -227,12 +227,12 @@ export function initSmoothCaret(): void {
 }
 export function onSmoothCaretClick(): void {
   const htmlEl = document.documentElement;
-  const isActive = htmlEl.classList.contains('neo-extension-smooth-caret');
+  const isActive = htmlEl.classList.contains('neo-visual-smooth-caret');
   if (isActive) {
     destroySmoothCaret();
     saveConfig({ 'smooth-caret': false } as Partial<Config>);
   } else {
-    htmlEl.classList.add('neo-extension-smooth-caret');
+    htmlEl.classList.add('neo-visual-smooth-caret');
     applySmoothCaretStatus();
     saveConfig({ 'smooth-caret': true } as Partial<Config>);
     startSmoothCaret();
