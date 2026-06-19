@@ -1,7 +1,7 @@
 import { getPlugin } from './guard';
 import { switchToPlan } from '../palette/manager';
 import { onImmersiveModeClick } from '../extension/immersivemode';
-import { onVerticalTabsClick } from '../layout/verticaltabs';
+import { onVerticalTabsClick } from '../visual/verticaltabs';
 const shortcutLangKeys = ['random', 'verticalTabs', 'immersiveMode'];
 export function initShortcuts(): void {
   const plugin = getPlugin();

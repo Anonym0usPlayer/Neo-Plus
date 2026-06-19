@@ -247,7 +247,7 @@ export function initMulticolumnSlashMenu(): void {
   if (isMobile()) return;
   loadConfig().then((config) => {
     if (config['multicolumn-slash-menu'] === true) {
-      document.documentElement.classList.add('neo-layout-multicolumnslashmenu');
+      document.documentElement.classList.add('neo-visual-multicolumnslashmenu');
       if (!keydownHandler) {
         keydownHandler = onKeyDownCapture;
         document.addEventListener('keydown', keydownHandler, { capture: true });
@@ -258,12 +258,12 @@ export function initMulticolumnSlashMenu(): void {
 export function onMulticolumnSlashMenuClick(): void {
   if (isMobile()) return;
   const htmlEl = document.documentElement;
-  const isActive = htmlEl.classList.contains('neo-layout-multicolumnslashmenu');
+  const isActive = htmlEl.classList.contains('neo-visual-multicolumnslashmenu');
   if (isActive) {
     destroyMulticolumnSlashMenu();
     saveConfig({ 'multicolumn-slash-menu': false } as Partial<Config>);
   } else {
-    htmlEl.classList.add('neo-layout-multicolumnslashmenu');
+    htmlEl.classList.add('neo-visual-multicolumnslashmenu');
     if (!keydownHandler) {
       keydownHandler = onKeyDownCapture;
       document.addEventListener('keydown', keydownHandler, { capture: true });
@@ -277,5 +277,5 @@ export function destroyMulticolumnSlashMenu(): void {
     keydownHandler = null;
   }
   endSession();
-  document.documentElement?.classList.remove('neo-layout-multicolumnslashmenu');
+  document.documentElement?.classList.remove('neo-visual-multicolumnslashmenu');
 }

@@ -12,16 +12,16 @@ body {
     --_protyle-toolbar-left: 10px;
     --_protyle-toolbar-bottom: 42px;
     --_protyle-toolbar-right: 42px;
-    &.neo-layout-superfusion {
+    &.neo-visual-superfusion {
         --_protyle-toolbar-top: 75px;
-        &.neo-layout-verticaltabs {
+        &.neo-visual-verticaltabs {
             --_protyle-toolbar-top: 42px;
         }
         .body--toolbar-hide {
             --_protyle-toolbar-top: 42px;
         }
     }
-    .fn__flex-1.protyle > .protyle-toolbar.neo-extension-pinnedtoolbar-enable {
+    .protyle-toolbar.neo-extension-pinnedtoolbar-enable {
         display: flex !important;
         position: absolute;
         z-index: 1;

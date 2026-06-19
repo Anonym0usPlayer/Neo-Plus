@@ -12,8 +12,8 @@ body {
         }
     }
 }
-.neo-layout-verticaltabs {
-    @include layout-common('[data-id="neo-vertical-tabs-button"]', '[data-id="neo-layout-button"]');
+.neo-visual-verticaltabs {
+    @include visual-common('[data-id="neo-vertical-tabs-button"]', '[data-id="neo-visual-button"]');
     body:not(.body--toolbar-hide) {
         .neo-verticaltabs-wnd {
             flex-direction: row;

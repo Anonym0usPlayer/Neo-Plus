@@ -1,4 +1,4 @@
-@mixin layout-common($selectors...) {
+@mixin visual-common($selectors...) {
     @each $selector in $selectors {
         #{$selector} {
             &:not(.b3-menu__item--show):not(.b3-menu__item--current) {

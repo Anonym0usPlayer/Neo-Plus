@@ -8,7 +8,11 @@ let pollTimer: ReturnType<typeof setInterval> | null = null;
 let pinnedToolbarPosition: 'top' | 'bottom' | 'left' | 'right' = 'top';
 let pinnedToolbarLiquidGlass: boolean = false;
 let contextMenuHandler: ((e: MouseEvent) => void) | null = null;
+function shouldNotPin(el: HTMLElement): boolean {
+  return !!el.parentElement?.matches('#searchPreview, .card__block');
+}
 function setEnableState(el: HTMLElement): void {
+  if (shouldNotPin(el)) return;
   const content = el.parentElement?.querySelector('.protyle-content');
   if (!content) {
     el.classList.remove('neo-extension-pinnedtoolbar-enable');
@@ -25,6 +29,7 @@ function applyPosition(force: boolean = false): void {
   const targetClass = `neo-extension-pinnedtoolbar-position-${pinnedToolbarPosition}`;
   const toolbars = document.querySelectorAll<HTMLElement>('.protyle-toolbar');
   toolbars.forEach((el) => {
+    if (shouldNotPin(el)) return;
     setEnableState(el);
     if (force) {
       el.classList.remove('neo-extension-pinnedtoolbar-position-top', 'neo-extension-pinnedtoolbar-position-bottom', 'neo-extension-pinnedtoolbar-position-left', 'neo-extension-pinnedtoolbar-position-right');
@@ -87,6 +92,7 @@ function startObserving(): void {
     contextMenuHandler = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest('.protyle-toolbar');
       if (!target) return;
+      if (shouldNotPin(target as HTMLElement)) return;
       e.preventDefault();
       cyclePosition(target as HTMLElement);
     };

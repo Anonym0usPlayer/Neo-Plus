@@ -14,7 +14,7 @@
                 top: 50%;
                 transform: translateY(-50%) scaleY(0);
                 background-color: var(--b3-theme-accent);
-                animation: neo-focusblock-entrance 0.3s var(--neo-ease-spring-2) forwards;
+                animation: neo-focusblock-entrance-vertical-line 0.3s var(--neo-ease-spring-2) forwards;
             }
         }
     }
@@ -29,8 +29,9 @@
                 inset: 0;
                 border-radius: inherit;
                 corner-shape: inherit;
-                box-shadow: var(--neo-main-shadow-light);
+                box-shadow: var(--neo-main-shadow-heavy);
                 pointer-events: none;
+                animation: neo-focusblock-entrance-shadow 0.3s;
             }
         }
     }
@@ -47,15 +48,32 @@
                 corner-shape: inherit;
                 background-color: oklch(from var(--neo-focusblock-text-color, currentColor) l c h / 0.08);
                 pointer-events: none;
+                animation: neo-focusblock-entrance-background 0.3s;
             }
         }
     }
 }
-@keyframes neo-focusblock-entrance {
+@keyframes neo-focusblock-entrance-vertical-line {
     from {
         transform: translateY(-50%) scaleY(0);
     }
     to {
         transform: translateY(-50%) scaleY(1);
+    }
+}
+@keyframes neo-focusblock-entrance-shadow {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes neo-focusblock-entrance-background {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
     }
 }

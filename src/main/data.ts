@@ -39,6 +39,7 @@ export interface Config {
   'focus-block-indicator'?: boolean;
   'focus-block-effect'?: 'vertical-line' | 'shadow';
   'colored-folders'?: boolean;
+  'colored-folders-style'?: 'partition' | 'simple';
   'colored-lists'?: boolean;
   'colored-headings'?: boolean;
   'scroll-effect'?: boolean;

@@ -7,12 +7,12 @@ import { onSmoothCaretClick, createSmoothCaretLabelHTML } from '../extension/smo
 import { onFluidCursorClick } from '../extension/fluidcursor';
 import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick, createFocusBlockIndicatorLabelHTML } from '../extension/focusblockindicator';
-import { onScrollEffectClick } from '../layout/scrolleffect';
-import { onColoredFoldersClick } from '../layout/coloredfolders';
-import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../layout/verticaltabs';
+import { onScrollEffectClick } from '../visual/scrolleffect';
+import { onColoredFoldersClick, createColoredFoldersLabelHTML } from '../visual/coloredfolders';
+import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../visual/verticaltabs';
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
-import { onSuperFusionClick } from '../layout/superfusion';
-import { onMulticolumnSlashMenuClick } from '../layout/multicolumnslashmenu';
+import { onSuperFusionClick } from '../visual/superfusion';
+import { onMulticolumnSlashMenuClick } from '../visual/multicolumnslashmenu';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onPinnedToolbarClick, createPinnedToolbarLabelHTML } from '../extension/pinnedtoolbar';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
@@ -121,9 +121,9 @@ export function buildMenu(
   });
   menu.addSeparator();
   menu.addItem({
-    id: 'neo-layout-button',
+    id: 'neo-visual-button',
     icon: 'iconNeoLayout',
-    label: i18n.layout,
+    label: i18n.visual,
     submenu: [
       {
         id: 'neo-vertical-tabs-button',
@@ -155,7 +155,7 @@ export function buildMenu(
       {
         id: 'neo-colored-folders-button',
         icon: 'iconFiles',
-        label: i18n.coloredFolders,
+        label: createColoredFoldersLabelHTML(i18n),
         click: () => {
           onColoredFoldersClick();
           return true;
