@@ -1,9 +1,7 @@
 @use "manager" as *;
-body {
-    &.neo-mobile {
-        [data-id="neo-pinned-toolbar-button"] {
-            display: none;
-        }
+[data-id="neo-pinned-toolbar-button"] {
+    .neo-mobile & {
+        display: none;
     }
 }
 .neo-extension-pinnedtoolbar {

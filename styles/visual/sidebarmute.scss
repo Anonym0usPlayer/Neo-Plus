@@ -1,0 +1,29 @@
+@use "manager" as *;
+[data-id="neo-sidebar-mute-button"] {
+    .neo-mobile & {
+        display: none;      
+    }
+    .neo-palette-highcontrast[data-theme-mode="light"] & {
+        opacity: 0.38;      
+    }
+}
+.neo-visual-sidebarmute:not(.neo-palette-highcontrast[data-theme-mode="light"]) {
+    @include visual-common('[data-id="neo-sidebar-mute-button"]', '[data-id="neo-visual-button"]');
+    .layout__dockl,
+    .layout__dockr,
+    .layout__dockb {
+        .neo-haswnd {
+            & > [data-type=wnd] {
+                box-shadow: unset;
+                background-color: transparent;
+            }
+        }
+        .layout__resize {
+            &:not(:hover) {
+                &::after {
+                    background-color: var(--b3-border-color-trans);
+                }
+            }
+        }
+    }
+}

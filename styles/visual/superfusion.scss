@@ -1,10 +1,8 @@
 @use "manager" as *;
 @use "../utils" as *;
-body {
-    &.neo-mobile {
-        [data-id="neo-super-fusion-button"] {
-            display: none;
-        }
+[data-id="neo-super-fusion-button"] {
+    .neo-mobile & {
+        display: none;
     }
 }
 $breadcrumb-height: 42px;

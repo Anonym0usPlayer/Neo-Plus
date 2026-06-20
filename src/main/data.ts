@@ -52,6 +52,7 @@ export interface Config {
   'pinned-toolbar'?: boolean;
   'pinned-toolbar-position'?: 'top' | 'bottom' | 'left' | 'right';
   'pinned-toolbar-liquid-glass'?: boolean;
+  'sidebar-mute'?: boolean;
   'multicolumn-slash-menu'?: boolean;
 }
 let configCache: Config = {};

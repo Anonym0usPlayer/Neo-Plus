@@ -1,15 +1,11 @@
 @use "manager" as *;
 @use "../utils" as *;
-body {
-    &.body--toolbar-hide {
-        [data-id="neo-vertical-tabs-button"] {
-            opacity: 0.38;
-        }
+[data-id="neo-vertical-tabs-button"] {
+    .neo-mobile & {
+        display: none;        
     }
-    &.neo-mobile {
-        [data-id="neo-vertical-tabs-button"] {
-            display: none;
-        }
+    .body--toolbar-hide & {
+        opacity: 0.38;
     }
 }
 .neo-visual-verticaltabs {

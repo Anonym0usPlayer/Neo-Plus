@@ -1,9 +1,7 @@
 @use "manager" as *;
-body {
-    &.neo-mobile {
-        [data-id="neo-multicolumn-slash-menu-button"] {
-            display: none;
-        }
+[data-id="neo-multicolumn-slash-menu-button"] {
+    .neo-mobile & {
+        display: none;
     }
 }
 .neo-visual-multicolumnslashmenu {

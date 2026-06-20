@@ -21,6 +21,7 @@ import { initScrollEffect, destroyScrollEffect } from '../visual/scrolleffect';
 import { initFluidCursor, destroyFluidCursor } from '../visual/fluidcursor';
 import { initVerticalTabs, destroyVerticalTabs } from '../visual/verticaltabs';
 import { initSuperFusion, destroySuperFusion } from '../visual/superfusion';
+import { initSidebarMute, destroySidebarMute } from '../visual/sidebarmute';
 import { initListBulletLine, destroyListBulletLine } from '../extension/listbulletline';
 import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../extension/focusblockindicator';
 import { initImmersiveMode, destroyImmersiveMode } from '../extension/immersivemode';
@@ -100,6 +101,7 @@ export class NeoPlusController {
     initFluidCursor();
     initVerticalTabs();
     initSuperFusion();
+    initSidebarMute();
     initListBulletLine();
     initFocusBlockIndicator();
     initImmersiveMode();
@@ -129,6 +131,7 @@ export class NeoPlusController {
     destroyFluidCursor();
     destroyVerticalTabs();
     destroySuperFusion();
+    destroySidebarMute();
     destroyListBulletLine();
     destroyFocusBlockIndicator();
     destroyImmersiveMode();

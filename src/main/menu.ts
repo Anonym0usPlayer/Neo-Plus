@@ -12,6 +12,7 @@ import { onColoredFoldersClick, createColoredFoldersLabelHTML } from '../visual/
 import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../visual/verticaltabs';
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
 import { onSuperFusionClick } from '../visual/superfusion';
+import { onSidebarMuteClick } from '../visual/sidebarmute';
 import { onMulticolumnSlashMenuClick } from '../visual/multicolumnslashmenu';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onPinnedToolbarClick, createPinnedToolbarLabelHTML } from '../extension/pinnedtoolbar';
@@ -131,6 +132,15 @@ export function buildMenu(
         label: createVerticalTabsLabelHTML(i18n),
         click: () => {
           onVerticalTabsClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-sidebar-mute-button',
+        icon: 'iconNeoSidebarMute',
+        label: i18n.sidebarMute,
+        click: () => {
+          onSidebarMuteClick();
           return true;
         },
       },

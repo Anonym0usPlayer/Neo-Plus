@@ -1,9 +1,7 @@
 @use "manager" as *;
-body {
-    &.neo-mobile {
-        [data-id="neo-fluid-cursor-button"] {
-            display: none;
-        }
+[data-id="neo-fluid-cursor-button"] {
+    .neo-mobile & {
+        display: none;
     }
 }
 .neo-visual-fluid-cursor {
