@@ -5,7 +5,9 @@ $border-width: 3px;
     body.neo-visual-coloredfolders-partition {
         .sy__file,
         [data-type="sidebar-file"] {
-            --neo-dock-indent-fork-left: -10px;
+            --_indentline-dot-trans: -10px;
+            --_indentline-ul-trans: 24px;
+            --_indentline-li-trans: 6px;
             & .b3-list-item {
                 margin: 1px 0;
                 border-radius: 0;
