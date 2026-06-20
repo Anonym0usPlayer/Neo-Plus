@@ -1,7 +1,7 @@
 @use "manager" as *;
 .neo-palette-savor {
     @include palette-common("[data-id="neo-palette-savor-button"]", "[data-id="neo-scheme-button"]");
-    &[data-theme-mode="light"] {
+    &.neo-mode-light {
         --b3-base-color: #ee705b;
         --b3-theme-primary: #ee705b;
         --b3-theme-accent: #ee705b;
@@ -14,7 +14,7 @@
         --neo-button-primary: #2eaadc;
         --neo-input-primary: #2eaadc;
     }
-    &[data-theme-mode="dark"] {
+    &.neo-mode-dark {
         --b3-base-color: #ff7d68;
         --b3-theme-primary: #ff7d68;
         --b3-theme-accent: #ff7d68;

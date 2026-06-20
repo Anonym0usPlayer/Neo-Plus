@@ -5,7 +5,7 @@
         content: "";
     }
 }
-[data-id="neo-custom-color-button"] {
+.b3-menu__item[data-id="neo-custom-color-button"] {
     @include palette-base-color-input;
     @include palette-base-color-dot;
 }

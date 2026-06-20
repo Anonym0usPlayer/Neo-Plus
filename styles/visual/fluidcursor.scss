@@ -1,5 +1,5 @@
 @use "manager" as *;
-[data-id="neo-fluid-cursor-button"] {
+.b3-menu__item[data-id="neo-fluid-cursor-button"] {
     .neo-mobile & {
         display: none;
     }

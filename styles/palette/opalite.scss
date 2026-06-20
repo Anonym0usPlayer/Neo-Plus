@@ -1,7 +1,7 @@
 @use "manager" as *;
 .neo-palette-opalite {
     @include palette-common("[data-id="neo-palette-opalite-button"]", "[data-id="neo-scheme-button"]");
-    &[data-theme-mode="light"] {
+    &.neo-mode-light {
         --b3-base-color: #b8d2e8;
         --b3-theme-primary: #5e7cc6;
         --b3-theme-accent: #5e7cc6;

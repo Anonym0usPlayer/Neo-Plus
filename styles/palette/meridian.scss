@@ -1,7 +1,7 @@
 @use "manager" as *;
 .neo-palette-meridian {
     @include palette-common("[data-id="neo-palette-meridian-button"]", "[data-id="neo-scheme-button"]");
-    &[data-theme-mode="light"] {
+    &.neo-mode-light {
         --b3-base-color: #010101;
         --b3-theme-primary: #010101;
         --b3-theme-accent: #0050ff;
@@ -14,7 +14,7 @@
         --neo-main-shadow-light: 0 0 1px oklch(from var(--b3-theme-on-background) l c h / 0.45), 0 0 4px oklch(from var(--b3-theme-on-background) l c h / 0.12);
         --neo-main-shadow-heavy: 0 0 1px oklch(from var(--b3-theme-on-background) l c h / 0.45), 0 0 4px oklch(from var(--b3-theme-on-background) l c h / 0.18);
     }
-    &[data-theme-mode="dark"] {
+    &.neo-mode-dark {
         --b3-base-color: #fefefe;
         --b3-theme-primary: #fefefe;
         --b3-theme-accent: #4fff2d;

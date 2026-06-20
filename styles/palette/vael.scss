@@ -1,7 +1,7 @@
 @use "manager" as *;
 .neo-palette-vael {
     @include palette-common("[data-id="neo-palette-vael-button"]", "[data-id="neo-scheme-button"]");
-    &[data-theme-mode="light"] {
+    &.neo-mode-light {
         --b3-base-color: #aacde1;
         --b3-theme-primary: #5591b2;
         --b3-theme-accent: #31a7df;
@@ -10,7 +10,7 @@
         --b3-theme-on-background: #2a556d;
         --b3-theme-on-surface: #2a556db3;
     }
-    &[data-theme-mode="dark"] {
+    &.neo-mode-dark {
         --b3-base-color: #4f8873;
         --b3-theme-primary: #7ec2a6;
         --b3-theme-accent: #7ec2a6;

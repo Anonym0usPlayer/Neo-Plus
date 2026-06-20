@@ -1,7 +1,9 @@
 @use "manager" as *;
 @use "../utils" as *;
-[data-theme-mode="dark"] [data-id="neo-highcontrast-button"] {
-    display: none;
+.b3-menu__item[data-id="neo-highcontrast-button"] {
+    .neo-mode-dark  & {
+        display: none;
+    }
 }
 @mixin neo-highcontrast-icon {
     color: var(--neo-highcontrast-on-bg) !important;
@@ -18,7 +20,7 @@
 }
 .neo-palette-highcontrast {
     @include palette-common("[data-id="neo-highcontrast-button"]");
-    &[data-theme-mode="light"] {
+    &.neo-mode-light {
         --neo-highcontrast-bg: oklch(from var(--b3-base-color) min(0.65, l) calc(var(--neo-saturation, 2) * 0.03) h);
         --neo-highcontrast-on-bg: var(--b3-theme-background);
         body:not(.body--window) {

@@ -19,7 +19,7 @@
             background-color: transparent;
         }
     }
-    &[data-theme-mode="dark"] {
+    &.neo-mode-dark {
         body {
             &::before {
                 opacity: 0.25;

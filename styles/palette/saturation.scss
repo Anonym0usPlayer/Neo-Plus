@@ -1,9 +1,9 @@
-[data-id="neo-saturation-button"] {
+.b3-menu__item[data-id="neo-saturation-button"] {
     opacity: 0.38;
     pointer-events: none;
     filter: saturate(0);
     .b3-slider {
-    &::-webkit-slider-runnable-track {
+        &::-webkit-slider-runnable-track {
             background: linear-gradient(to right, oklch(from var(--b3-theme-accent) l 0 h / 0.3), oklch(from var(--b3-theme-accent) l 0.2 h / 0.3));
         }
     }
@@ -12,8 +12,8 @@
 .neo-palette-followtime,
 .neo-palette-followbanner,
 .neo-palette-followsystem,
-.neo-palette-highcontrast[data-theme-mode="light"] {
-    [data-id="neo-saturation-button"] {
+.neo-palette-highcontrast.neo-mode-light {
+    .b3-menu__item[data-id="neo-saturation-button"] {
         opacity: 1;
         pointer-events: auto;
         filter: unset;

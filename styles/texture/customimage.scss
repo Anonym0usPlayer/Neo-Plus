@@ -39,7 +39,7 @@
             z-index: 99;
         }
     }
-    &[data-theme-mode="dark"] {
+    &.neo-mode-dark {
         body {
             &::after {
                 opacity: 0.25;

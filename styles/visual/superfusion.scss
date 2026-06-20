@@ -1,6 +1,6 @@
 @use "manager" as *;
 @use "../utils" as *;
-[data-id="neo-super-fusion-button"] {
+.b3-menu__item[data-id="neo-super-fusion-button"] {
     .neo-mobile & {
         display: none;
     }

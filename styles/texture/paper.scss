@@ -19,7 +19,7 @@
             z-index: 99;
         }
     }
-    &[data-theme-mode="dark"]{
+    &.neo-mode-dark{
         body {
             &::before {
                 opacity: 0.075;

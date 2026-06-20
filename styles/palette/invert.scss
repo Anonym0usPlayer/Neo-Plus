@@ -1,6 +1,8 @@
 @use "manager" as *;
-[data-theme-mode="light"] [data-id="neo-invert-button"] {
-    display: none;
+.b3-menu__item[data-id="neo-invert-button"] {
+    .neo-mode-light  & {
+        display: none;
+    }
 }
 .neo-palette-invert {
     @include palette-common("[data-id="neo-invert-button"]");

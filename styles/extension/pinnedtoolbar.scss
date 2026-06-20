@@ -1,5 +1,5 @@
 @use "manager" as *;
-[data-id="neo-pinned-toolbar-button"] {
+.b3-menu__item[data-id="neo-pinned-toolbar-button"] {
     .neo-mobile & {
         display: none;
     }

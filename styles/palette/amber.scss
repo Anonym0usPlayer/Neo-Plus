@@ -1,7 +1,7 @@
 @use "manager" as *;
 .neo-palette-amber {
     @include palette-common("[data-id="neo-palette-amber-button"]", "[data-id="neo-scheme-button"]");
-    &[data-theme-mode="light"] {
+    &.neo-mode-light {
         --b3-base-color: #eecb9e;
 		--b3-theme-primary: #b79d7b;
 		--b3-theme-accent: #c58635;
@@ -10,7 +10,7 @@
 		--b3-theme-on-background: #593e22;
 		--b3-theme-on-surface: #836b49;
     }
-    &[data-theme-mode="dark"] {
+    &.neo-mode-dark {
         --b3-base-color: #d5ab7c;
         --b3-theme-primary: #d5ab7c;
 		--b3-theme-accent: #d5ab7c;

@@ -6,6 +6,6 @@
         content: "";
     }
 }
-[data-id="neo-followbanner-button"] {
+.b3-menu__item[data-id="neo-followbanner-button"] {
     @include palette-base-color-dot
 }

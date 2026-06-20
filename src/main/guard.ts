@@ -26,18 +26,26 @@ import { initListBulletLine, destroyListBulletLine } from '../extension/listbull
 import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../extension/focusblockindicator';
 import { initImmersiveMode, destroyImmersiveMode } from '../extension/immersivemode';
 import { initPinnedToolbar, destroyPinnedToolbar } from '../extension/pinnedtoolbar';
-function initNeoEnabled(): void {
-  document.documentElement.classList.add('neo-enabled');
-}
-function destroyNeoEnabled(): void {
-  document.documentElement.classList.remove('neo-enabled');
-}
 function isNeoTheme(): boolean {
   const mode = document.documentElement.getAttribute('data-theme-mode');
   if (mode === 'dark') {
     return document.documentElement.getAttribute('data-dark-theme') === 'Neo';
   }
   return document.documentElement.getAttribute('data-light-theme') === 'Neo';
+}
+function initNeoRootClass(): void {
+  document.documentElement.classList.add('neo-enabled');
+  const mode = document.documentElement.getAttribute('data-theme-mode');
+  document.documentElement.classList.remove('neo-mode-light', 'neo-mode-dark');
+  if (mode === 'dark') {
+    document.documentElement.classList.add('neo-mode-dark');
+  } else {
+    document.documentElement.classList.add('neo-mode-light');
+  }
+}
+function destroyNeoRootClass(): void {
+  document.documentElement.classList.remove('neo-enabled');
+  document.documentElement.classList.remove('neo-mode-light', 'neo-mode-dark');
 }
 let _plugin: Plugin | null = null;
 export function getPlugin(): Plugin | null {
@@ -50,9 +58,9 @@ export class NeoPlusController {
     _plugin = plugin;
   }
   init(): void {
-    this.syncWithTheme();
+    this.handleThemeChange();
     this.themeObserver = new MutationObserver(() => {
-      this.syncWithTheme();
+      this.handleThemeChange();
     });
     this.themeObserver.observe(document.documentElement, {
       attributes: true,
@@ -68,17 +76,25 @@ export class NeoPlusController {
     this.isNeoTheme = false;
     _plugin = null;
   }
-  private syncWithTheme(): void {
+  private handleThemeChange(): void {
     const isNowNeo = isNeoTheme();
     if (isNowNeo && !this.isNeoTheme) {
       this.initNeoPlus();
     } else if (!isNowNeo && this.isNeoTheme) {
       this.destroyNeoPlus();
+    } else if (isNowNeo && this.isNeoTheme) {
+      const mode = document.documentElement.getAttribute('data-theme-mode');
+      document.documentElement.classList.remove('neo-mode-light', 'neo-mode-dark');
+      if (mode === 'dark') {
+        document.documentElement.classList.add('neo-mode-dark');
+      } else {
+        document.documentElement.classList.add('neo-mode-light');
+      }
     }
     this.isNeoTheme = isNowNeo;
   }
   private initNeoPlus(): void {
-    initNeoEnabled();
+    initNeoRootClass();
     initEnv();
     initNeoIcons();
     initTopBarButton();
@@ -108,7 +124,7 @@ export class NeoPlusController {
     initPinnedToolbar();
   }
   private destroyNeoPlus(): void {
-    destroyNeoEnabled();
+    destroyNeoRootClass();
     destroyEnv();
     destroyNeoIcons();
     destroyTopBarButton();

@@ -1,7 +1,7 @@
 @use "manager" as *;
 .neo-palette-abyss {
     @include palette-common("[data-id="neo-palette-abyss-button"]", "[data-id="neo-scheme-button"]");
-    &[data-theme-mode="dark"] {
+    &.neo-mode-dark {
         --b3-base-color: #28ece9;
         --b3-theme-primary: #28ece9;
         --b3-theme-accent: #28ece9;

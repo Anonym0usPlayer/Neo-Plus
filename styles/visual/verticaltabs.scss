@@ -1,6 +1,6 @@
 @use "manager" as *;
 @use "../utils" as *;
-[data-id="neo-vertical-tabs-button"] {
+.b3-menu__item[data-id="neo-vertical-tabs-button"] {
     .neo-mobile & {
         display: none;        
     }

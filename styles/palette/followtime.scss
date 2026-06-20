@@ -20,7 +20,7 @@
     animation: neo-followtime-vary 360s steps(180) infinite;
     --neo-custom-base-color: oklch(from var(--neo-followtime-base-color) l c calc(h + var(--neo-followtime-vary, 0))) !important;
 }
-[data-id="neo-followtime-button"] {
+.b3-menu__item[data-id="neo-followtime-button"] {
     @include palette-base-color-input;
     @include palette-base-color-dot
 }

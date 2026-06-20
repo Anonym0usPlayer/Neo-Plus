@@ -1,7 +1,7 @@
 @use "manager" as *;
 .neo-palette-salt {
     @include palette-common("[data-id="neo-palette-salt-button"]", "[data-id="neo-scheme-button"]");
-    &[data-theme-mode="light"] {
+    &.neo-mode-light {
         --b3-base-color: #007a95;
         --b3-theme-primary: #252830;
         --b3-theme-accent: #007a95;

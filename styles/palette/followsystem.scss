@@ -11,7 +11,7 @@ body.neo-desktop {
         content: "";
     }
 }
-[data-id="neo-followsystem-button"] {
+.b3-menu__item[data-id="neo-followsystem-button"] {
     @include palette-base-color-dot;
     display: none;
 }
