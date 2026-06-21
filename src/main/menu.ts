@@ -8,10 +8,11 @@ import { onFluidCursorClick } from '../visual/fluidcursor';
 import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick, createFocusBlockIndicatorLabelHTML } from '../extension/focusblockindicator';
 import { onScrollEffectClick } from '../visual/scrolleffect';
+import { onIdeClick } from '../ide/ide';
 import { onColoredFoldersClick, createColoredFoldersLabelHTML } from '../visual/coloredfolders';
 import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../visual/verticaltabs';
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
-import { onSuperFusionClick } from '../visual/superfusion';
+import { onSuperFusionClick } from '../superfusion/superfusion';
 import { onSidebarMuteClick } from '../visual/sidebarmute';
 import { onMulticolumnSlashMenuClick } from '../visual/multicolumnslashmenu';
 import { onColoredListsClick } from '../element/coloredlists';
@@ -122,6 +123,25 @@ export function buildMenu(
   });
   menu.addSeparator();
   menu.addItem({
+    id: 'neo-ide-button',
+    icon: 'iconNeoIde',
+    label: i18n.ide,
+    click: () => {
+      onIdeClick();
+      return true;
+    },
+  });
+  menu.addItem({
+    id: 'neo-super-fusion-button',
+    icon: 'iconNeoSuperFusion',
+    label: i18n.superFusion,
+    click: () => {
+      onSuperFusionClick();
+      return true;
+    },
+  });
+  menu.addSeparator();
+  menu.addItem({
     id: 'neo-visual-button',
     icon: 'iconNeoLayout',
     label: i18n.visual,
@@ -141,15 +161,6 @@ export function buildMenu(
         label: i18n.sidebarMute,
         click: () => {
           onSidebarMuteClick();
-          return true;
-        },
-      },
-      {
-        id: 'neo-super-fusion-button',
-        icon: 'iconNeoSuperFusion',
-        label: i18n.superFusion,
-        click: () => {
-          onSuperFusionClick();
           return true;
         },
       },

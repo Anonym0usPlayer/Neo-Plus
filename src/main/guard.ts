@@ -20,7 +20,8 @@ import { initMulticolumnSlashMenu, destroyMulticolumnSlashMenu } from '../visual
 import { initScrollEffect, destroyScrollEffect } from '../visual/scrolleffect';
 import { initFluidCursor, destroyFluidCursor } from '../visual/fluidcursor';
 import { initVerticalTabs, destroyVerticalTabs } from '../visual/verticaltabs';
-import { initSuperFusion, destroySuperFusion } from '../visual/superfusion';
+import { initSuperFusion, destroySuperFusion } from '../superfusion/superfusion';
+import { initIde, destroyIde } from '../ide/ide';
 import { initSidebarMute, destroySidebarMute } from '../visual/sidebarmute';
 import { initListBulletLine, destroyListBulletLine } from '../extension/listbulletline';
 import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../extension/focusblockindicator';
@@ -118,6 +119,7 @@ export class NeoPlusController {
     initVerticalTabs();
     initSuperFusion();
     initSidebarMute();
+    initIde();
     initListBulletLine();
     initFocusBlockIndicator();
     initImmersiveMode();
@@ -148,6 +150,7 @@ export class NeoPlusController {
     destroyVerticalTabs();
     destroySuperFusion();
     destroySidebarMute();
+    destroyIde();
     destroyListBulletLine();
     destroyFocusBlockIndicator();
     destroyImmersiveMode();

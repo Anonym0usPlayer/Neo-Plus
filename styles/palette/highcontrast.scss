@@ -1,8 +1,11 @@
 @use "manager" as *;
 @use "../utils" as *;
 .b3-menu__item[data-id="neo-highcontrast-button"] {
-    .neo-mode-dark  & {
+    .neo-mode-dark & {
         display: none;
+    }
+    .neo-ide & {
+        opacity: 0.38;
     }
 }
 @mixin neo-highcontrast-icon {
@@ -18,7 +21,7 @@
         }
     }
 }
-.neo-palette-highcontrast {
+.neo-palette-highcontrast:not(.neo-ide) {
     @include palette-common("[data-id="neo-highcontrast-button"]");
     &.neo-mode-light {
         --neo-highcontrast-bg: oklch(from var(--b3-base-color) min(0.65, l) calc(var(--neo-saturation, 2) * 0.03) h);

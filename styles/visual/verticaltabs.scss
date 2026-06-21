@@ -14,7 +14,7 @@
         .neo-verticaltabs-wnd {
             flex-direction: row;
             .neo-verticaltabs-resize {
-                margin: 0 -1.5px;
+                margin: 0 -3px;
                 &:not(:hover)::after {
                     background-color: var(--b3-border-color-trans);
                 }

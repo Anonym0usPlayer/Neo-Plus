@@ -1,0 +1,164 @@
+@use "manager" as *;
+.b3-menu__item[data-id="neo-ide-button"] {
+    .neo-mobile & {
+        display: none;      
+    }
+    body:not(.body--toolbar-hide) & {
+        opacity: 0.38;      
+    }
+}
+.neo-ide {
+    @include ide-common('[data-id="neo-ide-button"]');
+}
+.neo-ide-body.body--toolbar-hide {
+    background-color: var(--b3-theme-background);
+    & > .fn__flex-1 {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+    .layout > .fn__flex-1 {
+        margin: 0 !important;
+    }
+    #toolbar .toolbar__item {
+        z-index: 4;
+    }
+    .neo-haswnd {
+        padding: unset !important;
+        & > [data-type=wnd] {
+            box-shadow: unset !important;
+            border-radius: 0 !important;
+            padding: unset !important;
+            & > .layout-tab-container {
+                box-shadow: unset !important;
+                border-radius: 0 !important;
+            }
+        }
+    }
+    .layout__dockl {
+        background-color: var(--b3-theme-surface);
+        box-shadow: 0 -42px 0 0 var(--b3-theme-surface);
+        margin-right: 0 !important;
+        .neo-haswnd {
+            & > [data-type=wnd] {
+                background-color: var(--b3-theme-surface);
+            }
+        }
+    }
+    .layout__dockr {
+        background-color: var(--b3-theme-background);
+        margin-left: 0 !important;
+        .neo-haswnd {
+            & > [data-type=wnd] {
+                background-color: var(--b3-theme-background);
+            }
+        }
+    }
+    .layout__dockb {
+        background-color: var(--b3-theme-surface);
+        box-shadow: 0 -6px 0 0 var(--b3-theme-surface);
+        margin-top: 0 !important;
+        .neo-haswnd {
+            & > [data-type=wnd] {
+                background-color: var(--b3-theme-surface);
+            }
+        }
+    }
+    #dockLeft {
+        background-color: var(--b3-theme-surface);
+        transition: display .45s var(--neo-ease-spring-3), background-color 0.05s;
+        transition-behavior: allow-discrete;
+        position: relative;
+        margin-right: 0;
+        &.neo-dockl-not-expand {
+            background-color: unset;
+            &::after {
+                content: "";
+                position: absolute;
+                top: 48px;
+                right: 0;
+                width: 1px;
+                height: calc(100% - 48px);
+                background-color: var(--b3-border-color-trans);
+                pointer-events: none;
+                z-index: 1;
+            }
+        }
+    }
+    #dockRight {
+        position: relative;
+        margin-left: 0;
+        &.neo-dockr-not-expand {
+            &::after {
+                content: "";
+                position: absolute;
+                top: 48px;
+                left: 0;
+                width: 1px;
+                height: calc(100% - 48px);
+                background-color: var(--b3-border-color-trans);
+                pointer-events: none;
+                z-index: 1;
+            }
+        }
+    }
+    .layout__dockl + .layout__resize {
+        &::after {
+            background-color: transparent;
+        }
+        &:hover::after {
+            background-color: var(--_resize-hl);
+        }
+    }
+    &:not(.body--window) .layout > .layout__resize {
+        &::after {
+            background-color: transparent;
+        }    
+    }
+    .layout__resize {
+        &:not(.layout__resize--lr) {
+            margin: -3px 0;
+            &::after {
+                background-color: var(--b3-border-color-trans);
+            }
+            &:hover {
+                &::after {
+                    background-color: var(--_resize-hl);
+                }
+            }
+        }
+        &--lr {
+            margin: 0 -3px;
+            &::after {
+                background-color: var(--b3-border-color-trans);
+                top: 0;
+                height: 100%;
+            }
+            &:hover {
+                &::after {
+                    background-color: var(--_resize-hl);
+                }
+            }
+        }
+    }
+    .config__panel .config__side,
+    .config-bazaar__readme .item__side {
+        margin: 1px 0 1px 1px;
+        box-shadow: unset;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    .b3-tab-bar {
+        box-shadow: unset;
+    }
+    .config-bazaar__readme .item__side {
+        height: calc(100% - var(--_sidebar-gap) * 2 - 2px);
+    }
+    .config-bazaar__readme .item__main {
+        padding-top: 0;
+        .item__preview {
+            border-radius: 0;
+            margin: 0;
+            width: 100%;
+        }
+    }
+}

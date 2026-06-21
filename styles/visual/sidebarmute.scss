@@ -3,7 +3,8 @@
     .neo-mobile & {
         display: none;      
     }
-    .neo-palette-highcontrast.neo-mode-light & {
+    .neo-palette-highcontrast.neo-mode-light &,
+    .neo-ide-body.body--toolbar-hide & {
         opacity: 0.38;      
     }
 }
