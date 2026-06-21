@@ -23,7 +23,8 @@ $smooth-caret-breathing: 1s cubic-bezier(0.4, 0, 0.2, 1);
         transition: $smooth-caret-trans, opacity 0.3s;
         will-change: transform, height;
         &.neo-smooth-caret-hidden {
-            opacity: 0;
+            opacity: 0 !important;
+            animation: none !important;
         }
     }
     body.neo-visual-smooth-caret-breathing {

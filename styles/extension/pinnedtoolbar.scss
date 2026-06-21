@@ -17,6 +17,9 @@
         }
         .body--toolbar-hide {
             --_protyle-toolbar-top: 42px;
+            &.neo-ide-body {
+                --_protyle-toolbar-top: 75px;
+            }
         }
     }
     .protyle-toolbar.neo-extension-pinnedtoolbar-enable {

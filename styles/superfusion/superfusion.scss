@@ -6,7 +6,7 @@ $tab-height: 42px;
 $tab-offset: 6px;
 $header-height: 40vh;
 $header-parallax: 5vh;
-$text-shadow: 0 0 1px var(--b3-theme-background), 0 0 2px var(--b3-theme-background), 0 0 1px var(--b3-theme-background);
+$text-shadow: 0 0 0.5px var(--b3-theme-background), 0 0 0.5px var(--b3-theme-background), 0 0 1px var(--b3-theme-background);
 $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background));
 .neo-visual-superfusion {
     @include superfusion-common('[data-id="neo-super-fusion-button"]', '[data-id="neo-visual-button"]');
@@ -81,16 +81,6 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0
             }
         }
     }
-    .neo-ide-body.body--toolbar-hide {
-        .toolbar {
-            .toolbar__item svg {
-                filter: $svg-shadow;
-            }
-            .toolbar__text {
-                text-shadow: $text-shadow;
-            }
-        }
-    }
     &:not(.neo-visual-verticaltabs) body:not(.body--toolbar-hide),
     .body--window,
     .neo-ide-body.body--toolbar-hide {
@@ -102,28 +92,10 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0
                 background-color: transparent;
                 .item {
                     &::before {
-                        filter: $svg-shadow;
                         background-color: oklch(from var(--b3-theme-on-background) l c h / 0.3);
-                    }
-                    .item__text {
-                        text-shadow: $text-shadow;
-                    }
-                    .item__icon,
-                    .item__graphic {
-                        filter: $svg-shadow;
-                    }
-                    .item__close {
-                        svg {
-                            filter: $svg-shadow;
-                        }
                     }
                     &.item--focus {
                         background-color: oklch(from var(--b3-theme-background) l c h / 0.5) !important;
-                    }
-                }
-                .block__icon {
-                    svg {
-                        filter: $svg-shadow;
                     }
                 }
             }
@@ -137,10 +109,22 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0
                         width: 100%;
                         height: calc($tab-height * 2);
                         pointer-events: none;
+                        background-color: oklch(from var(--b3-theme-background) l c h / 0.7);
+                        mask: linear-gradient(black, transparent);
+                        z-index: 1;
+                    }
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: calc($tab-height * 4);
+                        pointer-events: none;
                         backdrop-filter: blur(3px);
                         background-color: transparent;
-                        mask: linear-gradient(black $tab-height, transparent);
-                        z-index: 2;
+                        mask: linear-gradient(black 42px, transparent);
+                        z-index: 0;
                     }
                     & > .protyle-breadcrumb {
                         padding-top: calc($breadcrumb-height + $breadcrumb-offset + $tab-height - $breadcrumb-offset);

@@ -11,6 +11,11 @@
     @include ide-common('[data-id="neo-ide-button"]');
 }
 .neo-ide-body.body--toolbar-hide {
+    --_dockitem-margin-top: 8px;
+    --_dockitem-margin-bottom: 8px;
+    .neo-visual-superfusion & {
+        --_dockitem-margin-top: 2px;
+    }
     background-color: var(--b3-theme-background);
     & > .fn__flex-1 {
         margin-top: 0 !important;
@@ -33,6 +38,9 @@
                 border-radius: 0 !important;
             }
         }
+    }
+    .dockPanel .block__icons {
+        margin-top: calc(var(--_dockitem-margin-top) - 8px);
     }
     .layout__dockl {
         background-color: var(--b3-theme-surface);
@@ -98,6 +106,19 @@
                 background-color: var(--b3-border-color-trans);
                 pointer-events: none;
                 z-index: 1;
+            }
+        }
+    }
+    #dockLeft, 
+    #dockRight {
+        & > .dock__items:first-child {
+            .dock__item:first-child {
+                margin-top: var(--_dockitem-margin-top);
+            }
+        }
+        & > .dock__item--space + .dock__items {
+            .dock__item:last-child {
+                margin-bottom: var(--_dockitem-margin-bottom);
             }
         }
     }
