@@ -145,16 +145,18 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   return `<div class="b3-dialog__content">
     <div class="config__tab-container">
       <div class="config-group">
-        <label class="fn__flex b3-label">
-          <div class="fn__flex-1">
-            ${i18n.smoothCaretStatus}
-            <div class="b3-label__text">${i18n.smoothCaretStatusTip}</div>
-          </div>
-          <span class="fn__space"></span>
-          <select class="b3-select fn__flex-center fn__size200" id="neo-smooth-caret-status">
-            ${statusOptions}
-          </select>
-        </label>
+        <div class="config-items">
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.smoothCaretStatus}
+              <div class="b3-label__text">${i18n.smoothCaretStatusTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <select class="b3-select fn__flex-center fn__size200" id="neo-smooth-caret-status">
+              ${statusOptions}
+            </select>
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -170,11 +172,10 @@ export function showSmoothCaretSettings(): void {
   const dialog = new Dialog({
     title: plugin.i18n.smoothCaretSettings || 'Smooth Caret Settings',
     content: buildSettingsHTML(plugin.i18n),
-    width: '90vw',
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
-  if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-smooth-caret-settings');
+  dialog.element.classList.add('neo-settings-dialog');
   const statusSelect = dialog.element.querySelector('#neo-smooth-caret-status') as HTMLSelectElement;
   if (statusSelect) statusSelect.value = smoothCaretStatus;
   dialog.element.querySelector('#neo-smooth-caret-cancel')?.addEventListener('click', () => dialog.destroy());

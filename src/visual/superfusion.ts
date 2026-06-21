@@ -1,8 +1,6 @@
-import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 export function initSuperFusion(): void {
-  if (isMobile()) return;
   loadConfig().then((config) => {
     if (config['super-fusion'] === true) {
       document.documentElement.classList.add('neo-visual-superfusion');
@@ -10,7 +8,6 @@ export function initSuperFusion(): void {
   });
 }
 export function onSuperFusionClick(): void {
-  if (isMobile()) return;
   const htmlEl = document.documentElement;
   const isActive = htmlEl.classList.contains('neo-visual-superfusion');
   if (isActive) {

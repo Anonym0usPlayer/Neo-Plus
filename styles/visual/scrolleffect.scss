@@ -9,13 +9,9 @@ $scroll-effect-trans: cubic-bezier(0.46, 0.03, 0.52, 0.96);
     .protyle-wysiwyg [data-node-id],
     .protyle-title,
     .protyle-action,
-    .callout-info {
+    .callout-info,
+    .config-items > .b3-label {
         animation: neo-content-scroll-reveal $scroll-effect-trans both;
-        animation-timeline: view(block);
-    }
-    //.b3-card,
-    .config-group > .b3-label {
-        animation: neo-card-scroll-reveal $scroll-effect-trans both;
         animation-timeline: view(block);
     }
     @keyframes neo-content-scroll-reveal {
@@ -39,30 +35,6 @@ $scroll-effect-trans: cubic-bezier(0.46, 0.03, 0.52, 0.96);
         100% {
             opacity: 0.5;
             transform: translate(-5px, -15px);
-            filter: blur(2px);
-        }
-    }
-    @keyframes neo-card-scroll-reveal {
-        0% {
-            opacity: 0.2;
-            transform: translate(0, 15px);
-            filter: blur(2px);
-        }
-        15% {
-            opacity: 1;
-            transform: translate(0, 0);
-            filter: blur(0);
-        }
-        85% {
-            opacity: 1;
-            transform: translate(0, 0);
-            opacity: 1;
-            transform: translate(0, 0);
-            filter: blur(0);
-        }
-        100% {
-            opacity: 0.5;
-            transform: translate(0, -15px);
             filter: blur(2px);
         }
     }

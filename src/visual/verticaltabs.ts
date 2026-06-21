@@ -162,16 +162,18 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   return `<div class="b3-dialog__content">
     <div class="config__tab-container">
       <div class="config-group">
-        <label class="fn__flex b3-label">
-          <div class="fn__flex-1">
-            ${i18n.verticaltabsMode}
-            <div class="b3-label__text">${i18n.verticaltabsModeTip}</div>
-          </div>
-          <span class="fn__space"></span>
-          <select class="b3-select fn__flex-center fn__size200" id="neo-verticaltabs-mode">
-            ${modeOptions}
-          </select>
-        </label>
+        <div class="config-items">
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.verticaltabsMode}
+              <div class="b3-label__text">${i18n.verticaltabsModeTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <select class="b3-select fn__flex-center fn__size200" id="neo-verticaltabs-mode">
+              ${modeOptions}
+            </select>
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -187,11 +189,10 @@ export function showVerticalTabsSettings(): void {
   const dialog = new Dialog({
     title: plugin.i18n.verticaltabsSettings || 'Vertical Tabs Settings',
     content: buildSettingsHTML(plugin.i18n),
-    width: '90vw',
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
-  if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-verticaltabs-settings');
+  dialog.element.classList.add('neo-settings-dialog');
   const modeSelect = dialog.element.querySelector('#neo-verticaltabs-mode') as HTMLSelectElement;
   if (modeSelect) modeSelect.value = currentMode;
   dialog.element.querySelector('#neo-verticaltabs-cancel')?.addEventListener('click', () => dialog.destroy());

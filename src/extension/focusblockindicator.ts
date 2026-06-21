@@ -102,16 +102,18 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   return `<div class="b3-dialog__content">
     <div class="config__tab-container">
       <div class="config-group">
-        <label class="fn__flex b3-label">
-          <div class="fn__flex-1">
-            ${i18n.focusBlockEffect}
-            <div class="b3-label__text">${i18n.focusBlockEffectTip}</div>
-          </div>
-          <span class="fn__space"></span>
-          <select class="b3-select fn__flex-center fn__size200" id="neo-focus-block-effect">
-            ${effectOptions}
-          </select>
-        </label>
+        <div class="config-items">
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.focusBlockEffect}
+              <div class="b3-label__text">${i18n.focusBlockEffectTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <select class="b3-select fn__flex-center fn__size200" id="neo-focus-block-effect">
+              ${effectOptions}
+            </select>
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -127,11 +129,10 @@ export function showFocusBlockIndicatorSettings(): void {
   const dialog = new Dialog({
     title: plugin.i18n.focusBlockIndicatorSettings || 'Focus Block Indicator Settings',
     content: buildSettingsHTML(plugin.i18n),
-    width: '90vw',
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
-  if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-focus-block-indicator-settings');
+  dialog.element.classList.add('neo-settings-dialog');
   const effectSelect = dialog.element.querySelector('#neo-focus-block-effect') as HTMLSelectElement;
   if (effectSelect) effectSelect.value = focusBlockEffect;
   dialog.element.querySelector('#neo-focus-block-indicator-cancel')?.addEventListener('click', () => dialog.destroy());

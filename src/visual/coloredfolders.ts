@@ -36,16 +36,18 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   return `<div class="b3-dialog__content">
     <div class="config__tab-container">
       <div class="config-group">
-        <label class="fn__flex b3-label">
-          <div class="fn__flex-1">
-            ${i18n.coloredFoldersStyle}
-            <div class="b3-label__text">${i18n.coloredFoldersStyleTip}</div>
-          </div>
-          <span class="fn__space"></span>
-          <select class="b3-select fn__flex-center fn__size200" id="neo-colored-folders-style">
-            ${styleOptions}
-          </select>
-        </label>
+        <div class="config-items">
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.coloredFoldersStyle}
+              <div class="b3-label__text">${i18n.coloredFoldersStyleTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <select class="b3-select fn__flex-center fn__size200" id="neo-colored-folders-style">
+              ${styleOptions}
+            </select>
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -61,11 +63,10 @@ export function showColoredFoldersSettings(): void {
   const dialog = new Dialog({
     title: plugin.i18n.coloredFoldersSettings || 'Colored Folders Settings',
     content: buildSettingsHTML(plugin.i18n),
-    width: '90vw',
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
-  if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-colored-folders-settings');
+  dialog.element.classList.add('neo-settings-dialog');
   const styleSelect = dialog.element.querySelector('#neo-colored-folders-style') as HTMLSelectElement;
   if (styleSelect) styleSelect.value = coloredFoldersStyle;
   dialog.element.querySelector('#neo-colored-folders-cancel')?.addEventListener('click', () => dialog.destroy());

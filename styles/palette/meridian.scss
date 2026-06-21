@@ -36,21 +36,4 @@
     body {
         background-color: var(--b3-theme-background);
     }
-    .b3-dialog__container .config__side,
-    .b3-dialog__container .config__panel .b3-tab-bar,
-    #configBazaarReadme .item__side {
-        background-color: oklch(from var(--b3-theme-background) l c h / 0.7);
-    }
-    #searchList:not(:has(>.b3-list-item:not([data-type=search-item]))),
-    #searchUnRefList, 
-    #searchAssetList {
-        [data-type=search-item].b3-list-item--focus {
-            outline-color: oklch(from var(--b3-theme-accent) l 0 h / 0.3);
-        }
-    }
-    @supports (bottom: anchor(--a bottom)) {
-        .status {
-            background-color: oklch(from var(--b3-theme-background) l c h / 0.65) !important;
-        }
-    }
 }

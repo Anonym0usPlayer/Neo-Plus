@@ -1,0 +1,32 @@
+.neo-settings-dialog {
+    .b3-dialog__container {
+        max-width: 90vw;
+        max-height: 90vh;
+        min-width: 400px;
+    }
+    .config-group {
+        margin-left: 0;
+        margin-right: 0;
+        &:only-child {
+            margin: 0;
+        }
+    }
+    .b3-label > .fn__space {
+        width: 32px;
+    }
+    .neo-mobile & {
+        .b3-label {
+            flex-wrap: wrap;
+            & > .fn__flex-1 {
+                width: 100%;
+            }
+            & > .fn__space {
+                display: none;
+            }
+            & > .fn__flex-center {
+                width: 100%;
+                margin-top: 8px;
+            }
+        }
+    }
+}

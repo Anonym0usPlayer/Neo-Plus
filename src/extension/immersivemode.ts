@@ -177,26 +177,28 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   return `<div class="b3-dialog__content">
     <div class="config__tab-container">
       <div class="config-group">
-        <label class="fn__flex b3-label">
-          <div class="fn__flex-1">
-            ${i18n.immersiveTypewriterMode}
-            <div class="b3-label__text">${i18n.immersiveTypewriterModeTip}</div>
-          </div>
-          <span class="fn__space"></span>
-          <select class="b3-select fn__flex-center fn__size200" id="neo-immersive-typewriter">
-            ${optionOnOff}
-          </select>
-        </label>
-        <label class="fn__flex b3-label">
-          <div class="fn__flex-1">
-            ${i18n.immersiveHighlight}
-            <div class="b3-label__text">${i18n.immersiveHighlightTip}</div>
-          </div>
-          <span class="fn__space"></span>
-          <select class="b3-select fn__flex-center fn__size200" id="neo-immersive-highlight">
-            ${optionOnOff}
-          </select>
-        </label>
+        <div class="config-items">
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.immersiveTypewriterMode}
+              <div class="b3-label__text">${i18n.immersiveTypewriterModeTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <select class="b3-select fn__flex-center fn__size200" id="neo-immersive-typewriter">
+              ${optionOnOff}
+            </select>
+          </label>
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.immersiveHighlight}
+              <div class="b3-label__text">${i18n.immersiveHighlightTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <select class="b3-select fn__flex-center fn__size200" id="neo-immersive-highlight">
+              ${optionOnOff}
+            </select>
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -223,11 +225,10 @@ export function showImmersiveModeSettings(): void {
   const dialog = new Dialog({
     title: plugin.i18n.immersiveModeSettings || 'Immersive Mode Settings',
     content: buildSettingsHTML(plugin.i18n),
-    width: '90vw',
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
-  if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-immersive-settings');
+  dialog.element.classList.add('neo-settings-dialog');
   const typewriterSelect = dialog.element.querySelector('#neo-immersive-typewriter') as HTMLSelectElement;
   const highlightSelect = dialog.element.querySelector('#neo-immersive-highlight') as HTMLSelectElement;
   if (typewriterSelect) typewriterSelect.value = typewriterEnabled ? plugin.i18n.on : plugin.i18n.off;

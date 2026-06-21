@@ -119,26 +119,28 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   return `<div class="b3-dialog__content">
     <div class="config__tab-container">
       <div class="config-group">
-        <label class="fn__flex b3-label">
-          <div class="fn__flex-1">
-            ${i18n.pinnedToolbarPosition}
-            <div class="b3-label__text">${i18n.pinnedToolbarPositionTip}</div>
-          </div>
-          <span class="fn__space"></span>
-          <select class="b3-select fn__flex-center fn__size200" id="neo-pinned-toolbar-position">
-            ${positionOptions}
-          </select>
-        </label>
-        <label class="fn__flex b3-label">
-          <div class="fn__flex-1">
-            ${i18n.pinnedToolbarLiquidGlass}
-            <div class="b3-label__text">${i18n.pinnedToolbarLiquidGlassTip}</div>
-          </div>
-          <span class="fn__space"></span>
-          <select class="b3-select fn__flex-center fn__size200" id="neo-pinned-toolbar-liquid-glass">
-            ${optionOnOff}
-          </select>
-        </label>
+        <div class="config-items">
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.pinnedToolbarPosition}
+              <div class="b3-label__text">${i18n.pinnedToolbarPositionTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <select class="b3-select fn__flex-center fn__size200" id="neo-pinned-toolbar-position">
+              ${positionOptions}
+            </select>
+          </label>
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.pinnedToolbarLiquidGlass}
+              <div class="b3-label__text">${i18n.pinnedToolbarLiquidGlassTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <select class="b3-select fn__flex-center fn__size200" id="neo-pinned-toolbar-liquid-glass">
+              ${optionOnOff}
+            </select>
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -154,11 +156,10 @@ export function showPinnedToolbarSettings(): void {
   const dialog = new Dialog({
     title: plugin.i18n.pinnedToolbarSettings || 'Pinned Toolbar Settings',
     content: buildSettingsHTML(plugin.i18n),
-    width: '90vw',
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
-  if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-pinned-toolbar-settings');
+  dialog.element.classList.add('neo-settings-dialog');
   const positionSelect = dialog.element.querySelector('#neo-pinned-toolbar-position') as HTMLSelectElement;
   if (positionSelect) positionSelect.value = pinnedToolbarPosition;
   const liquidGlassSelect = dialog.element.querySelector('#neo-pinned-toolbar-liquid-glass') as HTMLSelectElement;

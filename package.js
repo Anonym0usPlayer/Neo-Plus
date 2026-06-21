@@ -10,8 +10,8 @@ const files = [
   'index.css',
   'index.js',
   'plugin.json',
-  'README_zh_CN.md',
-  'README_zh_CHT.md',
+  'README.zh-CN.md',
+  'README.zh-TW.md',
   'README.md'
 ];
 for (const file of files) {

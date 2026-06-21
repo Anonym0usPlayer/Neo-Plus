@@ -1,14 +1,11 @@
 @use "manager" as *;
 @use "../utils" as *;
-.b3-menu__item[data-id="neo-super-fusion-button"] {
-    .neo-mobile & {
-        display: none;
-    }
-}
 $breadcrumb-height: 42px;
 $breadcrumb-offset: 6px;
 $tab-height: 41px;
 $tab-offset: 6px;
+$header-height: 40vh;
+$header-parallax: 5vh;
 $text-shadow: 0 0 1px var(--b3-theme-background), 0 0 2px var(--b3-theme-background), 0 0 1px var(--b3-theme-background),0 0 1px var(--b3-theme-background);
 $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0.5px var(--b3-theme-background));
 .neo-visual-superfusion {
@@ -67,6 +64,19 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0
                 }
                 &:not(.fn__none) + .protyle-background__ia {
                     margin-top: -5vh;
+                }
+            }
+            // 视差滚动
+            scroll-timeline-name: --protyle-conten-scroll;
+            scroll-timeline-axis: block;
+            .protyle-background__img {
+                height: $header-height;
+                transform-origin: center;
+                animation: header-parallax ease-out;
+                animation-timeline: --protyle-conten-scroll;
+                animation-range: 0 $header-height;
+                img, video {
+                    height: $header-height;
                 }
             }
         }
@@ -142,6 +152,95 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background)) drop-shadow(0 0 0
                 & > .fn__flex-1:not(.protyle) {
                     margin-top: $tab-height;
                 }
+            }
+        }
+    }
+}
+@keyframes header-parallax {
+    to {
+        transform: scale(1.375) translateY($header-parallax);
+        filter: blur(1px);
+        opacity: 0;
+    }
+}
+// 手机端
+$mobile-toolbar-height: 50px;
+.neo-visual-superfusion {
+    .neo-mobile {
+        .protyle-background__img {
+            animation: none !important;
+        }
+        .b3-menu--fullscreen {
+            .b3-menu__title {
+                margin-bottom: calc($mobile-toolbar-height * -1);
+                backdrop-filter: blur(6px);
+                z-index: 1;
+                height: $mobile-toolbar-height;
+                .b3-menu__icon {
+                    filter: $svg-shadow; 
+                }
+                .b3-menu__label {
+                    text-shadow: $text-shadow;
+                }
+            }
+            .b3-menu__items {
+                padding-top: $mobile-toolbar-height;
+            }
+        }
+        & > .toolbar {
+            margin-bottom: calc($mobile-toolbar-height * -1);
+            background-color: transparent;
+            backdrop-filter: blur(6px);
+            z-index: 3;
+            height: $mobile-toolbar-height;
+            .toolbar__icon {
+                filter: $svg-shadow; 
+            }
+            .toolbar__title,
+            .toolbar__text {
+                text-shadow: $text-shadow;
+            }
+        }
+        #editor {
+            padding-top: $breadcrumb-offset;
+            & > .protyle-breadcrumb {
+                margin-top: 0;
+                padding-top: calc($breadcrumb-height + $breadcrumb-offset * 2);
+                .protyle-breadcrumb__icon {
+                    text-shadow: $text-shadow;
+                }
+                .block__icon {
+                    svg {
+                        filter: $svg-shadow;
+                    }
+                }
+            }
+            & > .protyle-content {
+                margin-top: -84px;
+                padding-top: calc($breadcrumb-height + $mobile-toolbar-height);
+            }
+        }
+        #sidebar {
+            & > .toolbar:first-child {
+                height: $mobile-toolbar-height;
+            }
+        }
+        #model {
+            & > .toolbar--border {
+                margin-bottom: calc($mobile-toolbar-height * -1);
+                background-color: transparent;
+                z-index: 99;
+                height: $mobile-toolbar-height;
+                .toolbar__icon {
+                    filter: $svg-shadow; 
+                }
+                .toolbar__title,
+                .toolbar__text {
+                    text-shadow: $text-shadow;
+                }
+            }
+            #modelMain {
+                padding: $mobile-toolbar-height 0 0 0;
             }
         }
     }

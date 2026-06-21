@@ -192,34 +192,42 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   const moreSliders = moreSliderKeys.map(k => sliderHTML(i18n, getSliderConfig(k)!)).join('');
   return `<div class="b3-dialog__content">
   <div class="config__tab-container">
-    <b class="config-group__title">${t(i18n, 'customimagePresetTip')}</b>
     <div class="config-group">
-      <label class="fn__flex b3-label">
-        <div class="fn__flex-1">
-          ${t(i18n, 'customimagePresetSelect')}
-          <div class="b3-label__text">${t(i18n, 'customimagePresetSelectTip')}</div>
-        </div>
-        <span class="fn__space"></span>
-        <select class="b3-select fn__flex-center fn__size200" id="neo-customimage-preset-select">
-        </select>
-      </label>
+      <div class="config-title">${t(i18n, 'customimagePresetTip')}</div>
+      <div class="config-items">
+        <label class="fn__flex b3-label">
+          <div class="fn__flex-1">
+            ${t(i18n, 'customimagePresetSelect')}
+            <div class="b3-label__text">${t(i18n, 'customimagePresetSelectTip')}</div>
+          </div>
+          <span class="fn__space"></span>
+          <select class="b3-select fn__flex-center fn__size200" id="neo-customimage-preset-select">
+          </select>
+        </label>
+      </div>
     </div>
-    <b class="config-group__title">${t(i18n, 'customimageImageInfo')}</b>
     <div class="config-group">
-      ${textFieldHTML(i18n, 'neo-customimage-path', 'config__item-neo-customimage-path', 'customimagePath', 'customimagePathTip')}
+      <div class="config-title">${t(i18n, 'customimageImageInfo')}</div>
+      <div class="config-items">
+        ${textFieldHTML(i18n, 'neo-customimage-path', 'config__item-neo-customimage-path', 'customimagePath', 'customimagePathTip')}
+      </div>
     </div>
-    <b class="config-group__title">${t(i18n, 'customimageBasicParams')}</b>
     <div class="config-group">
-      ${fillModeSelectHTML(i18n, 'neo-customimage-fill-mode', 'config__item-neo-customimage-fill-mode', 'customimageFillMode')}
-      ${basicSliders}
-      ${opacitySlider}
-      ${effectSelect}
-      ${frosted}
-      ${positionSliders}
+      <div class="config-title">${t(i18n, 'customimageBasicParams')}</div>
+      <div class="config-items">
+        ${fillModeSelectHTML(i18n, 'neo-customimage-fill-mode', 'config__item-neo-customimage-fill-mode', 'customimageFillMode')}
+        ${basicSliders}
+        ${opacitySlider}
+        ${effectSelect}
+        ${frosted}
+        ${positionSliders}
+      </div>
     </div>
-    <b class="config-group__title">${t(i18n, 'customimageMoreParams')}</b>
     <div class="config-group">
-      ${moreSliders}
+      <div class="config-title">${t(i18n, 'customimageMoreParams')}</div>
+      <div class="config-items">
+        ${moreSliders}
+      </div>
     </div>
   </div>
 </div>
@@ -233,6 +241,8 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   <button class="b3-button b3-button--text" id="neo-customimage-update-preset">${t(i18n, 'customimageUpdatePreset')}</button>
   <span class="fn__space"></span>
   <button class="b3-button b3-button--text" id="neo-customimage-save-preset">${t(i18n, 'customimageSavePreset')}</button>
+  <span class="fn__space"></span>
+  <button class="b3-button b3-button--text" id="neo-customimage-confirm">${t(i18n, 'confirm')}</button>
 </div>`;
 }
 export function showCustomImageSettings(): void {
@@ -241,11 +251,10 @@ export function showCustomImageSettings(): void {
   const dialog = new Dialog({
     title: plugin.i18n.customimageSettings || 'Custom Image Settings',
     content: buildSettingsHTML(plugin.i18n),
-    width: '90vw', height: '90vh',
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
-  if (container) container.style.maxWidth = '800px';
   dialog.element.setAttribute('data-key', 'dialog-neo-customimage-settings');
+  dialog.element.classList.add('neo-settings-dialog');
   const presetSelect = dialog.element.querySelector('#neo-customimage-preset-select') as HTMLSelectElement | null;
   const fieldDom = fieldDefs.map(f => ({
     field: f,
@@ -336,6 +345,10 @@ export function showCustomImageSettings(): void {
     originalDestroy();
   };
   btn('#neo-customimage-cancel')?.addEventListener('click', () => dialog.destroy());
+  btn('#neo-customimage-confirm')?.addEventListener('click', () => {
+    btn('#neo-customimage-update-preset')?.click();
+    dialog.destroy();
+  });
   btn('#neo-customimage-delete-preset')?.addEventListener('click', async () => {
     if (!presetSelect) return;
     const name = presetSelect.value;
@@ -343,8 +356,8 @@ export function showCustomImageSettings(): void {
     const cd = new Dialog({
       title: plugin.i18n.customimagePresetDeleteConfirmTitle,
       content: `<div class="b3-dialog__content">${plugin.i18n.customimagePresetDeleteConfirmContent?.replace('${name}', name)}</div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="ndc-cancel">${plugin.i18n.cancel}</button><span class="fn__space"></span><button class="b3-button b3-button--text" id="ndc-confirm">${plugin.i18n.confirm}</button></div>`,
-      width: 'max(360px,30vw)',
     });
+    cd.element.classList.add('neo-settings-dialog');
     cd.element.querySelector('#ndc-cancel')?.addEventListener('click', () => cd.destroy());
     cd.element.querySelector('#ndc-confirm')?.addEventListener('click', async () => {
       try {
@@ -383,8 +396,8 @@ export function showCustomImageSettings(): void {
     const pd = new Dialog({
       title: plugin.i18n.customimageSavePresetTitle,
       content: `<div class="b3-dialog__content"><div class="fn__flex b3-label config__item"><div class="fn__flex-1">${plugin.i18n.customimagePresetName}<div class="b3-label__text">${plugin.i18n.customimagePresetNameTip}</div></div><span class="fn__space"></span><input class="b3-text-field fn__flex-center fn__size200" id="neo-customimage-preset-name" spellcheck="false"></div></div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="npc-cancel">${plugin.i18n.cancel}</button><span class="fn__space"></span><button class="b3-button b3-button--text" id="npc-confirm">${plugin.i18n.confirm}</button></div>`,
-      width: 'max(480px,30vw)',
     });
+    pd.element.classList.add('neo-settings-dialog');
     pd.element.querySelector('#npc-cancel')?.addEventListener('click', () => pd.destroy());
     pd.element.querySelector('#npc-confirm')?.addEventListener('click', async () => {
       const name = (pd.element.querySelector('#neo-customimage-preset-name') as HTMLInputElement)?.value?.trim();
