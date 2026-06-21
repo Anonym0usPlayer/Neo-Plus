@@ -5,10 +5,11 @@
         min-width: 400px;
     }
     .config-group {
-        margin-left: 0;
-        margin-right: 0;
+        margin-left: 16px;
+        margin-right: 16px;
         &:only-child {
-            margin: 0;
+            margin-top: 0;
+            margin-bottom: 0;
         }
     }
     .b3-label > .fn__space {
@@ -23,9 +24,12 @@
             & > .fn__space {
                 display: none;
             }
-            & > .fn__flex-center {
+            & > .fn__flex-center:not(.b3-switch) {
                 width: 100%;
                 margin-top: 8px;
+                .fn__size200 {
+                    width: 100%;
+                }
             }
         }
     }
