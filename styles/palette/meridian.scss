@@ -57,5 +57,10 @@
                 background-color: var(--_resize-hl);
             }
         }
+        .config__panel .config__side,
+        .config-bazaar__readme .item__side {
+            background-color: transparent !important;
+            border-right: 1px solid var(--b3-border-color-trans);
+        }
     }
 }
