@@ -40,7 +40,7 @@
         }
     }
     .dockPanel .block__icons {
-        margin-top: calc(var(--_dockitem-margin-top) - 8px);
+        margin-top: calc(var(--_dockitem-margin-top) - 7.5px);
     }
     .layout__dockl {
         --_dockl-bg: var(--b3-theme-surface);
@@ -185,6 +185,11 @@
                     background-color: var(--_resize-hl);
                 }
             }
+        }
+    }
+    &.neo-dockl-expand.neo-dockl-not-float {
+        .layout__dockl + .layout__resize {
+            display: block !important;
         }
     }
     &.neo-dockr-expand.neo-dockr-not-float {
