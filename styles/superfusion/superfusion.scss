@@ -189,6 +189,9 @@ $mobile-toolbar-height: 50px;
                 backdrop-filter: blur(6px);
                 z-index: 1;
                 height: $mobile-toolbar-height;
+                @supports (background: paint(id)) {
+                    backdrop-filter: blur(1px) url(#neo-mobile-toolbar-liquid-glass);
+                }
                 .b3-menu__icon {
                     filter: $svg-shadow; 
                 }
@@ -206,6 +209,9 @@ $mobile-toolbar-height: 50px;
             backdrop-filter: blur(6px);
             z-index: 3;
             height: $mobile-toolbar-height;
+            @supports (background: paint(id)) {
+                backdrop-filter: blur(1px) url(#neo-mobile-toolbar-liquid-glass);
+            }
             .toolbar__icon {
                 filter: $svg-shadow; 
             }
@@ -242,8 +248,12 @@ $mobile-toolbar-height: 50px;
             & > .toolbar--border {
                 margin-bottom: calc($mobile-toolbar-height * -1);
                 background-color: transparent;
+                backdrop-filter: blur(6px);
                 z-index: 99;
                 height: $mobile-toolbar-height;
+                @supports (background: paint(id)) {
+                    backdrop-filter: blur(1px) url(#neo-mobile-toolbar-liquid-glass);
+                }
                 .toolbar__icon {
                     filter: $svg-shadow; 
                 }
