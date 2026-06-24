@@ -43,13 +43,21 @@
         margin-top: calc(var(--_dockitem-margin-top) - 8px);
     }
     .layout__dockl {
-        background-color: var(--b3-theme-surface);
+        --_dockl-bg: var(--b3-theme-surface);
+        background-color: var(--_dockl-bg);
         box-shadow: 0 -42px 0 0 var(--b3-theme-surface);
         margin-right: 0 !important;
         .neo-haswnd {
             & > [data-type=wnd] {
-                background-color: var(--b3-theme-surface);
+                background-color: var(--_dockl-bg);
             }
+        }
+        &.layout--float {
+            --_dockl-bg: var(--b3-theme-background);
+            top: 0;
+            padding-top: 42px;
+            bottom: 0;
+            border-right: 1px solid var(--b3-border-color-trans);
         }
     }
     .layout__dockr {
@@ -60,24 +68,37 @@
                 background-color: var(--b3-theme-background);
             }
         }
+        &.layout--float {
+            top: 0;
+            padding-top: 42px;
+            bottom: 0;
+            border-left: 1px solid var(--b3-border-color-trans);
+        }
     }
     .layout__dockb {
-        background-color: var(--b3-theme-surface);
+        --_dockb-bg: var(--b3-theme-surface);
+        background-color: var(--_dockb-bg);
         box-shadow: 0 -6px 0 0 var(--b3-theme-surface);
         margin-top: 0 !important;
         .neo-haswnd {
             & > [data-type=wnd] {
-                background-color: var(--b3-theme-surface);
+                background-color: var(--_dockb-bg);
             }
+        }
+        &.layout--float {
+            --_dockb-bg: var(--b3-theme-background);
+            bottom: 0 !important; // 覆盖内联
+            border-top: 1px solid var(--b3-border-color-trans);
         }
     }
     #dockLeft {
         background-color: var(--b3-theme-surface);
-        transition: display .45s var(--neo-ease-spring-3), background-color 0.05s;
+        transition: display .45s var(--neo-ease-spring-3), background-color 0.02s var(--neo-ease-spring-3);
         transition-behavior: allow-discrete;
         position: relative;
         margin-right: 0;
-        &.neo-dockl-not-expand {
+        &.neo-dockl-not-expand,
+        &.neo-dockl-float.neo-dockl-expand {
             background-color: unset;
             &::after {
                 content: "";
@@ -95,7 +116,8 @@
     #dockRight {
         position: relative;
         margin-left: 0;
-        &.neo-dockr-not-expand {
+        &.neo-dockr-not-expand,
+        &.neo-dockr-float.neo-dockr-expand {
             &::after {
                 content: "";
                 position: absolute;
