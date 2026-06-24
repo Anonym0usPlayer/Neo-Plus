@@ -104,7 +104,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
                         width: 100%;
                         height: calc($tab-height * 2);
                         pointer-events: none;
-                        background-color: oklch(from var(--b3-theme-background) l c h / 0.7);
+                        background-color: oklch(from var(--b3-theme-background) l c h / 0.5);
                         mask: linear-gradient(black, transparent);
                         z-index: 1;
                     }
@@ -114,7 +114,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
                         top: 0;
                         left: 0;
                         width: 100%;
-                        height: calc($tab-height * 4);
+                        height: calc($tab-height * 2);
                         pointer-events: none;
                         backdrop-filter: blur(3px);
                         background-color: transparent;
