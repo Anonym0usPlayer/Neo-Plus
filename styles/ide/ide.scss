@@ -93,12 +93,14 @@
     }
     #dockLeft {
         background-color: var(--b3-theme-surface);
-        transition: display .45s var(--neo-ease-spring-3), background-color 0.02s var(--neo-ease-spring-3);
+        transition: display 0.45s var(--neo-ease-spring-3), background-color 0.02s;
         transition-behavior: allow-discrete;
         position: relative;
         margin-right: 0;
-        &.neo-dockl-not-expand,
-        &.neo-dockl-float.neo-dockl-expand {
+    }
+    &.neo-dockl-not-expand,
+    &.neo-dockl-expand.neo-dockl-float {
+        #dockLeft {
             background-color: unset;
             &::after {
                 content: "";
@@ -116,8 +118,10 @@
     #dockRight {
         position: relative;
         margin-left: 0;
-        &.neo-dockr-not-expand,
-        &.neo-dockr-float.neo-dockr-expand {
+    }
+    &.neo-dockr-not-expand,
+    &.neo-dockr-expand.neo-dockr-float {
+        #dockRight {
             &::after {
                 content: "";
                 position: absolute;
@@ -181,6 +185,11 @@
                     background-color: var(--_resize-hl);
                 }
             }
+        }
+    }
+    &.neo-dockr-expand.neo-dockr-not-float {
+        .layout__center + .layout__resize {
+            display: block !important;
         }
     }
     .config__panel .config__side,

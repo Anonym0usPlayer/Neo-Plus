@@ -14,36 +14,36 @@ function debounce(cb: () => void, delay: number): () => void {
 function updateDockExpandClass(): void {
   const dockLeft = document.querySelector<HTMLElement>('#dockLeft');
   const dockRight = document.querySelector<HTMLElement>('#dockRight');
+  const body = document.body;
   if (dockLeft) {
     if (!dockLeft.querySelector('.dock__item--active')) {
-      dockLeft.classList.add('neo-dockl-not-expand');
-      dockLeft.classList.remove('neo-dockl-expand');
+      body.classList.add('neo-dockl-not-expand');
+      body.classList.remove('neo-dockl-expand');
     } else {
-      dockLeft.classList.remove('neo-dockl-not-expand');
-      dockLeft.classList.add('neo-dockl-expand');
+      body.classList.remove('neo-dockl-not-expand');
+      body.classList.add('neo-dockl-expand');
     }
   }
   if (dockRight) {
     if (!dockRight.querySelector('.dock__item--active')) {
-      dockRight.classList.add('neo-dockr-not-expand');
-      dockRight.classList.remove('neo-dockr-expand');
+      body.classList.add('neo-dockr-not-expand');
+      body.classList.remove('neo-dockr-expand');
     } else {
-      dockRight.classList.remove('neo-dockr-not-expand');
-      dockRight.classList.add('neo-dockr-expand');
+      body.classList.remove('neo-dockr-not-expand');
+      body.classList.add('neo-dockr-expand');
     }
   }
 }
 function updateDockFloatClass(): void {
-  const dockLeft = document.querySelector<HTMLElement>('#dockLeft');
-  const dockRight = document.querySelector<HTMLElement>('#dockRight');
   const dockl = document.querySelector<HTMLElement>('.layout__dockl');
   const dockr = document.querySelector<HTMLElement>('.layout__dockr');
-  if (dockLeft) {
-    dockLeft.classList.toggle('neo-dockl-float', dockl?.classList.contains('layout--float') ?? false);
-  }
-  if (dockRight) {
-    dockRight.classList.toggle('neo-dockr-float', dockr?.classList.contains('layout--float') ?? false);
-  }
+  const body = document.body;
+  const docklFloat = dockl?.classList.contains('layout--float') ?? false;
+  const dockrFloat = dockr?.classList.contains('layout--float') ?? false;
+  body.classList.toggle('neo-dockl-float', docklFloat);
+  body.classList.toggle('neo-dockl-not-float', !docklFloat);
+  body.classList.toggle('neo-dockr-float', dockrFloat);
+  body.classList.toggle('neo-dockr-not-float', !dockrFloat);
 }
 const _debouncedUpdate = debounce(() => {
   updateDockExpandClass();
@@ -114,9 +114,7 @@ export function destroyIde(): void {
     _fallbackTimer = null;
   }
   detachEvents();
-  document.querySelectorAll('#dockLeft, #dockRight').forEach((el) => {
-    el.classList.remove('neo-dockl-not-expand', 'neo-dockr-not-expand', 'neo-dockl-expand', 'neo-dockr-expand', 'neo-dockl-float', 'neo-dockr-float');
-  });
+  document.body.classList.remove('neo-dockl-not-expand', 'neo-dockr-not-expand', 'neo-dockl-expand', 'neo-dockr-expand', 'neo-dockl-float', 'neo-dockl-not-float', 'neo-dockr-float', 'neo-dockr-not-float');
   document.body.classList.remove('neo-ide-body');
   document.documentElement?.classList.remove('neo-ide');
 }
