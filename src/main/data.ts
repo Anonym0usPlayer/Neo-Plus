@@ -42,6 +42,7 @@ export interface Config {
   'colored-folders-style'?: 'partition' | 'simple';
   'colored-lists'?: boolean;
   'colored-headings'?: boolean;
+  'colorful-selection'?: boolean;
   'scroll-effect'?: boolean;
   'vertical-tabs'?: boolean;
   'vertical-tabs-mode'?: 'topLeftOnly' | 'all';

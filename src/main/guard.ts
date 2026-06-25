@@ -14,6 +14,7 @@ import { initPalette, destroyPalette } from '../palette/manager';
 import { initTexture, destroyTexture } from '../texture/manager';
 import { initColoredLists, destroyColoredLists } from '../element/coloredlists';
 import { initColoredHeadings, destroyColoredHeadings } from '../element/coloredheadings';
+import { initColorfulSelection, destroyColorfulSelection } from '../element/colorfulselection';
 import { initSmoothCaret, destroySmoothCaret } from '../visual/smoothcaret';
 import { initColoredFolders, destroyColoredFolders } from '../visual/coloredfolders';
 import { initMulticolumnSlashMenu, destroyMulticolumnSlashMenu } from '../visual/multicolumnslashmenu';
@@ -111,6 +112,7 @@ export class NeoPlusController {
     initTexture();
     initColoredLists();
     initColoredHeadings();
+    initColorfulSelection();
     initSmoothCaret();
     initColoredFolders();
     initMulticolumnSlashMenu();
@@ -142,6 +144,7 @@ export class NeoPlusController {
     destroyTexture();
     destroyColoredLists();
     destroyColoredHeadings();
+    destroyColorfulSelection();
     destroySmoothCaret();
     destroyColoredFolders();
     destroyMulticolumnSlashMenu();

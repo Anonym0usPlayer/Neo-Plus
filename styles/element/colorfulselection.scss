@@ -1,0 +1,4 @@
+@use "manager" as *;
+.neo-element-colorfulselection {
+    @include element-common('[data-id="neo-colorful-selection-button"]', '[data-id="neo-element-button"]');
+}

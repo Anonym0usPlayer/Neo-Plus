@@ -18,6 +18,7 @@ import { onMulticolumnSlashMenuClick } from '../visual/multicolumnslashmenu';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onPinnedToolbarClick, createPinnedToolbarLabelHTML } from '../extension/pinnedtoolbar';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
+import { onColorfulSelectionClick } from '../element/colorfulselection';
 export function buildMenu(
   onClose?: () => void,
 ): Menu {
@@ -237,6 +238,15 @@ export function buildMenu(
         label: i18n.coloredHeadings,
         click: () => {
           onColoredHeadingsClick();
+          return true;
+        },
+      },
+      {
+        id: 'neo-colorful-selection-button',
+        icon: 'iconNeoColorfulSelection',
+        label: i18n.colorfulSelection,
+        click: () => {
+          onColorfulSelectionClick();
           return true;
         },
       },
