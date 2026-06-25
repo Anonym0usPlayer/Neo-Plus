@@ -37,7 +37,9 @@
         background-color: var(--b3-theme-background);
     }
     .neo-ide-body.body--toolbar-hide {
-        .layout__dockl {
+        .layout__dockl,
+        .layout__dockr,
+        .layout__dockb {
             background-color: var(--b3-theme-background);
             box-shadow: unset;
             .neo-haswnd {
@@ -46,10 +48,13 @@
                 }
             }
         }
-        #dockLeft {
+        #dockLeft,
+        #dockRight {
             background-color: var(--b3-theme-background);
         }
-        .layout__dockl + .layout__resize {
+        .layout__dockl + .layout__resize,
+        .layout__center + .layout__resize,
+        .layout:not(.layout__center) > .layout__resize {
             &::after {
                 background-color: var(--b3-border-color-trans);
             }
