@@ -1,27 +1,27 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
-const STYLE_ID = 'neo-colorful-selection';
+const styleId = 'neo-colorful-selection-style';
 const selectionCSS = `
 :root {
     ::selection {
         color: currentColor;
-        background-color: oklch(from currentColor l c h / 0.28);
+        background-color: oklch(from currentColor l c h / 0.2);
     }
     .hljs ::selection {
         color: currentColor;
-        background-color: oklch(from currentColor l c h / 0.28);
+        background-color: oklch(from currentColor l c h / 0.2);
     }
 }
 `;
 function injectSelectionStyle(): void {
-  if (document.getElementById(STYLE_ID)) return;
+  if (document.getElementById(styleId)) return;
   const style = document.createElement('style');
-  style.id = STYLE_ID;
+  style.id = styleId;
   style.textContent = selectionCSS;
   document.head.appendChild(style);
 }
 function removeSelectionStyle(): void {
-  const style = document.getElementById(STYLE_ID);
+  const style = document.getElementById(styleId);
   if (style) style.remove();
 }
 export function initColorfulSelection(): void {
