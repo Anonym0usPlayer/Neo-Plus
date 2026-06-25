@@ -90,6 +90,7 @@
         transition-behavior: allow-discrete;
         position: relative;
         margin-right: 0;
+        margin-left: 0;
         & > .dock__items:first-child {
             .dock__item:first-child {
                 margin-top: var(--_ide-dockitem-margin-top);
@@ -108,10 +109,10 @@
             &::after {
                 content: "";
                 position: absolute;
-                top: 48px;
+                top: 42px;
                 right: 0;
                 width: 1px;
-                height: calc(100% - 48px);
+                height: calc(100% - 42px);
                 background-color: var(--b3-border-color-trans);
                 pointer-events: none;
                 z-index: 1;
@@ -125,10 +126,10 @@
             &::after {
                 content: "";
                 position: absolute;
-                top: 48px;
+                top: 42px;
                 left: 0;
                 width: 1px;
-                height: calc(100% - 48px);
+                height: calc(100% - 42px);
                 background-color: var(--b3-border-color-trans);
                 pointer-events: none;
                 z-index: 1;
