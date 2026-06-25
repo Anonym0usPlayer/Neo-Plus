@@ -8,8 +8,8 @@
         opacity: 0.38;
     }
 }
-.neo-visual-verticaltabs {
-    @include visual-common('[data-id="neo-vertical-tabs-button"]', '[data-id="neo-visual-button"]');
+.neo-verticaltabs {
+    @include verticaltabs-common('[data-id="neo-vertical-tabs-button"]');
     body:not(.body--toolbar-hide) {
         .neo-verticaltabs-wnd {
             flex-direction: row;
@@ -19,7 +19,7 @@
                     background-color: var(--b3-border-color-trans);
                 }
             }
-            & > .fn__flex:first-child {
+            & > .fn__flex:first-child:not(.fn__none) {
                 flex-direction: column;
                 height: 100%;
                 animation: none;

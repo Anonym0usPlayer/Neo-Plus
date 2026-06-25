@@ -20,7 +20,7 @@ import { initColoredFolders, destroyColoredFolders } from '../visual/coloredfold
 import { initMulticolumnSlashMenu, destroyMulticolumnSlashMenu } from '../visual/multicolumnslashmenu';
 import { initScrollEffect, destroyScrollEffect } from '../visual/scrolleffect';
 import { initFluidCursor, destroyFluidCursor } from '../visual/fluidcursor';
-import { initVerticalTabs, destroyVerticalTabs } from '../visual/verticaltabs';
+import { initVerticalTabs, destroyVerticalTabs } from '../verticaltabs/verticaltabs';
 import { initSuperFusion, destroySuperFusion } from '../superfusion/superfusion';
 import { initIde, destroyIde } from '../ide/ide';
 import { initSidebarMute, destroySidebarMute } from '../visual/sidebarmute';

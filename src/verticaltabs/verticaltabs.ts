@@ -207,7 +207,7 @@ export function showVerticalTabsSettings(): void {
         topLeftOnlyLastWidth = null;
         currentMode = newMode;
         saveConfig({ 'vertical-tabs-mode': newMode } as Partial<Config>);
-        if (document.documentElement.classList.contains('neo-visual-verticaltabs')) {
+        if (document.documentElement.classList.contains('neo-verticaltabs')) {
           doUpdate();
         }
       }
@@ -223,7 +223,7 @@ export function initVerticalTabs(): void {
   (window as any).__neoOpenVerticalTabsSettings = showVerticalTabsSettings;
   loadConfig().then((config) => {
     if (config['vertical-tabs'] === true) {
-      document.documentElement.classList.add('neo-visual-verticaltabs');
+      document.documentElement.classList.add('neo-verticaltabs');
       destroyed = false;
       topLeftOnlyLastWidth = null;
       currentMode = config['vertical-tabs-mode'] || 'topLeftOnly';
@@ -236,12 +236,12 @@ export function initVerticalTabs(): void {
 export function onVerticalTabsClick(): void {
   if (isMobile()) return;
   const htmlEl = document.documentElement;
-  const isActive = htmlEl.classList.contains('neo-visual-verticaltabs');
+  const isActive = htmlEl.classList.contains('neo-verticaltabs');
   if (isActive) {
     destroyVerticalTabs();
     saveConfig({ 'vertical-tabs': false } as Partial<Config>);
   } else {
-    htmlEl.classList.add('neo-visual-verticaltabs');
+    htmlEl.classList.add('neo-verticaltabs');
     saveConfig({ 'vertical-tabs': true } as Partial<Config>);
     destroyed = false;
     topLeftOnlyLastWidth = null;
@@ -254,6 +254,6 @@ export function destroyVerticalTabs(): void {
   destroyed = true;
   _fetchListener.detach();
   destroyResizeHandle();
-  document.documentElement?.classList.remove('neo-visual-verticaltabs');
+  document.documentElement?.classList.remove('neo-verticaltabs');
   clearVerticalTabsLayout();
 }

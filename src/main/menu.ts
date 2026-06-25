@@ -10,7 +10,7 @@ import { onFocusBlockIndicatorClick, createFocusBlockIndicatorLabelHTML } from '
 import { onScrollEffectClick } from '../visual/scrolleffect';
 import { onIdeClick } from '../ide/ide';
 import { onColoredFoldersClick, createColoredFoldersLabelHTML } from '../visual/coloredfolders';
-import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../visual/verticaltabs';
+import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../verticaltabs/verticaltabs';
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
 import { onSuperFusionClick } from '../superfusion/superfusion';
 import { onSidebarMuteClick } from '../visual/sidebarmute';
@@ -133,6 +133,15 @@ export function buildMenu(
     },
   });
   menu.addItem({
+    id: 'neo-vertical-tabs-button',
+    icon: 'iconNeoVerticalTabs',
+    label: createVerticalTabsLabelHTML(i18n),
+    click: () => {
+      onVerticalTabsClick();
+      return true;
+    },
+  });
+  menu.addItem({
     id: 'neo-super-fusion-button',
     icon: 'iconNeoSuperFusion',
     label: i18n.superFusion,
@@ -147,15 +156,6 @@ export function buildMenu(
     icon: 'iconNeoLayout',
     label: i18n.visual,
     submenu: [
-      {
-        id: 'neo-vertical-tabs-button',
-        icon: 'iconNeoVerticalTabs',
-        label: createVerticalTabsLabelHTML(i18n),
-        click: () => {
-          onVerticalTabsClick();
-          return true;
-        },
-      },
       {
         id: 'neo-sidebar-mute-button',
         icon: 'iconNeoSidebarMute',

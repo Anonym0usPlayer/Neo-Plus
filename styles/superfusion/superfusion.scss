@@ -110,10 +110,10 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
             }
         }
     }
-    &:not(.neo-visual-verticaltabs) body:not(.body--toolbar-hide),
+    &:not(.neo-verticaltabs) body:not(.body--toolbar-hide),
     .body--window,
     .neo-ide-body.body--toolbar-hide {
-        .layout__center [data-type="wnd"] > .fn__flex:first-child {
+        .layout__center [data-type="wnd"] > .fn__flex:first-child:not(.fn__none) {
             background-color: transparent;
             z-index: 3;
             margin-bottom: calc($tab-height * -1);
