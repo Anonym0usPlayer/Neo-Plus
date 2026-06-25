@@ -13,7 +13,9 @@
             &:not(.neo-status-hidden) {
                 animation: neo-status-expand 0.45s var(--neo-ease-spring-3);
                 @include status-child {
-                    animation: neo-status-content 0.85s var(--neo-ease-spring-5);
+                    animation: neo-status-content 0.75s var(--neo-ease-spring-5) forwards;
+                    animation-delay: 0.1s;
+                    opacity: 0;
                 }
             }
             &.neo-status-hidden {
@@ -40,7 +42,9 @@
                         border-radius: 50%;
                         transform: translate(-50%, -50%);
                         box-shadow: -8px 0 0 0 var(--b3-theme-on-surface-light), 8px 0 0 0 var(--b3-theme-on-surface-light);
-                        animation: neo-status-dot 0.85s var(--neo-ease-spring-5);
+                        animation: neo-status-dot 0.75s var(--neo-ease-spring-5) forwards;
+                        animation-delay: 0.1s;
+                        opacity: 0;
                     }
                 }
                 &:hover {
@@ -49,7 +53,9 @@
                         opacity: 1;
                         visibility: visible;
                         pointer-events: auto;
-                        animation: neo-status-content 0.85s var(--neo-ease-spring-5);
+                        animation: neo-status-content 0.75s var(--neo-ease-spring-5) forwards;
+                        animation-delay: 0.1s;
+                        opacity: 0;
                     }
                 }
             }
@@ -58,7 +64,7 @@
 }
 @keyframes neo-status-expand {
     from {
-        transform: scaleX(0.4) scaleY(0.5769);
+        transform: scaleX(0.45) scaleY(0.5769);
     }
     to {
         transform: scaleX(1) scaleY(1);
@@ -74,17 +80,21 @@
 }
 @keyframes neo-status-dot {
     from {
-        transform: translate(-50%, -50%) translateX(-15px);
+        transform: translate(-50%, -50%) translateX(-20px);
+        opacity: 0;
     }
     to {
         transform: translate(-50%, -50%) translateX(0);
+        opacity: 1;
     }
 }
 @keyframes neo-status-content {
     from {
-        transform: translateX(55px);
+        transform: translateX(45px);
+        opacity: 0;
     }
     to {
         transform: translateX(0);
+        opacity: 1;
     }
 }

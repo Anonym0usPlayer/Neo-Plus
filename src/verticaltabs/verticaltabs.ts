@@ -215,6 +215,13 @@ export function showVerticalTabsSettings(): void {
     dialog.destroy();
   });
 }
+function withViewTransition(callback: () => void): void {
+  if (document.startViewTransition) {
+    document.startViewTransition(callback);
+  } else {
+    callback();
+  }
+}
 const _fetchListener = fetchListener();
 _fetchListener.on('setUILayout', () => { doUpdate(); });
 export { createVerticalTabsLabelHTML };
@@ -237,18 +244,20 @@ export function onVerticalTabsClick(): void {
   if (isMobile()) return;
   const htmlEl = document.documentElement;
   const isActive = htmlEl.classList.contains('neo-verticaltabs');
-  if (isActive) {
-    destroyVerticalTabs();
-    saveConfig({ 'vertical-tabs': false } as Partial<Config>);
-  } else {
-    htmlEl.classList.add('neo-verticaltabs');
-    saveConfig({ 'vertical-tabs': true } as Partial<Config>);
-    destroyed = false;
-    topLeftOnlyLastWidth = null;
-    initResizeHandle();
-    _fetchListener.attach();
-    doUpdate();
-  }
+  withViewTransition(() => {
+    if (isActive) {
+      destroyVerticalTabs();
+      saveConfig({ 'vertical-tabs': false } as Partial<Config>);
+    } else {
+      htmlEl.classList.add('neo-verticaltabs');
+      saveConfig({ 'vertical-tabs': true } as Partial<Config>);
+      destroyed = false;
+      topLeftOnlyLastWidth = null;
+      initResizeHandle();
+      _fetchListener.attach();
+      doUpdate();
+    }
+  });
 }
 export function destroyVerticalTabs(): void {
   destroyed = true;

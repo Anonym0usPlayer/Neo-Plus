@@ -1,5 +1,12 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
+function withViewTransition(callback: () => void): void {
+  if (document.startViewTransition) {
+    document.startViewTransition(callback);
+  } else {
+    callback();
+  }
+}
 export function initScrollEffect(): void {
   loadConfig().then((config) => {
     if (config['scroll-effect'] === true) {
@@ -10,13 +17,15 @@ export function initScrollEffect(): void {
 export function onScrollEffectClick(): void {
   const htmlEl = document.documentElement;
   const isActive = htmlEl.classList.contains('neo-visual-scrolleffect');
-  if (isActive) {
-    destroyScrollEffect();
-    saveConfig({ 'scroll-effect': false } as Partial<Config>);
-  } else {
-    htmlEl.classList.add('neo-visual-scrolleffect');
-    saveConfig({ 'scroll-effect': true } as Partial<Config>);
-  }
+  withViewTransition(() => {
+    if (isActive) {
+      destroyScrollEffect();
+      saveConfig({ 'scroll-effect': false } as Partial<Config>);
+    } else {
+      htmlEl.classList.add('neo-visual-scrolleffect');
+      saveConfig({ 'scroll-effect': true } as Partial<Config>);
+    }
+  });
 }
 export function destroyScrollEffect(): void {
   document.documentElement?.classList.remove('neo-visual-scrolleffect');
