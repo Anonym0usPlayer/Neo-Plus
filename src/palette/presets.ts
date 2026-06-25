@@ -33,6 +33,7 @@ const presets: Preset[] = [
   { key: 'tundra', nameKey: 'colorSchemeTundra', mode: 'light' },
   { key: 'abyss', nameKey: 'colorSchemeAbyss', mode: 'dark' },
   { key: 'violet', nameKey: 'colorSchemeViolet', mode: 'light' },
+  { key: 'titaniumspace', nameKey: 'colorSchemeTitaniumspace', mode: 'all' },
 ];
 export function getPresetsByMode(mode: ThemeMode): Preset[] {
   return presets.filter((p) => p.mode === 'all' || p.mode === mode);
