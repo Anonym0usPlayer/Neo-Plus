@@ -133,20 +133,20 @@ export function buildMenu(
     },
   });
   menu.addItem({
-    id: 'neo-vertical-tabs-button',
-    icon: 'iconNeoVerticalTabs',
-    label: createVerticalTabsLabelHTML(i18n),
-    click: () => {
-      onVerticalTabsClick();
-      return true;
-    },
-  });
-  menu.addItem({
     id: 'neo-super-fusion-button',
     icon: 'iconNeoSuperFusion',
     label: i18n.superFusion,
     click: () => {
       onSuperFusionClick();
+      return true;
+    },
+  });
+  menu.addItem({
+    id: 'neo-vertical-tabs-button',
+    icon: 'iconNeoVerticalTabs',
+    label: createVerticalTabsLabelHTML(i18n),
+    click: () => {
+      onVerticalTabsClick();
       return true;
     },
   });
