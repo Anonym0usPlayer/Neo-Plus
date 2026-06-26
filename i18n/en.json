@@ -101,6 +101,7 @@
   "customimageResetPreset": "Reset to Default",
   "customimageDeletePreset": "Delete Preset",
   "customimageUpdatePreset": "Update Preset",
+  "customimageUpdateApply": "Update && Apply",
   "customimageSavePreset": "Save as New Preset",
   "customimageSavePresetTitle": "Save Current Params as New Preset",
   "customimagePresetName": "Preset Name",

@@ -238,11 +238,9 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   <span class="fn__space"></span>
   <button class="b3-button b3-button--remove" id="neo-customimage-delete-preset">${t(i18n, 'customimageDeletePreset')}</button>
   <span class="fn__space"></span>
-  <button class="b3-button b3-button--text" id="neo-customimage-update-preset">${t(i18n, 'customimageUpdatePreset')}</button>
-  <span class="fn__space"></span>
   <button class="b3-button b3-button--text" id="neo-customimage-save-preset">${t(i18n, 'customimageSavePreset')}</button>
   <span class="fn__space"></span>
-  <button class="b3-button b3-button--text" id="neo-customimage-confirm">${t(i18n, 'confirm')}</button>
+  <button class="b3-button b3-button--text" id="neo-customimage-update-preset">${t(i18n, 'customimageUpdateApply')}</button>
 </div>`;
 }
 export function showCustomImageSettings(): void {
@@ -345,10 +343,6 @@ export function showCustomImageSettings(): void {
     originalDestroy();
   };
   btn('#neo-customimage-cancel')?.addEventListener('click', () => dialog.destroy());
-  btn('#neo-customimage-confirm')?.addEventListener('click', () => {
-    btn('#neo-customimage-update-preset')?.click();
-    dialog.destroy();
-  });
   btn('#neo-customimage-delete-preset')?.addEventListener('click', async () => {
     if (!presetSelect) return;
     const name = presetSelect.value;
@@ -391,6 +385,7 @@ export function showCustomImageSettings(): void {
     const preset = buildPresetFromDom();
     await savePresetToConfig(preset, name);
     showMessage((plugin.i18n.customimagePresetUpdated || '').replace('${name}', name), 3000);
+    dialog.destroy();
   });
   btn('#neo-customimage-save-preset')?.addEventListener('click', () => {
     const pd = new Dialog({

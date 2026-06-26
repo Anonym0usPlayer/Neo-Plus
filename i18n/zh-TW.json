@@ -100,6 +100,7 @@
   "customimageResetPreset": "恢復為預設參數",
   "customimageDeletePreset": "刪除此方案",
   "customimageUpdatePreset": "更新此方案",
+  "customimageUpdateApply": "更新並應用",
   "customimageSavePreset": "儲存為新方案",
   "customimageSavePresetTitle": "儲存目前參數為新方案",
   "customimagePresetName": "方案名稱",
