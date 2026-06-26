@@ -8,6 +8,16 @@ $header-height: 40vh;
 $header-parallax: 5vh;
 $text-shadow: 0 0 0.5px var(--b3-theme-background);
 $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
+.neo-mode-light {
+    --_superfusion-frosted-glass-filter: blur(3px) brightness(1.1);
+    --_superfusion-frosted-glass-strip: 0 1px 0 0 hsla(0, 0%, 100%, 0.25), 0 0 10px 1px hsla(0, 0%, 0%, 0.08);
+    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) blur(1px) brightness(1.1) saturate(2);
+}
+.neo-mode-dark {
+    --_superfusion-frosted-glass-filter: blur(3px) brightness(0.9);
+    --_superfusion-frosted-glass-strip: 0 1px 0 0 hsla(0, 0%, 100%, 0.12), 0 0 10px 1px hsla(0, 0%, 0%, 0.25);
+    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) blur(1px) brightness(0.9) saturate(2);
+}
 @mixin scrim-gradient(
     $color: var(--b3-theme-background),
     $direction: to bottom,
@@ -40,6 +50,13 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
         rgb(from $color r g b / 0.002) 98.2%,
         rgb(from $color r g b / 0) 100%
         );
+    }
+}
+@mixin superfusion-tab-fusion-condition {
+    &:not(.neo-verticaltabs) body:not(.body--toolbar-hide),
+    .body--window,
+    .neo-ide-body.body--toolbar-hide {
+        @content;
     }
 }
 .neo-visual-superfusion {
@@ -85,7 +102,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
                     pointer-events: none;
                 }
                 .protyle-icons {
-                    top: $breadcrumb-height;
+                    top: calc($breadcrumb-height + $breadcrumb-offset);
                 }
                 &.fn__none + .protyle-background__ia {
                     padding-top: calc($breadcrumb-height + $breadcrumb-offset);
@@ -110,9 +127,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
             }
         }
     }
-    &:not(.neo-verticaltabs) body:not(.body--toolbar-hide),
-    .body--window,
-    .neo-ide-body.body--toolbar-hide {
+    @include superfusion-tab-fusion-condition {
         .layout__center [data-type="wnd"] > .fn__flex:first-child:not(.fn__none) {
             background-color: transparent;
             z-index: 3;
@@ -130,20 +145,6 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
             }
             & + .layout-tab-container {
                 & > .protyle {
-                    &::after {
-                        content: "";
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: calc($tab-height * 3);
-                        pointer-events: none;
-                        backdrop-filter: blur(3px);
-                        background-color: transparent;
-                        mask: linear-gradient(black 42px, transparent);
-                        @include scrim-gradient(var(--b3-theme-background), to bottom, adaptive);
-                        z-index: 0;
-                    }
                     & > .protyle-breadcrumb {
                         padding-top: calc($breadcrumb-height + $breadcrumb-offset + $tab-height - $breadcrumb-offset);
                     }
@@ -154,7 +155,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
                         }
                         .protyle-background__img {
                             .protyle-icons {
-                                top: calc($breadcrumb-height + $tab-height);
+                                top: calc($breadcrumb-height + $tab-height + $breadcrumb-offset);
                             }
                             &.fn__none + .protyle-background__ia {
                                 padding-top: calc($breadcrumb-height + $breadcrumb-offset + $tab-height + $breadcrumb-offset);
@@ -164,6 +165,86 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
                 }
                 & > .fn__flex-1:not(.protyle) {
                     margin-top: $tab-height;
+                }
+            }
+        }
+    }
+    @include superfusion-tab-fusion-condition {
+        // 渐进模糊
+        &.neo-visual-superfusion-blur {
+            .layout__center [data-type="wnd"] .layout-tab-container > .protyle {
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: calc($tab-height * 3);
+                    pointer-events: none;
+                    backdrop-filter: blur(3px);
+                    background-color: transparent;
+                    mask: linear-gradient(black 42px, transparent);
+                    @include scrim-gradient(var(--b3-theme-background), to bottom, adaptive);
+                    z-index: 2;
+                }
+            }
+        }
+        // 毛玻璃
+        &.neo-visual-superfusion-frosted-glass {
+            .layout__center [data-type="wnd"] .layout-tab-container > .protyle {
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 80px;
+                    pointer-events: none;
+                    backdrop-filter: var(--_superfusion-frosted-glass-filter);
+                    background-color: oklch(from var(--b3-theme-background) l c h / 0.5);
+                    box-shadow: var(--_superfusion-frosted-glass-strip);
+                    z-index: 2;
+                }
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 160px;
+                    pointer-events: none;
+                    backdrop-filter: blur(40px) saturate(3.5);
+                    mask: linear-gradient(to bottom, transparent, black 80px, black 80px, black 81px, transparent 81px, transparent 160px);
+                }
+                & > .protyle-breadcrumb {
+                    .protyle-breadcrumb__bar {
+                        background-color: transparent;
+                        backdrop-filter: unset;
+                    }
+                }
+            }
+        }
+        // 液态玻璃
+        &.neo-visual-superfusion-liquid-glass {
+            .layout__center [data-type="wnd"] .layout-tab-container > .protyle {
+                &::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 80px;
+                    pointer-events: none;
+                    backdrop-filter: var(--_superfusion-liquid-glass-filter);
+                    background-color: oklch(from var(--b3-theme-background) l c h / 0.5);
+                    box-shadow: var(--_superfusion-frosted-glass-strip);
+                    z-index: 2;
+                }
+                & > .protyle-breadcrumb {
+                    .protyle-breadcrumb__bar {
+                        background-color: transparent;
+                        backdrop-filter: unset;
+                    }
                 }
             }
         }

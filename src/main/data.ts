@@ -50,6 +50,7 @@ export interface Config {
   'immersive-typewriter'?: boolean;
   'immersive-highlight'?: boolean;
   'super-fusion'?: boolean;
+  'super-fusion-mode'?: 'blur' | 'frostedGlass' | 'liquidGlass';
   'pinned-toolbar'?: boolean;
   'pinned-toolbar-position'?: 'top' | 'bottom' | 'left' | 'right';
   'pinned-toolbar-liquid-glass'?: boolean;

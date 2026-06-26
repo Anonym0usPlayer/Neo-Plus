@@ -12,7 +12,7 @@ import { onIdeClick } from '../ide/ide';
 import { onColoredFoldersClick, createColoredFoldersLabelHTML } from '../visual/coloredfolders';
 import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../verticaltabs/verticaltabs';
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
-import { onSuperFusionClick } from '../superfusion/superfusion';
+import { onSuperFusionClick, createSuperFusionLabelHTML } from '../superfusion/superfusion';
 import { onSidebarMuteClick } from '../visual/sidebarmute';
 import { onMulticolumnSlashMenuClick } from '../visual/multicolumnslashmenu';
 import { onColoredListsClick } from '../element/coloredlists';
@@ -135,7 +135,7 @@ export function buildMenu(
   menu.addItem({
     id: 'neo-super-fusion-button',
     icon: 'iconNeoSuperFusion',
-    label: i18n.superFusion,
+    label: createSuperFusionLabelHTML(i18n),
     click: () => {
       onSuperFusionClick();
       return true;
