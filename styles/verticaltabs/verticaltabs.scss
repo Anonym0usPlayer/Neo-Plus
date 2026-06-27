@@ -1,9 +1,6 @@
 @use "manager" as *;
 @use "../utils" as *;
 .b3-menu__item[data-id="neo-vertical-tabs-button"] {
-    .neo-mobile & {
-        display: none;        
-    }
     .body--toolbar-hide & {
         opacity: 0.38;
     }

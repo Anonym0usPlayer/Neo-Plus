@@ -1,3 +1,4 @@
+import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { Dialog } from 'siyuan';
@@ -75,6 +76,7 @@ export function showSuperFusionSettings(): void {
   });
 }
 export function initSuperFusion(): void {
+  if (isMobile()) return;
   (window as any).__neoOpenSuperFusionSettings = showSuperFusionSettings;
   loadConfig().then((config) => {
     superFusionMode = config['super-fusion-mode'] || 'blur';
@@ -85,6 +87,7 @@ export function initSuperFusion(): void {
   });
 }
 export function onSuperFusionClick(): void {
+  if (isMobile()) return;
   const htmlEl = document.documentElement;
   const isActive = htmlEl.classList.contains('neo-visual-superfusion');
   withViewTransition(() => {

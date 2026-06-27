@@ -1,8 +1,5 @@
 @use "manager" as *;
 .b3-menu__item[data-id="neo-ide-button"] {
-    .neo-mobile & {
-        display: none;      
-    }
     body:not(.body--toolbar-hide) & {
         opacity: 0.38;      
     }

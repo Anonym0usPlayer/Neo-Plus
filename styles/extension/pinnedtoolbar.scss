@@ -1,9 +1,4 @@
 @use "manager" as *;
-.b3-menu__item[data-id="neo-pinned-toolbar-button"] {
-    .neo-mobile & {
-        display: none;
-    }
-}
 .neo-extension-pinnedtoolbar {
     @include extension-common('[data-id="neo-pinned-toolbar-button"]', '[data-id="neo-extension-button"]');
     --_protyle-toolbar-top: 42px;

@@ -1,9 +1,4 @@
 @use "manager" as *;
-.b3-menu__item[data-id="neo-fluid-cursor-button"] {
-    .neo-mobile & {
-        display: none;
-    }
-}
 .neo-visual-fluid-cursor {
     @include visual-common('[data-id="neo-fluid-cursor-button"]', '[data-id="neo-visual-button"]');
 }

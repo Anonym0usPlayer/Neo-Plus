@@ -1,9 +1,4 @@
 @use "manager" as *;
-.b3-menu__item[data-id="neo-multicolumn-slash-menu-button"] {
-    .neo-mobile & {
-        display: none;
-    }
-}
 .neo-visual-multicolumnslashmenu {
     @include visual-common('[data-id="neo-multicolumn-slash-menu-button"]', '[data-id="neo-visual-button"]');
     @mixin multicol-menu($min-width, $column-width) {

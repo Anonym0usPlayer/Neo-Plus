@@ -13,6 +13,7 @@ import { onColoredFoldersClick, createColoredFoldersLabelHTML } from '../visual/
 import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../verticaltabs/verticaltabs';
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
 import { onSuperFusionClick, createSuperFusionLabelHTML } from '../superfusion/superfusion';
+import { isMobile } from '../modules/env';
 import { onSidebarMuteClick } from '../visual/sidebarmute';
 import { onMulticolumnSlashMenuClick } from '../visual/multicolumnslashmenu';
 import { onColoredListsClick } from '../element/coloredlists';
@@ -113,58 +114,64 @@ export function buildMenu(
       return true;
     },
   });
-  menu.addItem({
-    id: 'neo-highcontrast-button',
-    icon: 'iconNeoContrast',
-    label: i18n.highContrast,
-    click: () => {
-      onHighContrastClick();
-      return true;
-    },
-  });
-  menu.addSeparator();
-  menu.addItem({
-    id: 'neo-ide-button',
-    icon: 'iconNeoIde',
-    label: i18n.ide,
-    click: () => {
-      onIdeClick();
-      return true;
-    },
-  });
-  menu.addItem({
-    id: 'neo-super-fusion-button',
-    icon: 'iconNeoSuperFusion',
-    label: createSuperFusionLabelHTML(i18n),
-    click: () => {
-      onSuperFusionClick();
-      return true;
-    },
-  });
-  menu.addItem({
-    id: 'neo-vertical-tabs-button',
-    icon: 'iconNeoVerticalTabs',
-    label: createVerticalTabsLabelHTML(i18n),
-    click: () => {
-      onVerticalTabsClick();
-      return true;
-    },
-  });
+  if (!isMobile()) {
+    menu.addItem({
+      id: 'neo-highcontrast-button',
+      icon: 'iconNeoContrast',
+      label: i18n.highContrast,
+      click: () => {
+        onHighContrastClick();
+        return true;
+      },
+    });
+  }
+  if (!isMobile()) {
+    menu.addSeparator();
+    menu.addItem({
+      id: 'neo-ide-button',
+      icon: 'iconNeoIde',
+      label: i18n.ide,
+      click: () => {
+        onIdeClick();
+        return true;
+      },
+    });
+    menu.addItem({
+      id: 'neo-super-fusion-button',
+      icon: 'iconNeoSuperFusion',
+      label: createSuperFusionLabelHTML(i18n),
+      click: () => {
+        onSuperFusionClick();
+        return true;
+      },
+    });
+    menu.addItem({
+      id: 'neo-vertical-tabs-button',
+      icon: 'iconNeoVerticalTabs',
+      label: createVerticalTabsLabelHTML(i18n),
+      click: () => {
+        onVerticalTabsClick();
+        return true;
+      },
+    });
+  }
   menu.addSeparator();
   menu.addItem({
     id: 'neo-visual-button',
     icon: 'iconNeoLayout',
     label: i18n.visual,
     submenu: [
-      {
-        id: 'neo-sidebar-mute-button',
-        icon: 'iconNeoSidebarMute',
-        label: i18n.sidebarMute,
-        click: () => {
-          onSidebarMuteClick();
-          return true;
+      ...(!isMobile() ? [
+        {
+          id: 'neo-sidebar-mute-button',
+          icon: 'iconNeoSidebarMute',
+          label: i18n.sidebarMute,
+          click: () => {
+            onSidebarMuteClick();
+            return true;
+          },
         },
-      },
+      ] : []),
       {
         id: 'neo-scroll-effect-button',
         icon: 'iconNeoScrollEffect',
@@ -183,15 +190,17 @@ export function buildMenu(
           return true;
         },
       },
-      {
-        id: 'neo-multicolumn-slash-menu-button',
-        icon: 'iconNeoMulticolumnSlashMenu',
-        label: i18n.multicolumnSlashMenu,
-        click: () => {
-          onMulticolumnSlashMenuClick();
-          return true;
+      ...(!isMobile() ? [
+        {
+          id: 'neo-multicolumn-slash-menu-button',
+          icon: 'iconNeoMulticolumnSlashMenu',
+          label: i18n.multicolumnSlashMenu,
+          click: () => {
+            onMulticolumnSlashMenuClick();
+            return true;
+          },
         },
-      },
+      ] : []),
       {
         id: 'neo-smooth-caret-button',
         icon: 'iconNeoSmoothCaret',
@@ -201,15 +210,17 @@ export function buildMenu(
           return true;
         },
       },
-      {
-        id: 'neo-fluid-cursor-button',
-        icon: 'iconNeoFluidCursor',
-        label: i18n.fluidCursor,
-        click: () => {
-          onFluidCursorClick();
-          return true;
+      ...(!isMobile() ? [
+        {
+          id: 'neo-fluid-cursor-button',
+          icon: 'iconNeoFluidCursor',
+          label: i18n.fluidCursor,
+          click: () => {
+            onFluidCursorClick();
+            return true;
+          },
         },
-      },
+      ] : []),
     ],
   });
   menu.addItem({
@@ -284,15 +295,17 @@ export function buildMenu(
           return true;
         },
       },
-      {
-        id: 'neo-pinned-toolbar-button',
-        icon: 'iconNeoPinnedToolbar',
-        label: createPinnedToolbarLabelHTML(i18n),
-        click: () => {
-          onPinnedToolbarClick();
-          return true;
+      ...(!isMobile() ? [
+        {
+          id: 'neo-pinned-toolbar-button',
+          icon: 'iconNeoPinnedToolbar',
+          label: createPinnedToolbarLabelHTML(i18n),
+          click: () => {
+            onPinnedToolbarClick();
+            return true;
+          },
         },
-      },
+      ] : []),
     ],
   });
   initPaletteMenuEvents(i18n);

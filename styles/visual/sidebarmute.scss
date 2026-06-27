@@ -1,8 +1,5 @@
 @use "manager" as *;
 .b3-menu__item[data-id="neo-sidebar-mute-button"] {
-    .neo-mobile & {
-        display: none;      
-    }
     .neo-palette-highcontrast.neo-mode-light &,
     .neo-ide-body.body--toolbar-hide & {
         opacity: 0.38;      

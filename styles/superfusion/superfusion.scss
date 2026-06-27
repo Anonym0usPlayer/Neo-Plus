@@ -11,12 +11,12 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
 .neo-mode-light {
     --_superfusion-frosted-glass-filter: blur(3px) brightness(1.1);
     --_superfusion-frosted-glass-strip: 0 1px 0 0 hsla(0, 0%, 100%, 0.25), 0 0 10px 1px hsla(0, 0%, 0%, 0.08);
-    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) blur(1px) brightness(1.1) saturate(2);
+    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) blur(1px);
 }
 .neo-mode-dark {
     --_superfusion-frosted-glass-filter: blur(3px) brightness(0.9);
     --_superfusion-frosted-glass-strip: 0 1px 0 0 hsla(0, 0%, 100%, 0.12), 0 0 10px 1px hsla(0, 0%, 0%, 0.25);
-    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) blur(1px) brightness(0.9) saturate(2);
+    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) blur(1px);
 }
 @mixin scrim-gradient(
     $color: var(--b3-theme-background),
@@ -255,97 +255,5 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
         transform: scale(1.375) translateY($header-parallax);
         filter: blur(1px);
         opacity: 0;
-    }
-}
-// 手机端
-$mobile-toolbar-height: 50px;
-.neo-visual-superfusion {
-    .neo-mobile {
-        .protyle-background__img {
-            animation: none !important;
-        }
-        .b3-menu--fullscreen {
-            .b3-menu__title {
-                margin-bottom: calc($mobile-toolbar-height * -1);
-                backdrop-filter: blur(6px);
-                z-index: 1;
-                height: $mobile-toolbar-height;
-                @supports (background: paint(id)) {
-                    backdrop-filter: blur(1px) url(#neo-mobile-toolbar-liquid-glass);
-                }
-                .b3-menu__icon {
-                    filter: $svg-shadow; 
-                }
-                .b3-menu__label {
-                    text-shadow: $text-shadow;
-                }
-            }
-            .b3-menu__items {
-                padding-top: $mobile-toolbar-height;
-            }
-        }
-        & > .toolbar {
-            margin-bottom: calc($mobile-toolbar-height * -1);
-            background-color: transparent;
-            backdrop-filter: blur(6px);
-            z-index: 3;
-            height: $mobile-toolbar-height;
-            @supports (background: paint(id)) {
-                backdrop-filter: blur(1px) url(#neo-mobile-toolbar-liquid-glass);
-            }
-            .toolbar__icon {
-                filter: $svg-shadow; 
-            }
-            .toolbar__title,
-            .toolbar__text {
-                text-shadow: $text-shadow;
-            }
-        }
-        #editor {
-            padding-top: $breadcrumb-offset;
-            & > .protyle-breadcrumb {
-                margin-top: 0;
-                padding-top: calc($breadcrumb-height + $breadcrumb-offset * 2);
-                .protyle-breadcrumb__icon {
-                    text-shadow: $text-shadow;
-                }
-                .block__icon {
-                    svg {
-                        filter: $svg-shadow;
-                    }
-                }
-            }
-            & > .protyle-content {
-                margin-top: -84px;
-                padding-top: calc($breadcrumb-height + $mobile-toolbar-height);
-            }
-        }
-        #sidebar {
-            & > .toolbar:first-child {
-                height: $mobile-toolbar-height;
-            }
-        }
-        #model {
-            & > .toolbar--border {
-                margin-bottom: calc($mobile-toolbar-height * -1);
-                background-color: transparent;
-                backdrop-filter: blur(6px);
-                z-index: 99;
-                height: $mobile-toolbar-height;
-                @supports (background: paint(id)) {
-                    backdrop-filter: blur(1px) url(#neo-mobile-toolbar-liquid-glass);
-                }
-                .toolbar__icon {
-                    filter: $svg-shadow; 
-                }
-                .toolbar__title,
-                .toolbar__text {
-                    text-shadow: $text-shadow;
-                }
-            }
-            #modelMain {
-                padding: $mobile-toolbar-height 0 0 0;
-            }
-        }
     }
 }

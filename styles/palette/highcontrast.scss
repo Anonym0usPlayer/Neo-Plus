@@ -26,7 +26,7 @@
     &.neo-mode-light {
         --neo-highcontrast-bg: oklch(from var(--b3-base-color) min(0.65, l) calc(var(--neo-saturation, 2) * 0.03) h);
         --neo-highcontrast-on-bg: var(--b3-theme-background);
-        body:not(.neo-ide-body.body--toolbar-hide) {
+        body:not(.neo-ide-body.body--toolbar-hide):not(.neo-mobile) {
             &:not(.body--window) {
                 background-color: var(--neo-highcontrast-bg);
             }
