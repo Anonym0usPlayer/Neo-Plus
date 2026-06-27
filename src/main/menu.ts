@@ -8,7 +8,7 @@ import { onFluidCursorClick } from '../visual/fluidcursor';
 import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick, createFocusBlockIndicatorLabelHTML } from '../extension/focusblockindicator';
 import { onScrollEffectClick } from '../visual/scrolleffect';
-import { onIdeClick } from '../ide/ide';
+import { onIdeClick, createIdeLabelHTML } from '../ide/ide';
 import { onColoredFoldersClick, createColoredFoldersLabelHTML } from '../visual/coloredfolders';
 import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../verticaltabs/verticaltabs';
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
@@ -130,7 +130,7 @@ export function buildMenu(
     menu.addItem({
       id: 'neo-ide-button',
       icon: 'iconNeoIde',
-      label: i18n.ide,
+      label: createIdeLabelHTML(i18n),
       click: () => {
         onIdeClick();
         return true;

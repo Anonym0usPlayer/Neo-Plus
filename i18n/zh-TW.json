@@ -165,5 +165,11 @@
   "pinnedToolbarLiquidGlass": "液態玻璃",
   "pinnedToolbarLiquidGlassTip": "為釘住的工具欄添加液態玻璃效果",
   "sidebarMute": "側欄靜音",
-  "multicolumnSlashMenu": "多列斜槓選單"
+  "multicolumnSlashMenu": "多列斜槓選單",
+  "ide": "IDE風格",
+  "ideSettings": "配置IDE風格",
+  "ideDockpanelBg": "側欄背景",
+  "ideDockpanelBgTip": "設置IDE風格的側欄背景色",
+  "ideDockpanelBgSurface": "面板色",
+  "ideDockpanelBgBackground": "編輯器背景色"
 }

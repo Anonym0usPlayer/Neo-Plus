@@ -56,6 +56,7 @@ export interface Config {
   'pinned-toolbar-liquid-glass'?: boolean;
   'sidebar-mute'?: boolean;
   'ide'?: boolean;
+  'ide-dockpanel-bg'?: 'surface' | 'background';
   'multicolumn-slash-menu'?: boolean;
 }
 let configCache: Config = {};

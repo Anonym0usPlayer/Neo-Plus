@@ -10,6 +10,7 @@
 .neo-ide-body.body--toolbar-hide {
     --_ide-dockitem-margin-top: 8px;
     --_ide-dockitem-margin-bottom: 8px;
+    --_ide-dock-bg: var(--b3-theme-surface);
     .neo-visual-superfusion & {
         --_ide-dockitem-margin-top: 2px;
     }
@@ -42,7 +43,6 @@
     .layout__dockl,
     .layout__dockr,
     .layout__dockb {
-        --_ide-dock-bg: var(--b3-theme-surface);
         background-color: var(--_ide-dock-bg);
         .neo-haswnd {
             & > [data-type=wnd] {
@@ -54,7 +54,7 @@
         }
     }
     .layout__dockl {
-        box-shadow: 0 -42px 0 0 var(--b3-theme-surface);
+        box-shadow: 0 -42px 0 0 var(--_ide-dock-bg);
         margin-right: 0 !important;
         &.layout--float {
             top: 0;
@@ -64,7 +64,7 @@
         }
     }
     .layout__dockr {
-        box-shadow: 0 -42px 0 0 var(--b3-theme-surface);
+        box-shadow: 0 -42px 0 0 var(--_ide-dock-bg);
         margin-left: 0 !important;
         &.layout--float {
             top: 0;
@@ -82,7 +82,7 @@
     }
     #dockLeft,
     #dockRight {
-        background-color: var(--b3-theme-surface);
+        background-color: var(--_ide-dock-bg);
         transition: display 0.45s var(--neo-ease-spring-3), background-color 0.05s;
         transition-behavior: allow-discrete;
         position: relative;
@@ -134,18 +134,14 @@
         }
     }
     .layout__dockl + .layout__resize,
-    .layout__center + .layout__resize {
+    .layout__center + .layout__resize,
+    .layout:not(.layout__center) > .layout__resize {
         &::after {
             background-color: transparent;
         }
         &:hover::after {
             background-color: var(--_resize-hl);
         }
-    }
-    &:not(.body--window) .layout > .layout__resize {
-        &::after {
-            background-color: transparent;
-        }    
     }
     .layout__resize {
         &:not(.layout__resize--lr) {
@@ -183,6 +179,11 @@
             display: block !important;
         }
     }
+    &.neo-dockb-expand.neo-dockb-not-float {
+        .layout:not(.layout__center) > .layout__resize {
+            display: block !important;
+        }
+    }
     .config__panel .config__side,
     .config-bazaar__readme .item__side {
         margin: 1px 0 1px 1px;
@@ -202,6 +203,24 @@
             border-radius: 0;
             margin: 0;
             width: 100%;
+        }
+    }
+    &.neo-ide-dockpanel-bg-background {
+        --_ide-dock-bg: var(--b3-theme-background);
+        .layout__dockl + .layout__resize,
+        .layout__center + .layout__resize,
+        .layout:not(.layout__center) > .layout__resize {
+            &::after {
+                background-color: var(--b3-border-color-trans);
+            }
+            &:hover::after {
+                background-color: var(--_resize-hl);
+            }
+        }
+        .config__panel .config__side,
+        .config-bazaar__readme .item__side {
+            background-color: transparent !important;
+            border-right: 1px solid var(--b3-border-color-trans);
         }
     }
 }

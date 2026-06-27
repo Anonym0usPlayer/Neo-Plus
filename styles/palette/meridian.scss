@@ -36,36 +36,4 @@
     body {
         background-color: var(--b3-theme-background);
     }
-    .neo-ide-body.body--toolbar-hide {
-        .layout__dockl,
-        .layout__dockr,
-        .layout__dockb {
-            background-color: var(--b3-theme-background);
-            box-shadow: unset;
-            .neo-haswnd {
-                & > [data-type=wnd] {
-                    background-color: var(--b3-theme-background);
-                }
-            }
-        }
-        #dockLeft,
-        #dockRight {
-            background-color: var(--b3-theme-background);
-        }
-        .layout__dockl + .layout__resize,
-        .layout__center + .layout__resize,
-        .layout:not(.layout__center) > .layout__resize {
-            &::after {
-                background-color: var(--b3-border-color-trans);
-            }
-            &:hover::after {
-                background-color: var(--_resize-hl);
-            }
-        }
-        .config__panel .config__side,
-        .config-bazaar__readme .item__side {
-            background-color: transparent !important;
-            border-right: 1px solid var(--b3-border-color-trans);
-        }
-    }
 }
