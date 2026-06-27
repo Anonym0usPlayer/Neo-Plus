@@ -14,7 +14,7 @@
                 animation: neo-status-expand 0.45s var(--neo-ease-spring-3);
                 @include status-child {
                     animation: neo-status-content 0.75s var(--neo-ease-spring-5) forwards;
-                    animation-delay: 0.1s;
+                    animation-delay: 0.15s;
                     opacity: 0;
                 }
             }
@@ -54,7 +54,7 @@
                         visibility: visible;
                         pointer-events: auto;
                         animation: neo-status-content 0.75s var(--neo-ease-spring-5) forwards;
-                        animation-delay: 0.1s;
+                        animation-delay: 0.15s;
                         opacity: 0;
                     }
                 }

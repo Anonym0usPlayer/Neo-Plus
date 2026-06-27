@@ -6,14 +6,14 @@
     --_protyle-toolbar-bottom: 42px;
     --_protyle-toolbar-right: 42px;
     &.neo-visual-superfusion {
-        --_protyle-toolbar-top: 75px;
+        --_protyle-toolbar-top: 82px;
         &.neo-verticaltabs {
             --_protyle-toolbar-top: 42px;
         }
         .body--toolbar-hide {
             --_protyle-toolbar-top: 42px;
             &.neo-ide-body {
-                --_protyle-toolbar-top: 75px;
+                --_protyle-toolbar-top: 82px;
             }
         }
     }
