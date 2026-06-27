@@ -11,6 +11,7 @@
     --_ide-dockitem-margin-top: 8px;
     --_ide-dockitem-margin-bottom: 8px;
     --_ide-dock-bg: var(--b3-theme-surface);
+    --_ide-dock-resize-bg: transparent;
     .neo-visual-superfusion & {
         --_ide-dockitem-margin-top: 2px;
     }
@@ -137,7 +138,7 @@
     .layout__center + .layout__resize,
     .layout:not(.layout__center) > .layout__resize {
         &::after {
-            background-color: transparent;
+            background-color: var(--_ide-dock-resize-bg);
         }
         &:hover::after {
             background-color: var(--_resize-hl);
@@ -207,16 +208,7 @@
     }
     &.neo-ide-dockpanel-bg-background {
         --_ide-dock-bg: var(--b3-theme-background);
-        .layout__dockl + .layout__resize,
-        .layout__center + .layout__resize,
-        .layout:not(.layout__center) > .layout__resize {
-            &::after {
-                background-color: var(--b3-border-color-trans);
-            }
-            &:hover::after {
-                background-color: var(--_resize-hl);
-            }
-        }
+        --_ide-dock-resize-bg: var(--b3-border-color-trans);
         .config__panel .config__side,
         .config-bazaar__readme .item__side {
             background-color: transparent !important;

@@ -11,12 +11,12 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
 .neo-mode-light {
     --_superfusion-frosted-glass-filter: blur(3px) brightness(1.1);
     --_superfusion-frosted-glass-strip: 0 1px 0 0 hsla(0, 0%, 100%, 0.25), 0 0 10px 1px hsla(0, 0%, 0%, 0.08);
-    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) blur(1px);
+    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) saturate(1.8);
 }
 .neo-mode-dark {
     --_superfusion-frosted-glass-filter: blur(3px) brightness(0.9);
     --_superfusion-frosted-glass-strip: 0 1px 0 0 hsla(0, 0%, 100%, 0.12), 0 0 10px 1px hsla(0, 0%, 0%, 0.25);
-    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) blur(1px);
+    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) saturate(1.8);
 }
 @mixin scrim-gradient(
     $color: var(--b3-theme-background),
@@ -236,7 +236,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
                     height: 80px;
                     pointer-events: none;
                     backdrop-filter: var(--_superfusion-liquid-glass-filter);
-                    background-color: oklch(from var(--b3-theme-background) l c h / 0.5);
+                    background-color: oklch(from var(--b3-theme-background) l c h / 0.7);
                     box-shadow: var(--_superfusion-frosted-glass-strip);
                     z-index: 2;
                 }
