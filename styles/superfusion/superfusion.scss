@@ -9,12 +9,12 @@ $header-parallax: 5vh;
 $text-shadow: 0 0 0.5px var(--b3-theme-background);
 $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
 .neo-mode-light {
-    --_superfusion-frosted-glass-filter: blur(3px) brightness(1.1);
+    --_superfusion-frosted-glass-filter: blur(6px) brightness(1.05);
     --_superfusion-frosted-glass-strip: 0 1px 0 0 hsla(0, 0%, 100%, 0.25), 0 0 10px 1px hsla(0, 0%, 0%, 0.08);
     --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) saturate(1.8);
 }
 .neo-mode-dark {
-    --_superfusion-frosted-glass-filter: blur(3px) brightness(0.9);
+    --_superfusion-frosted-glass-filter: blur(6px) brightness(0.9);
     --_superfusion-frosted-glass-strip: 0 1px 0 0 hsla(0, 0%, 100%, 0.12), 0 0 10px 1px hsla(0, 0%, 0%, 0.25);
     --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) saturate(1.8);
 }
@@ -60,7 +60,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
     }
 }
 .neo-visual-superfusion {
-    @include superfusion-common('[data-id="neo-super-fusion-button"]', '[data-id="neo-visual-button"]');
+    @include superfusion-common('[data-id="neo-super-fusion-button"]');
     .protyle {
         & > .protyle-breadcrumb {
             margin-top: calc($breadcrumb-height * -1);
@@ -214,7 +214,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
                     height: 160px;
                     pointer-events: none;
                     backdrop-filter: blur(40px) saturate(3.5);
-                    mask: linear-gradient(to bottom, transparent, black 80px, black 80px, black 81px, transparent 81px, transparent 160px);
+                    mask: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.7) 80px, black 80px, black 81px, transparent 81px, transparent 160px);
                 }
                 & > .protyle-breadcrumb {
                     .protyle-breadcrumb__bar {

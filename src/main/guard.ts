@@ -23,7 +23,7 @@ import { initFluidCursor, destroyFluidCursor } from '../visual/fluidcursor';
 import { initVerticalTabs, destroyVerticalTabs } from '../verticaltabs/verticaltabs';
 import { initSuperFusion, destroySuperFusion } from '../superfusion/superfusion';
 import { initIde, destroyIde } from '../ide/ide';
-import { initSidebarMute, destroySidebarMute } from '../visual/sidebarmute';
+import { initSidebarMute, destroySidebarMute } from '../sidebarmute/sidebarmute';
 import { initListBulletLine, destroyListBulletLine } from '../extension/listbulletline';
 import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../extension/focusblockindicator';
 import { initImmersiveMode, destroyImmersiveMode } from '../extension/immersivemode';

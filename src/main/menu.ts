@@ -8,13 +8,13 @@ import { onFluidCursorClick } from '../visual/fluidcursor';
 import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick, createFocusBlockIndicatorLabelHTML } from '../extension/focusblockindicator';
 import { onScrollEffectClick } from '../visual/scrolleffect';
-import { onIdeClick, createIdeLabelHTML } from '../ide/ide';
+import { onIdeClick } from '../ide/ide';
 import { onColoredFoldersClick, createColoredFoldersLabelHTML } from '../visual/coloredfolders';
 import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../verticaltabs/verticaltabs';
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
 import { onSuperFusionClick, createSuperFusionLabelHTML } from '../superfusion/superfusion';
 import { isMobile } from '../modules/env';
-import { onSidebarMuteClick } from '../visual/sidebarmute';
+import { onSidebarMuteClick } from '../sidebarmute/sidebarmute';
 import { onMulticolumnSlashMenuClick } from '../visual/multicolumnslashmenu';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onPinnedToolbarClick, createPinnedToolbarLabelHTML } from '../extension/pinnedtoolbar';
@@ -130,7 +130,7 @@ export function buildMenu(
     menu.addItem({
       id: 'neo-ide-button',
       icon: 'iconNeoIde',
-      label: createIdeLabelHTML(i18n),
+      label: i18n.ide,
       click: () => {
         onIdeClick();
         return true;
@@ -142,6 +142,15 @@ export function buildMenu(
       label: createSuperFusionLabelHTML(i18n),
       click: () => {
         onSuperFusionClick();
+        return true;
+      },
+    });
+    menu.addItem({
+      id: 'neo-sidebar-mute-button',
+      icon: 'iconNeoSidebarMute',
+      label: i18n.sidebarMute,
+      click: () => {
+        onSidebarMuteClick();
         return true;
       },
     });
@@ -161,17 +170,6 @@ export function buildMenu(
     icon: 'iconNeoLayout',
     label: i18n.visual,
     submenu: [
-      ...(!isMobile() ? [
-        {
-          id: 'neo-sidebar-mute-button',
-          icon: 'iconNeoSidebarMute',
-          label: i18n.sidebarMute,
-          click: () => {
-            onSidebarMuteClick();
-            return true;
-          },
-        },
-      ] : []),
       {
         id: 'neo-scroll-effect-button',
         icon: 'iconNeoScrollEffect',

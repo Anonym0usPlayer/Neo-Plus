@@ -411,12 +411,12 @@ export function showCustomImageSettings(): void {
     const name = presetSelect.value;
     if (!name) return;
     try {
-      const cfg = await loadConfig();
-      const preset = getPreset(cfg, name);
       const currentKey = getCurrentPresetKey();
       const patch: Record<string, any> = { [currentKey]: name };
       await saveConfig(patch as Partial<Config>);
-      populateDialog(cfg, presetSelect, fieldDom, plugin.i18n);
+      const updatedCfg = await loadConfig();
+      const preset = getPreset(updatedCfg, name);
+      populateDialog(updatedCfg, presetSelect, fieldDom, plugin.i18n);
       applyCustomImageCss(preset);
     } catch {}
   });
@@ -439,7 +439,11 @@ function populateDialog(
         presetSelect.appendChild(o);
       }
     });
-    if (cpk && Array.from(presetSelect.options).some(o => o.value === cpk)) presetSelect.value = cpk;
+    if (cpk && Array.from(presetSelect.options).some(o => o.value === cpk)) {
+      presetSelect.value = cpk;
+    } else {
+      presetSelect.selectedIndex = -1;
+    }
   }
   if (!cpk) return;
   const preset = getPreset(config || null, cpk);

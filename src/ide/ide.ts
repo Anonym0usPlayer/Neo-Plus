@@ -2,7 +2,6 @@ import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
-import { Dialog } from 'siyuan';
 function debounce(cb: () => void, delay: number): () => void {
   let timer: ReturnType<typeof setTimeout> | null = null;
   return () => {
@@ -81,11 +80,6 @@ function detachEvents(): void {
   document.removeEventListener('keyup', onInteractionUp);
 }
 let _fallbackTimer: ReturnType<typeof setTimeout> | null = null;
-let ideDockpanelBg: 'surface' | 'background' = 'surface';
-function applyDockpanelBg(): void {
-  document.body.classList.toggle('neo-ide-dockpanel-bg-surface', ideDockpanelBg === 'surface');
-  document.body.classList.toggle('neo-ide-dockpanel-bg-background', ideDockpanelBg === 'background');
-}
 function withViewTransition(callback: () => void): void {
   if (document.startViewTransition) {
     document.startViewTransition(callback);
@@ -93,74 +87,12 @@ function withViewTransition(callback: () => void): void {
     callback();
   }
 }
-export function createIdeLabelHTML(i18n: Record<string, string>): string {
-  return `<span class="fn__flex fn__pointer">
-    <span>${i18n.ide}</span>
-    <span class="fn__space fn__flex-1 neo-menu-item-second-icon-space"></span>
-    <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.ideSettings}" onclick="event.stopPropagation();__neoOpenIdeSettings()"><use xlink:href="#iconSettings"></use></svg>
-  </span>`;
-}
-function buildSettingsHTML(i18n: Record<string, string>): string {
-  const bgOptions = ['surface', 'background']
-    .map(v => `<option value="${v}">${i18n[`ideDockpanelBg${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
-    .join('');
-  return `<div class="b3-dialog__content">
-    <div class="config__tab-container">
-      <div class="config-group">
-        <div class="config-items">
-          <label class="fn__flex b3-label">
-            <div class="fn__flex-1">
-              ${i18n.ideDockpanelBg}
-              <div class="b3-label__text">${i18n.ideDockpanelBgTip}</div>
-            </div>
-            <span class="fn__space"></span>
-            <select class="b3-select fn__flex-center fn__size200" id="neo-ide-dockpanel-bg">
-              ${bgOptions}
-            </select>
-          </label>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="b3-dialog__action">
-    <button class="b3-button b3-button--cancel" id="neo-ide-cancel">${i18n.cancel}</button>
-    <span class="fn__space"></span>
-    <button class="b3-button b3-button--text" id="neo-ide-confirm">${i18n.confirm}</button>
-  </div>`;
-}
-export function showIdeSettings(): void {
-  const plugin = getPlugin();
-  if (!plugin) return;
-  const dialog = new Dialog({
-    title: plugin.i18n.ideSettings || 'IDE Style Settings',
-    content: buildSettingsHTML(plugin.i18n),
-  });
-  dialog.element.setAttribute('data-key', 'dialog-neo-ide-settings');
-  dialog.element.classList.add('neo-settings-dialog');
-  const bgSelect = dialog.element.querySelector('#neo-ide-dockpanel-bg') as HTMLSelectElement;
-  if (bgSelect) bgSelect.value = ideDockpanelBg;
-  dialog.element.querySelector('#neo-ide-cancel')?.addEventListener('click', () => dialog.destroy());
-  dialog.element.querySelector('#neo-ide-confirm')?.addEventListener('click', () => {
-    if (bgSelect) {
-      const newBg = bgSelect.value as 'surface' | 'background';
-      if (newBg !== ideDockpanelBg) {
-        ideDockpanelBg = newBg;
-        applyDockpanelBg();
-        saveConfig({ 'ide-dockpanel-bg': newBg } as Partial<Config>);
-      }
-    }
-    dialog.destroy();
-  });
-}
 export function initIde(): void {
   if (isMobile()) return;
-  (window as any).__neoOpenIdeSettings = showIdeSettings;
   loadConfig().then((config) => {
-    ideDockpanelBg = config['ide-dockpanel-bg'] || 'surface';
     if (config['ide'] === true) {
       document.documentElement.classList.add('neo-ide');
       document.body.classList.add('neo-ide-body');
-      applyDockpanelBg();
       attachEvents();
       updateDockExpandClass();
       updateDockFloatClass();
@@ -183,7 +115,6 @@ export function onIdeClick(): void {
     } else {
       htmlEl.classList.add('neo-ide');
       document.body.classList.add('neo-ide-body');
-      applyDockpanelBg();
       saveConfig({ 'ide': true } as Partial<Config>);
       attachEvents();
       updateDockExpandClass();
@@ -203,6 +134,6 @@ export function destroyIde(): void {
   }
   detachEvents();
   document.body.classList.remove('neo-dockl-not-expand', 'neo-dockr-not-expand', 'neo-dockl-expand', 'neo-dockr-expand', 'neo-dockb-expand', 'neo-dockb-not-expand', 'neo-dockl-float', 'neo-dockl-not-float', 'neo-dockr-float', 'neo-dockr-not-float', 'neo-dockb-float', 'neo-dockb-not-float');
-  document.body.classList.remove('neo-ide-body', 'neo-ide-dockpanel-bg-surface', 'neo-ide-dockpanel-bg-background');
+  document.body.classList.remove('neo-ide-body');
   document.documentElement?.classList.remove('neo-ide');
 }

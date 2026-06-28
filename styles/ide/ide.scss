@@ -6,12 +6,20 @@
 }
 .neo-ide {
     @include ide-common('[data-id="neo-ide-button"]');
-}
-.neo-ide-body.body--toolbar-hide {
     --_ide-dockitem-margin-top: 8px;
     --_ide-dockitem-margin-bottom: 8px;
-    --_ide-dock-bg: var(--b3-theme-surface);
-    --_ide-dock-resize-bg: transparent;
+    --_ide-dock-bg: var(--b3-theme-background);
+    --_ide-dock-resize-bg: var(--b3-border-color-trans);
+    --_ide-config-side-bg: transparent;
+    --_ide-config-side-border: 1px solid var(--b3-border-color-trans);
+    &.neo-sidebar-mute {
+        --_ide-dock-bg: var(--b3-theme-surface);
+        --_ide-dock-resize-bg: transparent;
+        --_ide-config-side-bg: oklch(from var(--b3-theme-surface) l c h / 0.5);
+        --_ide-config-side-border: unset;
+    }
+}
+.neo-ide-body.body--toolbar-hide {
     .neo-visual-superfusion & {
         --_ide-dockitem-margin-top: 2px;
     }
@@ -51,7 +59,7 @@
             }
         }
         &.layout--float {
-            --_ide-dock-bg: var(--b3-theme-background);
+            --_ide-dock-bg: oklch(from var(--b3-theme-background) l c h / 0.7);
         }
     }
     .layout__dockl {
@@ -191,6 +199,8 @@
         box-shadow: unset;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
+        background-color: var(--_ide-config-side-bg) !important;
+        border-right: var(--_ide-config-side-border);
     }
     .config__panel .b3-tab-bar {
         box-shadow: unset;
@@ -204,15 +214,6 @@
             border-radius: 0;
             margin: 0;
             width: 100%;
-        }
-    }
-    &.neo-ide-dockpanel-bg-background {
-        --_ide-dock-bg: var(--b3-theme-background);
-        --_ide-dock-resize-bg: var(--b3-border-color-trans);
-        .config__panel .config__side,
-        .config-bazaar__readme .item__side {
-            background-color: transparent !important;
-            border-right: 1px solid var(--b3-border-color-trans);
         }
     }
 }
