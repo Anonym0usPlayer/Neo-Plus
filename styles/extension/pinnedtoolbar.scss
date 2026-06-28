@@ -99,17 +99,25 @@
         }
     }
 }
-.neo-extension-pinnedtoolbar-liquid-glass {
+.neo-extension-pinnedtoolbar-style-frosted-glass {
+    .fn__flex-1.protyle > .protyle-toolbar {
+        &.neo-extension-pinnedtoolbar-enable {
+            backdrop-filter: blur(6px);
+            background-color: oklch(from var(--b3-theme-surface) l c h / 0.7) !important;
+        }
+    }
+}
+.neo-extension-pinnedtoolbar-style-liquid-glass {
     .fn__flex-1.protyle > .protyle-toolbar {
         &.neo-extension-pinnedtoolbar-position-top,
         &.neo-extension-pinnedtoolbar-position-bottom {
             backdrop-filter: url(#neo-pinnedtoolbar-liquid-glass-row);
-            background-color: oklch(from var(--b3-theme-surface) l c h / 0.7) !important;
+            background-color: oklch(from var(--b3-theme-background) l c h / 0.7) !important;
         }
         &.neo-extension-pinnedtoolbar-position-left,
         &.neo-extension-pinnedtoolbar-position-right {
             backdrop-filter: url(#neo-pinnedtoolbar-liquid-glass-column);
-            background-color: oklch(from var(--b3-theme-surface) l c h / 0.7) !important;
+            background-color: oklch(from var(--b3-theme-background) l c h / 0.7) !important;
         }
     }
 }

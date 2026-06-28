@@ -53,8 +53,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
     }
 }
 @mixin superfusion-tab-fusion-condition {
-    &:not(.neo-verticaltabs) body:not(.body--toolbar-hide),
-    .body--window,
+    body:not(.body--toolbar-hide),
     .neo-ide-body.body--toolbar-hide {
         @content;
     }
@@ -128,7 +127,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
         }
     }
     @include superfusion-tab-fusion-condition {
-        .layout__center [data-type="wnd"] > .fn__flex:first-child:not(.fn__none) {
+        .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) > .fn__flex:first-child:not(.fn__none) {
             background-color: transparent;
             z-index: 3;
             margin-bottom: calc($tab-height * -1);
@@ -172,7 +171,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
     @include superfusion-tab-fusion-condition {
         // 渐进模糊
         &.neo-visual-superfusion-blur {
-            .layout__center [data-type="wnd"] .layout-tab-container > .protyle:not(.fullscreen) {
+            .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) .layout-tab-container > .protyle:not(.fullscreen) {
                 &::before {
                     content: "";
                     position: absolute;
@@ -191,7 +190,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
         }
         // 毛玻璃
         &.neo-visual-superfusion-frosted-glass {
-            .layout__center [data-type="wnd"] .layout-tab-container > .protyle:not(.fullscreen) {
+            .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) .layout-tab-container > .protyle:not(.fullscreen) {
                 &::before {
                     content: "";
                     position: absolute;
@@ -226,7 +225,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
         }
         // 液态玻璃
         &.neo-visual-superfusion-liquid-glass {
-            .layout__center [data-type="wnd"] .layout-tab-container > .protyle:not(.fullscreen) {
+            .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) .layout-tab-container > .protyle:not(.fullscreen) {
                 &::before {
                     content: "";
                     position: absolute;

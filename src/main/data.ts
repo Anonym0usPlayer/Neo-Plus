@@ -33,11 +33,11 @@ export interface Config {
   'customimage-preset-current-light'?: string;
   'customimage-preset-current-dark'?: string;
   'smooth-caret'?: boolean;
-  'smooth-caret-status'?: 'static' | 'breathing';
+  'smooth-caret-status'?: 'static' | 'breathing' | 'neon' | 'rainbow';
   'fluid-cursor'?: boolean;
   'list-bullet-line'?: boolean;
   'focus-block-indicator'?: boolean;
-  'focus-block-effect'?: 'vertical-line' | 'shadow';
+  'focus-block-effect'?: 'vertical-line' | 'shadow' | 'background';
   'colored-folders'?: boolean;
   'colored-folders-style'?: 'partition' | 'simple';
   'colored-lists'?: boolean;
@@ -53,7 +53,7 @@ export interface Config {
   'super-fusion-mode'?: 'blur' | 'frostedGlass' | 'liquidGlass';
   'pinned-toolbar'?: boolean;
   'pinned-toolbar-position'?: 'top' | 'bottom' | 'left' | 'right';
-  'pinned-toolbar-liquid-glass'?: boolean;
+  'pinned-toolbar-style'?: 'frostedGlass' | 'liquidGlass';
   'sidebar-mute'?: boolean;
   'ide'?: boolean;
   'multicolumn-slash-menu'?: boolean;

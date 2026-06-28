@@ -18,19 +18,10 @@ function updateCardSearchListClass(): void {
     });
   } catch (_e) {}
 }
-let _pendingUpdate = false;
-function scheduleUpdate(): void {
-  if (_pendingUpdate) return;
-  _pendingUpdate = true;
-  requestAnimationFrame(() => {
-    _pendingUpdate = false;
-    updateCardSearchListClass();
-  });
-}
-_fetchListener.on('fullTextSearchBlock', scheduleUpdate);
-_fetchListener.on('getCriteria', scheduleUpdate);
-_fetchListener.on('fullTextSearchAssetContent', scheduleUpdate);
-_fetchListener.on('getRecentUpdatedBlocks', scheduleUpdate);
+_fetchListener.on('fullTextSearchBlock', updateCardSearchListClass);
+_fetchListener.on('getCriteria', updateCardSearchListClass);
+_fetchListener.on('fullTextSearchAssetContent', updateCardSearchListClass);
+_fetchListener.on('getRecentUpdatedBlocks', updateCardSearchListClass);
 export function initCardSearchList(): void {
   try {
     _fetchListener.attach();
@@ -42,7 +33,6 @@ export function initCardSearchList(): void {
 export function destroyCardSearchList(): void {
   try {
     _fetchListener.detach();
-    _pendingUpdate = false;
     _searchListSelectors.forEach(selector => {
       try {
         document.querySelector(selector)?.classList.remove('neo-cardsearchlist');

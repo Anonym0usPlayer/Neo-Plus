@@ -52,7 +52,7 @@ export function destroyLayout(): void {
     _fallbackTimer = null;
   }
   _fetchListener.detach();
-  document.querySelectorAll('.neo-haswnd').forEach((el) => {
-    el.classList.remove('neo-haswnd');
+  document.querySelectorAll('.neo-haswnd, .neo-haswnd-notfirst-visible').forEach((el) => {
+    el.classList.remove('neo-haswnd', 'neo-haswnd-notfirst-visible');
   });
 }

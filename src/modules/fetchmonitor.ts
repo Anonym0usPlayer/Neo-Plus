@@ -3,6 +3,26 @@ let rules: Map<string, Set<FetchCallback>> = new Map();
 let patchedFetch: (typeof window.fetch) | null = null;
 let downstreamFetch: (typeof window.fetch) | null = null;
 let isPatched = false;
+interface PendingItem {
+  cb: FetchCallback;
+  response: Response;
+  url: string;
+  init?: RequestInit;
+}
+let pendingQueue: PendingItem[] = [];
+let rafId = 0;
+function flushPendingQueue(): void {
+  rafId = 0;
+  const batch = pendingQueue;
+  pendingQueue = [];
+  for (const { cb, response, url, init } of batch) {
+    try { cb(response, url, init); } catch (_e) {}
+  }
+}
+function schedulePendingFlush(): void {
+  if (rafId) return;
+  rafId = requestAnimationFrame(flushPendingQueue);
+}
 export function onFetch(name: string, callback: FetchCallback): void {
   if (!rules.has(name)) {
     rules.set(name, new Set());
@@ -70,16 +90,15 @@ export function initFetchMonitor(): void {
             if (needsResponse) {
               if (response.bodyUsed) return;
               const clonedResponse = response.clone();
-              matchedCallbacks.forEach((callback) => {
-                try {
-                  callback(clonedResponse, url, init);
-                } catch (_e) {}
+              matchedCallbacks.forEach((cb) => {
+                pendingQueue.push({ cb, response: clonedResponse, url, init });
               });
             } else {
-              matchedCallbacks.forEach((callback) => {
-                try { callback(undefined as any, url, init); } catch (_e) {}
+              matchedCallbacks.forEach((cb) => {
+                pendingQueue.push({ cb, response: undefined as any, url, init });
               });
             }
+            schedulePendingFlush();
           } catch (_e) {}
         }).catch(() => {});
       }
@@ -96,6 +115,11 @@ export function destroyFetchMonitor(): void {
   if (window.fetch === patchedFetch) {
     window.fetch = downstreamFetch!;
   }
+  if (rafId) {
+    cancelAnimationFrame(rafId);
+    rafId = 0;
+  }
+  pendingQueue = [];
   rules.clear();
   patchedFetch = null;
   downstreamFetch = null;

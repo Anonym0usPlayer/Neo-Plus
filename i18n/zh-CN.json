@@ -163,8 +163,10 @@
   "pinnedToolbarPositionBottom": "底部",
   "pinnedToolbarPositionLeft": "左侧",
   "pinnedToolbarPositionRight": "右侧",
-  "pinnedToolbarLiquidGlass": "液态玻璃",
-  "pinnedToolbarLiquidGlassTip": "为钉住的工具栏添加液态玻璃效果",
+  "pinnedToolbarStyle": "样式",
+  "pinnedToolbarStyleTip": "设置钉住工具栏的背景样式",
+  "pinnedToolbarStyleFrostedGlass": "毛玻璃",
+  "pinnedToolbarStyleLiquidGlass": "液态玻璃",
   "sidebarMute": "侧栏静音",
   "multicolumnSlashMenu": "多列斜杠菜单"
 }

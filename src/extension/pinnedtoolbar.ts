@@ -7,7 +7,7 @@ const positionCycle: Array<'top' | 'bottom' | 'left' | 'right'> = ['top', 'left'
 let _timerId: ReturnType<typeof setTimeout> | null = null;
 let _destroyed = false;
 let pinnedToolbarPosition: 'top' | 'bottom' | 'left' | 'right' = 'top';
-let pinnedToolbarLiquidGlass: boolean = false;
+let pinnedToolbarStyle: 'frostedGlass' | 'liquidGlass' = 'frostedGlass';
 let contextMenuHandler: ((e: MouseEvent) => void) | null = null;
 function shouldNotPin(el: HTMLElement): boolean {
   return !!el.parentElement?.matches('#searchPreview, .card__block');
@@ -23,8 +23,9 @@ function setEnableState(el: HTMLElement): void {
   const isEditable = wysiwyg?.getAttribute('data-readonly') === 'false';
   el.classList.toggle('neo-extension-pinnedtoolbar-enable', isEditable);
 }
-function applyLiquidGlass(): void {
-  document.body.classList.toggle('neo-extension-pinnedtoolbar-liquid-glass', pinnedToolbarLiquidGlass);
+function applyStyle(): void {
+  document.body.classList.toggle('neo-extension-pinnedtoolbar-style-frosted-glass', pinnedToolbarStyle === 'frostedGlass');
+  document.body.classList.toggle('neo-extension-pinnedtoolbar-style-liquid-glass', pinnedToolbarStyle === 'liquidGlass');
 }
 function applyPosition(force: boolean = false): void {
   const targetClass = `neo-extension-pinnedtoolbar-position-${pinnedToolbarPosition}`;
@@ -57,7 +58,7 @@ export function initPinnedToolbar(): void {
   (window as any).__neoOpenPinnedToolbarSettings = showPinnedToolbarSettings;
   loadConfig().then((config) => {
     pinnedToolbarPosition = config['pinned-toolbar-position'] || 'top';
-    pinnedToolbarLiquidGlass = config['pinned-toolbar-liquid-glass'] === true;
+    pinnedToolbarStyle = config['pinned-toolbar-style'] || 'frostedGlass';
     if (config['pinned-toolbar'] === true) {
       document.documentElement.classList.add('neo-extension-pinnedtoolbar');
       startObserving();
@@ -96,7 +97,7 @@ function scheduleNextTick(): void {
 function startObserving(): void {
   _destroyed = false;
   try { applyPosition(); } catch (_e) {}
-  try { applyLiquidGlass(); } catch (_e) {}
+  try { applyStyle(); } catch (_e) {}
   scheduleNextTick();
   if (!contextMenuHandler) {
     contextMenuHandler = (e: MouseEvent) => {
@@ -124,8 +125,8 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   const positionOptions = ['top', 'bottom', 'left', 'right']
     .map(v => `<option value="${v}">${i18n[`pinnedToolbarPosition${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
     .join('');
-  const optionOnOff = [i18n.on, i18n.off]
-    .map(v => `<option value="${v}">${v}</option>`)
+  const styleOptions = ['frostedGlass', 'liquidGlass']
+    .map(v => `<option value="${v}">${i18n[`pinnedToolbarStyle${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
     .join('');
   return `<div class="b3-dialog__content">
     <div class="config__tab-container">
@@ -143,12 +144,12 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
           </label>
           <label class="fn__flex b3-label">
             <div class="fn__flex-1">
-              ${i18n.pinnedToolbarLiquidGlass}
-              <div class="b3-label__text">${i18n.pinnedToolbarLiquidGlassTip}</div>
+              ${i18n.pinnedToolbarStyle}
+              <div class="b3-label__text">${i18n.pinnedToolbarStyleTip}</div>
             </div>
             <span class="fn__space"></span>
-            <select class="b3-select fn__flex-center fn__size200" id="neo-pinned-toolbar-liquid-glass">
-              ${optionOnOff}
+            <select class="b3-select fn__flex-center fn__size200" id="neo-pinned-toolbar-style">
+              ${styleOptions}
             </select>
           </label>
         </div>
@@ -173,8 +174,8 @@ export function showPinnedToolbarSettings(): void {
   dialog.element.classList.add('neo-settings-dialog');
   const positionSelect = dialog.element.querySelector('#neo-pinned-toolbar-position') as HTMLSelectElement;
   if (positionSelect) positionSelect.value = pinnedToolbarPosition;
-  const liquidGlassSelect = dialog.element.querySelector('#neo-pinned-toolbar-liquid-glass') as HTMLSelectElement;
-  if (liquidGlassSelect) liquidGlassSelect.value = pinnedToolbarLiquidGlass ? plugin.i18n.on : plugin.i18n.off;
+  const styleSelect = dialog.element.querySelector('#neo-pinned-toolbar-style') as HTMLSelectElement;
+  if (styleSelect) styleSelect.value = pinnedToolbarStyle;
   dialog.element.querySelector('#neo-pinned-toolbar-cancel')?.addEventListener('click', () => dialog.destroy());
   dialog.element.querySelector('#neo-pinned-toolbar-confirm')?.addEventListener('click', () => {
     if (positionSelect) {
@@ -187,12 +188,12 @@ export function showPinnedToolbarSettings(): void {
         saveConfig({ 'pinned-toolbar-position': newPosition } as Partial<Config>);
       }
     }
-    if (liquidGlassSelect) {
-      const newLiquidGlass = liquidGlassSelect.value === plugin.i18n.on;
-      if (newLiquidGlass !== pinnedToolbarLiquidGlass) {
-        pinnedToolbarLiquidGlass = newLiquidGlass;
-        applyLiquidGlass();
-        saveConfig({ 'pinned-toolbar-liquid-glass': newLiquidGlass } as Partial<Config>);
+    if (styleSelect) {
+      const newStyle = styleSelect.value as 'frostedGlass' | 'liquidGlass';
+      if (newStyle !== pinnedToolbarStyle) {
+        pinnedToolbarStyle = newStyle;
+        applyStyle();
+        saveConfig({ 'pinned-toolbar-style': newStyle } as Partial<Config>);
       }
     }
     dialog.destroy();
@@ -205,5 +206,5 @@ export function destroyPinnedToolbar(): void {
   toolbars.forEach((el) => {
     el.classList.remove('neo-extension-pinnedtoolbar-position-top', 'neo-extension-pinnedtoolbar-position-bottom', 'neo-extension-pinnedtoolbar-position-left', 'neo-extension-pinnedtoolbar-position-right', 'neo-extension-pinnedtoolbar-enable');
   });
-  document.body.classList.remove('neo-extension-pinnedtoolbar-liquid-glass');
+  document.body.classList.remove('neo-extension-pinnedtoolbar-style-frosted-glass', 'neo-extension-pinnedtoolbar-style-liquid-glass');
 }
