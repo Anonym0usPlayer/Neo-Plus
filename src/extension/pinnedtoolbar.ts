@@ -4,7 +4,8 @@ import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
 import { Dialog } from 'siyuan';
 const positionCycle: Array<'top' | 'bottom' | 'left' | 'right'> = ['top', 'left', 'bottom', 'right'];
-let pollTimer: ReturnType<typeof setInterval> | null = null;
+let _timerId: ReturnType<typeof setTimeout> | null = null;
+let _destroyed = false;
 let pinnedToolbarPosition: 'top' | 'bottom' | 'left' | 'right' = 'top';
 let pinnedToolbarLiquidGlass: boolean = false;
 let contextMenuHandler: ((e: MouseEvent) => void) | null = null;
@@ -83,11 +84,20 @@ export function createPinnedToolbarLabelHTML(i18n: Record<string, string>): stri
     <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.pinnedToolbarSettings}" onclick="event.stopPropagation();__neoOpenPinnedToolbarSettings()"><use xlink:href="#iconSettings"></use></svg>
   </span>`;
 }
+function scheduleNextTick(): void {
+  _timerId = setTimeout(() => {
+    _timerId = null;
+    requestAnimationFrame(() => {
+      try { applyPosition(); } catch (_e) {}
+      if (!_destroyed) scheduleNextTick();
+    });
+  }, 250);
+}
 function startObserving(): void {
-  applyPosition();
-  applyLiquidGlass();
-  if (pollTimer) return;
-  pollTimer = setInterval(applyPosition, 250);
+  _destroyed = false;
+  try { applyPosition(); } catch (_e) {}
+  try { applyLiquidGlass(); } catch (_e) {}
+  scheduleNextTick();
   if (!contextMenuHandler) {
     contextMenuHandler = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest('.protyle-toolbar');
@@ -100,9 +110,10 @@ function startObserving(): void {
   }
 }
 function stopObserving(): void {
-  if (pollTimer) {
-    clearInterval(pollTimer);
-    pollTimer = null;
+  _destroyed = true;
+  if (_timerId !== null) {
+    clearTimeout(_timerId);
+    _timerId = null;
   }
   if (contextMenuHandler) {
     document.removeEventListener('contextmenu', contextMenuHandler);

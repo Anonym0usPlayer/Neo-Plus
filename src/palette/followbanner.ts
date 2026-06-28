@@ -5,6 +5,20 @@ import { isMobile } from '../modules/env';
 let facInstance: FastAverageColor | null = null;
 let lastValidHex: string | null = null;
 let destroyed = false;
+let _initTimer: ReturnType<typeof setTimeout> | null = null;
+let _extractTimer: ReturnType<typeof setTimeout> | null = null;
+function scheduleExtract(): void {
+  if (_extractTimer !== null) {
+    clearTimeout(_extractTimer);
+    _extractTimer = null;
+  }
+  _extractTimer = setTimeout(() => {
+    _extractTimer = null;
+    requestAnimationFrame(() => {
+      try { extractBannerAverageColor(); } catch (_e) {}
+    });
+  }, 200);
+}
 const _fetchListener = fetchListener();
 _fetchListener.on('setUILayout', () => { extractBannerAverageColor(); });
 _fetchListener.on('setBlockAttrs', () => { extractBannerAverageColor(); });
@@ -216,13 +230,26 @@ async function extractBannerAverageColor(): Promise<void> {
 export function initFollowBanner(config: Config): void {
   destroyed = false;
   if (isMobile()) {
-    _fetchListener.on('getDocInfo', () => { setTimeout(extractBannerAverageColor, 200); });
+    _fetchListener.on('getDocInfo', () => { scheduleExtract(); });
   }
   _fetchListener.attach();
-  setTimeout(extractBannerAverageColor, 500);
+  _initTimer = setTimeout(() => {
+    _initTimer = null;
+    requestAnimationFrame(() => {
+      try { extractBannerAverageColor(); } catch (_e) {}
+    });
+  }, 500);
 }
 export function destroyFollowBanner(): void {
   destroyed = true;
+  if (_initTimer !== null) {
+    clearTimeout(_initTimer);
+    _initTimer = null;
+  }
+  if (_extractTimer !== null) {
+    clearTimeout(_extractTimer);
+    _extractTimer = null;
+  }
   _fetchListener.detach();
   document.documentElement.style.removeProperty('--neo-followbanner-base-color');
   if (facInstance) {

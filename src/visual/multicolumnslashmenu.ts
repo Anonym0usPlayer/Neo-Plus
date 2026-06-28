@@ -8,7 +8,7 @@ interface CenterPoint {
   y: number;
 }
 let isSessionActive = false;
-let pollTimerId: ReturnType<typeof setInterval> | null = null;
+let pollTimerId: number | null = null;
 let pollAttempts = 0;
 let activeMenuElement: HTMLElement | null = null;
 let menuObserver: MutationObserver | null = null;
@@ -27,7 +27,7 @@ function endSession(): void {
   activeMenuElement = null;
   cachedCenters = [];
   if (pollTimerId !== null) {
-    clearInterval(pollTimerId);
+    cancelAnimationFrame(pollTimerId);
     pollTimerId = null;
   }
   if (menuObserver) {
@@ -60,21 +60,24 @@ function beginPollingForMenu(): void {
     return;
   }
   pollAttempts = 0;
-  const timerId = setInterval(() => {
-    pollAttempts += 1;
-    const el = findHintMenu();
-    if (el) {
-      clearInterval(timerId);
-      pollTimerId = null;
-      activeMenuElement = el;
-      attachMenuObserver();
-    } else if (pollAttempts >= 10) {
-      clearInterval(timerId);
-      pollTimerId = null;
-      endSession();
-    }
-  }, 100);
-  pollTimerId = timerId;
+  const startTime = Date.now();
+  function poll(): void {
+    pollTimerId = requestAnimationFrame(() => {
+      pollAttempts++;
+      const el = findHintMenu();
+      if (el) {
+        pollTimerId = null;
+        activeMenuElement = el;
+        attachMenuObserver();
+      } else if (pollAttempts >= 10 || Date.now() - startTime >= 1000) {
+        pollTimerId = null;
+        endSession();
+      } else {
+        poll();
+      }
+    });
+  }
+  poll();
 }
 function getListItems(container: HTMLElement): HTMLElement[] {
   return Array.from(container.querySelectorAll<HTMLElement>('.b3-list-item'));

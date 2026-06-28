@@ -63,14 +63,25 @@ export function initFetchMonitor(): void {
         }
       });
       if (matchedCallbacks.length > 0) {
+        fetchPromise.catch(() => {});
+        const needsResponse = matchedCallbacks.some(cb => cb.length >= 1);
         fetchPromise.then((response) => {
-          const clonedResponse = response.clone();
-          matchedCallbacks.forEach((callback) => {
-            try {
-              callback(clonedResponse, url, init);
-            } catch (_e) {}
-          });
-        });
+          try {
+            if (needsResponse) {
+              if (response.bodyUsed) return;
+              const clonedResponse = response.clone();
+              matchedCallbacks.forEach((callback) => {
+                try {
+                  callback(clonedResponse, url, init);
+                } catch (_e) {}
+              });
+            } else {
+              matchedCallbacks.forEach((callback) => {
+                try { callback(undefined as any, url, init); } catch (_e) {}
+              });
+            }
+          } catch (_e) {}
+        }).catch(() => {});
       }
       return fetchPromise;
     } finally {
