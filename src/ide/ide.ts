@@ -27,9 +27,12 @@ function hasActiveItemAfterSpace(container: HTMLElement): boolean {
   }
   return false;
 }
-function updateDockExpandClass(): void {
+function updateDockExpandAndFloat(): void {
   const dockLeft = document.querySelector<HTMLElement>('#dockLeft');
   const dockRight = document.querySelector<HTMLElement>('#dockRight');
+  const dockl = document.querySelector<HTMLElement>('.layout__dockl');
+  const dockr = document.querySelector<HTMLElement>('.layout__dockr');
+  const dockb = document.querySelector<HTMLElement>('.layout__dockb');
   const body = document.body;
   let dockbExpanded = false;
   if (dockLeft) {
@@ -48,12 +51,6 @@ function updateDockExpandClass(): void {
   }
   body.classList.toggle('neo-dockb-expand', dockbExpanded);
   body.classList.toggle('neo-dockb-not-expand', !dockbExpanded);
-}
-function updateDockFloatClass(): void {
-  const dockl = document.querySelector<HTMLElement>('.layout__dockl');
-  const dockr = document.querySelector<HTMLElement>('.layout__dockr');
-  const dockb = document.querySelector<HTMLElement>('.layout__dockb');
-  const body = document.body;
   const docklFloat = dockl?.classList.contains('layout--float') ?? false;
   const dockrFloat = dockr?.classList.contains('layout--float') ?? false;
   const dockbFloat = dockb?.classList.contains('layout--float') ?? false;
@@ -64,10 +61,7 @@ function updateDockFloatClass(): void {
   body.classList.toggle('neo-dockb-float', dockbFloat);
   body.classList.toggle('neo-dockb-not-float', !dockbFloat);
 }
-const _debouncedUpdate = debounce(() => {
-  updateDockExpandClass();
-  updateDockFloatClass();
-}, 50);
+const _debouncedUpdate = debounce(updateDockExpandAndFloat, 50);
 function onInteractionUp(_e: MouseEvent | KeyboardEvent): void {
   _debouncedUpdate();
 }
@@ -94,11 +88,9 @@ export function initIde(): void {
       document.documentElement.classList.add('neo-ide');
       document.body.classList.add('neo-ide-body');
       attachEvents();
-      updateDockExpandClass();
-      updateDockFloatClass();
+      updateDockExpandAndFloat();
       _fallbackTimer = setTimeout(() => {
-        updateDockExpandClass();
-        updateDockFloatClass();
+        updateDockExpandAndFloat();
         _fallbackTimer = null;
       }, 200);
     }
@@ -117,11 +109,9 @@ export function onIdeClick(): void {
       document.body.classList.add('neo-ide-body');
       saveConfig({ 'ide': true } as Partial<Config>);
       attachEvents();
-      updateDockExpandClass();
-      updateDockFloatClass();
+      updateDockExpandAndFloat();
       _fallbackTimer = setTimeout(() => {
-        updateDockExpandClass();
-        updateDockFloatClass();
+        updateDockExpandAndFloat();
         _fallbackTimer = null;
       }, 200);
     }

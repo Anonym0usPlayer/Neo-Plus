@@ -20,8 +20,8 @@ function scheduleExtract(): void {
   }, 200);
 }
 const _fetchListener = fetchListener();
-_fetchListener.on('setUILayout', () => { extractBannerAverageColor(); });
-_fetchListener.on('setBlockAttrs', () => { extractBannerAverageColor(); });
+_fetchListener.on('setUILayout', () => { scheduleExtract(); });
+_fetchListener.on('setBlockAttrs', () => { scheduleExtract(); });
 const fallbackHex = 'var(--neo-default-base-color)';
 function parseHex(hex: string): { r: number; g: number; b: number } | null {
   const m = hex.match(/^#?([0-9a-fA-F]{6})$/);

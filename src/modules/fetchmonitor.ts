@@ -10,11 +10,13 @@ interface PendingItem {
   init?: RequestInit;
 }
 let pendingQueue: PendingItem[] = [];
+let pendingCbs: Set<FetchCallback> = new Set();
 let rafId = 0;
 function flushPendingQueue(): void {
   rafId = 0;
   const batch = pendingQueue;
   pendingQueue = [];
+  pendingCbs.clear();
   for (const { cb, response, url, init } of batch) {
     try { cb(response, url, init); } catch (_e) {}
   }
@@ -91,10 +93,14 @@ export function initFetchMonitor(): void {
               if (response.bodyUsed) return;
               const clonedResponse = response.clone();
               matchedCallbacks.forEach((cb) => {
+                if (pendingCbs.has(cb)) return;
+                pendingCbs.add(cb);
                 pendingQueue.push({ cb, response: clonedResponse, url, init });
               });
             } else {
               matchedCallbacks.forEach((cb) => {
+                if (pendingCbs.has(cb)) return;
+                pendingCbs.add(cb);
                 pendingQueue.push({ cb, response: undefined as any, url, init });
               });
             }
@@ -120,6 +126,7 @@ export function destroyFetchMonitor(): void {
     rafId = 0;
   }
   pendingQueue = [];
+  pendingCbs.clear();
   rules.clear();
   patchedFetch = null;
   downstreamFetch = null;

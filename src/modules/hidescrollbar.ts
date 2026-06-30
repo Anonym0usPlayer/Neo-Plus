@@ -26,27 +26,6 @@ function removeScrollbarStyles(): void {
     document.head.appendChild(style);
   }
 }
-let styleObserver: MutationObserver | null = null;
-function startObserving(): void {
-  removeScrollbarStyles();
-  styleObserver = new MutationObserver(() => {
-    removeScrollbarStyles();
-  });
-  styleObserver.observe(document.head, {
-    childList: true,
-    subtree: true,
-  });
-}
-function stopObserving(): void {
-  if (styleObserver) {
-    styleObserver.disconnect();
-    styleObserver = null;
-  }
-  const el = document.getElementById(styleId);
-  if (el) {
-    el.remove();
-  }
-}
 function restoreScrollbarStyles(): void {
   for (const saved of _savedScrollbarRules) {
     const ss = document.styleSheets[saved.sheetIndex];
@@ -59,9 +38,10 @@ function restoreScrollbarStyles(): void {
   _savedScrollbarRules = [];
 }
 export function initHideScrollbar(): void {
-  startObserving();
+  removeScrollbarStyles();
 }
 export function destroyHideScrollbar(): void {
-  stopObserving();
+  const el = document.getElementById(styleId);
+  if (el) el.remove();
   restoreScrollbarStyles();
 }
