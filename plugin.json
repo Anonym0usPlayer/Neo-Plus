@@ -2,8 +2,8 @@
   "name": "Neo-Plus",
   "author": "QYL",
   "url": "https://github.com/QYLexpired/Neo-Plus",
-  "version": "1.2.4",
-  "minAppVersion": "3.6.5",
+  "version": "1.2.5",
+  "minAppVersion": "3.7.0",
   "backends": [
     "all"
   ],
