@@ -1,4 +1,5 @@
 @use "manager" as *;
+@use "../utils" as *;
 $border-width: 3px;
 .neo-visual-coloredfolders {
     @include visual-common('[data-id="neo-colored-folders-button"]', '[data-id="neo-visual-button"]');
@@ -84,6 +85,50 @@ $border-width: 3px;
                                 color: oklch(from var(--b3-theme-accent) l 0.08 calc(h + #{$hue-offset}));
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+    body.neo-visual-coloredfolders-card {
+        .sy__file,
+        [data-type="sidebar-file"] {
+            --_indentline-dot-trans: -10px;
+            --_indentline-ul-trans: 24px;
+            --_indentline-li-trans: 6px;
+            & .b3-list-item {
+                margin: 1px 0;
+            }
+            & > .fn__flex-1 {
+                & > ul {
+                    margin: 0 10px;
+                    @include superellipse(7px);
+                    outline-offset: -1px;
+                    &:not(:last-child) {
+                        margin-bottom: 3px;
+                    }
+                    @for $i from 0 through 7 {
+                        $hue-offset: #{$i * 45};
+                        &:nth-of-type(8n + #{$i + 1}) {
+                            background-color: oklch(from var(--b3-theme-accent) l 0.12 calc(h + #{$hue-offset}) / 0.12);
+                            outline: 1px solid oklch(from var(--b3-theme-accent) l 0.12 calc(h + #{$hue-offset}) / 0.065);
+                            --b3-list-hover: oklch(from var(--b3-theme-accent) l 0.12 calc(h + #{$hue-offset}) / 0.12);
+                            --b3-list-active: oklch(from var(--b3-theme-accent) l 0.15 calc(h + #{$hue-offset}) / 0.15);
+                            --_indentline-color: oklch(from var(--b3-theme-accent) l 0.08 calc(h + #{$hue-offset}) / 0.36);
+                            .b3-list-item[data-type="navigation-root"] {
+                                .b3-list-item__text {
+                                    color: oklch(from var(--b3-theme-accent) l 0.08 calc(h + #{$hue-offset}));
+                                    font-weight: bold;
+                                }
+                            }
+                            .b3-list-item__toggle svg {
+                                color: oklch(from var(--b3-theme-accent) l 0.08 calc(h + #{$hue-offset}));
+                            }
+                        }
+                    }
+                    & > li:first-child {
+                        margin-inline-start: 0;
+                        margin-inline-end: 0;
                     }
                 }
             }

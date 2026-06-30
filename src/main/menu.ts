@@ -15,6 +15,7 @@ import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension
 import { onSuperFusionClick, createSuperFusionLabelHTML } from '../superfusion/superfusion';
 import { isMobile } from '../modules/env';
 import { onSidebarMuteClick } from '../sidebarmute/sidebarmute';
+import { onCardSearchListClick } from '../visual/cardsearchlist';
 import { onMulticolumnSlashMenuClick } from '../visual/multicolumnslashmenu';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onPinnedToolbarClick, createPinnedToolbarLabelHTML } from '../extension/pinnedtoolbar';
@@ -199,6 +200,15 @@ export function buildMenu(
           },
         },
       ] : []),
+      {
+        id: 'neo-card-search-list-button',
+        icon: 'iconSearch',
+        label: i18n.cardSearchList,
+        click: () => {
+          onCardSearchListClick();
+          return true;
+        },
+      },
       {
         id: 'neo-smooth-caret-button',
         icon: 'iconNeoSmoothCaret',

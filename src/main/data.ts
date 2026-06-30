@@ -39,7 +39,7 @@ export interface Config {
   'focus-block-indicator'?: boolean;
   'focus-block-effect'?: 'vertical-line' | 'shadow' | 'background';
   'colored-folders'?: boolean;
-  'colored-folders-style'?: 'partition' | 'simple';
+  'colored-folders-style'?: 'partition' | 'simple' | 'card';
   'colored-lists'?: boolean;
   'colored-headings'?: boolean;
   'colorful-selection'?: boolean;
@@ -54,6 +54,7 @@ export interface Config {
   'pinned-toolbar'?: boolean;
   'pinned-toolbar-position'?: 'top' | 'bottom' | 'left' | 'right';
   'pinned-toolbar-style'?: 'frostedGlass' | 'liquidGlass';
+  'card-searchlist'?: boolean;
   'sidebar-mute'?: boolean;
   'ide'?: boolean;
   'multicolumn-slash-menu'?: boolean;

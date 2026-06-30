@@ -2,10 +2,11 @@ import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
 import { Dialog } from 'siyuan';
-let coloredFoldersStyle: 'partition' | 'simple' = 'partition';
+let coloredFoldersStyle: 'partition' | 'simple' | 'card' = 'partition';
 function applyStyle(): void {
   document.body.classList.toggle('neo-visual-coloredfolders-partition', coloredFoldersStyle === 'partition');
   document.body.classList.toggle('neo-visual-coloredfolders-simple', coloredFoldersStyle === 'simple');
+  document.body.classList.toggle('neo-visual-coloredfolders-card', coloredFoldersStyle === 'card');
 }
 export function initColoredFolders(): void {
   (window as any).__neoOpenColoredFoldersSettings = showColoredFoldersSettings;
@@ -30,7 +31,7 @@ export function onColoredFoldersClick(): void {
   }
 }
 function buildSettingsHTML(i18n: Record<string, string>): string {
-  const styleOptions = ['partition', 'simple']
+  const styleOptions = ['partition', 'simple', 'card']
     .map(v => `<option value="${v}">${i18n[`coloredFoldersStyle${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
     .join('');
   return `<div class="b3-dialog__content">
@@ -72,7 +73,7 @@ export function showColoredFoldersSettings(): void {
   dialog.element.querySelector('#neo-colored-folders-cancel')?.addEventListener('click', () => dialog.destroy());
   dialog.element.querySelector('#neo-colored-folders-confirm')?.addEventListener('click', () => {
     if (styleSelect) {
-      const newStyle = styleSelect.value as 'partition' | 'simple';
+      const newStyle = styleSelect.value as 'partition' | 'simple' | 'card';
       if (newStyle !== coloredFoldersStyle) {
         coloredFoldersStyle = newStyle;
         applyStyle();
@@ -93,4 +94,5 @@ export function destroyColoredFolders(): void {
   document.documentElement?.classList.remove('neo-visual-coloredfolders');
   document.body.classList.remove('neo-visual-coloredfolders-partition');
   document.body.classList.remove('neo-visual-coloredfolders-simple');
+  document.body.classList.remove('neo-visual-coloredfolders-card');
 }

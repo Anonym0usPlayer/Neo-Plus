@@ -93,7 +93,7 @@
     #dockRight {
         background-color: var(--_ide-dock-bg);
         transition: display 0.45s var(--neo-ease-spring-3), background-color 0.05s;
-        transition-behavior: allow-discrete;
+        //transition-behavior: allow-discrete;
         position: relative;
         margin-right: 0;
         margin-left: 0;

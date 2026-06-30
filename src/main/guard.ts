@@ -9,7 +9,7 @@ import { initRemoveStyle, destroyRemoveStyle } from '../modules/removestyle';
 import { initLayout, destroyLayout } from '../modules/layout';
 import { initFetchMonitor, destroyFetchMonitor } from '../modules/fetchmonitor';
 import { initPerformanceTuning, destroyPerformanceTuning } from '../modules/performancetuning';
-import { initCardSearchList, destroyCardSearchList } from '../modules/cardsearchlist';
+import { initCardSearchList, destroyCardSearchList } from '../visual/cardsearchlist';
 import { initSvgFilter, destroySvgFilter } from '../modules/svgfilter';
 import { initPalette, destroyPalette } from '../palette/manager';
 import { initTexture, destroyTexture } from '../texture/manager';
