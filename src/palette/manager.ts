@@ -93,15 +93,37 @@ export function switchToPlan(plan: Plan): void {
 export function getPresetMenuItems(i18n: Record<string, string>): any[] {
   const mode = getCurrentThemeMode();
   const availablePresets = getPresetsByMode(mode);
-  return availablePresets.map((preset) => ({
-    id: `neo-palette-${preset.key}-button`,
-    icon: 'iconNeoPalette',
-    label: i18n[preset.nameKey],
-    click: () => {
-      switchToPreset(preset.key);
-      return true;
+  const [firstPreset, ...restPresets] = availablePresets;
+  const items: any[] = [
+    {
+      id: `neo-palette-${firstPreset.key}-button`,
+      icon: 'iconNeoPalette',
+      label: i18n[firstPreset.nameKey],
+      click: () => {
+        switchToPreset(firstPreset.key);
+        return true;
+      },
     },
-  }));
+    { type: 'separator' },
+  ];
+  for (let i = 0; i < restPresets.length; i += 5) {
+    const chunk = restPresets.slice(i, i + 5);
+    for (const preset of chunk) {
+      items.push({
+        id: `neo-palette-${preset.key}-button`,
+        icon: 'iconNeoPalette',
+        label: i18n[preset.nameKey],
+        click: () => {
+          switchToPreset(preset.key);
+          return true;
+        },
+      });
+    }
+    if (i + 5 < restPresets.length) {
+      items.push({ type: 'separator' });
+    }
+  }
+  return items;
 }
 export function handleColorInput(value: string, cssVar: string, colorKey: string, plan: string): void {
   document.documentElement.style.setProperty(cssVar, value);
