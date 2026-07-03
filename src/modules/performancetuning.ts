@@ -194,13 +194,6 @@ const _ruleFilters: RuleFilterEntry[] = [
   },
   {
     filter: {
-      selectorMatch: (s) => s.includes('.textLayer') && s.includes(':is(') && s.includes('span') && s.includes('br'),
-      cssMatch: (c) => c.includes('transform-origin'),
-    },
-    saved: [],
-  },
-  {
-    filter: {
       selectorMatch: (s) => s.includes('.spread') && s.includes(':is(') && s.includes('.page') && s.includes('.pdfViewer') && s.includes('.scrollHorizontal'),
       cssMatch: (c) => c.includes('vertical-align'),
     },

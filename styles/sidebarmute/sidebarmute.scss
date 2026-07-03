@@ -4,44 +4,26 @@
         opacity: 0.38;      
     }
 }
-@mixin dockpanel-block-bg($bg-color) {
-    .dockPanel {
-        .b3-typography, .protyle-wysiwyg {
-            .code-block:not(pre),
-            pre.code-block,
-            blockquote,
-            .bq {
-                background-color: $bg-color;
-            }
-            table {
-                --b3-table-even-background: $bg-color;
-            }
-        }
-    }
-}
 .neo-sidebar-mute {
     @include sidebarmute-common('[data-id="neo-sidebar-mute-button"]');
-    // 侧栏的块背景需要变化
-    @include dockpanel-block-bg(oklch(from var(--b3-theme-background) l c h / 0.7));
     &:not(.neo-palette-highcontrast.neo-mode-light):not(.neo-ide) {
         .layout__dockl,
         .layout__dockr,
         .layout__dockb {
-            .neo-haswnd {
-                & > [data-type=wnd] {
-                    box-shadow: unset;
-                    background-color: transparent;
-                }
-            }
-            .layout__resize {
-                &:not(:hover) {
-                    &::after {
-                        background-color: var(--b3-border-color-trans);
+            &:not(.layout--float) {
+                .neo-haswnd {
+                    & > [data-type=wnd] {
+                        box-shadow: unset;
+                        background-color: transparent;
                     }
                 }
-            }
-            &.layout--float {
-                background-color: oklch(from var(--b3-theme-background) l c h / 0.7);
+                .layout__resize {
+                    &:not(:hover) {
+                        &::after {
+                            background-color: var(--b3-border-color-trans);
+                        }
+                    }
+                }
             }
         }
     }
