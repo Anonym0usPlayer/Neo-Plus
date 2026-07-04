@@ -27,12 +27,9 @@ function hasActiveItemAfterSpace(container: HTMLElement): boolean {
   }
   return false;
 }
-function updateDockExpandAndFloat(): void {
+function updateDockExpandState(): void {
   const dockLeft = document.querySelector<HTMLElement>('#dockLeft');
   const dockRight = document.querySelector<HTMLElement>('#dockRight');
-  const dockl = document.querySelector<HTMLElement>('.layout__dockl');
-  const dockr = document.querySelector<HTMLElement>('.layout__dockr');
-  const dockb = document.querySelector<HTMLElement>('.layout__dockb');
   const body = document.body;
   let dockbExpanded = false;
   if (dockLeft) {
@@ -51,6 +48,12 @@ function updateDockExpandAndFloat(): void {
   }
   body.classList.toggle('neo-dockb-expand', dockbExpanded);
   body.classList.toggle('neo-dockb-not-expand', !dockbExpanded);
+}
+function updateFloatState(): void {
+  const dockl = document.querySelector<HTMLElement>('.layout__dockl');
+  const dockr = document.querySelector<HTMLElement>('.layout__dockr');
+  const dockb = document.querySelector<HTMLElement>('.layout__dockb');
+  const body = document.body;
   const docklFloat = dockl?.classList.contains('layout--float') ?? false;
   const dockrFloat = dockr?.classList.contains('layout--float') ?? false;
   const dockbFloat = dockb?.classList.contains('layout--float') ?? false;
@@ -60,6 +63,10 @@ function updateDockExpandAndFloat(): void {
   body.classList.toggle('neo-dockr-not-float', !dockrFloat);
   body.classList.toggle('neo-dockb-float', dockbFloat);
   body.classList.toggle('neo-dockb-not-float', !dockbFloat);
+}
+function updateDockExpandAndFloat(): void {
+  updateDockExpandState();
+  updateFloatState();
 }
 const _debouncedUpdate = debounce(updateDockExpandAndFloat, 50);
 function onInteractionUp(_e: MouseEvent | KeyboardEvent): void {
@@ -88,11 +95,11 @@ export function initIde(): void {
       document.documentElement.classList.add('neo-ide');
       document.body.classList.add('neo-ide-body');
       attachEvents();
-      updateDockExpandAndFloat();
+      updateDockExpandState();
       _fallbackTimer = setTimeout(() => {
-        updateDockExpandAndFloat();
+        updateFloatState();
         _fallbackTimer = null;
-      }, 200);
+      }, 500);
     }
   });
 }

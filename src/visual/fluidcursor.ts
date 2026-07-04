@@ -40,7 +40,7 @@ function randomCursorColor(): void {
     cachedBaseColor = baseColor;
   }
   let randomHue: number;
-  if (modeRand < 0.05) {
+  if (modeRand < 0.10) {
     const rand = Math.random();
     if (rand < 0.8) {
       randomHue = Math.floor(Math.random() * 31) - 15;
