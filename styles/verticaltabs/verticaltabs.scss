@@ -26,14 +26,14 @@
                     overflow-y: scroll;
                     @include overflow-indicator-fadein-mask($fadeout-size-l, "top bottom");
                     .item {
-                        margin: 3px 6px;
+                        margin: 3px 6px !important;
                         width: calc(100% - 12px);
                         max-width: unset;
                         &:first-child {
-                            margin-top: 6px;
+                            margin-top: 6px !important;
                         }
                         &:last-child {
-                            margin-bottom: 6px;
+                            margin-bottom: 6px !important;
                         }
                         .item__icon, .item__graphic, .item__text {
                             transform: none;
