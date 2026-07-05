@@ -10,13 +10,9 @@
     --_ide-dockitem-margin-bottom: 8px;
     --_ide-dock-bg: var(--b3-theme-background);
     --_ide-dock-resize-bg: var(--b3-border-color-trans);
-    --_ide-config-side-bg: transparent;
-    --_ide-config-side-border: 1px solid var(--b3-border-color-trans);
     &.neo-sidebar-mute {
         --_ide-dock-bg: var(--b3-theme-surface);
         --_ide-dock-resize-bg: transparent;
-        --_ide-config-side-bg: oklch(from var(--b3-theme-surface) l c h / 0.5);
-        --_ide-config-side-border: unset;
     }
 }
 .neo-ide-body.body--toolbar-hide {
@@ -59,6 +55,7 @@
             }
         }
         &.layout--float {
+            margin: 0;
             --_ide-dock-bg: oklch(from var(--b3-theme-background) l c h / 0.7);
         }
     }
@@ -194,26 +191,8 @@
         }
     }
     .config__panel .config__side,
+    .config__panel .b3-tab-bar,
     .config-bazaar__readme .item__side {
-        margin: 1px 0 1px 1px;
         box-shadow: unset;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-        background-color: var(--_ide-config-side-bg) !important;
-        border-right: var(--_ide-config-side-border);
-    }
-    .config__panel .b3-tab-bar {
-        box-shadow: unset;
-    }
-    .config-bazaar__readme .item__side {
-        height: calc(100% - var(--_sidebar-gap) * 2 - 2px);
-    }
-    .config-bazaar__readme .item__main {
-        padding-top: 0;
-        .item__preview {
-            border-radius: 0;
-            margin: 0;
-            width: 100%;
-        }
     }
 }

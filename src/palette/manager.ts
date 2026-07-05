@@ -93,7 +93,7 @@ export function switchToPlan(plan: Plan): void {
 export function getPresetMenuItems(i18n: Record<string, string>): any[] {
   const mode = getCurrentThemeMode();
   const availablePresets = getPresetsByMode(mode);
-  const [firstPreset, ...restPresets] = availablePresets;
+  const [firstPreset, secondPreset, ...restPresets] = availablePresets;
   const items: any[] = [
     {
       id: `neo-palette-${firstPreset.key}-button`,
@@ -104,8 +104,19 @@ export function getPresetMenuItems(i18n: Record<string, string>): any[] {
         return true;
       },
     },
-    { type: 'separator' },
   ];
+  if (secondPreset) {
+    items.push({
+      id: `neo-palette-${secondPreset.key}-button`,
+      icon: 'iconNeoPalette',
+      label: i18n[secondPreset.nameKey],
+      click: () => {
+        switchToPreset(secondPreset.key);
+        return true;
+      },
+    });
+  }
+  items.push({ type: 'separator' });
   for (let i = 0; i < restPresets.length; i += 5) {
     const chunk = restPresets.slice(i, i + 5);
     for (const preset of chunk) {
