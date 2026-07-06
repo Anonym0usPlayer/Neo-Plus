@@ -11,6 +11,7 @@ import { onScrollEffectClick } from '../visual/scrolleffect';
 import { onIdeClick } from '../ide/ide';
 import { onColoredFoldersClick, createColoredFoldersLabelHTML } from '../visual/coloredfolders';
 import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../verticaltabs/verticaltabs';
+import { onPerformanceClick } from '../performancemode/performancemode';
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
 import { onSuperFusionClick, createSuperFusionLabelHTML } from '../superfusion/superfusion';
 import { isMobile } from '../modules/env';
@@ -165,6 +166,16 @@ export function buildMenu(
       },
     });
   }
+  menu.addSeparator();
+  menu.addItem({
+    id: 'neo-performance-mode-button',
+    icon: 'iconNeoPerformance',
+    label: i18n.performance,
+    click: () => {
+      onPerformanceClick();
+      return true;
+    },
+  });
   menu.addSeparator();
   menu.addItem({
     id: 'neo-visual-button',

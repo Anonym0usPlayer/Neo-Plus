@@ -17,6 +17,12 @@
                 animation: neo-focusblock-entrance-vertical-line 0.3s var(--neo-ease-spring-2) forwards;
             }
         }
+        .rtl .protyle-wysiwyg [neo-focus-block] {
+            &::before {
+                right: -8px;
+                left: auto;
+            }
+        }
     }
     body.neo-extension-focusblockindicator-shadow {
         .protyle-wysiwyg [neo-focus-block] {

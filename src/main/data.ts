@@ -58,6 +58,7 @@ export interface Config {
   'sidebar-mute'?: boolean;
   'ide'?: boolean;
   'multicolumn-slash-menu'?: boolean;
+  'performance'?: boolean;
 }
 let configCache: Config = {};
 let pendingLoadConfig: Promise<Config> | null = null;

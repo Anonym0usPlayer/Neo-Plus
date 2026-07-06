@@ -27,6 +27,14 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
     left: -18px;
     animation: neo-listbulletline-entrance 0.3s;
   }
+  .rtl #{$selector}::after {
+    border-left: none;
+    border-right: calc(1.5px + 0.1 * #{$fix-fontsize}) solid var(--neo-coloredlists-color, var(--_list-fold-color));
+    border-bottom-left-radius: unset;
+    border-bottom-right-radius: 16.8px;
+    left: auto;
+    right: -18px;
+  }
   .protyle-wysiwyg [data-node-id].li[neo-listbulletline-node] {
     &[data-subtype="o"],
     &[data-subtype="u"],
@@ -63,6 +71,12 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
         left: calc(-18px + #{$parent-fix});
         width: calc(34px - #{$parent-fix} - var(--neo-listbulletline-width-fix));
         border-bottom-left-radius: 0px;
+      }
+      .rtl [data-subtype="#{$parent}"] > .protyle-action + [data-subtype="#{$child}"] > #{$selector}:first-child::after {
+        left: auto;
+        right: calc(-18px + #{$parent-fix});
+        border-bottom-left-radius: unset;
+        border-bottom-right-radius: 0px;
       }
     }
   }
