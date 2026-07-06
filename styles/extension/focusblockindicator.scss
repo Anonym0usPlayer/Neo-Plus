@@ -10,17 +10,11 @@
                 width: 3.5px;
                 height: calc(100% - 1em);
                 border-radius: 8px;
-                left: -8px;
+                inset-inline-start: -8px;
                 top: 50%;
                 transform: translateY(-50%) scaleY(0);
                 background-color: var(--b3-theme-accent);
                 animation: neo-focusblock-entrance-vertical-line 0.3s var(--neo-ease-spring-2) forwards;
-            }
-        }
-        .rtl .protyle-wysiwyg [neo-focus-block] {
-            &::before {
-                right: -8px;
-                left: auto;
             }
         }
     }

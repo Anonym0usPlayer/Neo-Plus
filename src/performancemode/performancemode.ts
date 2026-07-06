@@ -1,3 +1,5 @@
+import { showMessage } from 'siyuan';
+import { getPlugin } from '../main/guard';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 function withViewTransition(callback: () => void): void {
@@ -24,6 +26,7 @@ export function onPerformanceClick(): void {
     } else {
       htmlEl.classList.add('neo-performance-mode');
       saveConfig({ 'performance': true } as Partial<Config>);
+      showMessage(getPlugin().i18n.performanceMessage, 3000);
     }
   });
 }

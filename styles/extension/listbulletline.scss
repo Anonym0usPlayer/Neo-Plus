@@ -27,7 +27,8 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
     left: -18px;
     animation: neo-listbulletline-entrance 0.3s;
   }
-  .rtl #{$selector}::after {
+  .rtl #{$selector}::after,
+  .list[style*="direction: rtl"] #{$selector}::after {
     border-left: none;
     border-right: calc(1.5px + 0.1 * #{$fix-fontsize}) solid var(--neo-coloredlists-color, var(--_list-fold-color));
     border-bottom-left-radius: unset;
@@ -72,7 +73,8 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
         width: calc(34px - #{$parent-fix} - var(--neo-listbulletline-width-fix));
         border-bottom-left-radius: 0px;
       }
-      .rtl [data-subtype="#{$parent}"] > .protyle-action + [data-subtype="#{$child}"] > #{$selector}:first-child::after {
+      .rtl [data-subtype="#{$parent}"] > .protyle-action + [data-subtype="#{$child}"] > #{$selector}:first-child::after,
+      .list[style*="direction: rtl"] [data-subtype="#{$parent}"] > .protyle-action + [data-subtype="#{$child}"] > #{$selector}:first-child::after {
         left: auto;
         right: calc(-18px + #{$parent-fix});
         border-bottom-left-radius: unset;
