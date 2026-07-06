@@ -11,41 +11,28 @@
                     --neo-inline-code-color: var(--neo-coloredlists-color);
                     --neo-tag-color: var(--neo-coloredlists-color);
                     --neo-inline-memo-color: var(--neo-coloredlists-color);
-                }
-            }
-            .protyle-action--task::before {
-                background-color: var(--neo-coloredlists-color);
-            }
-            & > .protyle-action {
-                color: var(--neo-coloredlists-color);
-                &:hover {
-                    color: var(--neo-coloredlists-color);
-                }
-                & + [data-node-id]:not(.list) {
-                    color: var(--neo-coloredlists-color);
-                    & [spellcheck] {
-                        color: var(--neo-coloredlists-color);
-                    }
-                }
-            }
-            [fold="1"],
-            &[fold="1"] {
-                & > .protyle-action {
-                    color: var(--neo-coloredlists-color);
-                    &::after {
-                        color: var(--neo-coloredlists-color);
-                    }
-                    &:hover {
-                        color: var(--neo-coloredlists-color);
-                        &::after {
+                    & > .protyle-action {
+                        --_list-action-color: var(--neo-coloredlists-color);
+                        --_list-fold-color: var(--neo-coloredlists-color);
+                        --_list-fold-bg: oklch(from var(--_list-fold-color) l c h / 0.18);
+                        & + [data-node-id]:not(.list) {
                             color: var(--neo-coloredlists-color);
+                            & [spellcheck] {
+                                color: var(--neo-coloredlists-color);
+                            }
                         }
                     }
+                    .li[fold="1"] > .protyle-action,
+                    .li > .protyle-action:hover {
+                        --_list-action-color: var(--neo-coloredlists-color);
+                        --_list-fold-color: var(--neo-coloredlists-color);
+                        --_list-fold-bg: oklch(from var(--_list-fold-color) l c h / 0.18);
+                    }
+                    .protyle-task--done > .protyle-action--task::before {
+                        background-color: var(--neo-coloredlists-color);
+                    }
                 }
             }
-        }
-        & [neo-listbulletline-node] {
-            --neo-listbulletline-hl-color: var(--neo-coloredlists-color);
         }
     }
 }

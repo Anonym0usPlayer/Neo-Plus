@@ -15,12 +15,11 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
     '[data-id="neo-list-bullet-line-button"]',
     '[data-id="neo-extension-button"]'
   );
-  --neo-listbulletline-hl-color: var(--b3-theme-accent);
   #{$selector}::after {
     content: '';
     box-sizing: border-box;
-    border-left: calc(1.5px + 0.1 * #{$fix-fontsize}) solid var(--neo-listbulletline-hl-color);
-    border-bottom: calc(1.5px + 0.1 * #{$fix-fontsize}) solid var(--neo-listbulletline-hl-color);
+    border-left: calc(1.5px + 0.1 * #{$fix-fontsize}) solid var(--neo-coloredlists-color, var(--_list-fold-color));
+    border-bottom: calc(1.5px + 0.1 * #{$fix-fontsize}) solid var(--neo-coloredlists-color, var(--_list-fold-color));
     border-radius: unset;
     border-bottom-left-radius: 16.8px;
     corner-shape: superellipse(1.4);
@@ -28,18 +27,12 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
     left: -18px;
     animation: neo-listbulletline-entrance 0.3s;
   }
-  .protyle-wysiwyg [data-node-id].li {
+  .protyle-wysiwyg [data-node-id].li[neo-listbulletline-node] {
     &[data-subtype="o"],
     &[data-subtype="u"],
     &[data-subtype="t"] {
-      &[neo-listbulletline-node] > .protyle-action {
-        color: var(--neo-listbulletline-hl-color);
-        &::before {
-          background-color: var(--neo-listbulletline-hl-color);
-        }
-        &::after {
-          color: var(--neo-listbulletline-hl-color);
-        }
+      & > .protyle-action {
+        --_list-action-color: var(--neo-coloredlists-color, var(--_list-fold-color));
       }
     }
   }
