@@ -172,6 +172,5 @@
   "pinnedToolbarStyleLiquidGlass": "液态玻璃",
   "sidebarMute": "侧栏静音",
   "multicolumnSlashMenu": "多列斜杠菜单",
-  "performance": "性能模式",
-  "performanceMessage": "已关闭部分毛玻璃效果、部分动效和平滑圆角"
+  "performance": "性能模式"
 }

@@ -172,6 +172,5 @@
   "pinnedToolbarStyleLiquidGlass": "Liquid Glass",
   "sidebarMute": "Sidebar Mute",
   "multicolumnSlashMenu": "Multicolumn Slash Menu",
-  "performance": "Performance Mode",
-  "performanceMessage": "Some frosted glass effects, animations, and smooth rounded corners have been disabled"
+  "performance": "Performance Mode"
 }
