@@ -179,7 +179,7 @@ export function buildMenu(
   menu.addSeparator();
   menu.addItem({
     id: 'neo-visual-button',
-    icon: 'iconNeoLayout',
+    icon: 'iconNeoVisual',
     label: i18n.visual,
     submenu: [
       {
