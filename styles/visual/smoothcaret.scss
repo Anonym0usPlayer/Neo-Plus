@@ -4,8 +4,6 @@
     inherits: false;
     initial-value: 0;
 }
-$smooth-caret-trans: 0.75s cubic-bezier(0.1, 0.9, 0.2, 1);
-$smooth-caret-breathing: 1s cubic-bezier(0.4, 0, 0.2, 1);
 .neo-visual-smooth-caret {
     @include visual-common('[data-id="neo-smooth-caret-button"]', '[data-id="neo-visual-button"]');
     .protyle-wysiwyg,
@@ -20,36 +18,25 @@ $smooth-caret-breathing: 1s cubic-bezier(0.4, 0, 0.2, 1);
         pointer-events: none;
         opacity: 1;
         background-color: var(--neo-smooth-caret-color, var(--b3-theme-accent));
-        transition: $smooth-caret-trans, opacity 0.3s;
-        will-change: transform, height;
+        transition: translate var(--neo-smooth-caret-ease), height var(--neo-smooth-caret-ease);
+        will-change: translate, transform, height;
         &.neo-smooth-caret-hidden {
             opacity: 0 !important;
             animation: none !important;
+            transition: opacity 0.3s;
         }
     }
-    body.neo-visual-smooth-caret-breathing {
-        #neo-smooth-caret-item {
-            animation: neo-mooth-caret-breathing $smooth-caret-breathing infinite;
-        }
-    }
-    body.neo-visual-smooth-caret-neon {
+    body.neo-visual-smooth-caret-style-neon {
         #neo-smooth-caret-item {
             box-shadow: 0 0 4px var(--neo-smooth-caret-color, var(--b3-theme-accent)), 0 0 10px var(--neo-smooth-caret-color, var(--b3-theme-accent)), 0 0 20px var(--neo-smooth-caret-color, var(--b3-theme-accent));
         }
     }
-    body.neo-visual-smooth-caret-rainbow {
+    body.neo-visual-smooth-caret-style-rainbow {
         #neo-smooth-caret-item {
             animation: neo-smooth-caret-rainbow-hue 6s linear infinite;
             background-color: oklch(from var(--b3-theme-accent) l c calc(h + var(--neo-smooth-caret-rainbow-hue, 0)));
         }
     }
-}
-@keyframes neo-mooth-caret-breathing {
-    0%   { opacity: 1; }
-    45%  { opacity: 1; }
-    50%  { opacity: 0; }
-    55%  { opacity: 0; }
-    100% { opacity: 1; }
 }
 @keyframes neo-smooth-caret-rainbow-hue {
     0% {
