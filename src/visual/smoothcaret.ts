@@ -13,33 +13,7 @@ let cachedFocusElement: Element | null = null;
 let smoothCaretMotion: 'static' | 'breathing' | 'stretch' = 'static';
 let smoothCaretEase: 'elegant' | 'shuttle' | 'drift' = 'elegant';
 let smoothCaretStyle: 'default' | 'neon' | 'rainbow' = 'default';
-let motionAnimFrameId: number | null = null;
-let motionAnimStartTime: number = 0;
-let motionUpdateFn: (() => void) | null = null;
-let isMotionActive = false;
 const scrollListenerOptions: AddEventListenerOptions = { capture: true, passive: true };
-function getStretchScale(): number {
-  if (smoothCaretMotion !== 'stretch') return 1;
-  const cycleMs = 1000;
-  const elapsed = performance.now() - motionAnimStartTime;
-  const progress = (elapsed % cycleMs) / cycleMs;
-  if (progress < 0.35) {
-    return 0.3 + (progress / 0.35) * 0.8;
-  }
-  if (progress < 0.65) return 1.1;
-  return 1.1 - ((progress - 0.65) / 0.35) * 0.8;
-}
-function getBreathingOpacity(): number {
-  if (smoothCaretMotion !== 'breathing') return 1;
-  const cycleMs = 1000;
-  const elapsed = performance.now() - motionAnimStartTime;
-  const progress = (elapsed % cycleMs) / cycleMs;
-  if (progress < 0.35) return 1;
-  if (progress < 0.4) return 1 - (progress - 0.35) / 0.05;
-  if (progress < 0.6) return 0;
-  if (progress < 0.65) return (progress - 0.6) / 0.05;
-  return 1;
-}
 function applySmoothCaretMotion(): void {
   document.body.classList.remove(
     'neo-visual-smooth-caret-motion-static',
@@ -66,29 +40,6 @@ function applySmoothCaretEase(): void {
   if (caret) {
     caret.style.setProperty('--neo-smooth-caret-ease', easeMap[smoothCaretEase] || easeMap.elegant);
   }
-}
-function restartMotionAnimation(): void {
-  if (motionAnimFrameId !== null) {
-    cancelAnimationFrame(motionAnimFrameId);
-    motionAnimFrameId = null;
-  }
-  if (smoothCaretMotion === 'static') {
-    isMotionActive = false;
-    const caret = document.getElementById('neo-smooth-caret-item');
-    if (caret) caret.style.removeProperty('opacity');
-    return;
-  }
-  isMotionActive = true;
-  motionAnimStartTime = performance.now();
-  function tick(): void {
-    if (!isMotionActive || smoothCaretMotion === 'static') {
-      motionAnimFrameId = null;
-      return;
-    }
-    motionUpdateFn?.();
-    motionAnimFrameId = requestAnimationFrame(tick);
-  }
-  motionAnimFrameId = requestAnimationFrame(tick);
 }
 function startSmoothCaret(): void {
   document.getElementById('neo-smooth-caret-item')?.remove();
@@ -161,16 +112,8 @@ function startSmoothCaret(): void {
           }
         }
         caretElement.classList.remove('neo-smooth-caret-hidden');
-        const scaleY = getStretchScale();
         caretElement.style.translate = `${rect.left - 0.75}px ${rect.top - rect.height * 0.025}px`;
-        caretElement.style.transform = scaleY !== 1 ? `scaleY(${scaleY})` : '';
         caretElement.style.height = `${rect.height * 1.05}px`;
-        const breathOpacity = getBreathingOpacity();
-        if (breathOpacity !== 1) {
-          caretElement.style.opacity = breathOpacity.toString();
-        } else {
-          caretElement.style.removeProperty('opacity');
-        }
         const baseZIndex = calculateCaretZIndex(targetElement);
         caretElement.style.zIndex = (baseZIndex + 1).toString();
         const textColor = getTextColor(sel.focusNode, targetElement);
@@ -184,10 +127,6 @@ function startSmoothCaret(): void {
     }
     caretElement.classList.add('neo-smooth-caret-hidden');
   }
-  motionUpdateFn = (): void => {
-    isAnimationFramePending = false;
-    updateCaretPosition();
-  };
   function handleCaretUpdateTrigger(): void {
     if (!isAnimationFramePending) {
       window.requestAnimationFrame(updateCaretPosition);
@@ -216,7 +155,6 @@ function startSmoothCaret(): void {
   document.addEventListener('keyup', handleThrottledCaretUpdate);
   document.addEventListener('mouseup', handleThrottledCaretUpdate);
   updateCaretPosition();
-  restartMotionAnimation();
 }
 export function createSmoothCaretLabelHTML(i18n: Record<string, string>): string {
   return `<span class="fn__flex fn__pointer">
@@ -286,7 +224,6 @@ export function showSmoothCaretSettings(): void {
     title: plugin.i18n.smoothCaretSettings || 'Smooth Caret Settings',
     content: buildSettingsHTML(plugin.i18n),
   });
-  const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
   dialog.element.setAttribute('data-key', 'dialog-neo-smooth-caret-settings');
   dialog.element.classList.add('neo-settings-dialog');
   const easeSelect = dialog.element.querySelector('#neo-smooth-caret-ease') as HTMLSelectElement;
@@ -312,7 +249,6 @@ export function showSmoothCaretSettings(): void {
       if (newMotion !== smoothCaretMotion) {
         smoothCaretMotion = newMotion;
         applySmoothCaretMotion();
-        restartMotionAnimation();
         saveConfig({ 'smooth-caret-motion': newMotion } as Partial<Config>);
         changed = true;
       }
@@ -356,12 +292,6 @@ export function destroySmoothCaret(): void {
     document.removeEventListener('mouseup', throttledCaretEventHandler);
     throttledCaretEventHandler = null;
   }
-  if (motionAnimFrameId !== null) {
-    cancelAnimationFrame(motionAnimFrameId);
-    motionAnimFrameId = null;
-  }
-  isMotionActive = false;
-  motionUpdateFn = null;
 }
 export function initSmoothCaret(): void {
   (window as any).__neoOpenSmoothCaretSettings = showSmoothCaretSettings;

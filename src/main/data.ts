@@ -85,7 +85,6 @@ export function loadConfig(): Promise<Config> {
     configCache = { ...(data || {}), ...configCache };
     return configCache;
   }).catch(() => {
-    configCache = {};
     return configCache;
   });
   pendingLoadConfig.finally(() => { pendingLoadConfig = null; });

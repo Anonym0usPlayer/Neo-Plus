@@ -42,14 +42,10 @@ function isMenuVisible(el: HTMLElement | null): boolean {
 }
 function attachMenuObserver(): void {
   if (menuObserver) return;
+  if (!activeMenuElement) return;
   menuObserver = new MutationObserver(onMenuHidden);
   try {
-    menuObserver.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class', 'style'],
-      childList: true,
-      subtree: true,
-    });
+    menuObserver.observe(activeMenuElement, { attributes: true, attributeFilter: ['class'] });
   } catch {}
 }
 function beginPollingForMenu(): void {
