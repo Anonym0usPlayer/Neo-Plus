@@ -8,7 +8,7 @@
     @include visual-common('[data-id="neo-smooth-caret-button"]', '[data-id="neo-visual-button"]');
     .protyle-wysiwyg,
     .protyle-title__input,
-    [data-type="NodeHeading"] {
+    .agent-chat__input-area {
         caret-color: transparent !important;
     }
     #neo-smooth-caret-item {
@@ -18,8 +18,8 @@
         pointer-events: none;
         opacity: 1;
         background-color: var(--neo-smooth-caret-color, var(--b3-theme-accent));
-        transition: translate var(--neo-smooth-caret-ease), height var(--neo-smooth-caret-ease);
-        will-change: translate, transform, height;
+        transition: translate var(--neo-smooth-caret-ease), height var(--neo-smooth-caret-ease), width var(--neo-smooth-caret-ease);
+        will-change: translate, transform, height, width;
         &.neo-smooth-caret-hidden {
             opacity: 0 !important;
             animation: none !important;
@@ -35,6 +35,20 @@
         #neo-smooth-caret-item {
             animation: neo-smooth-caret-rainbow-hue 6s linear infinite;
             background-color: oklch(from var(--b3-theme-accent) l c calc(h + var(--neo-smooth-caret-rainbow-hue, 0)));
+        }
+    }
+    body.neo-visual-smooth-caret-style-block {
+        #neo-smooth-caret-item {
+            border-radius: 0;
+            background-color: oklch(from var(--neo-smooth-caret-color, var(--b3-theme-accent)) l c h / 0.2);
+            outline: 1px solid oklch(from var(--neo-smooth-caret-color, var(--b3-theme-accent)) l c h / 0.5);
+            outline-offset: -1px;
+        }
+    }
+    body.neo-visual-smooth-caret-style-underline {
+        #neo-smooth-caret-item {
+            border-radius: 1px;
+            height: 2px !important;
         }
     }
     body.neo-visual-smooth-caret-motion-breathing {

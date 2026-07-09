@@ -34,8 +34,8 @@ export interface Config {
   'customimage-preset-current-dark'?: string;
   'smooth-caret'?: boolean;
   'smooth-caret-motion'?: 'static' | 'breathing' | 'stretch';
-  'smooth-caret-ease'?: 'elegant' | 'shuttle' | 'drift';
-  'smooth-caret-style'?: 'default' | 'neon' | 'rainbow';
+  'smooth-caret-ease'?: 'elegant' | 'shuttle' | 'drift' | 'spring';
+  'smooth-caret-style'?: 'default' | 'neon' | 'rainbow' | 'block' | 'underline';
   'fluid-cursor'?: boolean;
   'list-bullet-line'?: boolean;
   'focus-block-indicator'?: boolean;

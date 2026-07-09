@@ -1,7 +1,7 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
-import { getCursorRect, getTextColor, getScrollContainer } from '../modules/getselection';
+import { getCursorRect, getTextColor, getScrollContainer, getCharWidthAtCursor } from '../modules/getselection';
 import { Dialog } from 'siyuan';
 let smoothCaretEventHandler: (() => void) | null = null;
 let throttledCaretEventHandler: (() => void) | null = null;
@@ -11,8 +11,8 @@ let lastTargetElement: Element | null = null;
 let cachedScrollContainer: HTMLElement | null = null;
 let cachedFocusElement: Element | null = null;
 let smoothCaretMotion: 'static' | 'breathing' | 'stretch' = 'static';
-let smoothCaretEase: 'elegant' | 'shuttle' | 'drift' = 'elegant';
-let smoothCaretStyle: 'default' | 'neon' | 'rainbow' = 'default';
+let smoothCaretEase: 'elegant' | 'shuttle' | 'drift' | 'spring' = 'elegant';
+let smoothCaretStyle: 'default' | 'neon' | 'rainbow' | 'block' | 'underline' = 'default';
 const scrollListenerOptions: AddEventListenerOptions = { capture: true, passive: true };
 function applySmoothCaretMotion(): void {
   document.body.classList.remove(
@@ -26,15 +26,18 @@ function applySmoothCaretStyle(): void {
   document.body.classList.remove(
     'neo-visual-smooth-caret-style-default',
     'neo-visual-smooth-caret-style-neon',
-    'neo-visual-smooth-caret-style-rainbow'
+    'neo-visual-smooth-caret-style-rainbow',
+    'neo-visual-smooth-caret-style-block',
+    'neo-visual-smooth-caret-style-underline'
   );
   document.body.classList.add(`neo-visual-smooth-caret-style-${smoothCaretStyle}`);
 }
 function applySmoothCaretEase(): void {
   const easeMap: Record<string, string> = {
     elegant: '0.75s cubic-bezier(0.1, 0.9, 0.2, 1)',
-    shuttle: '0.15s ease-out',
-    drift: '0.15s ease-in',
+    shuttle: '0.15s var(--neo-ease-out-4)',
+    drift: '0.15s var(--neo-ease-in-3)',
+    spring: '0.45s var(--neo-ease-spring-2)',
   };
   const caret = document.getElementById('neo-smooth-caret-item');
   if (caret) {
@@ -112,8 +115,13 @@ function startSmoothCaret(): void {
           }
         }
         caretElement.classList.remove('neo-smooth-caret-hidden');
-        caretElement.style.translate = `${rect.left - 0.75}px ${rect.top - rect.height * 0.025}px`;
-        caretElement.style.height = `${rect.height * 1.05}px`;
+        const needsCharWidth = smoothCaretStyle === 'block' || smoothCaretStyle === 'underline';
+        const charWidth = needsCharWidth ? getCharWidthAtCursor() : null;
+        const x = rect.left - (needsCharWidth && charWidth != null ? charWidth : 0.75);
+        const y = smoothCaretStyle === 'underline' ? rect.top + rect.height * 1.05 : rect.top - rect.height * 0.025;
+        caretElement.style.translate = `${x}px ${y}px`;
+        caretElement.style.height = smoothCaretStyle === 'underline' ? `${Math.min(rect.height * 0.15, 3)}px` : `${rect.height * 1.05}px`;
+        caretElement.style.width = needsCharWidth ? `${charWidth ?? rect.height * 0.6}px` : '';
         const baseZIndex = calculateCaretZIndex(targetElement);
         caretElement.style.zIndex = (baseZIndex + 1).toString();
         const textColor = getTextColor(sel.focusNode, targetElement);
@@ -164,13 +172,13 @@ export function createSmoothCaretLabelHTML(i18n: Record<string, string>): string
   </span>`;
 }
 function buildSettingsHTML(i18n: Record<string, string>): string {
-  const easeOptions = ['elegant', 'shuttle', 'drift']
+  const easeOptions = ['elegant', 'shuttle', 'drift', 'spring']
     .map(v => `<option value="${v}">${i18n[`smoothCaretEase${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
     .join('');
   const motionOptions = ['static', 'breathing', 'stretch']
     .map(v => `<option value="${v}">${i18n[`smoothCaretMotion${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
     .join('');
-  const styleOptions = ['default', 'neon', 'rainbow']
+  const styleOptions = ['default', 'neon', 'rainbow', 'block', 'underline']
     .map(v => `<option value="${v}">${i18n[`smoothCaretStyle${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
     .join('');
   return `<div class="b3-dialog__content">
@@ -236,7 +244,7 @@ export function showSmoothCaretSettings(): void {
   dialog.element.querySelector('#neo-smooth-caret-confirm')?.addEventListener('click', () => {
     let changed = false;
     if (easeSelect) {
-      const newEase = easeSelect.value as 'elegant' | 'shuttle' | 'drift';
+      const newEase = easeSelect.value as 'elegant' | 'shuttle' | 'drift' | 'spring';
       if (newEase !== smoothCaretEase) {
         smoothCaretEase = newEase;
         applySmoothCaretEase();
@@ -254,7 +262,7 @@ export function showSmoothCaretSettings(): void {
       }
     }
     if (styleSelect) {
-      const newStyle = styleSelect.value as 'default' | 'neon' | 'rainbow';
+      const newStyle = styleSelect.value as 'default' | 'neon' | 'rainbow' | 'block' | 'underline';
       if (newStyle !== smoothCaretStyle) {
         smoothCaretStyle = newStyle;
         applySmoothCaretStyle();
@@ -274,7 +282,9 @@ export function destroySmoothCaret(): void {
     'neo-visual-smooth-caret-motion-stretch',
     'neo-visual-smooth-caret-style-default',
     'neo-visual-smooth-caret-style-neon',
-    'neo-visual-smooth-caret-style-rainbow'
+    'neo-visual-smooth-caret-style-rainbow',
+    'neo-visual-smooth-caret-style-block',
+    'neo-visual-smooth-caret-style-underline'
   );
   throttleTimers.forEach((timer) => clearTimeout(timer));
   throttleTimers = [];

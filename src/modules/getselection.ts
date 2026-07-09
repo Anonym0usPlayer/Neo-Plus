@@ -51,6 +51,28 @@ export function getTextColor(focusNode: Node | null, fallbackElement: Element): 
   }
   return null;
 }
+export function getCharWidthAtCursor(): number | null {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return null;
+  const range = sel.getRangeAt(0);
+  if (!range.collapsed) {
+    const rects = range.getClientRects();
+    return rects.length > 0 ? rects[0].width : null;
+  }
+  const beforeRange = range.cloneRange();
+  try {
+    beforeRange.setStart(beforeRange.startContainer, Math.max(beforeRange.startOffset - 1, 0));
+  } catch { return null; }
+  let rects = beforeRange.getClientRects();
+  if (rects.length > 0 && rects[0].width > 0) return rects[0].width;
+  const afterRange = range.cloneRange();
+  try {
+    afterRange.setEnd(afterRange.endContainer, Math.min(afterRange.endOffset + 1, (afterRange.endContainer as Text).length ?? 0));
+  } catch { return null; }
+  rects = afterRange.getClientRects();
+  if (rects.length > 0 && rects[0].width > 0) return rects[0].width;
+  return null;
+}
 export function getScrollContainer(): HTMLElement | null {
   const sel = window.getSelection();
   if (!sel || sel.rangeCount === 0) return null;
