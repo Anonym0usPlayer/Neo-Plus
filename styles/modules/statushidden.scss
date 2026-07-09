@@ -14,7 +14,7 @@
                 animation: neo-status-expand 0.45s var(--neo-ease-spring-3);
                 @include status-child {
                     animation: neo-status-content 0.75s var(--neo-ease-spring-5) forwards;
-                    animation-delay: 0.15s;
+                    animation-delay: 0.05s;
                     opacity: 0;
                 }
             }
@@ -54,7 +54,7 @@
                         visibility: visible;
                         pointer-events: auto;
                         animation: neo-status-content 0.75s var(--neo-ease-spring-5) forwards;
-                        animation-delay: 0.15s;
+                        animation-delay: 0.05s;
                         opacity: 0;
                     }
                 }
@@ -80,8 +80,8 @@
 }
 @keyframes neo-status-dot {
     from {
-        transform: translate(-50%, -50%) translateX(-15px);
-        opacity: 0;
+        transform: translate(-50%, -50%) translateX(-10px);
+        opacity: 1;
     }
     to {
         transform: translate(-50%, -50%) translateX(0);
@@ -91,7 +91,7 @@
 @keyframes neo-status-content {
     from {
         transform: translateX(25px);
-        opacity: 0;
+        opacity: 1;
     }
     to {
         transform: translateX(0);
