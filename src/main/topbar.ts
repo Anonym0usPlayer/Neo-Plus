@@ -9,11 +9,6 @@ export function initTopBarButton(): HTMLElement | null {
     title: 'Neo+',
     position: 'right',
     callback: () => {
-      const isMobile = false;
-      if (isMobile) {
-        const menu = buildMenu();
-        menu.fullscreen();
-      } else {
         let rect = button.getBoundingClientRect();
         if (rect.width === 0) {
           rect = document.querySelector('#barMore')?.getBoundingClientRect() as DOMRect;
@@ -23,7 +18,6 @@ export function initTopBarButton(): HTMLElement | null {
         }
         const menu = buildMenu();
         menu.open({ x: rect.right, y: rect.bottom, isLeft: true });
-      }
     },
   });
   topBarButton = button;

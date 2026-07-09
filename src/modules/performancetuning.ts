@@ -241,13 +241,12 @@ function processAllRules(
 }
 function removeMatchingRules(entries?: RuleFilterEntry[]): void {
   const targets = entries ?? _ruleFilters;
-  for (const entry of targets) {
-    entry.saved = [];
-  }
+  const unprocessed = targets.filter((entry) => entry.saved.length === 0);
+  if (unprocessed.length === 0) return;
   for (let i = 0; i < document.styleSheets.length; i++) {
     const ss = document.styleSheets[i];
     try {
-      processAllRules(ss.cssRules, i, targets, null, null);
+      processAllRules(ss.cssRules, i, unprocessed, null, null);
     } catch (_e) {}
   }
 }
@@ -268,11 +267,22 @@ const _fetchListener = fetchListener();
 _fetchListener.on('setUILayout', () => {
   const dynamicEntries = _ruleFilters.filter((e) => e.dynamic);
   if (dynamicEntries.length > 0) {
-    removeMatchingRules(dynamicEntries);
+    for (const entry of dynamicEntries) {
+      entry.saved = [];
+    }
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(() => removeMatchingRules(dynamicEntries));
+    } else {
+      setTimeout(() => removeMatchingRules(dynamicEntries), 0);
+    }
   }
 });
 export function initPerformanceTuning(): void {
-  removeMatchingRules();
+  if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(() => removeMatchingRules());
+  } else {
+    setTimeout(() => removeMatchingRules(), 0);
+  }
   _fetchListener.attach();
 }
 export function destroyPerformanceTuning(): void {

@@ -43,7 +43,7 @@
                         transform: translate(-50%, -50%);
                         box-shadow: -8px 0 0 0 var(--b3-theme-on-surface-light), 8px 0 0 0 var(--b3-theme-on-surface-light);
                         animation: neo-status-dot 0.75s var(--neo-ease-spring-5) forwards;
-                        animation-delay: 0.15s;
+                        animation-delay: 0.1s;
                         opacity: 0;
                     }
                 }
@@ -80,7 +80,7 @@
 }
 @keyframes neo-status-dot {
     from {
-        transform: translate(-50%, -50%) translateX(-10px);
+        transform: translate(-50%, -50%) translateX(-15px);
         opacity: 1;
     }
     to {

@@ -17,6 +17,7 @@ let motionAnimFrameId: number | null = null;
 let motionAnimStartTime: number = 0;
 let motionUpdateFn: (() => void) | null = null;
 let isMotionActive = false;
+const scrollListenerOptions: AddEventListenerOptions = { capture: true, passive: true };
 function getStretchScale(): number {
   if (smoothCaretMotion !== 'stretch') return 1;
   const cycleMs = 1000;
@@ -211,7 +212,7 @@ function startSmoothCaret(): void {
   throttledCaretEventHandler = handleThrottledCaretUpdate;
   smoothCaretEventHandler = handleCaretUpdateTrigger;
   document.addEventListener('selectionchange', handleCaretUpdateTrigger);
-  document.addEventListener('scroll', handleCaretUpdateTrigger, { capture: true, passive: true });
+  document.addEventListener('scroll', handleCaretUpdateTrigger, scrollListenerOptions);
   document.addEventListener('keyup', handleThrottledCaretUpdate);
   document.addEventListener('mouseup', handleThrottledCaretUpdate);
   updateCaretPosition();
@@ -347,7 +348,7 @@ export function destroySmoothCaret(): void {
   cachedFocusElement = null;
   if (smoothCaretEventHandler) {
     document.removeEventListener('selectionchange', smoothCaretEventHandler);
-    document.removeEventListener('scroll', smoothCaretEventHandler, { capture: true, passive: true } as EventListenerOptions);
+    document.removeEventListener('scroll', smoothCaretEventHandler, scrollListenerOptions);
     smoothCaretEventHandler = null;
   }
   if (throttledCaretEventHandler) {

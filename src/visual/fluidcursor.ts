@@ -16,6 +16,7 @@ let ctx: CanvasRenderingContext2D | null = null;
 let isFirstMouseMove = true;
 let isCursorVisible = false;
 let isMouseDown = false;
+let isAnimating = false;
 let currentHueOffset = 0;
 let targetHueOffset = 0;
 let cachedDisplayColor = '#f44336';
@@ -124,11 +125,18 @@ function startFluidCursor(): void {
       canvas.style.transition = 'none';
       canvas.style.opacity = '1';
     }
+    if (!isAnimating && canvas) {
+      isAnimating = true;
+      lastTime = performance.now();
+      animationFrameId = window.requestAnimationFrame(animate);
+      return;
+    }
     if (hideCursorTimeout !== null) {
       clearTimeout(hideCursorTimeout);
     }
     hideCursorTimeout = window.setTimeout(() => {
       isCursorVisible = false;
+      isAnimating = false;
       if (canvas) {
         canvas.style.transition = 'opacity 300ms ease-out';
         canvas.style.opacity = '0';
@@ -147,6 +155,7 @@ function startFluidCursor(): void {
   window.addEventListener('mousedown', mouseDownHandler, { passive: true });
   window.addEventListener('mouseup', mouseUpHandler, { passive: true });
   mouseLeaveHandler = () => {
+    isAnimating = false;
     points = [];
     isFirstMouseMove = true;
   };
@@ -165,7 +174,12 @@ function startFluidCursor(): void {
     updateDisplayColor();
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     if (isFirstMouseMove) {
-      animationFrameId = window.requestAnimationFrame(animate);
+      if (isAnimating) {
+        animationFrameId = window.requestAnimationFrame(animate);
+      } else {
+        animationFrameId = null;
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      }
       return;
     }
     const actualHeadEase = 1 - Math.pow(1 - 0.9, timeFactor);
@@ -187,9 +201,15 @@ function startFluidCursor(): void {
       ctx.lineTo(points[i + 1].x, points[i + 1].y);
       ctx.stroke();
     }
-    animationFrameId = window.requestAnimationFrame(animate);
+    if (isAnimating) {
+      animationFrameId = window.requestAnimationFrame(animate);
+    } else {
+      animationFrameId = null;
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    }
   }
   lastTime = performance.now();
+  isAnimating = true;
   animationFrameId = window.requestAnimationFrame(animate);
 }
 export function destroyFluidCursor(): void {
@@ -228,6 +248,7 @@ export function destroyFluidCursor(): void {
   points = [];
   mouse = { x: 0, y: 0 };
   lastTime = 0;
+  isAnimating = false;
   canvas = null;
   ctx = null;
   const htmlEl = document.documentElement;
