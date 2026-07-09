@@ -12,7 +12,13 @@ interface PendingItem {
 let pendingQueue: PendingItem[] = [];
 let pendingCbs: Set<FetchCallback> = new Set();
 let rafId = 0;
+let isDestroyed = false;
 function flushPendingQueue(): void {
+  if (isDestroyed) {
+    pendingQueue = [];
+    pendingCbs.clear();
+    return;
+  }
   rafId = 0;
   const batch = pendingQueue;
   pendingQueue = [];
@@ -22,6 +28,7 @@ function flushPendingQueue(): void {
   }
 }
 function schedulePendingFlush(): void {
+  if (isDestroyed) return;
   if (rafId) return;
   rafId = requestAnimationFrame(flushPendingQueue);
 }
@@ -60,6 +67,7 @@ export function fetchListener() {
 }
 export function initFetchMonitor(): void {
   if (isPatched) return;
+  isDestroyed = false;
   downstreamFetch = window.fetch;
   patchedFetch = function (input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
     const currentDownstream = downstreamFetch;
@@ -118,6 +126,7 @@ export function initFetchMonitor(): void {
 }
 export function destroyFetchMonitor(): void {
   if (!isPatched) return;
+  isDestroyed = true;
   if (window.fetch === patchedFetch) {
     window.fetch = downstreamFetch!;
   }
