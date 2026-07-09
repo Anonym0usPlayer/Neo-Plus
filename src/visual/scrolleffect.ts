@@ -2,49 +2,53 @@ import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 const styleId = 'neo-scroll-effect-style';
 const scrollEffectCSS = `
-.neo-visual-scrolleffect {
-  .b3-menu__item[data-id="neo-scroll-effect-button"]:not(.b3-menu__item--show):not(.b3-menu__item--current),
-  .b3-menu__item[data-id="neo-visual-button"]:not(.b3-menu__item--show):not(.b3-menu__item--current) {
-    color: var(--b3-theme-accent);
-  }
-  .b3-menu__item[data-id="neo-scroll-effect-button"]:not(.b3-menu__item--show):not(.b3-menu__item--current) .b3-menu__icon,
-  .b3-menu__item[data-id="neo-visual-button"]:not(.b3-menu__item--show):not(.b3-menu__item--current) .b3-menu__icon {
-    color: var(--b3-theme-accent);
-  }
+.b3-menu__item[data-id="neo-scroll-effect-button"]:not(.b3-menu__item--show):not(.b3-menu__item--current),
+.b3-menu__item[data-id="neo-visual-button"]:not(.b3-menu__item--show):not(.b3-menu__item--current) {
+  color: var(--b3-theme-accent);
 }
-.neo-visual-scrolleffect {
-  #preview [data-node-id],
-  .protyle-wysiwyg [data-type=NodeBlockQueryEmbed][data-node-id] {
-    animation: none !important;
-  }
-  .protyle-wysiwyg [data-node-id],
+.b3-menu__item[data-id="neo-scroll-effect-button"]:not(.b3-menu__item--show):not(.b3-menu__item--current) .b3-menu__icon,
+.b3-menu__item[data-id="neo-visual-button"]:not(.b3-menu__item--show):not(.b3-menu__item--current) .b3-menu__icon {
+  color: var(--b3-theme-accent);
+}
+#preview,
+.export-img {
+  [data-node-id],
   .protyle-title,
   .protyle-action,
-  .callout-info,
-  .config-items > .b3-label {
-    animation: neo-content-scroll-reveal cubic-bezier(0.46, 0.03, 0.52, 0.96) both;
-    animation-timeline: view(block);
+  .callout-info {
+    animation: none !important;
   }
 }
-@keyframes neo-content-scroll-reveal {
-  0% {
+.protyle-wysiwyg [data-node-id],
+.protyle-action,
+.callout-info {
+    animation:
+      neo-scroll-reveal-entry cubic-bezier(0.46, 0.03, 0.52, 0.96) both,
+      neo-scroll-reveal-exit  cubic-bezier(0.46, 0.03, 0.52, 0.96) forwards;
+    animation-timeline: view(block), view(block);
+    animation-range: entry 0% entry 180px, exit calc(100% - 180px) exit 100%;
+}
+@keyframes neo-scroll-reveal-entry {
+  from {
     opacity: 0.2;
-    transform: translate(5px, 15px);
+    transform: translate(12px, 25px);
     filter: blur(2px);
   }
-  15% {
+  to {
     opacity: 1;
     transform: translate(0, 0);
     filter: blur(0);
   }
-  85% {
+}
+@keyframes neo-scroll-reveal-exit {
+  from {
     opacity: 1;
     transform: translate(0, 0);
     filter: blur(0);
   }
-  100% {
+  to {
     opacity: 0.5;
-    transform: translate(-5px, -15px);
+    transform: translate(-12px, -25px);
     filter: blur(2px);
   }
 }
