@@ -2,6 +2,36 @@ export function getCursorRect(): DOMRect | null {
   const sel = window.getSelection();
   if (!sel || sel.rangeCount === 0) return null;
   const range = sel.getRangeAt(0);
+  if (!range.collapsed && sel.focusNode) {
+    const cursorRange = document.createRange();
+    try {
+      cursorRange.setStart(sel.focusNode, sel.focusOffset);
+      cursorRange.collapse(true);
+      const rects = cursorRange.getClientRects();
+      if (rects.length > 0 && rects[0].height > 0) {
+        return rects[0];
+      }
+      let textNode: Text | null = null;
+      try {
+        textNode = document.createTextNode('\u200B');
+        cursorRange.insertNode(textNode);
+        cursorRange.selectNode(textNode);
+        const rect = cursorRange.getBoundingClientRect();
+        if (rect && rect.height > 0) {
+          return rect;
+        }
+        if (rect) {
+          return new DOMRect(rect.left, rect.top, 0, rect.height);
+        }
+      } catch {
+      } finally {
+        if (textNode?.parentNode) {
+          textNode.parentNode.removeChild(textNode);
+        }
+      }
+    } catch {
+    }
+  }
   const rects = range.getClientRects();
   if (rects.length > 0 && rects[0].height > 0) {
     return rects[0];
@@ -55,17 +85,25 @@ export function getCharWidthAtCursor(): number | null {
   const sel = window.getSelection();
   if (!sel || sel.rangeCount === 0) return null;
   const range = sel.getRangeAt(0);
-  if (!range.collapsed) {
-    const rects = range.getClientRects();
-    return rects.length > 0 ? rects[0].width : null;
-  }
-  const beforeRange = range.cloneRange();
+  const workRange = !range.collapsed && sel.focusNode
+    ? (() => {
+        const cr = document.createRange();
+        try {
+          cr.setStart(sel.focusNode!, sel.focusOffset);
+          cr.collapse(true);
+          return cr;
+        } catch {
+          return range.cloneRange();
+        }
+      })()
+    : range.cloneRange();
+  const beforeRange = workRange.cloneRange();
   try {
     beforeRange.setStart(beforeRange.startContainer, Math.max(beforeRange.startOffset - 1, 0));
   } catch { return null; }
   let rects = beforeRange.getClientRects();
   if (rects.length > 0 && rects[0].width > 0) return rects[0].width;
-  const afterRange = range.cloneRange();
+  const afterRange = workRange.cloneRange();
   try {
     afterRange.setEnd(afterRange.endContainer, Math.min(afterRange.endOffset + 1, (afterRange.endContainer as Text).length ?? 0));
   } catch { return null; }
