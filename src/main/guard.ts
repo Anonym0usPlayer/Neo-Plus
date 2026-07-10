@@ -98,71 +98,81 @@ export class NeoPlusController {
     this.isNeoTheme = isNowNeo;
   }
   private initNeoPlus(): void {
-    initNeoRootClass();
-    initEnv();
-    initNeoIcons();
-    initTopBarButton();
-    initShortcuts();
-    initStatusHidden();
-    initHideScrollbar();
-    initRemoveStyle();
-    initLayout();
-    initFetchMonitor();
-    initPerformanceTuning();
-    initCardSearchList();
-    initSvgFilter();
-    initPalette();
-    initTexture();
-    initColoredLists();
-    initColoredHeadings();
-    initColorfulSelection();
-    initSmoothCaret();
-    initColoredFolders();
-    initMulticolumnSlashMenu();
-    initScrollEffect();
-    initFluidCursor();
-    initVerticalTabs();
-    initPerformance();
-    initSuperFusion();
-    initSidebarMute();
-    initIde();
-    initListBulletLine();
-    initFocusBlockIndicator();
-    initImmersiveMode();
-    initPinnedToolbar();
+    const modules: Array<[string, () => void]> = [
+      ['rootClass', initNeoRootClass],
+      ['env', initEnv],
+      ['icons', initNeoIcons],
+      ['topbar', initTopBarButton],
+      ['shortcuts', initShortcuts],
+      ['statusHidden', initStatusHidden],
+      ['hideScrollbar', initHideScrollbar],
+      ['removeStyle', initRemoveStyle],
+      ['layout', initLayout],
+      ['fetchMonitor', initFetchMonitor],
+      ['performanceTuning', initPerformanceTuning],
+      ['cardSearchList', initCardSearchList],
+      ['svgFilter', initSvgFilter],
+      ['palette', initPalette],
+      ['texture', initTexture],
+      ['coloredLists', initColoredLists],
+      ['coloredHeadings', initColoredHeadings],
+      ['colorfulSelection', initColorfulSelection],
+      ['smoothCaret', initSmoothCaret],
+      ['coloredFolders', initColoredFolders],
+      ['multicolumnSlashMenu', initMulticolumnSlashMenu],
+      ['scrollEffect', initScrollEffect],
+      ['fluidCursor', initFluidCursor],
+      ['verticalTabs', initVerticalTabs],
+      ['performance', initPerformance],
+      ['superFusion', initSuperFusion],
+      ['sidebarMute', initSidebarMute],
+      ['ide', initIde],
+      ['listBulletLine', initListBulletLine],
+      ['focusBlockIndicator', initFocusBlockIndicator],
+      ['immersiveMode', initImmersiveMode],
+      ['pinnedToolbar', initPinnedToolbar],
+    ];
+    for (const [name, fn] of modules) {
+      try { fn(); } catch (e) { console.error(`[Neo+] init ${name} failed:`, e); }
+    }
   }
   private destroyNeoPlus(): void {
-    destroyNeoRootClass();
-    destroyEnv();
-    destroyNeoIcons();
-    destroyTopBarButton();
-    destroyShortcuts();
-    destroyStatusHidden();
-    destroyHideScrollbar();
-    destroyRemoveStyle();
-    destroyLayout();
-    destroyFetchMonitor();
-    destroyPerformanceTuning();
-    destroyCardSearchList();
-    destroySvgFilter();
-    destroyPalette();
-    destroyTexture();
-    destroyColoredLists();
-    destroyColoredHeadings();
-    destroyColorfulSelection();
-    destroySmoothCaret();
-    destroyColoredFolders();
-    destroyMulticolumnSlashMenu();
-    destroyScrollEffect();
-    destroyFluidCursor();
-    destroyVerticalTabs();
-    destroyPerformance();
-    destroySuperFusion();
-    destroySidebarMute();
-    destroyIde();
-    destroyListBulletLine();
-    destroyFocusBlockIndicator();
-    destroyImmersiveMode();
-    destroyPinnedToolbar();
+    const modules: Array<[string, () => void]> = [
+      ['pinnedToolbar', destroyPinnedToolbar],
+      ['immersiveMode', destroyImmersiveMode],
+      ['focusBlockIndicator', destroyFocusBlockIndicator],
+      ['listBulletLine', destroyListBulletLine],
+      ['ide', destroyIde],
+      ['sidebarMute', destroySidebarMute],
+      ['superFusion', destroySuperFusion],
+      ['performance', destroyPerformance],
+      ['verticalTabs', destroyVerticalTabs],
+      ['fluidCursor', destroyFluidCursor],
+      ['scrollEffect', destroyScrollEffect],
+      ['multicolumnSlashMenu', destroyMulticolumnSlashMenu],
+      ['coloredFolders', destroyColoredFolders],
+      ['smoothCaret', destroySmoothCaret],
+      ['colorfulSelection', destroyColorfulSelection],
+      ['coloredHeadings', destroyColoredHeadings],
+      ['coloredLists', destroyColoredLists],
+      ['texture', destroyTexture],
+      ['palette', destroyPalette],
+      ['svgFilter', destroySvgFilter],
+      ['cardSearchList', destroyCardSearchList],
+      ['performanceTuning', destroyPerformanceTuning],
+      ['fetchMonitor', destroyFetchMonitor],
+      ['layout', destroyLayout],
+      ['removeStyle', destroyRemoveStyle],
+      ['hideScrollbar', destroyHideScrollbar],
+      ['statusHidden', destroyStatusHidden],
+      ['shortcuts', destroyShortcuts],
+      ['topbar', destroyTopBarButton],
+      ['icons', destroyNeoIcons],
+      ['env', destroyEnv],
+      ['rootClass', destroyNeoRootClass],
+    ];
+    for (const [name, fn] of modules) {
+      try { fn(); } catch (e) { console.error(`[Neo+] destroy ${name} failed:`, e); }
+    }
   }
 }
