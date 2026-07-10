@@ -184,5 +184,6 @@
   "pinnedToolbarStyleLiquidGlass": "Liquid Glass",
   "sidebarMute": "Sidebar Mute",
   "multicolumnSlashMenu": "Multicolumn Slash Menu",
-  "performance": "Performance Mode"
+  "performance": "Performance Mode",
+  "hideToolbar": "Merge Tabs to Top Bar"
 }

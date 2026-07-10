@@ -22,6 +22,7 @@ import { onColoredListsClick } from '../element/coloredlists';
 import { onPinnedToolbarClick, createPinnedToolbarLabelHTML } from '../extension/pinnedtoolbar';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
 import { onColorfulSelectionClick } from '../element/colorfulselection';
+import { onHideToolbarClick } from '../modules/hidetoolbar';
 export function buildMenu(
   onClose?: () => void,
 ): Menu {
@@ -162,6 +163,15 @@ export function buildMenu(
       label: createVerticalTabsLabelHTML(i18n),
       click: () => {
         onVerticalTabsClick();
+        return true;
+      },
+    });
+    menu.addItem({
+      id: 'neo-hide-toolbar-button',
+      icon: 'iconNeoHideToolbar',
+      label: i18n.hideToolbar,
+      click: () => {
+        onHideToolbarClick();
         return true;
       },
     });

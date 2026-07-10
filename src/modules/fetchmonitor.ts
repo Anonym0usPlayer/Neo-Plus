@@ -124,6 +124,16 @@ export function initFetchMonitor(): void {
   window.fetch = patchedFetch;
   isPatched = true;
 }
+export function triggerFetchEvent(name: string): void {
+    const callbacks = rules.get(name);
+    if (!callbacks || callbacks.size === 0) return;
+    callbacks.forEach((cb) => {
+        if (pendingCbs.has(cb)) return;
+        pendingCbs.add(cb);
+        pendingQueue.push({ cb, response: undefined as any, url: name, init: undefined });
+    });
+    schedulePendingFlush();
+}
 export function destroyFetchMonitor(): void {
   if (!isPatched) return;
   isDestroyed = true;

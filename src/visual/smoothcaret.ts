@@ -117,7 +117,7 @@ function startSmoothCaret(): void {
         caretElement.classList.remove('neo-smooth-caret-hidden');
         const needsCharWidth = smoothCaretStyle === 'block' || smoothCaretStyle === 'underline';
         const charWidth = needsCharWidth ? getCharWidthAtCursor() : null;
-        const x = rect.left - (needsCharWidth && charWidth != null ? charWidth : 0.75);
+        const x = needsCharWidth ? rect.left : rect.left - 0.75;
         const y = smoothCaretStyle === 'underline' ? rect.top + rect.height * 1.05 : rect.top - rect.height * 0.025;
         caretElement.style.translate = `${x}px ${y}px`;
         caretElement.style.height = smoothCaretStyle === 'underline' ? `${Math.min(rect.height * 0.15, 3)}px` : `${rect.height * 1.05}px`;

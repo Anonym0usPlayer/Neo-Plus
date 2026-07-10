@@ -184,5 +184,6 @@
   "pinnedToolbarStyleLiquidGlass": "液态玻璃",
   "sidebarMute": "侧栏静音",
   "multicolumnSlashMenu": "多列斜杠菜单",
-  "performance": "性能模式"
+  "performance": "性能模式",
+  "hideToolbar": "顶栏融合"
 }

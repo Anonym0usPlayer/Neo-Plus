@@ -133,7 +133,7 @@ export class NeoPlusController {
       ['pinnedToolbar', initPinnedToolbar],
     ];
     for (const [name, fn] of modules) {
-      try { fn(); } catch (e) { console.error(`[Neo+] init ${name} failed:`, e); }
+      try { fn(); } catch { }
     }
   }
   private destroyNeoPlus(): void {
@@ -172,7 +172,7 @@ export class NeoPlusController {
       ['rootClass', destroyNeoRootClass],
     ];
     for (const [name, fn] of modules) {
-      try { fn(); } catch (e) { console.error(`[Neo+] destroy ${name} failed:`, e); }
+      try { fn(); } catch { }
     }
   }
 }
