@@ -5,7 +5,6 @@ import { getCursorRect, getTextColor, getScrollContainer } from '../modules/gets
 import { Dialog } from 'siyuan';
 const scrollDuration = 600;
 const scrollThrottle = 100;
-const centerThreshold = 40;
 let typewriterEnabled = true;
 let highlightEnabled = true;
 let selectionChangeHandler: (() => void) | null = null;
@@ -85,10 +84,7 @@ function applyPendingUpdate(): void {
   const container = getScrollContainer();
   if (!container) return;
   const containerRect = container.getBoundingClientRect();
-  const cursorCenterY = cursorRect.top + cursorRect.height / 2;
-  const containerCenterY = containerRect.top + containerRect.height / 2;
-  const distFromCenter = Math.abs(cursorCenterY - containerCenterY);
-  if (!isScrolling && typewriterEnabled && distFromCenter > centerThreshold && scrollRafId === null) {
+  if (!isScrolling && typewriterEnabled && scrollRafId === null) {
     scrollToLineCenter(cursorRect, container, containerRect);
   } else if (highlightEnabled) {
     updateMaskPosition(cursorRect, containerRect, container);
