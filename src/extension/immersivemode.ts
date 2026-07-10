@@ -12,7 +12,6 @@ let selectionChangeHandler: (() => void) | null = null;
 let scrollHandler: (() => void) | null = null;
 let scrollTimeout: number | null = null;
 let scrollEndTimer: number | null = null;
-let rafId: number | null = null;
 let scrollRafId: number | null = null;
 let lastMaskPosition: string | null = null;
 let lastMaskHeight: string | null = null;
@@ -135,10 +134,6 @@ function stopObserving(): void {
   if (scrollRafId !== null) {
     cancelAnimationFrame(scrollRafId);
     scrollRafId = null;
-  }
-  if (rafId !== null) {
-    cancelAnimationFrame(rafId);
-    rafId = null;
   }
   if (scrollEndTimer !== null) {
     clearTimeout(scrollEndTimer);

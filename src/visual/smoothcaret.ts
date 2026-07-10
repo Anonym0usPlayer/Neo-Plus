@@ -5,7 +5,7 @@ import { getCursorRect, getTextColor, getScrollContainer, getCharWidthAtCursor }
 import { Dialog } from 'siyuan';
 let smoothCaretEventHandler: (() => void) | null = null;
 let throttledCaretEventHandler: (() => void) | null = null;
-let throttleTimers: number[] = [];
+let _throttleTimer: number | null = null;
 let cachedZIndex = 0;
 let lastTargetElement: Element | null = null;
 let cachedScrollContainer: HTMLElement | null = null;
@@ -142,19 +142,19 @@ function startSmoothCaret(): void {
     }
   }
   function handleThrottledCaretUpdate(): void {
-    throttleTimers.forEach((timer) => clearTimeout(timer));
-    throttleTimers = [];
-    const delays = [200, 400, 600];
-    delays.forEach((delay) => {
-      const timer = window.setTimeout(() => {
+    if (_throttleTimer !== null) clearTimeout(_throttleTimer);
+    _throttleTimer = window.setTimeout(() => {
+      _throttleTimer = null;
+      handleCaretUpdateTrigger();
+      _throttleTimer = window.setTimeout(() => {
+        _throttleTimer = null;
         handleCaretUpdateTrigger();
-        const index = throttleTimers.indexOf(timer);
-        if (index > -1) {
-          throttleTimers.splice(index, 1);
-        }
-      }, delay);
-      throttleTimers.push(timer);
-    });
+        _throttleTimer = window.setTimeout(() => {
+          _throttleTimer = null;
+          handleCaretUpdateTrigger();
+        }, 200);
+      }, 200);
+    }, 200);
   }
   throttledCaretEventHandler = handleThrottledCaretUpdate;
   smoothCaretEventHandler = handleCaretUpdateTrigger;
@@ -286,8 +286,10 @@ export function destroySmoothCaret(): void {
     'neo-visual-smooth-caret-style-block',
     'neo-visual-smooth-caret-style-underline'
   );
-  throttleTimers.forEach((timer) => clearTimeout(timer));
-  throttleTimers = [];
+  if (_throttleTimer !== null) {
+    clearTimeout(_throttleTimer);
+    _throttleTimer = null;
+  }
   cachedZIndex = 0;
   lastTargetElement = null;
   cachedScrollContainer = null;

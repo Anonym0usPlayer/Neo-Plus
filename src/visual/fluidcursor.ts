@@ -36,10 +36,6 @@ function updateDisplayColor(): void {
 }
 function randomCursorColor(): void {
   const modeRand = Math.random();
-  const baseColor = getCursorColor();
-  if (baseColor !== cachedBaseColor) {
-    cachedBaseColor = baseColor;
-  }
   let randomHue: number;
   if (modeRand < 0.10) {
     const rand = Math.random();
@@ -52,8 +48,6 @@ function randomCursorColor(): void {
       const sign = Math.random() < 0.5 ? -1 : 1;
       randomHue = sign * (Math.floor(Math.random() * 91) + 90);
     }
-    const baseHue = isMouseDown ? 180 : 0;
-    cachedDisplayColor = `oklch(from ${baseColor} l c calc(h + ${baseHue} + ${randomHue}))`;
     currentHueOffset = randomHue;
     targetHueOffset = randomHue;
   } else {

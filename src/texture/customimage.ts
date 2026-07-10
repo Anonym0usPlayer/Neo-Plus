@@ -307,8 +307,9 @@ export function showCustomImageSettings(): void {
     }
   });
   const originalDestroy = dialog.destroy.bind(dialog);
-  dialog.destroy = () => {
-    loadConfig().then(c => {
+  dialog.destroy = async () => {
+    try {
+      const c = await loadConfig();
       const mode = document.documentElement.getAttribute('data-theme-mode') === 'dark' ? 'dark' : 'light';
       const texKey = mode === 'dark' ? 'texture-dark' : 'texture-light';
       const textureKey = (c as Record<string, any>)?.[texKey] as string | undefined;
@@ -339,7 +340,7 @@ export function showCustomImageSettings(): void {
       } else {
         clearCustomImageCss();
       }
-    }).catch(() => {});
+    } catch {}
     originalDestroy();
   };
   btn('#neo-customimage-cancel')?.addEventListener('click', () => dialog.destroy());
