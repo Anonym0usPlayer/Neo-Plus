@@ -4,6 +4,12 @@
     inherits: false;
     initial-value: 0;
 }
+.neo-mode-light {
+    --_smooth-caret-rainbow-l: 0.75;
+}
+.neo-mode-dark {
+    --_smooth-caret-rainbow-l: 0.95;
+}
 .neo-visual-smooth-caret {
     @include visual-common('[data-id="neo-smooth-caret-button"]', '[data-id="neo-visual-button"]');
     .protyle-wysiwyg,
@@ -34,7 +40,7 @@
     body.neo-visual-smooth-caret-style-rainbow {
         #neo-smooth-caret-item {
             animation: neo-smooth-caret-rainbow-hue 6s linear infinite;
-            background-color: oklch(from var(--b3-theme-accent) l c calc(h + var(--neo-smooth-caret-rainbow-hue, 0)));
+            background-color: oklch(from var(--b3-theme-accent) var(--_smooth-caret-rainbow-l) max(c, 0.45) calc(h + var(--neo-smooth-caret-rainbow-hue, 0)));
         }
     }
     body.neo-visual-smooth-caret-style-block {
