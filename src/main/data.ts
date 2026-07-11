@@ -61,6 +61,9 @@ export interface Config {
   'ide'?: boolean;
   'multicolumn-slash-menu'?: boolean;
   'performance'?: boolean;
+  'sidememo'?: boolean;
+  'sidememo-position'?: 'left' | 'right';
+  'sidememo-connector'?: boolean;
 }
 let configCache: Config = {};
 let pendingLoadConfig: Promise<Config> | null = null;

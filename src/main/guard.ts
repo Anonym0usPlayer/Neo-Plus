@@ -30,6 +30,7 @@ import { initListBulletLine, destroyListBulletLine } from '../extension/listbull
 import { initFocusBlockIndicator, destroyFocusBlockIndicator } from '../extension/focusblockindicator';
 import { initImmersiveMode, destroyImmersiveMode } from '../extension/immersivemode';
 import { initPinnedToolbar, destroyPinnedToolbar } from '../extension/pinnedtoolbar';
+import { initSideMemo, destroySideMemo } from '../extension/sidememo';
 function isNeoTheme(): boolean {
   const mode = document.documentElement.getAttribute('data-theme-mode');
   if (mode === 'dark') {
@@ -131,6 +132,7 @@ export class NeoPlusController {
       ['focusBlockIndicator', initFocusBlockIndicator],
       ['immersiveMode', initImmersiveMode],
       ['pinnedToolbar', initPinnedToolbar],
+      ['sideMemo', initSideMemo],
     ];
     for (const [name, fn] of modules) {
       try { fn(); } catch { }
@@ -139,6 +141,7 @@ export class NeoPlusController {
   private destroyNeoPlus(): void {
     const modules: Array<[string, () => void]> = [
       ['pinnedToolbar', destroyPinnedToolbar],
+      ['sideMemo', destroySideMemo],
       ['immersiveMode', destroyImmersiveMode],
       ['focusBlockIndicator', destroyFocusBlockIndicator],
       ['listBulletLine', destroyListBulletLine],

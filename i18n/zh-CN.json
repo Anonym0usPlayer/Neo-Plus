@@ -185,5 +185,14 @@
   "sidebarMute": "侧栏静音",
   "multicolumnSlashMenu": "多列斜杠菜单",
   "performance": "性能模式",
-  "hideToolbar": "顶栏融合"
+  "hideToolbar": "顶栏融合",
+  "sideMemo": "侧边备注",
+  "sidememoSettings": "配置侧边备注",
+  "sidememoPosition": "侧边备注位置",
+  "sidememoPositionTip": "设置侧边备注相对编辑区域的位置",
+  "sidememoPositionRight": "右侧",
+  "sidememoPositionLeft": "左侧",
+  "sidememoConnector": "连线",
+  "sidememoConnectorTip": "在侧边备注和源备注之间连线",
+  "mergedSideMemoEditTip": "这是多个行内备注合并显示的侧边备注卡片，需在每个源行内备注处分别修改"
 }

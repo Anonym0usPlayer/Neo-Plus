@@ -20,6 +20,7 @@ import { onCardSearchListClick } from '../visual/cardsearchlist';
 import { onMulticolumnSlashMenuClick } from '../visual/multicolumnslashmenu';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onPinnedToolbarClick, createPinnedToolbarLabelHTML } from '../extension/pinnedtoolbar';
+import { onSideMemoClick, createSideMemoLabelHTML } from '../extension/sidememo';
 import { onColoredHeadingsClick } from '../element/coloredheadings';
 import { onColorfulSelectionClick } from '../element/colorfulselection';
 import { onHideToolbarClick } from '../modules/hidetoolbar';
@@ -331,6 +332,17 @@ export function buildMenu(
           label: createPinnedToolbarLabelHTML(i18n),
           click: () => {
             onPinnedToolbarClick();
+            return true;
+          },
+        },
+      ] : []),
+      ...(!isMobile() ? [
+        {
+          id: 'neo-sidememo-button',
+          icon: 'iconNeoSideMemo',
+          label: createSideMemoLabelHTML(i18n),
+          click: () => {
+            onSideMemoClick();
             return true;
           },
         },

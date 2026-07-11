@@ -185,5 +185,14 @@
   "sidebarMute": "Sidebar Mute",
   "multicolumnSlashMenu": "Multicolumn Slash Menu",
   "performance": "Performance Mode",
-  "hideToolbar": "Merge Tabs to Top Bar"
+  "hideToolbar": "Merge Tabs to Top Bar",
+  "sideMemo": "Side Memo",
+  "sidememoSettings": "Configure Side Memo",
+  "sidememoPosition": "Side Memo Position",
+  "sidememoPositionTip": "Set the position of side memos relative to the editor",
+  "sidememoPositionRight": "Right",
+  "sidememoPositionLeft": "Left",
+  "sidememoConnector": "Connector",
+  "sidememoConnectorTip": "Draw connector lines between side memos and source memos",
+  "mergedSideMemoEditTip": "This is a merged side memo card from multiple inline memos. Edit each source inline memo individually."
 }

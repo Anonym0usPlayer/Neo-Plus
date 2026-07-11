@@ -184,5 +184,14 @@
   "sidebarMute": "側欄靜音",
   "multicolumnSlashMenu": "多列斜槓選單",
   "performance": "效能模式",
-  "hideToolbar": "頂欄融合"
+  "hideToolbar": "頂欄融合",
+  "sideMemo": "側邊備註",
+  "sidememoSettings": "設定側邊備註",
+  "sidememoPosition": "側邊備註位置",
+  "sidememoPositionTip": "設定側邊備註相對編輯區域的位置",
+  "sidememoPositionRight": "右側",
+  "sidememoPositionLeft": "左側",
+  "sidememoConnector": "連線",
+  "sidememoConnectorTip": "在側邊備註和源備註之間連線",
+  "mergedSideMemoEditTip": "這是多個行內備註合併顯示的側邊備註卡片，需在每個源行內備註處分別修改"
 }
