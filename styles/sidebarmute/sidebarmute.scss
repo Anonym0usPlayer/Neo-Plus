@@ -1,6 +1,6 @@
 @use "manager" as *;
 .b3-menu__item[data-id="neo-sidebar-mute-button"] {
-    .neo-palette-highcontrast.neo-mode-light {
+    .neo-palette-highcontrast.neo-mode-light & {
         opacity: 0.38;      
     }
 }
