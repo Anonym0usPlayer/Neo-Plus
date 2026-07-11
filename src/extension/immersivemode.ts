@@ -265,7 +265,6 @@ export function onImmersiveModeClick(): void {
 }
 export function destroyImmersiveMode(): void {
   document.documentElement?.classList.remove('neo-extension-immersivemode');
-  document.body.classList.remove('neo-extension-immersivemode-highlight');
-  document.body.classList.remove('neo-extension-immersivemode-no-highlight');
+  document.body.classList.remove('neo-extension-immersivemode-highlight', 'neo-extension-immersivemode-no-highlight');
   stopObserving();
 }

@@ -30,7 +30,7 @@ const fieldDefs: CustomImageField[] = [
 export function applyCustomImageCss(config?: Partial<Config> | null): void {
   const style = document.documentElement.style;
   for (const field of fieldDefs) {
-    const raw = (config as Record<string, any>)?.[field.configKey] as string | undefined;
+    const raw = config?.[field.configKey as keyof Config] as string | undefined;
     style.setProperty(field.cssVar, field.toCss(raw));
   }
 }
@@ -49,7 +49,7 @@ function getCurrentThemeMode(): 'light' | 'dark' {
   const mode = document.documentElement.getAttribute('data-theme-mode');
   return mode === 'dark' ? 'dark' : 'light';
 }
-function getCurrentPresetKey(): string {
+function getCurrentPresetKey(): 'customimage-preset-current-light' | 'customimage-preset-current-dark' {
   return getCurrentThemeMode() === 'dark' ? currentPresetKeyDark : currentPresetKeyLight;
 }
 export async function toggleCustomImage(enabled: boolean): Promise<void> {
@@ -57,15 +57,14 @@ export async function toggleCustomImage(enabled: boolean): Promise<void> {
   if (enabled) {
     document.documentElement.classList.add('neo-texture-customimage');
     const key = getCurrentPresetKey();
-    const name = ((config as Record<string, any>)?.[key] as string) || '';
+    const name = (config?.[key] as string) || '';
     const preset = getPreset(config, name);
     applyCustomImageCss(preset);
     const mode = getCurrentThemeMode();
     await saveConfig({ [mode === 'dark' ? 'texture-dark' : 'texture-light']: 'customimage' } as Partial<Config>);
-    document.documentElement.className = document.documentElement.className
-      .split(' ')
-      .filter(cls => !cls.startsWith('neo-texture-') || cls === 'neo-texture-customimage')
-      .join(' ');
+    document.documentElement.classList.remove(
+      ...Array.from(document.documentElement.classList).filter(cls => cls.startsWith('neo-texture-') && cls !== 'neo-texture-customimage')
+    );
   } else {
     document.documentElement.classList.remove('neo-texture-customimage');
     clearCustomImageCss();
@@ -312,17 +311,16 @@ export function showCustomImageSettings(): void {
       const c = await loadConfig();
       const mode = document.documentElement.getAttribute('data-theme-mode') === 'dark' ? 'dark' : 'light';
       const texKey = mode === 'dark' ? 'texture-dark' : 'texture-light';
-      const textureKey = (c as Record<string, any>)?.[texKey] as string | undefined;
+      const textureKey = c?.[texKey as keyof Config] as string | undefined;
       const html = document.documentElement;
-      html.className = html.className
-        .split(' ')
-        .filter(cls => !cls.startsWith('neo-texture-'))
-        .join(' ');
+      html.classList.remove(
+        ...Array.from(html.classList).filter(cls => cls.startsWith('neo-texture-'))
+      );
       if (textureKey && textureKey !== 'none') {
         if (textureKey === 'customimage') {
           html.classList.add('neo-texture-customimage');
           const currentKey = mode === 'dark' ? 'customimage-preset-current-dark' : 'customimage-preset-current-light';
-          const presetName = (c as Record<string, any>)?.[currentKey] as string | undefined;
+          const presetName = c?.[currentKey as keyof Config] as string | undefined;
           if (presetName) {
             const preset = getPreset(c, presetName);
             if (preset && typeof preset === 'object') {
@@ -429,7 +427,7 @@ function populateDialog(
   i18n: Record<string, string>,
 ): void {
   const currentKey = getCurrentPresetKey();
-  const cpk = ((config as Record<string, any>)?.[currentKey] as string) || '';
+  const cpk = (config?.[currentKey] as string) || '';
   if (presetSelect) {
     presetSelect.innerHTML = '';
     if (config) Object.keys(config as Record<string, any>).forEach(k => {

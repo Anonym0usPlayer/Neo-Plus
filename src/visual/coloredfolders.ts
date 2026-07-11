@@ -92,7 +92,5 @@ export function createColoredFoldersLabelHTML(i18n: Record<string, string>): str
 }
 export function destroyColoredFolders(): void {
   document.documentElement?.classList.remove('neo-visual-coloredfolders');
-  document.body.classList.remove('neo-visual-coloredfolders-partition');
-  document.body.classList.remove('neo-visual-coloredfolders-simple');
-  document.body.classList.remove('neo-visual-coloredfolders-card');
+  document.body.classList.remove('neo-visual-coloredfolders-partition', 'neo-visual-coloredfolders-simple', 'neo-visual-coloredfolders-card');
 }

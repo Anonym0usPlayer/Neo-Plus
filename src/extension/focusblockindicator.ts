@@ -157,9 +157,7 @@ export function createFocusBlockIndicatorLabelHTML(i18n: Record<string, string>)
 }
 export function destroyFocusBlockIndicator(): void {
   document.documentElement?.classList.remove('neo-extension-focusblockindicator');
-  document.body.classList.remove('neo-extension-focusblockindicator-shadow');
-  document.body.classList.remove('neo-extension-focusblockindicator-vertical-line');
-  document.body.classList.remove('neo-extension-focusblockindicator-background');
+  document.body.classList.remove('neo-extension-focusblockindicator-shadow', 'neo-extension-focusblockindicator-vertical-line', 'neo-extension-focusblockindicator-background');
   document.documentElement?.style.removeProperty('--neo-focusblock-text-color');
   stopObserving();
 }

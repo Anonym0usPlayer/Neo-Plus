@@ -55,20 +55,17 @@ export function destroyRandom(): void {
   const html = document.documentElement;
   html.style.removeProperty('--neo-custom-base-color');
   html.style.removeProperty('--neo-saturation');
-  html.classList.remove('neo-palette-invert');
-  html.classList.remove('neo-palette-highcontrast');
+  html.classList.remove('neo-palette-invert', 'neo-palette-highcontrast');
 }
 export function initRandom(): void {
   const html = document.documentElement;
   const mode = getCurrentThemeMode();
-  html.className = html.className
-    .split(' ')
-    .filter((cls) => !cls.startsWith('neo-palette-') || cls === 'neo-palette-random')
-    .join(' ');
+  html.classList.remove(
+    ...Array.from(html.classList).filter(cls => cls.startsWith('neo-palette-') && cls !== 'neo-palette-random')
+  );
   html.style.removeProperty('--neo-custom-base-color');
   html.style.removeProperty('--neo-saturation');
-  html.classList.remove('neo-palette-invert');
-  html.classList.remove('neo-palette-highcontrast');
+  html.classList.remove('neo-palette-invert', 'neo-palette-highcontrast');
   const choosePreset = Math.random() < 0.3;
   if (choosePreset) {
     const available = getPresetsByMode(mode);

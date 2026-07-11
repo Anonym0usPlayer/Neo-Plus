@@ -17,6 +17,5 @@ export function initEnv(): void {
   }
 }
 export function destroyEnv(): void {
-  document.body.classList.remove('neo-mobile');
-  document.body.classList.remove('neo-desktop');
+  document.body.classList.remove('neo-mobile', 'neo-desktop');
 }

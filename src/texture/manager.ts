@@ -60,10 +60,9 @@ function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>): a
         const texKey = getTextureKey(mode);
         saveConfig({ [texKey]: 'none' } as Partial<Config>);
       } else {
-        html.className = html.className
-          .split(' ')
-          .filter((cls) => !cls.startsWith('neo-texture-'))
-          .join(' ');
+        html.classList.remove(
+          ...Array.from(html.classList).filter((cls) => cls.startsWith('neo-texture-'))
+        );
         html.classList.add(className);
         const mode = getCurrentThemeMode();
         const texKey = getTextureKey(mode);
@@ -92,10 +91,9 @@ export function applyTexture(config: Config): void {
   const texKey = getTextureKey(mode);
   const textureKey = config[texKey];
   const html = document.documentElement;
-  html.className = html.className
-    .split(' ')
-    .filter((cls) => !cls.startsWith('neo-texture-'))
-    .join(' ');
+  html.classList.remove(
+    ...Array.from(html.classList).filter((cls) => cls.startsWith('neo-texture-'))
+  );
   if (textureKey && textureKey !== 'none') {
     if (textureKey === 'customimage') {
       html.classList.add('neo-texture-customimage');
@@ -138,10 +136,9 @@ export function initTexture(): void {
 }
 export function destroyTexture(): void {
   const html = document.documentElement;
-  html.className = html.className
-    .split(' ')
-    .filter((cls) => !cls.startsWith('neo-texture-'))
-    .join(' ');
+  html.classList.remove(
+    ...Array.from(html.classList).filter((cls) => cls.startsWith('neo-texture-'))
+  );
   clearCustomImageCss();
   if (_mutationObserver) {
     _mutationObserver.disconnect();

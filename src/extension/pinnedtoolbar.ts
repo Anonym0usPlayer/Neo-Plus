@@ -4,7 +4,9 @@ import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
 import { Dialog } from 'siyuan';
 const positionCycle: Array<'top' | 'bottom' | 'left' | 'right'> = ['top', 'left', 'bottom', 'right'];
-let _timerId: ReturnType<typeof setTimeout> | null = null;
+let _observer: MutationObserver | null = null;
+let _rafPending = false;
+let _debounceTimer: ReturnType<typeof setTimeout> | null = null;
 let _destroyed = false;
 let pinnedToolbarPosition: 'top' | 'bottom' | 'left' | 'right' = 'top';
 let pinnedToolbarStyle: 'frostedGlass' | 'liquidGlass' = 'frostedGlass';
@@ -85,20 +87,29 @@ export function createPinnedToolbarLabelHTML(i18n: Record<string, string>): stri
     <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.pinnedToolbarSettings}" onclick="event.stopPropagation();__neoOpenPinnedToolbarSettings()"><use xlink:href="#iconSettings"></use></svg>
   </span>`;
 }
-function scheduleNextTick(): void {
-  _timerId = setTimeout(() => {
-    _timerId = null;
+function scheduleApply(): void {
+  if (_debounceTimer !== null) {
+    clearTimeout(_debounceTimer);
+  }
+  _debounceTimer = setTimeout(() => {
+    _debounceTimer = null;
+    if (_destroyed || _rafPending) return;
+    _rafPending = true;
     requestAnimationFrame(() => {
+      _rafPending = false;
+      if (_destroyed) return;
       try { applyPosition(); } catch (_e) {}
-      if (!_destroyed) scheduleNextTick();
     });
-  }, 250);
+  }, 200);
 }
 function startObserving(): void {
   _destroyed = false;
   try { applyPosition(); } catch (_e) {}
   try { applyStyle(); } catch (_e) {}
-  scheduleNextTick();
+  _observer = new MutationObserver(() => {
+    scheduleApply();
+  });
+  _observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-readonly'] });
   if (!contextMenuHandler) {
     contextMenuHandler = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest('.protyle-toolbar');
@@ -112,9 +123,14 @@ function startObserving(): void {
 }
 function stopObserving(): void {
   _destroyed = true;
-  if (_timerId !== null) {
-    clearTimeout(_timerId);
-    _timerId = null;
+  _rafPending = false;
+  if (_debounceTimer !== null) {
+    clearTimeout(_debounceTimer);
+    _debounceTimer = null;
+  }
+  if (_observer) {
+    _observer.disconnect();
+    _observer = null;
   }
   if (contextMenuHandler) {
     document.removeEventListener('contextmenu', contextMenuHandler);
