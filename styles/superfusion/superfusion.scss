@@ -11,12 +11,12 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
 .neo-mode-light {
     --_superfusion-frosted-glass-filter: blur(6px) brightness(1.05);
     --_superfusion-frosted-glass-strip: 0 1px 0 0 hsla(0, 0%, 100%, 0.25), 0 0 10px 1px hsla(0, 0%, 0%, 0.08);
-    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) saturate(1.8);
+    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) saturate(1.5);
 }
 .neo-mode-dark {
     --_superfusion-frosted-glass-filter: blur(6px) brightness(0.9);
     --_superfusion-frosted-glass-strip: 0 1px 0 0 hsla(0, 0%, 100%, 0.12), 0 0 10px 1px hsla(0, 0%, 0%, 0.25);
-    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) saturate(1.8);
+    --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) saturate(1.5);
 }
 @mixin scrim-gradient(
     $color: var(--b3-theme-background),

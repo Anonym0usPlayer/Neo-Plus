@@ -196,12 +196,17 @@ export { createFollowTimeColorPickerHTML } from './followtime';
 export { onInvertClick } from './invert';
 export { onHighContrastClick } from './highcontrast';
 let _mutationObserver: MutationObserver | null = null;
+let _lastThemeMode: string | null = null;
 export function initPalette(): void {
   const plugin = getPlugin();
   if (!plugin) return;
   loadConfig().then((config) => {
     restorePalette(config);
+    _lastThemeMode = document.documentElement.getAttribute('data-theme-mode');
     _mutationObserver = new MutationObserver(() => {
+      const current = document.documentElement.getAttribute('data-theme-mode');
+      if (current === _lastThemeMode) return;
+      _lastThemeMode = current;
       loadConfig().then((config) => {
         restorePalette(config);
       });
@@ -227,4 +232,5 @@ export function destroyPalette(): void {
     _mutationObserver.disconnect();
     _mutationObserver = null;
   }
+  _lastThemeMode = null;
 }
