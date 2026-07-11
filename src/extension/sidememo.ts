@@ -609,6 +609,7 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
   const frag = document.createDocumentFragment();
   items.forEach((it) => frag.appendChild(it.el));
   container.appendChild(frag);
+  renderKatexInContainer(container);
   items.forEach((it) => {
     try {
       it.height = Math.ceil(it.el.getBoundingClientRect().height);
@@ -624,11 +625,10 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
     it.el.style.top = `${finalTop}px`;
     cursor = finalTop + it.height + GAP;
   });
-  renderKatexInContainer(container);
   const toggleTooltipMemoNoneFor = (relatedEl: HTMLElement | null, add: boolean) => {
     try {
       if (!relatedEl) return;
-      const isInlineMemo = relatedEl.hasAttribute?.('data-type') && relatedEl.getAttribute('data-type') === 'inline-memo';
+      const isInlineMemo = relatedEl.hasAttribute?.('data-type') && relatedEl.getAttribute('data-type')!.split(/\s+/).includes('inline-memo');
       if (!isInlineMemo) return;
       const protyleWysiwyg = relatedEl.closest('.protyle-wysiwyg') as HTMLElement | null;
       if (!protyleWysiwyg) return;
@@ -805,7 +805,7 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
               handlers._neoContainer = null;
             }
             try {
-              setTimeout(() => { syncSidememoState(); refreshSidememoContainers(); }, 200);
+              setTimeout(() => { syncSidememoState(); }, 200);
             } catch (_e) {}
           };
           const handlers = _sidememoState.get(it.el) || {};
@@ -1002,6 +1002,7 @@ export function onSideMemoClick(): void {
     saveConfig({ 'sidememo': false } as Partial<Config>);
     destroySideMemo();
   } else {
+    _destroyed = false;
     htmlEl.classList.add('neo-extension-sidememo');
     saveConfig({ 'sidememo': true } as Partial<Config>);
     initSidememoRely();
@@ -1100,6 +1101,7 @@ export function initSideMemo(): void {
     sideMemoPosition = savedPosition;
     sideMemoConnector = savedConnector;
     if (config?.['sidememo'] === true) {
+      _destroyed = false;
       document.documentElement.classList.add('neo-extension-sidememo');
       updateSideMemoPositionClass(savedPosition);
       initSidememoRely();
