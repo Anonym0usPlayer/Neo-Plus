@@ -110,7 +110,6 @@ export function applyCurrentPlan(config: Config): void {
   } else if (plan === 'random') {
     html.classList.add('neo-palette-random');
   } else if (plan === 'craft') {
-    // craft plan 不加 class，完全靠 initCraft() 注入的内联 CSS 变量驱动
   } else {
     html.classList.add('neo-palette-custom');
   }
