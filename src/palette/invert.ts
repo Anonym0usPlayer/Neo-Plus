@@ -2,19 +2,15 @@ import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getCurrentThemeMode, getInvertKey, getCurrentPlan } from './presets';
 import { initCraft, destroyCraft } from './craft';
-const swapVars = ['--b3-theme-background', '--b3-theme-surface', '--b3-theme-on-background', '--b3-theme-on-surface'];
+const swapVars = ['--b3-theme-background', '--b3-theme-surface'];
 function swapCraftVars(): void {
     if (getCurrentThemeMode() !== 'dark') return;
     const html = document.documentElement;
     const bg = html.style.getPropertyValue(swapVars[0]);
     const sf = html.style.getPropertyValue(swapVars[1]);
-    const ob = html.style.getPropertyValue(swapVars[2]);
-    const os = html.style.getPropertyValue(swapVars[3]);
     if (!bg || !sf) return;
     html.style.setProperty(swapVars[0], sf);
     html.style.setProperty(swapVars[1], bg);
-    html.style.setProperty(swapVars[2], os);
-    html.style.setProperty(swapVars[3], ob);
 }
 function refreshCraftInvert(): void {
     if (getCurrentThemeMode() !== 'dark') return;
