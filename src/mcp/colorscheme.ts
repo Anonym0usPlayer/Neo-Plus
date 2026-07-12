@@ -23,71 +23,26 @@ import { initSaturation, destroySaturation } from '../palette/saturation';
 import { initInvert, destroyInvert } from '../palette/invert';
 import { initHighContrast, destroyHighContrast } from '../palette/highcontrast';
 import { initCraft, destroyCraft, type CraftPreset } from '../palette/craft';
+import {
+    allPresetKeys,
+    presetNameMap,
+    presetModes,
+    formatPresetDetail,
+    buildPresetDescription,
+    buildPresetsByMode,
+    isPresetValidForMode,
+    resolvePresetKey,
+} from './presetcolordata';
 type ActionResult = { result?: string; error?: string };
 const modeLabels: Record<string, string> = { all: '亮暗通用', light: '仅亮色', dark: '仅暗色' };
-const presets: Array<{ key: string; name: string; mode: 'all' | 'light' | 'dark'; style: string }> = [
-    { key: 'default', name: '默认', mode: 'all', style: 'Neo主题的默认配色' },
-    { key: 'classic', name: '经典', mode: 'all', style: '经典黑白灰蓝' },
-    { key: 'meridian', name: '子午', mode: 'all', style: '极致黑白' },
-    { key: 'amber', name: '琥珀', mode: 'all', style: '琥珀暖棕' },
-    { key: 'dusk', name: '黄昏', mode: 'light', style: '黄昏粉橘' },
-    { key: 'gingko', name: '银杏', mode: 'light', style: '银杏朱黄' },
-    { key: 'lavender', name: '薰衣草', mode: 'all', style: '薰衣草淡紫' },
-    { key: 'midnight', name: '午夜', mode: 'dark', style: '午夜深蓝' },
-    { key: 'ocean', name: '深海', mode: 'dark', style: '深海青绿' },
-    { key: 'opalite', name: '蛋白石', mode: 'light', style: '蛋白石灰蓝' },
-    { key: 'oxygen', name: '氧', mode: 'dark', style: '氧系暖灰' },
-    { key: 'sakura', name: '樱花', mode: 'light', style: '樱花淡粉' },
-    { key: 'twilight', name: '暮光', mode: 'dark', style: '暮光紫蓝' },
-    { key: 'wilderness', name: '旷野', mode: 'all', style: '旷野青绿' },
-    { key: 'everbliss', name: '岁禧', mode: 'all', style: '岁禧朱红' },
-    { key: 'aerisland', name: '空屿', mode: 'all', style: '空屿青蓝' },
-    { key: 'zerith', name: '零域', mode: 'all', style: '零域冷绿' },
-    { key: 'stellula', name: '星漪', mode: 'all', style: '星漪蓝青' },
-    { key: 'vael', name: '远岫', mode: 'all', style: '远岫灰蓝' },
-    { key: 'savor', name: '写味', mode: 'all', style: '写味珊瑚' },
-    { key: 'sugar', name: '糖', mode: 'light', style: '糖系粉红' },
-    { key: 'salt', name: '盐', mode: 'light', style: '盐系青灰' },
-    { key: 'starry', name: '星穹', mode: 'dark', style: '星穹暗紫' },
-    { key: 'tundra', name: '苔原', mode: 'light', style: '苔原青绿' },
-    { key: 'abyss', name: '深渊', mode: 'dark', style: '深渊荧青' },
-    { key: 'violet', name: '紫罗兰', mode: 'light', style: '紫罗兰紫' },
-    { key: 'titaniumspace', name: '钛空', mode: 'all', style: '钛空蓝灰' },
-    { key: 'firefly', name: '萤火', mode: 'dark', style: '萤火青绿' },
-    { key: 'songyan', name: '松烟', mode: 'dark', style: '松烟金黄' },
-];
-const allPresetKeys = presets.map(p => p.key);
-const presetNameMap: Record<string, string> = Object.fromEntries(presets.map(p => [p.key, p.name]));
-const presetModes: Record<string, 'all' | 'light' | 'dark'> = Object.fromEntries(presets.map(p => [p.key, p.mode]));
-const presetStyleDesc: Record<string, string> = Object.fromEntries(presets.map(p => [p.key, p.style]));
-function buildPresetDescription(): string {
-    return allPresetKeys.map(k => `${k}（${presetNameMap[k] || k}，${presetStyleDesc[k] || ''}，${modeLabels[presetModes[k]]}）`).join('、');
-}
-function buildPresetsByMode(mode: 'light' | 'dark'): string {
-    return allPresetKeys
-        .filter(k => presetModes[k] === 'all' || presetModes[k] === mode)
-        .map(k => `${k}（${presetNameMap[k] || k}，${presetStyleDesc[k] || ''}）`)
-        .join('、');
-}
-function isPresetValidForMode(key: string, mode: 'light' | 'dark'): boolean {
-    const m = presetModes[key];
-    return m === 'all' || m === mode;
-}
-const nameToKey: Record<string, string> = Object.fromEntries(
-    Object.entries(presetNameMap).map(([k, v]) => [v, k])
-);
-function resolvePresetKey(input: string): string | null {
-    const lower = input.trim().toLowerCase();
-    if (allPresetKeys.includes(lower)) return lower;
-    if (nameToKey[input.trim()]) return nameToKey[input.trim()];
-    return null;
-}
 function isValidHex(s: string): boolean {
-    return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(s);
+    return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(s);
 }
 function normalizeHex(s: string): string {
     const h = s.replace('#', '');
-    return '#' + (h.length === 3 ? h[0] + h[0] + h[1] + h[1] + h[2] + h[2] : h).toLowerCase();
+    if (h.length === 3) return '#' + h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    if (h.length === 4) return '#' + h[0] + h[0] + h[1] + h[1] + h[2] + h[2] + h[3] + h[3];
+    return '#' + h.toLowerCase();
 }
 function extractParams(args: Record<string, unknown>): Record<string, unknown> {
     if (typeof args.key === 'string' || typeof args.baseColor === 'string' ||
@@ -368,7 +323,7 @@ async function applyInvertToggle(raw: Record<string, unknown>): Promise<string> 
         : true;
     const current = getCurrentThemeMode();
     if (enable && current === 'light') {
-        throw new Error('反色仅支持暗色（dark）模式，当前为亮色（light）模式，无法开启。请先切换到暗色模式后再试。');
+        throw new Error('反转仅支持暗色（dark）模式，当前为亮色（light）模式，无法开启。请先切换到暗色模式后再试。');
     }
     const html = document.documentElement;
     if (enable) html.classList.add('neo-palette-invert');
@@ -454,12 +409,13 @@ async function getColorStatus(_raw: Record<string, unknown>): Promise<string> {
     const highContrast = config[getHighContrastKey(mode)] ?? false;
     const saturation = config[getSaturationKey(mode)];
     const parts = [`当前模式：${mode === 'dark' ? '暗色(dark)' : '亮色(light)'}`];
-    parts.push(`当前配色方案：${plan}`);
+    parts.push(`当前配色方案：${plan === 'craft' ? 'craft（即AI配色方案，上次由AI设计的配色）' : plan}`);
     if (plan === 'preset') {
         parts.push(`当前预设：${config[mode === 'dark' ? 'preset-dark' : 'preset-light'] || 'default'}`);
     }
     if (plan === 'custom') {
         parts.push(`当前基色：${config[getCustomColorKey(mode)]}`);
+        parts.push('提示：custom 模式下背景亮度由 Neo 主题内置算法决定，无法单独调整。若要精确控制亮度等全部参数，请使用 craft（AI配色方案）模式。');
     }
     if (plan === 'followtime') {
         const ftBase = config[getFollowTimeBaseColorKey(mode)];
@@ -480,7 +436,7 @@ async function getColorStatus(_raw: Record<string, unknown>): Promise<string> {
         parts.push(`当前饱和度：${saturation}`);
     }
     parts.push(`高对比度：${highContrast ? '已开启' : '未开启'}（仅亮色生效）`);
-    parts.push(`反色：${invert ? '已开启' : '未开启'}（仅暗色生效）`);
+    parts.push(`反转：${invert ? '已开启' : '未开启'}（仅暗色生效）`);
     parts.push(`运行平台：${isDesktop() ? '桌面端（支持跟随系统）' : '移动端/Web端（不支持跟随系统）'}`);
     return parts.join('；');
 }
@@ -489,18 +445,24 @@ async function statusPrefix(): Promise<string> {
     return `【当前状态】${s}`;
 }
 export function registerColorAgentActions(plugin: Plugin): void {
-    const presetDesc = buildPresetDescription();
-    const baseHint =
+    const knowledgeBase =
         '"暗色/暗夜/深色/dark" 指 dark 主题模式，"亮色/明亮/浅色/light" 指 light 主题模式。' +
         '默认直接应用到当前主题模式（不传 mode），不要询问用户要改哪个模式。' +
         '只有用户明确说要改亮色/暗色/两个都改时，才传 mode="light"/"dark"/"both"。' +
-        '配色功能仅在 Neo 主题下可用；若用户当前未使用 Neo 主题，告知其需先在「设置 → 外观 → 主题」中切换为 Neo 主题。' +
-        '勿主动提及 Neo-Plus 与 Neo 主题的关系；仅当用户明确问到"Neo-Plus 是什么"、"和 Neo 主题什么关系"等问题时，才简短说明：Neo+（Neo-Plus）是 Neo 主题的配套插件，提供丰富的界面美化与配色功能。';
-    const modeHint = baseHint +
-        '重要：换色前先调"查看当前配色状态"拿状态（弹窗有中文说明，用户看了就懂），拿到模式和高对比/反色状态后，再给出三个选项让用户选：' +
-        '"使用AI配色 设计整套配色方案 、使用自动配色 根据描述用Neo的配色系统自动生成 、使用预设配色 在Neo提供的预设配色中寻找接近的方案"。' +
-        '用户表态后调用对应 action。选中"自动配色"后根据用户的主题描述自行选一个基色和饱和度（不要默认用1），直接传 baseColor 和 saturation，不要对用户说"指定""给我"之类的话。选中"AI配色"后全部颜色由你构思，不要再问用户。' +
-        '最后一步：配色应用完成后，根据之前拿到的状态，暗色且反色未开→问"要不要开反色？"，亮色且高对比未开→问"要不要开高对比？"，已开就别问。两个平等对待，不要只问其中一个。仅在本次对话首次配色后问一次。';
+        '配色功能仅在 Neo 主题下可用。' +
+        '重要：收到用户的配色需求后，任何配色操作之前，必须无例外地先调"查看配色状态"。禁止跳过这一步直接调用其他配色工具。拿到模式和高对比/反转状态后，给出三个选项让用户选：' +
+        '"AI 配色（精细定制全色值） 由你自主构思全套颜色 、自动配色（基色+饱和度） 你根据描述自行设计基色和饱和度 、使用预设配色 在Neo提供的预设中找"。' +
+        '用户表态后调用对应 action。选中"自动配色"后根据用户的主题描述自行选一个基色和饱和度（不要默认用1），Neo 会根据基色自动生成背景/侧栏/文字等全套颜色。' +
+        '选中"AI 配色"后你自行构思全部颜色，不要再问用户。' +
+        '配色应用完成后，根据之前拿到的状态，暗色且反转未开→问"要不要开反转？"，亮色且高对比未开→问"要不要开高对比？"，已开就别问。' +
+        '两个平等对待，不要只问其中一个。仅在本次对话首次配色后问一次。' +
+        'QA知识库（用户问哪个就只答哪个，不要连带回答其他）：' +
+        '①问"为什么开启高对比没效果"→答：IDE风格不支持高对比度，请在Neo+菜单中关闭IDE风格。' +
+        '②问"为什么侧栏和编辑区背景色没区别"→答：可能开启了IDE风格，可在Neo+菜单中开启侧栏静音增强区分度。' +
+        '③问"Neo-Plus是什么"、"和Neo主题什么关系"→答：Neo+是Neo主题的配套插件，提供界面美化与配色功能。' +
+        '④彩色列表/文档树/标题看不清→答：由accent决定，需调整accent明度。' +
+        '⑤菜单项悬浮/选中颜色、switch、输入框聚焦环→答：由baseColor决定。' +
+        '⑥custom模式要求调整背景亮度→答：custom只能调基色和饱和度，亮度由算法自动计算，要精确控制请用craft。';
     const actions: Array<{
         name: string;
         description: string;
@@ -509,117 +471,129 @@ export function registerColorAgentActions(plugin: Plugin): void {
         {
             name: plugin.i18n.colorStatus,
             description:
-                '返回当前亮色/暗色模式、使用的配色方案、高对比度和反色是否已开启。纯查询，不做任何修改。' +
-                '配色前先调这个拿状态，拿到后不用再问用户当前是什么模式。',
-            handler: wrapHandler(getColorStatus),
+                '返回当前配色状态 + 配色系统全局知识与行为准则。所有配色操作前必须无例外地先调用此工具，禁止跳过。纯查询，不做任何修改。',
+            handler: wrapHandler(async () => {
+                const status = await getColorStatus({});
+                return knowledgeBase + '\n\n' + status;
+            }),
         },
         {
             name: plugin.i18n.autoColorScheme,
             description:
-                modeHint +
-                '根据描述用Neo的配色系统自动生成全套主题色（custom plan），根据用户的主题描述自行选择基色和饱和度，直接传 baseColor 和 saturation 参数。' +
-                '基色（baseColor）定义：基础色/强调色，可深可浅（主题会自动根据其明度调整其上文字颜色以保证可读性），用于按钮、高亮、选中等位置，是整个主题的视觉锚点。' +
-                '饱和度根据用户描述的风格灵活决定（0=黑白灰/1=几乎无色/2=淡色/3=明显/4=鲜艳/5=极度鲜艳）：' +
-                '复古/素雅/性冷淡→0~1，清新/柔和→1.5~2，活泼/鲜明→2.5~3，浓烈/高饱和→3.5~5。不要默认设1，不要对用户说"指定基色""给我一个基色"。' +
-                '通过 query 传 JSON：{"baseColor":"#e67e22","saturation":0.7}。' +
-                'baseColor 和 saturation 由你根据主题描述自行填入。saturation 选填（0~5）。' +
-                '如果用户提到的是预设名（钛空、深海、琥珀、紫罗兰等），必须用 setPreset，不要自己编 hex 值！' +
-                '用户说"自动配色""快速换色""设个基色""根据描述自动选基色"时调用。',
+                '调用前必须先调 colorStatus 拿当前模式。' +
+                '根据用户的主题描述自行设计一个基色和饱和度，用Neo的配色系统自动生成全套主题色（custom plan）。' +
+                '基色（baseColor）：基础色/强调色，浅色深色均可，用于按钮、高亮、选中等位置。' +
+                '饱和度（0~5）：复古/素雅→0~1，清新/柔和→1.5~2，活泼/鲜明→2.5~3，浓烈→3.5~5。' +
+                '通过 query 传 JSON：{"baseColor":"#e67e22","saturation":0.7}。saturation 选填。' +
+                '不要对用户说"请提供基色"或"指定一个颜色"之类的话，你根据用户的主题描述自行构思 hex 值即可。' +
+                '如果用户提到预设名（钛空、深海、琥珀等），必须用 setPreset。' +
+                'custom模式只能调基色和饱和度，背景亮度由算法决定，用户要调亮度请引导用craft。' +
+                '用户说"自动配色""快速换色""设个基色"时调用。',
             handler: wrapHandler(applyCustomScheme),
         },
         {
             name: plugin.i18n.setPreset,
             description:
-                modeHint +
-                '切换到内置预设配色（preset plan）。' +
-                '通过 query 传 JSON：{"key":"titaniumspace"}。指定模式时 {"key":"amber","mode":"dark"}。' +
-                '所有预设（key=中文名=适用范围）：' + presetDesc + '。' +
-                '重要：推荐或切换预设时必须匹配目标模式——"仅暗色"的预设不能用于亮色模式，"仅亮色"的不能用于暗色模式，"亮暗通用"的都可以。' +
-                '例如用户要改亮色，只能推荐"亮暗通用"或"仅亮色"的预设，不能推荐"仅暗色"的。' +
-                '用户说"换成钛空""切换到深海""暗色改成琥珀""使用预设配色""有哪些预设"等时用这个。切换完成即结束，不要主动建议调整。',
+                '调用前必须先调 colorStatus 拿当前模式。' +
+                '切换到内置预设配色（preset plan）。通过 query 传 JSON：{"key":"titaniumspace"}。指定模式时 {"key":"amber","mode":"dark"}。' +
+                '推荐预设时必须匹配目标模式——"仅暗色"不能用于亮色，"仅亮色"不能用于暗色，"亮暗通用"都可以。' +
+                '需查看预设列表时先调用 listPresets，不要自己编预设名。' +
+                '用户说"换成钛空""切换到深海""暗色改成琥珀""使用预设配色"时调用。切换完成即结束。',
             handler: wrapHandler(applyPresetScheme),
+        },
+        {
+            name: plugin.i18n.listPresets,
+            description:
+                '返回所有可用预设的名称、key、适用范围和风格描述。' +
+                '用户说"有哪些预设""预设列表"时调用。无参数。',
+            handler: wrapHandler(async () => buildPresetDescription()),
+        },
+        {
+            name: plugin.i18n.getPresetDetail,
+            description:
+                '查询某个预设的完整7个色值（亮/暗各一份）。' +
+                '用户要在某预设基础上微调时，先调此工具拿色值，保留不变的色值，只改用户要求的部分，' +
+                '然后用 generateCraftPreset 传入完整7个色值。不要用 autoColorScheme。' +
+                '通过 query 传 JSON：{"key":"amber"}。',
+            handler: wrapHandler(async (raw: Record<string, unknown>) => {
+                const args = extractParams(raw);
+                const key = resolvePresetKey(typeof args.key === 'string' ? args.key : '');
+                if (!key) throw new Error(`未知预设 "${String(args.key ?? '') || '(空)'}"。可选：${buildPresetDescription()}`);
+                return formatPresetDetail(key);
+            }),
         },
         {
             name: plugin.i18n.randomColor,
             description:
-                baseHint +
-                '启用随机配色（random plan）。参数可选：{"mode":"dark"}。每次都会随机生成一组全新配色。' +
-                '用户说"随机一个""换随机配色""来点随机的""暗色随机"时调用。' +
-                '注意：随机配色无法调整饱和度或亮度，切换完成即结束，不要主动建议调整。',
+                '调用前必须先调 colorStatus 拿当前模式。' +
+                '启用随机配色（random plan）。参数可选：{"mode":"dark"}。' +
+                '用户说"随机一个""来点随机的"时调用。切换完成即结束。',
             handler: wrapHandler(applyRandomScheme),
         },
         {
             name: plugin.i18n.followTimeColor,
             description:
-                baseHint +
-                '启用跟随时间配色（followtime plan），根据用户的主题描述自行选定基色和饱和度。' +
-                '饱和度（0=黑白灰/1=几乎无色/2=淡色/3=明显/4=鲜艳/5=极度鲜艳）：复古/素雅→0~1，清新/柔和→1.5~2，活泼/鲜明→2.5~3，浓烈→3.5~5，不要默认设1。' +
-                '通过 query 传 JSON：{"baseColor":"#e67e22","saturation":0.7}，两个参数都由你自行填入。',
+                '调用前必须先调 colorStatus 拿当前模式。' +
+                '启用跟随时间配色（followtime plan），根据用户描述自行选基色和饱和度。' +
+                '饱和度复古/素雅→0~1，清新→1.5~2，活泼→2.5~3，浓烈→3.5~5。' +
+                '通过 query 传 JSON：{"baseColor":"#e67e22","saturation":0.7}。',
             handler: wrapHandler(applyFollowTimeScheme),
         },
         {
             name: plugin.i18n.generateCraftPreset,
             description:
-                modeHint +
-                '生成完整配色方案（craft plan），精细定制界面风格。' +
+                '调用前必须先调 colorStatus 拿当前模式。' +
+                '生成完整配色方案（craft plan），精细定制界面。' +
                 '通过 query 传 JSON：{"background":"#f8f5f1","surface":"#f2ece3","baseColor":"#eecb9e","primary":"#b79d7b","accent":"#c58635","onBackground":"#654f2f","onSurface":"#7b5c30"}。' +
-                '各字段含义及约束：' +
-                'background：编辑区背景色，决定整体基调（亮色浅底/暗色深底）；' +
-                'surface：侧栏颜色，与背景要有区别，并且要和谐；' +
-                'onBackground：编辑区正文文字颜色，需与背景有足够对比度保证可读（必填，不可省略）；' +
-                'onSurface：侧栏/面板文字颜色，必须比 onBackground 更浅（暗色模式下 hex 数值更大、视觉更暗/更淡，亮色模式下数值更小、视觉更暗），独立于 onBackground，需与 surface 有对比度（必填，不可省略，必须单独提供色值）；' +
-                'baseColor：基础色/强调色，可深可浅（主题会自动根据其明度调整其上文字颜色以保证可读性），用于按钮/高亮/选中；' +
-                'primary：主题色，必须是深色以保文字可读性（会作为文字色出现在彩色元素上）；' +
-                'accent：强调色，必须是深色且饱和度不能过低，亮度与 primary 接近以确保可读性。' +
-                '用户要求"AI配色""设计整套配色方案""帮我设计全部颜色""给我设计一个主题"时调用。' +
-                '必须由你自行构思各个颜色，不要询问用户具体色值。' +
-                '注意：craft 模式下所有颜色是绝对色值，饱和度(--neo-saturation)不起作用，切换完成即结束，不要主动建议调整饱和度或基色。',
+                '各字段约束：background=编辑区背景，决定整体基调；surface=侧栏背景，与background有区别；' +
+                'onBackground=正文文字色，与background对比度要够；onSurface=侧栏文字，须比onBackground更浅；' +
+                'baseColor=强调色，浅深均可；primary=主题色，须深色保可读；accent=次要强调色，须深色且亮度与primary接近。' +
+                '用户要求"AI配色""设计全套"时调用。你自行构思所有颜色，不要问用户具体色值。' +
+                'craft模式饱和度不起作用。配色单调时优先变baseColor色相。',
             handler: wrapHandler(applyCraftScheme),
         },
         {
             name: plugin.i18n.followBannerColor,
             description:
-                baseHint +
-                '启用跟随题头图配色（followbanner plan），自动从文档题头图中提取主题色。' +
-                '饱和度（0=黑白灰/1=几乎无色/2=淡色/3=明显/4=鲜艳/5=极度鲜艳）：复古/素雅→0~1，清新/柔和→1.5~2，活泼/鲜明→2.5~3，浓烈→3.5~5，不要默认设1。' +
-                '通过 query 传 JSON：{"saturation":0.7}，saturation 选填。' +
-                '用户说"跟随题头图""用题头图配色""banner配色"时调用。',
+                '调用前必须先调 colorStatus 拿当前模式。' +
+                '启用跟随题头图配色（followbanner plan），自动从文档题头图提取主题色。' +
+                '饱和度同上，通过 query 传 JSON：{"saturation":0.7}，saturation 选填。' +
+                '用户说"跟随题头图""banner配色"时调用。',
             handler: wrapHandler(applyFollowBannerScheme),
         },
         {
             name: plugin.i18n.followSystemColor,
             description:
-                baseHint +
-                '启用跟随系统配色（followsystem plan），自动读取操作系统强调色作为主题色。' +
-                '饱和度（0=黑白灰/1=几乎无色/2=淡色/3=明显/4=鲜艳/5=极度鲜艳）：复古/素雅→0~1，清新/柔和→1.5~2，活泼/鲜明→2.5~3，浓烈→3.5~5，不要默认设1。' +
-                '通过 query 传 JSON：{"saturation":0.7}，saturation 选填。' +
-                '仅桌面端有效，移动端/web端不可用。调用前请先查看当前配色状态，若"运行平台"显示非桌面端则告知用户不支持，勿调用此 action。' +
-                '用户说"跟随系统""用系统配色""系统强调色"时调用。',
+                '调用前必须先调 colorStatus 拿当前模式。' +
+                '启用跟随系统配色（followsystem plan），读取操作系统强调色作为主题色。' +
+                '饱和度同上，通过 query 传 JSON：{"saturation":0.7}。仅桌面端有效。' +
+                '调用前先查看配色状态，若平台非桌面端则告知用户不支持。' +
+                '用户说"跟随系统""用系统配色"时调用。',
             handler: wrapHandler(applyFollowSystemScheme),
         },
         {
             name: plugin.i18n.adjustSaturation,
             description:
-                '调整配色饱和度。通过 query 传 JSON：{"value":0.7}。value 0~5，不同档位视觉参考：' +
-                '0=黑白灰（主题色/强调色/基色不受影响）、1=低饱和度，几乎看不出颜色、2=较明显的颜色但饱和度不高、3=明显颜色、4=鲜艳、5=极度鲜艳。' +
-                '对自定义配色(custom)、跟随时间(followtime)和高对比度(highcontrast)生效。' +
-                '注意：高对比度模式下，自定义/跟随时间配色的饱和度同时影响编辑区和四周深色区域，预设/craft 配色的饱和度仅影响四周深色区域（工具栏/dock栏/窗口背景）。' +
-                '不要在用户使用预设、随机或完整定制(craft)配色时主动建议调饱和度——craft 模式下所有颜色是绝对色值，--neo-saturation 不起作用。' +
-                '用户说"降低饱和度""太艳了""饱和度调高"时调用。',
+                '调整饱和度。通过 query 传 JSON：{"value":0.7}。value 0~5。' +
+                '对 custom、followtime、highcontrast 生效。' +
+                '注意：高对比度下 custom/followtime 的饱和度影响全局，preset/craft 仅影响四周深色区域。' +
+                '不要在 preset、random、craft 模式时主动建议调饱和度。' +
+                '用户说"降低饱和度""太艳了"时调用。',
             handler: wrapHandler(applySaturation),
         },
         {
             name: plugin.i18n.toggleInvert,
             description:
-                '开关反色效果。仅暗色（dark）模式生效，亮色模式下开启会报错。通过 query 传 JSON：{"enable":true} 开启，{"enable":false} 关闭。' +
-                '用户说"开启反色""关掉反色""反转颜色"时调用。亮色模式下用户要求开反色时，告知反色仅支持暗色模式，不要调用此 action。',
+                '开关反转。仅暗色模式生效。通过 query 传 JSON：{"enable":true|false}。' +
+                '用户说"开启反转""关掉反转""反转颜色"时调用。亮色下用户要求开反转时告知不支持。',
             handler: wrapHandler(applyInvertToggle),
         },
         {
             name: plugin.i18n.toggleHighContrast,
             description:
-                '开关高对比度。仅亮色（light）模式生效，暗色模式下开启会报错。开启后四周变深色突出编辑区。饱和度可调：自定义/跟随时间配色影响全局，预设/craft 仅影响深色区域。通过 query 传 JSON：{"enable":true} 开启，{"enable":false} 关闭。' +
-                '用户说"开高对比度""对比度调高""关掉高对比"时调用。暗色模式下用户要求开高对比度时，告知高对比度仅支持亮色模式，不要调用此 action。',
+                '开关高对比度。仅亮色模式生效。开启后四周变深色突出编辑区，深色颜色取自 accent。' +
+                '通过 query 传 JSON：{"enable":true|false}。' +
+                '用户说"开高对比度""关掉高对比"时调用。暗色下告知不支持。',
             handler: wrapHandler(applyHighContrastToggle),
         },
     ];
