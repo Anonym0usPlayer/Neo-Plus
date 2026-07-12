@@ -11,10 +11,12 @@ export interface Config {
   'highcontrast-dark'?: boolean;
   'preset-light'?: string;
   'preset-dark'?: string;
-  'color-plan-light'?: 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random';
-  'color-plan-dark'?: 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random';
+  'color-plan-light'?: 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random' | 'craft';
+  'color-plan-dark'?: 'preset' | 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random' | 'craft';
   'followtime-base-color-light'?: string;
   'followtime-base-color-dark'?: string;
+  'craft-preset-light'?: string;
+  'craft-preset-dark'?: string;
   'texture-light'?: string;
   'texture-dark'?: string;
   'customimage-url'?: string;

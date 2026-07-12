@@ -22,8 +22,9 @@ import { initSaturation, destroySaturation } from './saturation';
 import { initInvert, destroyInvert } from './invert';
 import { initHighContrast, destroyHighContrast } from './highcontrast';
 import { initRandom, destroyRandom } from './random';
+import { initCraft, destroyCraft } from './craft';
 export type { ThemeMode, Preset, Config };
-type Plan = 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random';
+type Plan = 'custom' | 'followtime' | 'followbanner' | 'followsystem' | 'random' | 'craft';
 function withViewTransition(callback: () => void): void {
   if (document.startViewTransition) {
     document.startViewTransition(callback);
@@ -38,6 +39,7 @@ function initPlan(plan: Plan, config: Config): void {
     case 'followbanner': initFollowBanner(config); break;
     case 'followsystem': initFollowSystem(config); break;
     case 'random': initRandom(); break;
+    case 'craft': initCraft(config); break;
   }
 }
 function restorePalette(config: Config): void {
@@ -51,6 +53,7 @@ function restorePalette(config: Config): void {
   destroySaturation();
   destroyInvert();
   destroyHighContrast();
+  destroyCraft();
   applyCurrentPlan(config);
   if (plan !== 'preset') {
     initPlan(plan as Plan, config);
@@ -72,6 +75,7 @@ export function switchToPreset(key: string): void {
       destroySaturation();
       destroyInvert();
       destroyHighContrast();
+      destroyCraft();
       applyPreset(key);
       initSaturation(config);
       initInvert(config);
@@ -226,6 +230,7 @@ export function destroyPalette(): void {
   destroySaturation();
   destroyInvert();
   destroyHighContrast();
+  destroyCraft();
   destroyPaletteClasses();
   destroyPaletteMenuEvents();
   if (_mutationObserver) {
