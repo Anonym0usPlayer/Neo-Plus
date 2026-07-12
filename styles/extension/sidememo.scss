@@ -49,7 +49,7 @@
     outline: 0.75px solid var(--b3-border-color-trans);
     outline-width: -0.75px;
     font-size: 0.8125em;
-    color: var(--b3-theme-on-surface);
+    color: oklch(from var(--b3-theme-on-background) l c h / 0.75);
     transition: all var(--b3-transition), top 0s;
     padding: 0.5em 0.75em;
     &:hover,
@@ -68,7 +68,7 @@
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     cursor: pointer;
-    color: var(--b3-theme-on-surface-light);
+    color: oklch(from var(--b3-theme-on-background) l c h / 0.45);
     transition: var(--b3-transition);
     margin-bottom: 0.25em;
     &:hover {
@@ -91,7 +91,6 @@
     height: 100vh;
     pointer-events: none;
     overflow: visible;
-    z-index: 99;
     path {
         stroke: var(--b3-theme-accent);
         stroke-width: 2;

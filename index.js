@@ -257,17 +257,20 @@ Details: https://developer.mozilla.org/en/docs/Web/HTML/CORS_enabled_image`));re
 }
 .protyle-wysiwyg [data-node-id],
 .protyle-action,
-.callout-info {
+.callout-info,
+.neo-sidememo-inlinememo-item,
+.neo-sidememo-blockmemo-item,
+.neo-sidememo-filememo-item {
     animation:
       neo-scroll-reveal-entry cubic-bezier(0.46, 0.03, 0.52, 0.96) both,
       neo-scroll-reveal-exit  cubic-bezier(0.46, 0.03, 0.52, 0.96) forwards;
     animation-timeline: view(block), view(block);
-    animation-range: entry 0% entry 180px, exit calc(100% - 180px) exit 100%;
+    animation-range: entry 0% entry 120px, exit calc(100% - 120px) exit 100%;
 }
 @keyframes neo-scroll-reveal-entry {
   from {
     opacity: 0.2;
-    transform: translate(12px, 25px);
+    transform: translate(8px, 16px);
     filter: blur(2px);
   }
   to {
@@ -284,7 +287,7 @@ Details: https://developer.mozilla.org/en/docs/Web/HTML/CORS_enabled_image`));re
   }
   to {
     opacity: 0.5;
-    transform: translate(-12px, -25px);
+    transform: translate(-8px, -16px);
     filter: blur(2px);
   }
 }
