@@ -1,4 +1,13 @@
 {
+  "colorStatus": "View Color Status",
+  "autoColorScheme": "Use Auto Color Scheme",
+  "setPreset": "Use Preset",
+  "randomColor": "Use Random Color",
+  "followTimeColor": "Use Follow Time",
+  "generateCraftPreset": "Use AI Color Scheme",
+  "adjustSaturation": "Adjust Saturation",
+  "toggleInvert": "Adjust Invert",
+  "toggleHighContrast": "Adjust High Contrast",
   "invertColor": "Invert",
   "highContrast": "High Contrast",
   "customThemeColor": "Custom Theme Color",

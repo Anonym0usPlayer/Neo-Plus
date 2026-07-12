@@ -1,4 +1,13 @@
 {
+  "colorStatus": "查看當前配色狀態",
+  "autoColorScheme": "使用自動配色方案",
+  "setPreset": "使用預設配色",
+  "randomColor": "使用隨機配色",
+  "followTimeColor": "使用跟隨時間",
+  "generateCraftPreset": "使用AI配色方案",
+  "adjustSaturation": "調整飽和度",
+  "toggleInvert": "調整反轉",
+  "toggleHighContrast": "調整高對比",
   "invertColor": "反轉",
   "highContrast": "高對比",
   "customThemeColor": "自訂主題色",
