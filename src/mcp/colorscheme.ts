@@ -355,13 +355,13 @@ async function applyHighContrastToggle(raw: Record<string, unknown>): Promise<st
     return await statusPrefix() + '\n' + (enable ? '高对比度已开启' : '高对比度已关闭');
 }
 const craftVarNames: Array<{ key: keyof CraftPreset; cssVar: string; label: string }> = [
-    { key: 'background', cssVar: '--b3-theme-background', label: '主背景' },
-    { key: 'surface', cssVar: '--b3-theme-surface', label: '面板/侧边栏表面' },
-    { key: 'baseColor', cssVar: '--b3-base-color', label: '强调色(按钮/高亮)' },
-    { key: 'primary', cssVar: '--b3-theme-primary', label: '主品牌色' },
-    { key: 'accent', cssVar: '--b3-theme-accent', label: '次要强调色' },
-    { key: 'onBackground', cssVar: '--b3-theme-on-background', label: '编辑区文字' },
-    { key: 'onSurface', cssVar: '--b3-theme-on-surface', label: '侧栏/面板文字' },
+    { key: 'background', cssVar: '--b3-theme-background', label: '编辑区背景色（编辑区主底色，决定整体基调）' },
+    { key: 'surface', cssVar: '--b3-theme-surface', label: '侧栏背景色（侧栏/面板底色。暗黑模式下 surface 比 background 稍亮，即侧栏比编辑区亮，形成层次）' },
+    { key: 'baseColor', cssVar: '--b3-base-color', label: '基色（核心强调色，用于按钮、高亮选中、开关、输入框聚焦环，可深可浅如亮黄或深蓝。极端例子：既可以是亮度为1的亮色，也可以是亮度为0的暗色）' },
+    { key: 'primary', cssVar: '--b3-theme-primary', label: '主题色（主品牌色，用于大面积的界面元素，定义主题视觉性格。死限制：明亮模式 oklch 亮度 l≤0.75，暗黑模式 l≥0.68）' },
+    { key: 'accent', cssVar: '--b3-theme-accent', label: '强调色（彩色点缀色，用于列表项/文档树标题/文件夹名等，要鲜艳醒目有活力，是主题中色彩最跳的颜色。同时兼顾文字可读性——不能太亮刺眼，也不能太暗发闷。死限制：明亮模式 oklch 亮度 l≤0.75，暗黑模式 l≥0.68）' },
+    { key: 'onBackground', cssVar: '--b3-theme-on-background', label: '文字颜色（编辑区正文文字色，与背景对比度要够）' },
+    { key: 'onSurface', cssVar: '--b3-theme-on-surface', label: '次要文字颜色（侧栏/面板文字，对比度须低于 onBackground：亮色模式下表现为更浅，暗色模式下表现为更深更弱）' },
 ];
 function getCraftPresetKey(mode: 'light' | 'dark'): 'craft-preset-light' | 'craft-preset-dark' {
     return mode === 'dark' ? 'craft-preset-dark' : 'craft-preset-light';
@@ -427,7 +427,7 @@ async function getColorStatus(_raw: Record<string, unknown>): Promise<string> {
         if (craftRaw) {
             try {
                 const craft: CraftPreset = JSON.parse(craftRaw);
-                parts.push(`craft配色：背景${craft.background}，表面${craft.surface}，强调${craft.baseColor}，主色${craft.primary}，辅色${craft.accent}，正文${craft.onBackground}，侧栏文字${craft.onSurface}`);
+                parts.push(`craft配色：编辑区背景色${craft.background}，侧栏背景色${craft.surface}，基色${craft.baseColor}，主题色${craft.primary}，强调色${craft.accent}，文字颜色${craft.onBackground}，次要文字颜色${craft.onSurface}`);
             } catch { }
         }
     }
@@ -461,13 +461,20 @@ export function registerColorAgentActions(plugin: Plugin): void {
         '何时不用：能直接选 hex 就直接用 hex（兼容性更强）；autoColorScheme 只需 hex 基色。' +
         '语法：l 亮度 0~1，c 饱和度 0~1，h 色相 0~360（+180 互补色）。支持透明度/可见度：oklch(from #6b8f32 l c h / 0.3) 即可见度 0.3。' +
         '例：oklch(from #6b8f32 calc(l - 0.1) calc(c + 0.1) calc(h + 180)) 更暗更艳互补色，直接传入 generateCraftPreset 任意色值字段。' +
+        '注意：oklch 值以原始字符串存入配置，在 CSS 中动态生效。查看配色状态时读回的 oklch 字符串是正常的，不要误以为未被解析或转换失败。后续微调时直接基于读回的色值用 oklch 再次派生即可。' +
+        '🔴 oklch 重要警告（绝对禁止）：不要把 oklch 字符串手动转成 hex！浏览器原生支持 oklch(from ...) 这种 CSS 颜色语法，' +
+        '系统就是把它作为 CSS 变量值存进去的。看到状态输出里显示 "oklch(from ...)" 字符串是完全正确的，不是 bug，不需要你手动换算 hex。' +
+        '你手动换算 hex 反而会丢失精度，完全违背了使用 oklch 的目的。直接传 oklch 字符串，不要试图"计算"它。' +
+        '🔴 primary 和 accent 的死限制（必须遵守）：明亮模式 oklch 亮度 l≤0.75，暗黑模式 l≥0.68，违规会导致文字完全看不清。' +
+        '🔴 accent（强调色）的核心定位：accent 不是正文色，是彩色点缀色，要鲜艳醒目、有活力，是主题中最跳的颜色。构思时先想：这个颜色够鲜艳、够有辨识度吗？然后再检验文字可读性——不能太亮刺眼，也不能太暗发闷。宁可稍鲜艳也不要太保守。primary 是大面积主题色，accent 是小面积彩色点缀，两者定位不同。' +
         'QA知识库（用户问哪个就只答哪个，不要连带回答其他）：' +
         '①问"为什么开启高对比没效果"→答：IDE风格不支持高对比度，请在Neo+菜单中关闭IDE风格。' +
         '②问"为什么侧栏和编辑区背景色没区别"→答：可能开启了IDE风格，可在Neo+菜单中开启侧栏静音增强区分度。' +
         '③问"Neo-Plus是什么"、"和Neo主题什么关系"→答：Neo+是Neo主题的配套插件，提供界面美化与配色功能。' +
-        '④彩色列表/文档树/标题看不清→答：由accent决定，需调整accent明度。' +
+        '④彩色列表/文档树/标题看不清→答：由accent（强调色）决定，需调高accent饱和度或调整明度（亮色模式加深、暗色模式加亮）。' +
         '⑤菜单项悬浮/选中颜色、switch、输入框聚焦环→答：由baseColor决定。' +
-        '⑥custom模式要求调整背景亮度→答：custom只能调基色和饱和度，亮度由算法自动计算，要精确控制请用craft。';
+        '⑥custom模式要求调整背景亮度→答：custom只能调基色和饱和度，亮度由算法自动计算，要精确控制请用craft。' +
+        '⑦问"oklch没有被解析/被存成了文本"→答：oklch(from ...) 本身就是浏览器原生支持的 CSS 颜色语法，以字符串存储后在运行时由浏览器动态渲染，完全正常。绝对不要手动把 oklch 换算成 hex，那会丢失精度。';
     const actions: Array<{
         name: string;
         description: string;
@@ -549,14 +556,24 @@ export function registerColorAgentActions(plugin: Plugin): void {
             description:
                 '调用前必须先调 colorStatus 拿当前模式。' +
                 '生成完整配色方案（craft plan），精细定制界面。' +
-                '通过 query 传 JSON：{"background":"#f8f5f1","surface":"#f2ece3","baseColor":"#eecb9e","primary":"#b79d7b","accent":"#c58635","onBackground":"#654f2f","onSurface":"#7b5c30"}。' +
-                '各字段约束：background=编辑区背景，决定整体基调；surface=侧栏背景，与background有区别；' +
-                'onBackground=正文文字色，与background对比度要够；onSurface=侧栏文字，须比onBackground更浅；' +
-                'baseColor=强调色，浅深均可；primary=主题色，须深色保可读；accent=次要强调色，须深色且亮度与primary接近。' +
+                '通过 query 传 JSON：{"background":"#f8f5f1","surface":"#f2ece3","baseColor":"#eecb9e","primary":"#b79d7b","accent":"#d4732a","onBackground":"#654f2f","onSurface":"#7b5c30"}。' +
+                '各字段约束：' +
+                'background=编辑区背景色（编辑区主底色，决定整体基调）；' +
+                'surface=侧栏背景色（侧栏/面板底色。暗黑模式下 surface 比 background 稍亮，即侧栏比编辑区亮，形成层次）；' +
+                'baseColor=基色（核心强调色，用于按钮、高亮选中、开关、聚焦环，可深可浅如亮黄或深蓝。极端例子：既可以是亮度为1的亮色，也可以是亮度为0的暗色）；' +
+                'primary=主题色（主品牌色，用于大面积的界面元素，定义主题视觉性格。死限制：明亮模式 oklch 亮度 l≤0.75，暗黑模式 l≥0.68）；' +
+                'accent=强调色（彩色点缀色，用于列表项/文档树标题/文件夹名等，要鲜艳醒目有活力，是主题中色彩最跳的颜色。同时兼顾文字可读性——不能太亮刺眼，也不能太暗发闷。死限制：明亮模式 oklch 亮度 l≤0.75，暗黑模式 l≥0.68）；' +
+                'onBackground=文字颜色（编辑区正文文字色，与background对比度要够）；' +
+                'onSurface=次要文字颜色（侧栏/面板文字，对比度须低于 onBackground：亮色模式下表现为更浅，暗色模式下表现为更深更弱）；' +
                 '用户要求"AI配色""设计全套"时调用。你自行构思所有颜色，不要问用户具体色值。' +
-                'craft模式饱和度不起作用。配色单调时优先变baseColor色相。' +
+                'craft模式饱和度不起作用。' +
+                '配色单调/想要更丰富时：①拉开 baseColor、primary、accent 三者之间的色相差距；' +
+                '②surface 和 background 不一定要同色系，可以有差异但不突兀且不影响文字可读性。' +
+                '例如亮色方案中，background 用米黄色 #fdf6e3，surface 用暖绿色 #eaedc8，形成柔和反差（这只是例子，不代表你要用暖绿，根据你的整体配色自由选择）。' +
+                '暗色方案中，background 用低饱和暗紫 #232227，surface 用稍亮的蓝色系 #313842，有碰撞感又不突兀，也保证了文字可读性。' +
                 '支持 oklch 相对颜色语法：用户要求"更暗/更亮/更饱和/偏暖/偏冷/互补色"时使用 oklch，' +
-                '如 oklch(from #6b8f32 calc(l - 0.1) calc(c + 0.1) calc(h + 180))，支持可见度 /0.3。能直接选 hex 就不用 oklch。',
+                '如 oklch(from #6b8f32 calc(l - 0.1) calc(c + 0.1) calc(h + 180))，支持可见度 /0.3。' +
+                '🔴 oklch 字符串就是最终形态，浏览器原生支持，不要手动换算成 hex！',
             handler: wrapHandler(applyCraftScheme),
         },
         {

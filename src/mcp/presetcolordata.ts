@@ -92,6 +92,6 @@ export function formatPresetDetail(key: string): string {
         parts.push(`暗色模式：baseColor=${c.baseColor} primary=${c.primary} accent=${c.accent} background=${c.background} surface=${c.surface} onBackground=${c.onBackground} onSurface=${c.onSurface}`);
     }
     parts.push('提示：在预设基础上微调等于使用 craft 模式。保留不需要改的色值不变，只修改用户要求调整的那几个色值，然后调用 generateCraftPreset 传入完整的 7 个色值（含未修改的原始色值）来应用。不要用 autoColorScheme，那会丢失其他 6 个色值导致效果完全不同。');
-    parts.push('craft 模式支持 oklch 相对颜色语法：用户要求"更暗/更亮/更饱和/偏暖/偏冷"时使用。语法：oklch(from #6b8f32 l c h) 将 hex 转为 oklch，调整亮度 l(0~1)、饱和度 c(0~1)、色相 h(0~360)。例如 oklch(from #6b8f32 calc(l - 0.1) calc(c + 0.1) calc(h + 180)) 得到更暗更饱和的互补色，支持可见度 /0.3，直接传入 generateCraftPreset 即可。能直接选 hex 就不用 oklch（hex 兼容性更强）。');
+    parts.push('craft 模式支持 oklch 相对颜色语法：用户要求"更暗/更亮/更饱和/偏暖/偏冷"时使用。语法：oklch(from #6b8f32 l c h) 将 hex 转为 oklch，调整亮度 l(0~1)、饱和度 c(0~1)、色相 h(0~360)。例如 oklch(from #6b8f32 calc(l - 0.1) calc(c + 0.1) calc(h + 180)) 得到更暗更饱和的互补色，支持可见度 /0.3，直接传入 generateCraftPreset 即可。能直接选 hex 就不用 oklch（hex 兼容性更强）。🔴 oklch 字符串就是最终形态，浏览器原生支持，不要手动换算成 hex！');
     return parts.join('\n');
 }
