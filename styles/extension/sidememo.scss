@@ -51,7 +51,7 @@
     font-size: 0.8125em;
     color: oklch(from var(--b3-theme-on-background) l c h / 0.75);
     transition: all var(--b3-transition), top 0s;
-    padding: 0.5em 0.75em;
+    padding: 0.2em 0.7em;
     &:hover,
     &[neo-sidememo-highlight] {
         outline-color: oklch(from var(--b3-theme-accent) l c h / 0.3);
@@ -70,7 +70,6 @@
     cursor: pointer;
     color: oklch(from var(--b3-theme-on-background) l c h / 0.45);
     transition: var(--b3-transition);
-    margin-bottom: 0.25em;
     &:hover {
         color: var(--b3-theme-accent);
     }
