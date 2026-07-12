@@ -4,6 +4,8 @@
   "setPreset": "Use Preset",
   "randomColor": "Use Random Color",
   "followTimeColor": "Use Follow Time",
+  "followSystemColor": "Use Follow System",
+  "followBannerColor": "Use Follow Banner",
   "generateCraftPreset": "Use AI Color Scheme",
   "adjustSaturation": "Adjust Saturation",
   "toggleInvert": "Adjust Invert",

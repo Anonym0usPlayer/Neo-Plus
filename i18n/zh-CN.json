@@ -4,6 +4,8 @@
   "setPreset": "使用预设配色",
   "randomColor": "使用随机配色",
   "followTimeColor": "使用跟随时间",
+  "followSystemColor": "使用跟随系统",
+  "followBannerColor": "使用跟随题头图",
   "generateCraftPreset": "使用AI配色方案",
   "adjustSaturation": "调整饱和度",
   "toggleInvert": "调整反转",

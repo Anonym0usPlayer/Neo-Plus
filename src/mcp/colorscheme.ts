@@ -15,6 +15,9 @@ import {
 } from '../palette/presets';
 import { initCustomColor, destroyCustomColor } from '../palette/customcolor';
 import { initFollowTime, destroyFollowTime } from '../palette/followtime';
+import { initFollowSystem, destroyFollowSystem } from '../palette/followsystem';
+import { initFollowBanner, destroyFollowBanner } from '../palette/followbanner';
+import { isDesktop } from '../modules/env';
 import { initRandom, destroyRandom } from '../palette/random';
 import { initSaturation, destroySaturation } from '../palette/saturation';
 import { initInvert, destroyInvert } from '../palette/invert';
@@ -23,8 +26,8 @@ import { initCraft, destroyCraft, type CraftPreset } from '../palette/craft';
 type ActionResult = { result?: string; error?: string };
 const modeLabels: Record<string, string> = { all: '亮暗通用', light: '仅亮色', dark: '仅暗色' };
 const presets: Array<{ key: string; name: string; mode: 'all' | 'light' | 'dark'; style: string }> = [
-    { key: 'default', name: '默认', mode: 'all', style: '跟随思源原生' },
-    { key: 'classic', name: '经典', mode: 'all', style: '经典蓝白' },
+    { key: 'default', name: '默认', mode: 'all', style: 'Neo主题的默认配色' },
+    { key: 'classic', name: '经典', mode: 'all', style: '经典黑白灰蓝' },
     { key: 'meridian', name: '子午', mode: 'all', style: '极致黑白' },
     { key: 'amber', name: '琥珀', mode: 'all', style: '琥珀暖棕' },
     { key: 'dusk', name: '黄昏', mode: 'light', style: '黄昏粉橘' },
@@ -107,6 +110,8 @@ function destroyAllEffects(): void {
     destroyRandom();
     destroyCustomColor();
     destroyFollowTime();
+    destroyFollowSystem();
+    destroyFollowBanner();
     destroyCraft();
     destroySaturation();
     destroyInvert();
@@ -269,6 +274,78 @@ async function applyFollowTimeScheme(raw: Record<string, unknown>): Promise<stri
         ? prefix + `已启用跟随时间配色，基色 ${baseColor}，饱和度 ${saturation ?? '默认'}（${modeLabel}模式，当前${current === 'dark' ? '深色' : '浅色'})`
         : prefix + `已启用跟随时间配色，饱和度 ${saturation ?? '默认'}（${modeLabel}模式，当前${current === 'dark' ? '深色' : '浅色'})`;
 }
+async function applyFollowSystemScheme(raw: Record<string, unknown>): Promise<string> {
+    const args = extractParams(raw);
+    let saturation: number | undefined;
+    if (args.saturation !== undefined && args.saturation !== null) {
+        saturation = Number(args.saturation);
+        if (isNaN(saturation) || saturation < 0 || saturation > 5) saturation = undefined;
+    }
+    const current = getCurrentThemeMode();
+    let targetMode: 'light' | 'dark' | 'both' = current;
+    if (args.mode !== undefined && args.mode !== null) {
+        const m = String(args.mode);
+        if (m === 'light' || m === 'dark' || m === 'both') targetMode = m;
+    }
+    const needsUIRefresh = targetMode === 'both' || targetMode === current;
+    const patch: Partial<Config> = {};
+    if (targetMode === 'both' || targetMode === 'light') {
+        patch['color-plan-light'] = 'followsystem';
+        if (saturation !== undefined) patch[getSaturationKey('light')] = saturation;
+    }
+    if (targetMode === 'both' || targetMode === 'dark') {
+        patch['color-plan-dark'] = 'followsystem';
+        if (saturation !== undefined) patch[getSaturationKey('dark')] = saturation;
+    }
+    await saveConfig(patch);
+    if (needsUIRefresh) {
+        destroyAllEffects();
+        const config = await loadConfig();
+        applyCurrentPlan(config);
+        initFollowSystem(config);
+        initSaturation(config);
+        initInvert(config);
+        initHighContrast(config);
+    }
+    const modeLabel = targetMode === 'both' ? '浅色+深色' : targetMode === 'dark' ? '深色' : '浅色';
+    return await statusPrefix() + '\n' + `已启用跟随系统配色，饱和度 ${saturation ?? '默认'}（${modeLabel}模式，当前${current === 'dark' ? '深色' : '浅色'}），将跟随操作系统强调色`;
+}
+async function applyFollowBannerScheme(raw: Record<string, unknown>): Promise<string> {
+    const args = extractParams(raw);
+    let saturation: number | undefined;
+    if (args.saturation !== undefined && args.saturation !== null) {
+        saturation = Number(args.saturation);
+        if (isNaN(saturation) || saturation < 0 || saturation > 5) saturation = undefined;
+    }
+    const current = getCurrentThemeMode();
+    let targetMode: 'light' | 'dark' | 'both' = current;
+    if (args.mode !== undefined && args.mode !== null) {
+        const m = String(args.mode);
+        if (m === 'light' || m === 'dark' || m === 'both') targetMode = m;
+    }
+    const needsUIRefresh = targetMode === 'both' || targetMode === current;
+    const patch: Partial<Config> = {};
+    if (targetMode === 'both' || targetMode === 'light') {
+        patch['color-plan-light'] = 'followbanner';
+        if (saturation !== undefined) patch[getSaturationKey('light')] = saturation;
+    }
+    if (targetMode === 'both' || targetMode === 'dark') {
+        patch['color-plan-dark'] = 'followbanner';
+        if (saturation !== undefined) patch[getSaturationKey('dark')] = saturation;
+    }
+    await saveConfig(patch);
+    if (needsUIRefresh) {
+        destroyAllEffects();
+        const config = await loadConfig();
+        applyCurrentPlan(config);
+        initFollowBanner(config);
+        initSaturation(config);
+        initInvert(config);
+        initHighContrast(config);
+    }
+    const modeLabel = targetMode === 'both' ? '浅色+深色' : targetMode === 'dark' ? '深色' : '浅色';
+    return await statusPrefix() + '\n' + `已启用跟随题头图配色，饱和度 ${saturation ?? '默认'}（${modeLabel}模式，当前${current === 'dark' ? '深色' : '浅色'}），将从题头图提取主题色`;
+}
 async function applySaturation(raw: Record<string, unknown>): Promise<string> {
     const args = extractParams(raw);
     const val = args.value !== undefined ? Number(args.value)
@@ -290,6 +367,9 @@ async function applyInvertToggle(raw: Record<string, unknown>): Promise<string> 
         : typeof args.value === 'boolean' ? args.value
         : true;
     const current = getCurrentThemeMode();
+    if (enable && current === 'light') {
+        throw new Error('反色仅支持暗色（dark）模式，当前为亮色（light）模式，无法开启。请先切换到暗色模式后再试。');
+    }
     const html = document.documentElement;
     if (enable) html.classList.add('neo-palette-invert');
     else html.classList.remove('neo-palette-invert');
@@ -307,6 +387,9 @@ async function applyHighContrastToggle(raw: Record<string, unknown>): Promise<st
         : typeof args.value === 'boolean' ? args.value
         : true;
     const current = getCurrentThemeMode();
+    if (enable && current === 'dark') {
+        throw new Error('高对比度仅支持亮色（light）模式，当前为暗色（dark）模式，无法开启。请先切换到亮色模式后再试。');
+    }
     const html = document.documentElement;
     if (enable) html.classList.add('neo-palette-highcontrast');
     else html.classList.remove('neo-palette-highcontrast');
@@ -369,12 +452,36 @@ async function getColorStatus(_raw: Record<string, unknown>): Promise<string> {
     const plan = getCurrentPlan(config, mode);
     const invert = config[getInvertKey(mode)] ?? false;
     const highContrast = config[getHighContrastKey(mode)] ?? false;
+    const saturation = config[getSaturationKey(mode)];
     const parts = [`当前模式：${mode === 'dark' ? '暗色(dark)' : '亮色(light)'}`];
     parts.push(`当前配色方案：${plan}`);
-    if (plan === 'preset') parts.push(`当前预设：${config[mode === 'dark' ? 'preset-dark' : 'preset-light'] || 'default'}`);
-    if (plan === 'custom') parts.push(`当前基色：${config[getCustomColorKey(mode)]}`);
+    if (plan === 'preset') {
+        parts.push(`当前预设：${config[mode === 'dark' ? 'preset-dark' : 'preset-light'] || 'default'}`);
+    }
+    if (plan === 'custom') {
+        parts.push(`当前基色：${config[getCustomColorKey(mode)]}`);
+    }
+    if (plan === 'followtime') {
+        const ftBase = config[getFollowTimeBaseColorKey(mode)];
+        if (ftBase) parts.push(`跟随时间基色：${ftBase}`);
+    }
+    if (plan === 'craft') {
+        const craftKey: 'craft-preset-light' | 'craft-preset-dark' =
+            mode === 'dark' ? 'craft-preset-dark' : 'craft-preset-light';
+        const craftRaw = config[craftKey];
+        if (craftRaw) {
+            try {
+                const craft: CraftPreset = JSON.parse(craftRaw);
+                parts.push(`craft配色：背景${craft.background}，表面${craft.surface}，强调${craft.baseColor}，主色${craft.primary}，辅色${craft.accent}，正文${craft.onBackground}，侧栏文字${craft.onSurface}`);
+            } catch { }
+        }
+    }
+    if (saturation !== undefined && saturation !== null) {
+        parts.push(`当前饱和度：${saturation}`);
+    }
     parts.push(`高对比度：${highContrast ? '已开启' : '未开启'}（仅亮色生效）`);
     parts.push(`反色：${invert ? '已开启' : '未开启'}（仅暗色生效）`);
+    parts.push(`运行平台：${isDesktop() ? '桌面端（支持跟随系统）' : '移动端/Web端（不支持跟随系统）'}`);
     return parts.join('；');
 }
 async function statusPrefix(): Promise<string> {
@@ -386,10 +493,12 @@ export function registerColorAgentActions(plugin: Plugin): void {
     const baseHint =
         '"暗色/暗夜/深色/dark" 指 dark 主题模式，"亮色/明亮/浅色/light" 指 light 主题模式。' +
         '默认直接应用到当前主题模式（不传 mode），不要询问用户要改哪个模式。' +
-        '只有用户明确说要改亮色/暗色/两个都改时，才传 mode="light"/"dark"/"both"。';
+        '只有用户明确说要改亮色/暗色/两个都改时，才传 mode="light"/"dark"/"both"。' +
+        '配色功能仅在 Neo 主题下可用；若用户当前未使用 Neo 主题，告知其需先在「设置 → 外观 → 主题」中切换为 Neo 主题。' +
+        '勿主动提及 Neo-Plus 与 Neo 主题的关系；仅当用户明确问到"Neo-Plus 是什么"、"和 Neo 主题什么关系"等问题时，才简短说明：Neo+（Neo-Plus）是 Neo 主题的配套插件，提供丰富的界面美化与配色功能。';
     const modeHint = baseHint +
         '重要：换色前先调"查看当前配色状态"拿状态（弹窗有中文说明，用户看了就懂），拿到模式和高对比/反色状态后，再给出三个选项让用户选：' +
-        '"使用AI配色 设计整套配色方案 、使用自动配色 根据描述自动选基色生成全套主题色 、使用预设配色 在Neo提供的预设配色中寻找接近的方案"。' +
+        '"使用AI配色 设计整套配色方案 、使用自动配色 根据描述用Neo的配色系统自动生成 、使用预设配色 在Neo提供的预设配色中寻找接近的方案"。' +
         '用户表态后调用对应 action。选中"自动配色"后根据用户的主题描述自行选一个基色和饱和度（不要默认用1），直接传 baseColor 和 saturation，不要对用户说"指定""给我"之类的话。选中"AI配色"后全部颜色由你构思，不要再问用户。' +
         '最后一步：配色应用完成后，根据之前拿到的状态，暗色且反色未开→问"要不要开反色？"，亮色且高对比未开→问"要不要开高对比？"，已开就别问。两个平等对待，不要只问其中一个。仅在本次对话首次配色后问一次。';
     const actions: Array<{
@@ -408,7 +517,8 @@ export function registerColorAgentActions(plugin: Plugin): void {
             name: plugin.i18n.autoColorScheme,
             description:
                 modeHint +
-                '通过一个基色自动生成全套主题色（custom plan），根据用户的主题描述自行选择基色和饱和度，直接传 baseColor 和 saturation 参数。' +
+                '根据描述用Neo的配色系统自动生成全套主题色（custom plan），根据用户的主题描述自行选择基色和饱和度，直接传 baseColor 和 saturation 参数。' +
+                '基色（baseColor）定义：基础色/强调色，可深可浅（主题会自动根据其明度调整其上文字颜色以保证可读性），用于按钮、高亮、选中等位置，是整个主题的视觉锚点。' +
                 '饱和度根据用户描述的风格灵活决定（0=黑白灰/1=几乎无色/2=淡色/3=明显/4=鲜艳/5=极度鲜艳）：' +
                 '复古/素雅/性冷淡→0~1，清新/柔和→1.5~2，活泼/鲜明→2.5~3，浓烈/高饱和→3.5~5。不要默认设1，不要对用户说"指定基色""给我一个基色"。' +
                 '通过 query 传 JSON：{"baseColor":"#e67e22","saturation":0.7}。' +
@@ -467,6 +577,27 @@ export function registerColorAgentActions(plugin: Plugin): void {
             handler: wrapHandler(applyCraftScheme),
         },
         {
+            name: plugin.i18n.followBannerColor,
+            description:
+                baseHint +
+                '启用跟随题头图配色（followbanner plan），自动从文档题头图中提取主题色。' +
+                '饱和度（0=黑白灰/1=几乎无色/2=淡色/3=明显/4=鲜艳/5=极度鲜艳）：复古/素雅→0~1，清新/柔和→1.5~2，活泼/鲜明→2.5~3，浓烈→3.5~5，不要默认设1。' +
+                '通过 query 传 JSON：{"saturation":0.7}，saturation 选填。' +
+                '用户说"跟随题头图""用题头图配色""banner配色"时调用。',
+            handler: wrapHandler(applyFollowBannerScheme),
+        },
+        {
+            name: plugin.i18n.followSystemColor,
+            description:
+                baseHint +
+                '启用跟随系统配色（followsystem plan），自动读取操作系统强调色作为主题色。' +
+                '饱和度（0=黑白灰/1=几乎无色/2=淡色/3=明显/4=鲜艳/5=极度鲜艳）：复古/素雅→0~1，清新/柔和→1.5~2，活泼/鲜明→2.5~3，浓烈→3.5~5，不要默认设1。' +
+                '通过 query 传 JSON：{"saturation":0.7}，saturation 选填。' +
+                '仅桌面端有效，移动端/web端不可用。调用前请先查看当前配色状态，若"运行平台"显示非桌面端则告知用户不支持，勿调用此 action。' +
+                '用户说"跟随系统""用系统配色""系统强调色"时调用。',
+            handler: wrapHandler(applyFollowSystemScheme),
+        },
+        {
             name: plugin.i18n.adjustSaturation,
             description:
                 '调整配色饱和度。通过 query 传 JSON：{"value":0.7}。value 0~5，不同档位视觉参考：' +
@@ -480,15 +611,15 @@ export function registerColorAgentActions(plugin: Plugin): void {
         {
             name: plugin.i18n.toggleInvert,
             description:
-                '开关反色效果。通过 query 传 JSON：{"enable":true} 开启，{"enable":false} 关闭。' +
-                '用户说"开启反色""关掉反色""反转颜色"时调用。',
+                '开关反色效果。仅暗色（dark）模式生效，亮色模式下开启会报错。通过 query 传 JSON：{"enable":true} 开启，{"enable":false} 关闭。' +
+                '用户说"开启反色""关掉反色""反转颜色"时调用。亮色模式下用户要求开反色时，告知反色仅支持暗色模式，不要调用此 action。',
             handler: wrapHandler(applyInvertToggle),
         },
         {
             name: plugin.i18n.toggleHighContrast,
             description:
-                '开关高对比度。仅亮色模式生效，四周变深色突出编辑区。开启后饱和度可调：自定义/跟随时间配色影响全局，预设/craft 仅影响深色区域。通过 query 传 JSON：{"enable":true} 开启，{"enable":false} 关闭。' +
-                '用户说"开高对比度""对比度调高""关掉高对比"时调用。',
+                '开关高对比度。仅亮色（light）模式生效，暗色模式下开启会报错。开启后四周变深色突出编辑区。饱和度可调：自定义/跟随时间配色影响全局，预设/craft 仅影响深色区域。通过 query 传 JSON：{"enable":true} 开启，{"enable":false} 关闭。' +
+                '用户说"开高对比度""对比度调高""关掉高对比"时调用。暗色模式下用户要求开高对比度时，告知高对比度仅支持亮色模式，不要调用此 action。',
             handler: wrapHandler(applyHighContrastToggle),
         },
     ];
