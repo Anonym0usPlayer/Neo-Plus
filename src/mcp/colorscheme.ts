@@ -371,9 +371,8 @@ async function applyCraftScheme(raw: Record<string, unknown>): Promise<string> {
     const preset: CraftPreset = {} as CraftPreset;
     for (const { key, label } of craftVarNames) {
         const val = typeof args[key] === 'string' ? (args[key] as string).trim() : '';
-        if (!val) throw new Error(`缺少 ${label}（${key}），hex 格式如 "#f8f5f1"`);
-        if (!isValidHex(val)) throw new Error(`${label}（${key}）格式无效："${val}"，请用 hex`);
-        preset[key] = normalizeHex(val);
+        if (!val) throw new Error(`缺少 ${label}（${key}），支持 hex（如 "#f8f5f1"）或 oklch 相对颜色语法（如 "oklch(from #6b8f32 calc(l - 0.1) calc(c + 0.1) calc(h + 180))"）`);
+        preset[key] = isValidHex(val) ? normalizeHex(val) : val;
     }
     const current = getCurrentThemeMode();
     let targetMode: 'light' | 'dark' | 'both' = current;
@@ -456,6 +455,12 @@ export function registerColorAgentActions(plugin: Plugin): void {
         '选中"AI 配色"后你自行构思全部颜色，不要再问用户。' +
         '配色应用完成后，根据之前拿到的状态，暗色且反转未开→问"要不要开反转？"，亮色且高对比未开→问"要不要开高对比？"，已开就别问。' +
         '两个平等对待，不要只问其中一个。仅在本次对话首次配色后问一次。' +
+        'oklch 相对颜色语法（仅 craft/AI配色 模式可用，autoColorScheme 不支持）：' +
+        '何时用 oklch：①用户要求基于现有颜色做调整（如"背景再暗一点""更饱和""色相偏暖/偏冷"）；' +
+        '②在预设基础上微调时，用 oklch(from 预设色值 calc(...)) 派生；③需要一组同色系颜色时，从 baseColor 派生 background/surface 等。' +
+        '何时不用：能直接选 hex 就直接用 hex（兼容性更强）；autoColorScheme 只需 hex 基色。' +
+        '语法：l 亮度 0~1，c 饱和度 0~1，h 色相 0~360（+180 互补色）。支持透明度/可见度：oklch(from #6b8f32 l c h / 0.3) 即可见度 0.3。' +
+        '例：oklch(from #6b8f32 calc(l - 0.1) calc(c + 0.1) calc(h + 180)) 更暗更艳互补色，直接传入 generateCraftPreset 任意色值字段。' +
         'QA知识库（用户问哪个就只答哪个，不要连带回答其他）：' +
         '①问"为什么开启高对比没效果"→答：IDE风格不支持高对比度，请在Neo+菜单中关闭IDE风格。' +
         '②问"为什么侧栏和编辑区背景色没区别"→答：可能开启了IDE风格，可在Neo+菜单中开启侧栏静音增强区分度。' +
@@ -487,7 +492,7 @@ export function registerColorAgentActions(plugin: Plugin): void {
                 '通过 query 传 JSON：{"baseColor":"#e67e22","saturation":0.7}。saturation 选填。' +
                 '不要对用户说"请提供基色"或"指定一个颜色"之类的话，你根据用户的主题描述自行构思 hex 值即可。' +
                 '如果用户提到预设名（钛空、深海、琥珀等），必须用 setPreset。' +
-                'custom模式只能调基色和饱和度，背景亮度由算法决定，用户要调亮度请引导用craft。' +
+                'custom模式只能调基色和饱和度，背景亮度由算法决定，用户要调亮度请引导用craft（craft 支持 oklch 相对颜色语法精细调整）。' +
                 '用户说"自动配色""快速换色""设个基色"时调用。',
             handler: wrapHandler(applyCustomScheme),
         },
@@ -549,7 +554,9 @@ export function registerColorAgentActions(plugin: Plugin): void {
                 'onBackground=正文文字色，与background对比度要够；onSurface=侧栏文字，须比onBackground更浅；' +
                 'baseColor=强调色，浅深均可；primary=主题色，须深色保可读；accent=次要强调色，须深色且亮度与primary接近。' +
                 '用户要求"AI配色""设计全套"时调用。你自行构思所有颜色，不要问用户具体色值。' +
-                'craft模式饱和度不起作用。配色单调时优先变baseColor色相。',
+                'craft模式饱和度不起作用。配色单调时优先变baseColor色相。' +
+                '支持 oklch 相对颜色语法：用户要求"更暗/更亮/更饱和/偏暖/偏冷/互补色"时使用 oklch，' +
+                '如 oklch(from #6b8f32 calc(l - 0.1) calc(c + 0.1) calc(h + 180))，支持可见度 /0.3。能直接选 hex 就不用 oklch。',
             handler: wrapHandler(applyCraftScheme),
         },
         {
