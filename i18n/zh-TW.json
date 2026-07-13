@@ -1,17 +1,4 @@
 {
-  "colorStatus": "查看配色狀態",
-  "autoColorScheme": "執行自動配色",
-  "setPreset": "使用預設配色",
-  "listPresets": "查看預設配色列表",
-  "getPresetDetail": "查看預設配色參數",
-  "randomColor": "使用隨機配色",
-  "followTimeColor": "使用跟隨時間",
-  "followSystemColor": "使用跟隨系統",
-  "followBannerColor": "使用跟隨題頭圖",
-  "generateCraftPreset": "執行AI配色",
-  "adjustSaturation": "調整飽和度",
-  "toggleInvert": "調整反轉",
-  "toggleHighContrast": "調整高對比",
   "invertColor": "反轉",
   "highContrast": "高對比",
   "customThemeColor": "自訂主題色",
@@ -63,6 +50,7 @@
   "coloredHeadings": "彩色標題",
   "colorfulSelection": "彩色選區",
   "cardSearchList": "卡片式搜尋列表",
+  "frostedGlass": "毛玻璃",
   "scrollEffect": "卷軸效果",
   "texture": "紋理",
   "texturePaper": "紙張",
@@ -196,7 +184,6 @@
   "pinnedToolbarStyleLiquidGlass": "液態玻璃",
   "sidebarMute": "側欄靜音",
   "multicolumnSlashMenu": "多列斜槓選單",
-  "performance": "效能模式",
   "hideToolbar": "頂欄融合",
   "sideMemo": "側邊備註",
   "sidememoSettings": "設定側邊備註",
@@ -206,5 +193,7 @@
   "sidememoPositionLeft": "左側",
   "sidememoConnector": "連線",
   "sidememoConnectorTip": "在側邊備註和源備註之間連線",
-  "mergedSideMemoEditTip": "這是多個行內備註合併顯示的側邊備註卡片，需在每個源行內備註處分別修改"
+  "mergedSideMemoEditTip": "這是多個行內備註合併顯示的側邊備註卡片，需在每個源行內備註處分別修改",
+  "queryColor": "查詢配色狀態",
+  "applyColor": "應用配色"
 }

@@ -1,4 +1,0 @@
-@use "manager" as *;
-.neo-performance-mode {
-    @include performance-common('[data-id="neo-performance-mode-button"]');
-}

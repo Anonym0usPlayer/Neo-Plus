@@ -1,17 +1,4 @@
 {
-  "colorStatus": "查看配色状态",
-  "autoColorScheme": "执行自动配色",
-  "setPreset": "使用预设配色",
-  "listPresets": "查看预设配色列表",
-  "getPresetDetail": "查看预设配色参数",
-  "randomColor": "使用随机配色",
-  "followTimeColor": "使用跟随时间",
-  "followSystemColor": "使用跟随系统",
-  "followBannerColor": "使用跟随题头图",
-  "generateCraftPreset": "执行AI配色",
-  "adjustSaturation": "调整饱和度",
-  "toggleInvert": "调整反转",
-  "toggleHighContrast": "调整高对比",
   "invertColor": "反转",
   "highContrast": "高对比",
   "customThemeColor": "自定义主题色",
@@ -64,6 +51,7 @@
   "colorfulSelection": "彩色选区",
   "ide": "IDE风格",
   "cardSearchList": "卡片式搜索列表",
+  "frostedGlass": "毛玻璃",
   "scrollEffect": "卷轴效果",
   "texture": "纹理",
   "texturePaper": "纸张",
@@ -197,7 +185,6 @@
   "pinnedToolbarStyleLiquidGlass": "液态玻璃",
   "sidebarMute": "侧栏静音",
   "multicolumnSlashMenu": "多列斜杠菜单",
-  "performance": "性能模式",
   "hideToolbar": "顶栏融合",
   "sideMemo": "侧边备注",
   "sidememoSettings": "配置侧边备注",
@@ -207,5 +194,7 @@
   "sidememoPositionLeft": "左侧",
   "sidememoConnector": "连线",
   "sidememoConnectorTip": "在侧边备注和源备注之间连线",
-  "mergedSideMemoEditTip": "这是多个行内备注合并显示的侧边备注卡片，需在每个源行内备注处分别修改"
+  "mergedSideMemoEditTip": "这是多个行内备注合并显示的侧边备注卡片，需在每个源行内备注处分别修改",
+  "queryColor": "查询配色状态",
+  "applyColor": "应用配色"
 }

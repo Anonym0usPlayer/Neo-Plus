@@ -19,10 +19,10 @@ import { initColorfulSelection, destroyColorfulSelection } from '../element/colo
 import { initSmoothCaret, destroySmoothCaret } from '../visual/smoothcaret';
 import { initColoredFolders, destroyColoredFolders } from '../visual/coloredfolders';
 import { initMulticolumnSlashMenu, destroyMulticolumnSlashMenu } from '../visual/multicolumnslashmenu';
+import { initFrostedGlass, destroyFrostedGlass } from '../visual/frostedglass';
 import { initScrollEffect, destroyScrollEffect } from '../visual/scrolleffect';
 import { initFluidCursor, destroyFluidCursor } from '../visual/fluidcursor';
 import { initVerticalTabs, destroyVerticalTabs } from '../verticaltabs/verticaltabs';
-import { initPerformance, destroyPerformance } from '../performancemode/performancemode';
 import { initSuperFusion, destroySuperFusion } from '../superfusion/superfusion';
 import { initIde, destroyIde } from '../ide/ide';
 import { initSidebarMute, destroySidebarMute } from '../sidebarmute/sidebarmute';
@@ -121,10 +121,10 @@ export class NeoPlusController {
       ['smoothCaret', initSmoothCaret],
       ['coloredFolders', initColoredFolders],
       ['multicolumnSlashMenu', initMulticolumnSlashMenu],
+      ['frostedGlass', initFrostedGlass],
       ['scrollEffect', initScrollEffect],
       ['fluidCursor', initFluidCursor],
       ['verticalTabs', initVerticalTabs],
-      ['performance', initPerformance],
       ['superFusion', initSuperFusion],
       ['sidebarMute', initSidebarMute],
       ['ide', initIde],
@@ -148,10 +148,10 @@ export class NeoPlusController {
       ['ide', destroyIde],
       ['sidebarMute', destroySidebarMute],
       ['superFusion', destroySuperFusion],
-      ['performance', destroyPerformance],
       ['verticalTabs', destroyVerticalTabs],
       ['fluidCursor', destroyFluidCursor],
       ['scrollEffect', destroyScrollEffect],
+      ['frostedGlass', destroyFrostedGlass],
       ['multicolumnSlashMenu', destroyMulticolumnSlashMenu],
       ['coloredFolders', destroyColoredFolders],
       ['smoothCaret', destroySmoothCaret],

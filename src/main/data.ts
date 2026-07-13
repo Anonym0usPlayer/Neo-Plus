@@ -47,6 +47,7 @@ export interface Config {
   'colored-lists'?: boolean;
   'colored-headings'?: boolean;
   'colorful-selection'?: boolean;
+  'frosted-glass'?: boolean;
   'scroll-effect'?: boolean;
   'vertical-tabs'?: boolean;
   'vertical-tabs-mode'?: 'topLeftOnly' | 'all';
@@ -62,7 +63,6 @@ export interface Config {
   'sidebar-mute'?: boolean;
   'ide'?: boolean;
   'multicolumn-slash-menu'?: boolean;
-  'performance'?: boolean;
   'sidememo'?: boolean;
   'sidememo-position'?: 'left' | 'right';
   'sidememo-connector'?: boolean;

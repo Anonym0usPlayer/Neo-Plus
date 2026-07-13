@@ -1,17 +1,4 @@
 {
-  "colorStatus": "View Color Status",
-  "autoColorScheme": "Auto Color",
-  "setPreset": "Use Preset",
-  "listPresets": "View Preset List",
-  "getPresetDetail": "View Preset Color Params",
-  "randomColor": "Use Random Color",
-  "followTimeColor": "Use Follow Time",
-  "followSystemColor": "Use Follow System",
-  "followBannerColor": "Use Follow Banner",
-  "generateCraftPreset": "Execute AI Color",
-  "adjustSaturation": "Adjust Saturation",
-  "toggleInvert": "Adjust Invert",
-  "toggleHighContrast": "Adjust High Contrast",
   "invertColor": "Invert",
   "highContrast": "High Contrast",
   "customThemeColor": "Custom Theme Color",
@@ -64,6 +51,7 @@
   "colorfulSelection": "Colorful Selection",
   "ide": "IDE Style",
   "cardSearchList": "Card Style Search List",
+  "frostedGlass": "Frosted Glass",
   "scrollEffect": "Scroll Effect",
   "texture": "Textures",
   "texturePaper": "Paper",
@@ -197,7 +185,6 @@
   "pinnedToolbarStyleLiquidGlass": "Liquid Glass",
   "sidebarMute": "Sidebar Mute",
   "multicolumnSlashMenu": "Multicolumn Slash Menu",
-  "performance": "Performance Mode",
   "hideToolbar": "Merge Tabs to Top Bar",
   "sideMemo": "Side Memo",
   "sidememoSettings": "Configure Side Memo",
@@ -207,5 +194,7 @@
   "sidememoPositionLeft": "Left",
   "sidememoConnector": "Connector",
   "sidememoConnectorTip": "Draw connector lines between side memos and source memos",
-  "mergedSideMemoEditTip": "This is a merged side memo card from multiple inline memos. Edit each source inline memo individually."
+  "mergedSideMemoEditTip": "This is a merged side memo card from multiple inline memos. Edit each source inline memo individually.",
+  "queryColor": "Query Color Status",
+  "applyColor": "Apply Color"
 }

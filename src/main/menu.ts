@@ -7,11 +7,11 @@ import { onSmoothCaretClick, createSmoothCaretLabelHTML } from '../visual/smooth
 import { onFluidCursorClick } from '../visual/fluidcursor';
 import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick, createFocusBlockIndicatorLabelHTML } from '../extension/focusblockindicator';
+import { onFrostedGlassClick } from '../visual/frostedglass';
 import { onScrollEffectClick } from '../visual/scrolleffect';
 import { onIdeClick } from '../ide/ide';
 import { onColoredFoldersClick, createColoredFoldersLabelHTML } from '../visual/coloredfolders';
 import { onVerticalTabsClick, createVerticalTabsLabelHTML } from '../verticaltabs/verticaltabs';
-import { onPerformanceClick } from '../performancemode/performancemode';
 import { onImmersiveModeClick, createImmersiveModeLabelHTML } from '../extension/immersivemode';
 import { onSuperFusionClick, createSuperFusionLabelHTML } from '../superfusion/superfusion';
 import { isMobile } from '../modules/env';
@@ -179,20 +179,19 @@ export function buildMenu(
   }
   menu.addSeparator();
   menu.addItem({
-    id: 'neo-performance-mode-button',
-    icon: 'iconNeoPerformance',
-    label: i18n.performance,
-    click: () => {
-      onPerformanceClick();
-      return true;
-    },
-  });
-  menu.addSeparator();
-  menu.addItem({
     id: 'neo-visual-button',
     icon: 'iconNeoVisual',
     label: i18n.visual,
     submenu: [
+      {
+        id: 'neo-frosted-glass-button',
+        icon: 'iconNeoFrostedGlass',
+        label: i18n.frostedGlass,
+        click: () => {
+          onFrostedGlassClick();
+          return true;
+        },
+      },
       {
         id: 'neo-scroll-effect-button',
         icon: 'iconNeoScrollEffect',
