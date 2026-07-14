@@ -190,6 +190,7 @@ function updateConnectorPath(sourceEl: HTMLElement, targetEl: HTMLElement, conta
   path.setAttribute('d', `M${x1},${y1} C${cpX1},${cpY1} ${cpX2},${cpY2} ${x2},${y2}`);
 }
 function drawConnector(sourceEl: HTMLElement, targetEl: HTMLElement, container: HTMLElement): void {
+  if (container.classList.contains('neo-sidememo-container-resize')) return;
   updateConnectorPath(sourceEl, targetEl, container);
   _connectorState = { sourceEl, targetEl, container };
   if (!_scrollHandler) {
@@ -768,6 +769,7 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
           if (!neoParent) return;
           const containerEl = container;
           try { containerEl.classList.add('neo-sidememo-container-resize'); } catch (_e) {}
+          clearConnector(container);
           const widthStr = getComputedStyle(neoParent).getPropertyValue('--neo-sidememo-container-width') || '';
           const initialWidth = Math.max(50, Math.min(600, Math.round(parseFloat(widthStr) || 200)));
           const isLeftPosition = sideMemoPosition === 'left';
