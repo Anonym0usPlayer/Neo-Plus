@@ -1,5 +1,7 @@
 import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
+import { getPlugin } from '../main/guard';
+import { Dialog } from 'siyuan';
 import type { Config } from '../main/data';
 let animationFrameId: number | null = null;
 let resizeHandler: (() => void) | null = null;
@@ -14,17 +16,37 @@ let lastTime = 0;
 let canvas: HTMLCanvasElement | null = null;
 let ctx: CanvasRenderingContext2D | null = null;
 let isFirstMouseMove = true;
-let isCursorVisible = false;
 let isMouseDown = false;
-let isAnimating = false;
+let isShrinking = false;
+let shrinkStartTime = 0;
+let waves: { x: number; y: number; startTime: number; color: string }[] = [];
 let currentHueOffset = 0;
 let targetHueOffset = 0;
 let cachedDisplayColor = '#f44336';
 let cachedBaseColor = '';
+let trailOn = true;
+let waveOn = true;
 function getCursorColor(): string {
   const computedStyle = getComputedStyle(document.documentElement);
   const color = computedStyle.getPropertyValue('--b3-theme-primary').trim();
   return color || '#f44336';
+}
+function waveColor(invert: boolean): string {
+  const base = getCursorColor();
+  const offset = invert ? '180' : '0';
+  if (Math.random() < 0.5) return `oklch(from ${base} l c calc(h + ${offset}))`;
+  const rand = Math.random();
+  let hue: number;
+  if (rand < 0.5) {
+    hue = Math.floor(Math.random() * 121) - 60;
+  } else if (rand < 0.8) {
+    const sign = Math.random() < 0.5 ? -1 : 1;
+    hue = sign * (Math.floor(Math.random() * 61) + 60);
+  } else {
+    const sign = Math.random() < 0.5 ? -1 : 1;
+    hue = sign * (Math.floor(Math.random() * 61) + 120);
+  }
+  return `oklch(from ${base} l c calc(h + ${offset} + ${hue}))`;
 }
 function updateDisplayColor(): void {
   const baseColor = getCursorColor();
@@ -64,7 +86,10 @@ function randomCursorColor(): void {
     targetHueOffset = randomHue;
   }
 }
-function startFluidCursor(): void {
+function startFluidCursor(_trail = true, _wave = true): void {
+  trailOn = _trail;
+  waveOn = _wave;
+  if (!trailOn && !waveOn) return;
   const existingCanvas = document.getElementById('neo-fluid-cursor-canvas');
   if (existingCanvas) {
     existingCanvas.remove();
@@ -77,7 +102,7 @@ function startFluidCursor(): void {
     left: '0',
     pointerEvents: 'none',
     zIndex: '999999',
-    opacity: '0',
+    opacity: '1',
   });
   document.body.appendChild(canvas);
   ctx = canvas.getContext('2d');
@@ -87,7 +112,9 @@ function startFluidCursor(): void {
   mouse = { x: -100, y: -100 };
   points = [];
   isFirstMouseMove = true;
-  isCursorVisible = false;
+  isShrinking = false;
+  shrinkStartTime = 0;
+  waves = [];
   function resize(): void {
     if (!canvas) return;
     const dpr = window.devicePixelRatio || 1;
@@ -102,60 +129,72 @@ function startFluidCursor(): void {
   resizeHandler = resize;
   resize();
   mouseMoveHandler = (e: MouseEvent) => {
-    if (isFirstMouseMove) {
-      isFirstMouseMove = false;
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-      for (let i = 0; i < 8; i++) {
-        points.push({ x: mouse.x, y: mouse.y });
+    if (trailOn) {
+      if (isFirstMouseMove) {
+        isFirstMouseMove = false;
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        for (let i = 0; i < 24; i++) {
+          points.push({ x: mouse.x, y: mouse.y });
+        }
+      } else {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
       }
-    } else {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      randomCursorColor();
+      isShrinking = false;
+      if (hideCursorTimeout !== null) {
+        clearTimeout(hideCursorTimeout);
+      }
+      hideCursorTimeout = window.setTimeout(() => {
+        isShrinking = true;
+        shrinkStartTime = performance.now();
+      }, 200);
     }
-    randomCursorColor();
-    if (!isCursorVisible && canvas) {
-      isCursorVisible = true;
-      canvas.style.transition = 'none';
-      canvas.style.opacity = '1';
-    }
-    if (!isAnimating && canvas) {
-      isAnimating = true;
-      lastTime = performance.now();
-      animationFrameId = window.requestAnimationFrame(animate);
-      return;
+  };
+  window.addEventListener('resize', resizeHandler);
+  if (trailOn) {
+    window.addEventListener('mousemove', mouseMoveHandler, { passive: true });
+  }
+  mouseDownHandler = (e: MouseEvent) => {
+    isMouseDown = true;
+    isShrinking = false;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    if (waveOn) {
+      waves.push({
+        x: e.clientX,
+        y: e.clientY,
+        startTime: performance.now(),
+        color: waveColor(e.button !== 0),
+      });
     }
     if (hideCursorTimeout !== null) {
       clearTimeout(hideCursorTimeout);
+      hideCursorTimeout = null;
     }
-    hideCursorTimeout = window.setTimeout(() => {
-      isCursorVisible = false;
-      isAnimating = false;
-      if (canvas) {
-        canvas.style.transition = 'opacity 300ms ease-out';
-        canvas.style.opacity = '0';
-      }
-    }, 200);
-  };
-  window.addEventListener('resize', resizeHandler);
-  window.addEventListener('mousemove', mouseMoveHandler, { passive: true });
-  mouseDownHandler = () => {
-    isMouseDown = true;
   };
   mouseUpHandler = () => {
     isMouseDown = false;
     targetHueOffset = 0;
+    if (trailOn && !isShrinking && waves.length === 0 && hideCursorTimeout === null) {
+      hideCursorTimeout = window.setTimeout(() => {
+        isShrinking = true;
+        shrinkStartTime = performance.now();
+      }, 200);
+    }
   };
   window.addEventListener('mousedown', mouseDownHandler, { passive: true });
   window.addEventListener('mouseup', mouseUpHandler, { passive: true });
   mouseLeaveHandler = () => {
-    isAnimating = false;
+    isShrinking = false;
     points = [];
     isFirstMouseMove = true;
   };
   document.addEventListener('mouseleave', mouseLeaveHandler);
   function animate(currentTime: number): void {
     if (!canvas || !ctx) return;
+    const c = ctx;
     const deltaTime = (currentTime - lastTime) / 1000;
     lastTime = currentTime;
     const timeFactor = Math.min(deltaTime * 60, 3);
@@ -165,45 +204,118 @@ function startFluidCursor(): void {
     } else {
       currentHueOffset = targetHueOffset;
     }
-    updateDisplayColor();
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    if (isFirstMouseMove) {
-      if (isAnimating) {
-        animationFrameId = window.requestAnimationFrame(animate);
-      } else {
-        animationFrameId = null;
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    if (trailOn) {
+      updateDisplayColor();
+    }
+    c.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    if (trailOn) {
+      if (!isFirstMouseMove) {
+        if (isShrinking) {
+          const elapsed = (currentTime - shrinkStartTime) / 1000;
+          const shrinkProgress = Math.min(elapsed / 0.35, 1);
+          for (let i = 0; i < points.length; i++) {
+            const pull = Math.min(0.15 + (i / points.length) * 0.5, 0.65) * timeFactor;
+            points[i].x += (mouse.x - points[i].x) * pull;
+            points[i].y += (mouse.y - points[i].y) * pull;
+          }
+          const lastPt = points[points.length - 1];
+          const tailDist = Math.hypot(lastPt.x - mouse.x, lastPt.y - mouse.y);
+          if (shrinkProgress >= 1 || tailDist < 1.5) {
+            isShrinking = false;
+          }
+        } else {
+          const actualHeadEase = 1 - Math.pow(1 - 0.9, timeFactor);
+          const actualTailEase = 1 - Math.pow(1 - 0.4, timeFactor);
+          points[0].x += (mouse.x - points[0].x) * actualHeadEase;
+          points[0].y += (mouse.y - points[0].y) * actualHeadEase;
+          for (let i = 1; i < points.length; i++) {
+            points[i].x += (points[i - 1].x - points[i].x) * actualTailEase;
+            points[i].y += (points[i - 1].y - points[i].y) * actualTailEase;
+          }
+        }
       }
-      return;
     }
-    const actualHeadEase = 1 - Math.pow(1 - 0.9, timeFactor);
-    const actualTailEase = 1 - Math.pow(1 - 0.4, timeFactor);
-    points[0].x += (mouse.x - points[0].x) * actualHeadEase;
-    points[0].y += (mouse.y - points[0].y) * actualHeadEase;
-    for (let i = 1; i < points.length; i++) {
-      points[i].x += (points[i - 1].x - points[i].x) * actualTailEase;
-      points[i].y += (points[i - 1].y - points[i].y) * actualTailEase;
+    if (waveOn) {
+      const hadWaves = waves.length > 0;
+      try {
+      waves = waves.filter(r => {
+        const age = Math.max(0, (currentTime - r.startTime) / 1000);
+        if (age > 0.8) return false;
+        const progress = Math.min(age / 0.8, 1);
+        const fade = 1 - progress;
+        const r1 = Math.max(0, progress * 10);
+        c.beginPath();
+        c.strokeStyle = r.color;
+        c.lineWidth = Math.max(0, 3 * fade);
+        c.globalAlpha = Math.max(0, 0.4 * fade);
+        c.shadowColor = r.color;
+        c.shadowBlur = 2;
+        c.arc(r.x, r.y, r1, 0, Math.PI * 2);
+        c.stroke();
+        c.shadowBlur = 0;
+        const r2 = Math.max(0, progress * 20);
+        c.beginPath();
+        c.strokeStyle = r.color;
+        c.lineWidth = Math.max(0, 2 * fade);
+        c.globalAlpha = Math.max(0, 0.25 * fade);
+        c.shadowColor = r.color;
+        c.shadowBlur = 5;
+        c.arc(r.x, r.y, r2, 0, Math.PI * 2);
+        c.stroke();
+        c.shadowBlur = 0;
+        const r3 = Math.max(0, progress * 32);
+        c.beginPath();
+        c.strokeStyle = r.color;
+        c.lineWidth = Math.max(0, 1.5 * fade + 0.2);
+        c.globalAlpha = Math.max(0, 0.15 * fade);
+        c.shadowColor = r.color;
+        c.shadowBlur = 10;
+        c.arc(r.x, r.y, r3, 0, Math.PI * 2);
+        c.stroke();
+        c.shadowBlur = 0;
+        c.globalAlpha = 1;
+        return true;
+      });
+      } catch (_) {  }
+      if (hadWaves && waves.length === 0 && trailOn && !isShrinking && !isMouseDown) {
+        hideCursorTimeout = window.setTimeout(() => {
+          isShrinking = true;
+          shrinkStartTime = performance.now();
+        }, 200);
+      }
     }
-    ctx.strokeStyle = cachedDisplayColor;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    for (let i = 0; i < points.length - 1; i++) {
-      const width = Math.max(0, 6 - (i * 1.2));
-      ctx.beginPath();
-      ctx.lineWidth = width;
-      ctx.moveTo(points[i].x, points[i].y);
-      ctx.lineTo(points[i + 1].x, points[i + 1].y);
-      ctx.stroke();
+    if (trailOn) {
+      c.strokeStyle = cachedDisplayColor;
+      c.lineCap = 'round';
+      c.lineJoin = 'round';
+      const n = points.length;
+      const w0 = 6;
+      if (n >= 2 && w0 > 0) {
+        const midX = (points[0].x + points[1].x) / 2;
+        const midY = (points[0].y + points[1].y) / 2;
+        c.beginPath();
+        c.lineWidth = w0;
+        c.moveTo(points[0].x, points[0].y);
+        c.quadraticCurveTo(points[0].x, points[0].y, midX, midY);
+        c.stroke();
+      }
+      for (let i = 1; i < n - 1; i++) {
+        const width = Math.max(0, 6 - (i * 0.65));
+        if (width <= 0) break;
+        const prevMidX = (points[i - 1].x + points[i].x) / 2;
+        const prevMidY = (points[i - 1].y + points[i].y) / 2;
+        const nextMidX = (points[i].x + points[i + 1].x) / 2;
+        const nextMidY = (points[i].y + points[i + 1].y) / 2;
+        c.beginPath();
+        c.lineWidth = width;
+        c.moveTo(prevMidX, prevMidY);
+        c.quadraticCurveTo(points[i].x, points[i].y, nextMidX, nextMidY);
+        c.stroke();
+      }
     }
-    if (isAnimating) {
-      animationFrameId = window.requestAnimationFrame(animate);
-    } else {
-      animationFrameId = null;
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    }
+    animationFrameId = window.requestAnimationFrame(animate);
   }
   lastTime = performance.now();
-  isAnimating = true;
   animationFrameId = window.requestAnimationFrame(animate);
 }
 export function destroyFluidCursor(): void {
@@ -242,7 +354,6 @@ export function destroyFluidCursor(): void {
   points = [];
   mouse = { x: 0, y: 0 };
   lastTime = 0;
-  isAnimating = false;
   canvas = null;
   ctx = null;
   const htmlEl = document.documentElement;
@@ -250,12 +361,85 @@ export function destroyFluidCursor(): void {
     htmlEl.classList.remove('neo-visual-fluid-cursor');
   }
 }
+export function createFluidCursorLabelHTML(i18n: Record<string, string>): string {
+  return `<span class="fn__flex fn__pointer">
+    <span>${i18n.fluidCursor}</span>
+    <span class="fn__space fn__flex-1 neo-menu-item-second-icon-space"></span>
+    <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.fluidCursorSettings}" onclick="event.stopPropagation();__neoOpenFluidCursorSettings()"><use xlink:href="#iconSettings"></use></svg>
+  </span>`;
+}
+function buildFluidCursorSettingsHTML(i18n: Record<string, string>): string {
+  return `<div class="b3-dialog__content">
+    <div class="config__tab-container">
+      <div class="config-group">
+        <div class="config-items">
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.fluidCursorTrail}
+              <div class="b3-label__text">${i18n.fluidCursorTrailTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <input class="b3-switch fn__flex-center" id="neo-fluid-cursor-trail" type="checkbox">
+          </label>
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.fluidCursorWave}
+              <div class="b3-label__text">${i18n.fluidCursorWaveTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <input class="b3-switch fn__flex-center" id="neo-fluid-cursor-wave" type="checkbox">
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="b3-dialog__action">
+    <button class="b3-button b3-button--cancel" id="neo-fluid-cursor-cancel">${i18n.cancel}</button>
+    <span class="fn__space"></span>
+    <button class="b3-button b3-button--text" id="neo-fluid-cursor-confirm">${i18n.confirm}</button>
+  </div>`;
+}
+export function showFluidCursorSettings(): void {
+  const plugin = getPlugin();
+  if (!plugin) return;
+  const dialog = new Dialog({
+    title: plugin.i18n.fluidCursorSettings || 'Configure Fluid Cursor',
+    content: buildFluidCursorSettingsHTML(plugin.i18n),
+  });
+  dialog.element.setAttribute('data-key', 'dialog-neo-fluid-cursor-settings');
+  dialog.element.classList.add('neo-settings-dialog');
+  loadConfig().then((config) => {
+    const trailCheckbox = dialog.element.querySelector('#neo-fluid-cursor-trail') as HTMLInputElement;
+    const waveCheckbox = dialog.element.querySelector('#neo-fluid-cursor-wave') as HTMLInputElement;
+    if (trailCheckbox) trailCheckbox.checked = config['fluid-cursor-trail'] !== false;
+    if (waveCheckbox) waveCheckbox.checked = config['fluid-cursor-wave'] !== false;
+  });
+  dialog.element.querySelector('#neo-fluid-cursor-cancel')?.addEventListener('click', () => dialog.destroy());
+  dialog.element.querySelector('#neo-fluid-cursor-confirm')?.addEventListener('click', () => {
+    const trailCheckbox = dialog.element.querySelector('#neo-fluid-cursor-trail') as HTMLInputElement;
+    const waveCheckbox = dialog.element.querySelector('#neo-fluid-cursor-wave') as HTMLInputElement;
+    if (trailCheckbox && waveCheckbox) {
+      saveConfig({
+        'fluid-cursor-trail': trailCheckbox.checked,
+        'fluid-cursor-wave': waveCheckbox.checked,
+      } as Partial<Config>);
+      destroyFluidCursor();
+      document.documentElement.classList.add('neo-visual-fluid-cursor');
+      startFluidCursor(trailCheckbox.checked, waveCheckbox.checked);
+    }
+    dialog.destroy();
+  });
+}
 export function initFluidCursor(): void {
+  (window as any).__neoOpenFluidCursorSettings = showFluidCursorSettings;
   if (isMobile()) return;
   loadConfig().then((config) => {
     if (config['fluid-cursor'] === true) {
       document.documentElement.classList.add('neo-visual-fluid-cursor');
-      startFluidCursor();
+      startFluidCursor(
+        config['fluid-cursor-trail'] !== false,
+        config['fluid-cursor-wave'] !== false
+      );
     }
   });
 }

@@ -111,11 +111,6 @@ declare module 'siyuan' {
     eventBus: EventBus;
     getEditor(): Protyle;
     getOpenedTab(): any[];
-    addAgentAction(options: {
-      name: string;
-      description: string;
-      handler: (args: Record<string, unknown>, app: App) => Promise<{ result?: string; error?: string }>;
-    }): string;
   }
   export class Setting {
     constructor(config: { confirmCallback: () => void });

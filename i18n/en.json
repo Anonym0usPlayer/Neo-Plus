@@ -141,6 +141,11 @@
   "smoothCaretStyleBlock": "Block",
   "smoothCaretStyleUnderline": "Underline",
   "fluidCursor": "Fluid Cursor",
+  "fluidCursorSettings": "Configure Fluid Cursor",
+  "fluidCursorTrail": "Trail",
+  "fluidCursorTrailTip": "A colorful trail following mouse movement",
+  "fluidCursorWave": "Wave",
+  "fluidCursorWaveTip": "Expand waves outward on mouse click",
   "listBulletLine": "List Bullet Line",
   "focusBlockIndicator": "Focus Block Indicator",
   "focusBlockIndicatorSettings": "Focus Block Indicator Settings",
@@ -194,7 +199,5 @@
   "sidememoPositionLeft": "Left",
   "sidememoConnector": "Connector",
   "sidememoConnectorTip": "Draw connector lines between side memos and source memos",
-  "mergedSideMemoEditTip": "This is a merged side memo card from multiple inline memos. Edit each source inline memo individually.",
-  "queryColor": "Query Color Status",
-  "applyColor": "Apply Color"
+  "mergedSideMemoEditTip": "This is a merged side memo card from multiple inline memos. Edit each source inline memo individually."
 }

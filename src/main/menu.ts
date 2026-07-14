@@ -4,7 +4,7 @@ import { loadConfig } from './data';
 import { createColorPickerHTML, createFollowTimeColorPickerHTML, createSliderHTML, getPresetMenuItems, getThemeColor, initPaletteMenuEvents, onInvertClick, onHighContrastClick, switchToPlan } from '../palette/manager';
 import { getTextureMenuItems } from '../texture/manager';
 import { onSmoothCaretClick, createSmoothCaretLabelHTML } from '../visual/smoothcaret';
-import { onFluidCursorClick } from '../visual/fluidcursor';
+import { onFluidCursorClick, createFluidCursorLabelHTML } from '../visual/fluidcursor';
 import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick, createFocusBlockIndicatorLabelHTML } from '../extension/focusblockindicator';
 import { onFrostedGlassClick } from '../visual/frostedglass';
@@ -243,7 +243,7 @@ export function buildMenu(
         {
           id: 'neo-fluid-cursor-button',
           icon: 'iconNeoFluidCursor',
-          label: i18n.fluidCursor,
+          label: createFluidCursorLabelHTML(i18n),
           click: () => {
             onFluidCursorClick();
             return true;

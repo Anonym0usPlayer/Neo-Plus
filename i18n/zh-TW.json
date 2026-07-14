@@ -140,6 +140,11 @@
   "smoothCaretStyleBlock": "矩形",
   "smoothCaretStyleUnderline": "底線",
   "fluidCursor": "流體遊標",
+  "fluidCursorSettings": "配置流體遊標",
+  "fluidCursorTrail": "拖尾",
+  "fluidCursorTrailTip": "跟隨滑鼠移動的拖尾效果",
+  "fluidCursorWave": "波紋",
+  "fluidCursorWaveTip": "滑鼠點擊時向外擴散波紋",
   "listBulletLine": "列表子彈線",
   "focusBlockIndicator": "聚焦塊指示",
   "focusBlockIndicatorSettings": "配置聚焦塊指示",
@@ -193,7 +198,5 @@
   "sidememoPositionLeft": "左側",
   "sidememoConnector": "連線",
   "sidememoConnectorTip": "在側邊備註和源備註之間連線",
-  "mergedSideMemoEditTip": "這是多個行內備註合併顯示的側邊備註卡片，需在每個源行內備註處分別修改",
-  "queryColor": "查詢配色狀態",
-  "applyColor": "應用配色"
+  "mergedSideMemoEditTip": "這是多個行內備註合併顯示的側邊備註卡片，需在每個源行內備註處分別修改"
 }
