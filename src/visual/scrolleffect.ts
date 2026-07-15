@@ -27,32 +27,32 @@ const scrollEffectCSS = `
 .neo-sidememo-filememo-item {
     animation:
       neo-scroll-reveal-entry cubic-bezier(0.46, 0.03, 0.52, 0.96) both,
-      neo-scroll-reveal-exit  cubic-bezier(0.46, 0.03, 0.52, 0.96) forwards;
+      neo-scroll-reveal-exit cubic-bezier(0.46, 0.03, 0.52, 0.96) forwards;
     animation-timeline: view(block), view(block);
     animation-range: entry 0% entry 120px, exit calc(100% - 120px) exit 100%;
 }
 @keyframes neo-scroll-reveal-entry {
   from {
-    opacity: 0.2;
-    transform: translate(8px, 16px);
-    filter: blur(2px);
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    filter: blur(6px);
   }
   to {
     opacity: 1;
-    transform: translate(0, 0);
+    transform: translateY(0) scale(1);
     filter: blur(0);
   }
 }
 @keyframes neo-scroll-reveal-exit {
   from {
     opacity: 1;
-    transform: translate(0, 0);
+    transform: translateY(0) scale(1);
     filter: blur(0);
   }
   to {
-    opacity: 0.5;
-    transform: translate(-8px, -16px);
-    filter: blur(2px);
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+    filter: blur(6px);
   }
 }
 `;

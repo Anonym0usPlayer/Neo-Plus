@@ -162,9 +162,6 @@ export function createImmersiveModeLabelHTML(i18n: Record<string, string>): stri
   </span>`;
 }
 function buildSettingsHTML(i18n: Record<string, string>): string {
-  const optionOnOff = [i18n.on, i18n.off]
-    .map(v => `<option value="${v}">${v}</option>`)
-    .join('');
   return `<div class="b3-dialog__content">
     <div class="config__tab-container">
       <div class="config-group">
@@ -175,9 +172,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
               <div class="b3-label__text">${i18n.immersiveTypewriterModeTip}</div>
             </div>
             <span class="fn__space"></span>
-            <select class="b3-select fn__flex-center fn__size200" id="neo-immersive-typewriter">
-              ${optionOnOff}
-            </select>
+            <input class="b3-switch fn__flex-center" id="neo-immersive-typewriter" type="checkbox"${typewriterEnabled ? ' checked' : ''}>
           </label>
           <label class="fn__flex b3-label">
             <div class="fn__flex-1">
@@ -185,9 +180,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
               <div class="b3-label__text">${i18n.immersiveHighlightTip}</div>
             </div>
             <span class="fn__space"></span>
-            <select class="b3-select fn__flex-center fn__size200" id="neo-immersive-highlight">
-              ${optionOnOff}
-            </select>
+            <input class="b3-switch fn__flex-center" id="neo-immersive-highlight" type="checkbox"${highlightEnabled ? ' checked' : ''}>
           </label>
         </div>
       </div>
@@ -220,14 +213,14 @@ export function showImmersiveModeSettings(): void {
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
   dialog.element.setAttribute('data-key', 'dialog-neo-immersive-settings');
   dialog.element.classList.add('neo-settings-dialog');
-  const typewriterSelect = dialog.element.querySelector('#neo-immersive-typewriter') as HTMLSelectElement;
-  const highlightSelect = dialog.element.querySelector('#neo-immersive-highlight') as HTMLSelectElement;
-  if (typewriterSelect) typewriterSelect.value = typewriterEnabled ? plugin.i18n.on : plugin.i18n.off;
-  if (highlightSelect) highlightSelect.value = highlightEnabled ? plugin.i18n.on : plugin.i18n.off;
+  const typewriterSwitch = dialog.element.querySelector('#neo-immersive-typewriter') as HTMLInputElement;
+  const highlightSwitch = dialog.element.querySelector('#neo-immersive-highlight') as HTMLInputElement;
+  if (typewriterSwitch) typewriterSwitch.checked = typewriterEnabled;
+  if (highlightSwitch) highlightSwitch.checked = highlightEnabled;
   dialog.element.querySelector('#neo-immersive-cancel')?.addEventListener('click', () => dialog.destroy());
   dialog.element.querySelector('#neo-immersive-confirm')?.addEventListener('click', () => {
-    const newTypewriter = typewriterSelect ? typewriterSelect.value === plugin.i18n.on : true;
-    const newHighlight = highlightSelect ? highlightSelect.value === plugin.i18n.on : true;
+    const newTypewriter = typewriterSwitch ? typewriterSwitch.checked : true;
+    const newHighlight = highlightSwitch ? highlightSwitch.checked : true;
     typewriterEnabled = newTypewriter;
     highlightEnabled = newHighlight;
     saveConfig({ 'immersive-typewriter': newTypewriter, 'immersive-highlight': newHighlight } as Partial<Config>);

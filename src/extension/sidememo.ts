@@ -369,7 +369,7 @@ async function initSidememoRely(): Promise<boolean> {
   return ((window as any).katex !== undefined) || ((window as any).hljs !== undefined);
 }
 let sideMemoPosition: 'left' | 'right' = 'right';
-let sideMemoConnector: boolean = false;
+let sideMemoConnector: boolean = true;
 function updateSideMemoPositionClass(position: 'left' | 'right'): void {
   document.body?.classList.remove('neo-sidememo-left', 'neo-sidememo-right');
   document.body?.classList.add(position === 'left' ? 'neo-sidememo-left' : 'neo-sidememo-right');
@@ -664,10 +664,13 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
       };
       const onItemEnter = () => {
         relatedEls.forEach(el => el.setAttribute('neo-sidememo-highlight', ''));
+        if (it.type === 'file') {
+          const anchor = getConnectorAnchor();
+          if (anchor) anchor.setAttribute('neo-sidememo-highlight', '');
+        }
         if (shouldDrawConnector && relatedEls[0] && it.el) {
           const anchor = getConnectorAnchor();
           if (anchor) {
-            if (it.type === 'file') anchor.setAttribute('neo-sidememo-highlight', '');
             drawConnector(anchor, it.el, container);
           }
         }
@@ -1018,9 +1021,6 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   const positionOptions = ['right', 'left']
     .map(v => `<option value="${v}">${i18n[`sidememoPosition${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
     .join('');
-  const optionOnOff = [i18n.on, i18n.off]
-    .map(v => `<option value="${v}">${v}</option>`)
-    .join('');
   return `<div class="b3-dialog__content">
     <div class="config__tab-container">
       <div class="config-group">
@@ -1041,9 +1041,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
               <div class="b3-label__text">${i18n.sidememoConnectorTip}</div>
             </div>
             <span class="fn__space"></span>
-            <select class="b3-select fn__flex-center fn__size200" id="neo-sidememo-connector">
-              ${optionOnOff}
-            </select>
+            <input class="b3-switch fn__flex-center" id="neo-sidememo-connector" type="checkbox"${sideMemoConnector ? ' checked' : ''}>
           </label>
         </div>
       </div>
@@ -1066,13 +1064,13 @@ export function showSideMemoSettings(): void {
   dialog.element.setAttribute('data-key', 'dialog-neo-sidememo-settings');
   dialog.element.classList.add('neo-settings-dialog');
   const positionSelect = dialog.element.querySelector('#neo-sidememo-position') as HTMLSelectElement;
-  const connectorSelect = dialog.element.querySelector('#neo-sidememo-connector') as HTMLSelectElement;
+  const connectorSwitch = dialog.element.querySelector('#neo-sidememo-connector') as HTMLInputElement;
   if (positionSelect) positionSelect.value = sideMemoPosition;
-  if (connectorSelect) connectorSelect.value = sideMemoConnector ? plugin.i18n.on : plugin.i18n.off;
+  if (connectorSwitch) connectorSwitch.checked = sideMemoConnector;
   dialog.element.querySelector('#neo-sidememo-cancel')?.addEventListener('click', () => dialog.destroy());
   dialog.element.querySelector('#neo-sidememo-confirm')?.addEventListener('click', () => {
     const newPosition = (positionSelect?.value || 'right') as 'left' | 'right';
-    const newConnector = connectorSelect ? connectorSelect.value === plugin.i18n.on : false;
+    const newConnector = connectorSwitch ? connectorSwitch.checked : false;
     sideMemoPosition = newPosition;
     sideMemoConnector = newConnector;
     saveConfig({
@@ -1099,7 +1097,7 @@ export function initSideMemo(): void {
   (window as any).__neoOpenSideMemoSettings = showSideMemoSettings;
   loadConfig().then((config) => {
     const savedPosition = (config?.['sidememo-position'] as 'left' | 'right') || 'right';
-    const savedConnector = config?.['sidememo-connector'] === true;
+    const savedConnector = config?.['sidememo-connector'] !== false;
     sideMemoPosition = savedPosition;
     sideMemoConnector = savedConnector;
     if (config?.['sidememo'] === true) {
