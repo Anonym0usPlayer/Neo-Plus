@@ -2,22 +2,6 @@
 @use "../utils" as *;
 .neo-visual-cardsearchlist {
     @include visual-common('[data-id="neo-card-search-list-button"]', '[data-id="neo-visual-button"]');
-    #searchList:not(.neo-cardsearchlist) {
-        & > .b3-list-item {
-            background-color: var(--b3-list-hover);
-        }
-        .b3-list-item[data-type="search-item"] {
-            --b3-list-hover: transparent;
-            transition: var(--b3-transition);
-            &.b3-list-item--focus {
-                color: var(--b3-theme-accent);
-                .b3-list-item__text,
-                .b3-list-item__graphic {
-                    color: var(--b3-theme-accent);
-                }
-            }
-        }
-    }
     #searchList.neo-cardsearchlist,
     #searchUnRefList.neo-cardsearchlist,
     #searchAssetList.neo-cardsearchlist {
