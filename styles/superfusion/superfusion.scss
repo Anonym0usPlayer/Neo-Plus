@@ -67,7 +67,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
             z-index: 2;
             .protyle-breadcrumb__bar {
                 @include superellipse(6px);
-                background-color: oklch(from var(--b3-theme-background) l c h / 0.5);
+                background-color: transparent;
                 backdrop-filter: blur(6px);
                 padding: 0 4px;
                 &:empty {

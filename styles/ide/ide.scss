@@ -6,7 +6,7 @@
 }
 .neo-ide {
     @include ide-common('[data-id="neo-ide-button"]');
-    --_ide-dockitem-margin-top: 8px;
+    --_ide-dockitem-margin-top: 6px;
     --_ide-dockitem-margin-bottom: 8px;
     --_ide-dock-bg: var(--b3-theme-background);
     --_ide-dock-resize-bg: var(--b3-border-color-trans);
@@ -17,7 +17,7 @@
 }
 .neo-ide-body.body--toolbar-hide {
     .neo-visual-superfusion & {
-        --_ide-dockitem-margin-top: 2px;
+        --_ide-dockitem-margin-top: 0;
     }
     background-color: var(--b3-theme-background);
     & > .fn__flex-1 {
@@ -43,7 +43,10 @@
         }
     }
     .dockPanel .block__icons {
-        margin-top: calc(var(--_ide-dockitem-margin-top) - 7.5px);
+        margin-top: 0;
+        .neo-visual-superfusion & {
+            margin-top: -6px;
+        }
     }
     .layout__dockl,
     .layout__dockr,
