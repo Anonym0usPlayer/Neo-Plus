@@ -6,7 +6,8 @@ export interface Texture {
   nameKey: string;
 }
 const textures: Texture[] = [
-  { key: 'paper', nameKey: 'texturePaper' },
+  { key: 'newsprint', nameKey: 'textureNewsprint' },
+  { key: 'embossedpaper', nameKey: 'textureEmbossedpaper' },
   { key: 'noise', nameKey: 'textureNoise' },
   { key: 'acrylic', nameKey: 'textureAcrylic' },
   { key: 'checkerboard', nameKey: 'textureCheckerboard' },

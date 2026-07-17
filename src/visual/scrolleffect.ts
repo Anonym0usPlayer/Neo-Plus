@@ -19,17 +19,22 @@ const scrollEffectCSS = `
     animation: none !important;
   }
 }
-.protyle-wysiwyg [data-node-id],
-.protyle-action,
-.callout-info,
-.neo-sidememo-inlinememo-item,
-.neo-sidememo-blockmemo-item,
-.neo-sidememo-filememo-item {
+.protyle-breadcrumb ~ .protyle-content {
+  [data-node-id],
+  .protyle-action,
+  .callout-info {
     animation:
       neo-scroll-reveal-entry cubic-bezier(0.46, 0.03, 0.52, 0.96) both,
       neo-scroll-reveal-exit cubic-bezier(0.46, 0.03, 0.52, 0.96) forwards;
     animation-timeline: view(block), view(block);
     animation-range: entry 0% entry 120px, exit calc(100% - 120px) exit 100%;
+  }
+  .protyle-wysiwyg > [data-node-id]:first-child,
+  .protyle-title {
+    animation: neo-scroll-reveal-exit cubic-bezier(0.46, 0.03, 0.52, 0.96) forwards;
+    animation-timeline: view(block);
+    animation-range: exit calc(100% - 50px) exit 100%;
+  }
 }
 @keyframes neo-scroll-reveal-entry {
   from {
