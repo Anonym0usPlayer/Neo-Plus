@@ -80,7 +80,7 @@
     word-wrap: break-word;
     max-height: 300px;
     overflow: scroll;
-    @include overflow-indicator-fadein-mask($fadeout-size-l, "top bottom");
+    // 导致闪退 @include overflow-indicator-fadein-mask($fadeout-size-l, "top bottom");
 }
 .neo-sidememo-connector {
     position: fixed;
