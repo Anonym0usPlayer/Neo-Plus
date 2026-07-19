@@ -154,7 +154,7 @@ function switchHTML(i18n: Record<string, string>, id: string, className: string,
   </label>`;
 }
 function effectSelectHTML(i18n: Record<string, string>, id: string, className: string, i18nKey: string): string {
-  const opts = ['normal', 'multiply', 'luminosity', 'screen', 'color', 'overlay', 'color-burn', 'color-dodge']
+  const opts = ['normal', 'multiply', 'luminosity', 'screen', 'color', 'overlay', 'soft-light', 'color-burn', 'color-dodge']
     .map(v => `<option value="${v}">${t(i18n, `customimageEffect${v.charAt(0).toUpperCase() + v.slice(1).replace(/-(\w)/g, (_, c) => c.toUpperCase())}`)}</option>`)
     .join('');
   return `<label class="fn__flex b3-label ${className}">

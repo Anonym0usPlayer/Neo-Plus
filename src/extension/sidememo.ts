@@ -591,7 +591,7 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
       }
       const uid = (isInline ? getUidFromElement(memoEl) : null) || ensureMemoUid(memoEl);
       if (isInline) sourceEls.forEach(el => { try { setUidToElement(el, uid); } catch (_e) {} });
-      const top = type === 'file' ? 20 : calcMemoTop(memoEl, container, protyleContent);
+      const top = calcMemoTop(memoEl, container, protyleContent);
       const prefix = `neo-sidememo-${type === 'inline' ? 'inlinememo' : type === 'file' ? 'filememo' : 'blockmemo'}`;
       const item = createMemoItem({
         className: `${prefix}-item`,
