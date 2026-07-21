@@ -248,6 +248,23 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
             }
         }
     }
+    // 兼容性
+    // 数据库表头
+    .av__row--header[style*="transform"] {
+        top: var(--_superfusion-av-header-top) !important;
+    }
+}
+:root {
+    --_superfusion-av-header-top: 71px;
+}
+.neo-verticaltabs {
+    --_superfusion-av-header-top: 32px;
+}
+.body--toolbar-hide {
+    --_superfusion-av-header-top: 41px;
+    .neo-ide & {
+        --_superfusion-av-header-top: 37px;
+    }
 }
 @keyframes header-parallax {
     to {
