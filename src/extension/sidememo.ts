@@ -396,6 +396,40 @@ function attachNoRightClick(el: HTMLElement): void {
   el.addEventListener('mousedown', stopAll, { capture: true, passive: false });
   el.addEventListener('mouseup', stopAll, { capture: true, passive: false });
 }
+function syncBreadcrumbButton(protyleContent: HTMLElement, show: boolean): void {
+  try {
+    const breadcrumb = protyleContent.previousElementSibling as HTMLElement | null;
+    if (!breadcrumb || !breadcrumb.classList.contains('protyle-breadcrumb')) return;
+    const existingBtn = breadcrumb.querySelector<HTMLElement>('.neo-sidememo-btn');
+    if (!show) {
+      if (existingBtn) existingBtn.remove();
+      return;
+    }
+    if (existingBtn) return;
+    const space = breadcrumb.querySelector<HTMLElement>('.protyle-breadcrumb__space');
+    if (!space) return;
+    const btn = document.createElement('button');
+    btn.className = 'block__icon fn__flex-center ariaLabel neo-sidememo-btn neo-sidememo-btn-active';
+    const i18n = getPlugin()?.i18n || {};
+    btn.setAttribute('aria-label', i18n.sideMemo);
+    btn.innerHTML = '<svg><use xlink:href="#iconM"></use></svg>';
+    btn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      ev.preventDefault();
+      const currentlyHidden = !btn.classList.contains('neo-sidememo-btn-active');
+      if (currentlyHidden) {
+        btn.classList.add('neo-sidememo-btn-active');
+      } else {
+        btn.classList.remove('neo-sidememo-btn-active');
+      }
+      syncSidememoState();
+      if (currentlyHidden) {
+        setTimeout(() => { try { syncSidememoState(); } catch (_e) {} }, 500);
+      }
+    });
+    space.after(btn);
+  } catch (_e) {}
+}
 function syncSidememoState(): void {
   const htmlEl = document.documentElement;
   const isActive = !!(htmlEl && htmlEl.classList.contains('neo-extension-sidememo'));
@@ -404,10 +438,18 @@ function syncSidememoState(): void {
     try {
       const hasInlineOrBlockMemo = el.querySelector('[data-type*=\'inline-memo\'], [memo]') !== null;
       const hasTitle = el.querySelector('.protyle-title:not(.fn__none)') !== null;
-      if (isActive && hasInlineOrBlockMemo && hasTitle) {
+      const breadcrumb = el.previousElementSibling as HTMLElement | null;
+      const btn = breadcrumb?.querySelector<HTMLElement>('.neo-sidememo-btn');
+      const manuallyHidden = !!(btn && !btn.classList.contains('neo-sidememo-btn-active'));
+      if (isActive && hasInlineOrBlockMemo && hasTitle && !manuallyHidden) {
         el.classList.add('neo-sidememo-protyle');
+        syncBreadcrumbButton(el, true);
+      } else if (isActive && hasInlineOrBlockMemo && hasTitle && manuallyHidden) {
+        el.classList.remove('neo-sidememo-protyle');
+        syncBreadcrumbButton(el, true);
       } else {
         el.classList.remove('neo-sidememo-protyle');
+        syncBreadcrumbButton(el, false);
       }
     } catch (_e) {}
   });
@@ -990,6 +1032,9 @@ export function cleanupSideMemo(): void {
         (el as HTMLElement).style.removeProperty('--neo-sidememo-container-width');
         (el as HTMLElement).classList.remove('neo-sidememo-protyle');
       } catch (_e) {}
+    });
+    document.querySelectorAll('.neo-sidememo-btn').forEach(el => {
+      try { el.remove(); } catch (_e) {}
     });
     document.querySelectorAll('.tooltip--memo#tooltip').forEach(el => {
       try { (el as HTMLElement).classList.remove('neo-sidememo-tooltip-memo-none'); } catch (_e) {}

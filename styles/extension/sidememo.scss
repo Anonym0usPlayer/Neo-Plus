@@ -18,7 +18,12 @@
 .tooltip--memo#tooltip.neo-sidememo-tooltip-memo-none {
     display: none;
 }
- .neo-sidememo-container {
+.neo-sidememo-btn.neo-sidememo-btn-active {
+    svg {
+        color: var(--b3-theme-accent) !important;
+    }
+}
+.neo-sidememo-container {
     display: block;
     position: absolute;
     width: var(--neo-sidememo-container-width);
@@ -45,9 +50,8 @@
 .neo-sidememo-filememo-item {
     width: var(--neo-sidememo-container-width);
     max-width: calc(var(--b3-width-protyle-content) - 2 * var(--neo-sidememo-re));
-    @include superellipse(8px);
+    @include superellipse(10px);
     outline: 0.75px solid var(--b3-border-color-trans);
-    outline-width: -0.75px;
     font-size: 0.8125em;
     color: oklch(from var(--b3-theme-on-background) l c h / 0.75);
     transition: all var(--b3-transition), top 0s;

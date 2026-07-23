@@ -19,7 +19,7 @@ let isFirstMouseMove = true;
 let isMouseDown = false;
 let isShrinking = false;
 let shrinkStartTime = 0;
-let waves: { x: number; y: number; startTime: number; color: string }[] = [];
+let waves: { x: number; y: number; startTime: number; colors: [string, string, string]; scale: number; duration: number }[] = [];
 let currentHueOffset = 0;
 let targetHueOffset = 0;
 let cachedDisplayColor = '#f44336';
@@ -31,10 +31,10 @@ function getCursorColor(): string {
   const color = computedStyle.getPropertyValue('--b3-theme-primary').trim();
   return color || '#f44336';
 }
-function waveColor(invert: boolean): string {
+function waveColor(invert: boolean, noChangeProb = 0.5): string {
   const base = getCursorColor();
   const offset = invert ? '180' : '0';
-  if (Math.random() < 0.5) return `oklch(from ${base} l c calc(h + ${offset}))`;
+  if (Math.random() < noChangeProb) return `oklch(from ${base} l c calc(h + ${offset}))`;
   const rand = Math.random();
   let hue: number;
   if (rand < 0.5) {
@@ -162,11 +162,14 @@ function startFluidCursor(_trail = true, _wave = true): void {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
     if (waveOn) {
+      const invert = e.button !== 0;
       waves.push({
         x: e.clientX,
         y: e.clientY,
         startTime: performance.now(),
-        color: waveColor(e.button !== 0),
+        colors: [waveColor(invert, 0.7), waveColor(invert, 0.7), waveColor(invert, 0.7)],
+        scale: 0.55 + Math.random() * 1.3,
+        duration: 0.45 + Math.random() * 0.65,
       });
     }
     if (hideCursorTimeout !== null) {
@@ -240,35 +243,44 @@ function startFluidCursor(_trail = true, _wave = true): void {
       try {
       waves = waves.filter(r => {
         const age = Math.max(0, (currentTime - r.startTime) / 1000);
-        if (age > 0.8) return false;
-        const progress = Math.min(age / 0.8, 1);
-        const fade = 1 - progress;
-        const r1 = Math.max(0, progress * 10);
+        const dur = r.duration || 0.8;
+        if (age > dur) return false;
+        const s = r.scale || 1;
+        const durInner = dur * 0.68;
+        const durMiddle = dur * 0.82;
+        const durOuter = dur;
+        const progressInner = Math.min(age / durInner, 1);
+        const progressMiddle = Math.min(age / durMiddle, 1);
+        const progressOuter = Math.min(age / durOuter, 1);
+        const fadeInner = 1 - progressInner;
+        const fadeMiddle = 1 - progressMiddle;
+        const fadeOuter = 1 - progressOuter;
+        const r1 = Math.max(0, progressInner * 10 * s);
         c.beginPath();
-        c.strokeStyle = r.color;
-        c.lineWidth = Math.max(0, 3 * fade);
-        c.globalAlpha = Math.max(0, 0.4 * fade);
-        c.shadowColor = r.color;
+        c.strokeStyle = r.colors[0];
+        c.lineWidth = Math.max(0, 3 * fadeInner * Math.min(s, 1.4));
+        c.globalAlpha = Math.max(0, 0.4 * fadeInner);
+        c.shadowColor = r.colors[0];
         c.shadowBlur = 2;
         c.arc(r.x, r.y, r1, 0, Math.PI * 2);
         c.stroke();
         c.shadowBlur = 0;
-        const r2 = Math.max(0, progress * 20);
+        const r2 = Math.max(0, progressMiddle * 20 * s);
         c.beginPath();
-        c.strokeStyle = r.color;
-        c.lineWidth = Math.max(0, 2 * fade);
-        c.globalAlpha = Math.max(0, 0.25 * fade);
-        c.shadowColor = r.color;
+        c.strokeStyle = r.colors[1];
+        c.lineWidth = Math.max(0, 2 * fadeMiddle * Math.min(s, 1.4));
+        c.globalAlpha = Math.max(0, 0.25 * fadeMiddle);
+        c.shadowColor = r.colors[1];
         c.shadowBlur = 5;
         c.arc(r.x, r.y, r2, 0, Math.PI * 2);
         c.stroke();
         c.shadowBlur = 0;
-        const r3 = Math.max(0, progress * 32);
+        const r3 = Math.max(0, progressOuter * 32 * s);
         c.beginPath();
-        c.strokeStyle = r.color;
-        c.lineWidth = Math.max(0, 1.5 * fade + 0.2);
-        c.globalAlpha = Math.max(0, 0.15 * fade);
-        c.shadowColor = r.color;
+        c.strokeStyle = r.colors[2];
+        c.lineWidth = Math.max(0, 1.5 * fadeOuter + 0.2);
+        c.globalAlpha = Math.max(0, 0.15 * fadeOuter);
+        c.shadowColor = r.colors[2];
         c.shadowBlur = 10;
         c.arc(r.x, r.y, r3, 0, Math.PI * 2);
         c.stroke();

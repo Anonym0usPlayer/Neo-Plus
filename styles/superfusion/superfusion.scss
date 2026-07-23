@@ -104,10 +104,11 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
                     }
                     &.fn__none + .protyle-background__ia {
                         padding-top: calc($breadcrumb-height + $breadcrumb-offset);
-                        z-index: 2;
+                        position: relative;
                     }
                     &:not(.fn__none) + .protyle-background__ia {
                         margin-top: -5vh;
+                        position: relative;
                     }
                 }
                 // 视差滚动
@@ -255,13 +256,13 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
     }
 }
 :root {
-    --_superfusion-av-header-top: 71px;
+    --_superfusion-av-header-top: 72px;
 }
 .neo-verticaltabs {
     --_superfusion-av-header-top: 32px;
 }
 .body--toolbar-hide {
-    --_superfusion-av-header-top: 41px;
+    --_superfusion-av-header-top: 42px;
     .neo-ide & {
         --_superfusion-av-header-top: 37px;
     }

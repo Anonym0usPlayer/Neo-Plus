@@ -6,7 +6,7 @@
 }
 .neo-ide {
     @include ide-common('[data-id="neo-ide-button"]');
-    --_ide-dockitem-margin-top: 6px;
+    --_ide-dockitem-margin-top: 8px;
     --_ide-dockitem-margin-bottom: 8px;
     --_ide-dock-bg: var(--b3-theme-background);
     --_ide-dock-resize-bg: var(--b3-border-color-trans);
@@ -17,7 +17,7 @@
 }
 .neo-ide-body.body--toolbar-hide {
     .neo-visual-superfusion & {
-        --_ide-dockitem-margin-top: 0;
+        --_ide-dockitem-margin-top: 2px;
     }
     background-color: var(--b3-theme-background);
     & > .fn__flex-1 {
@@ -195,8 +195,6 @@
     }
     .status {
         background-color: var(--b3-theme-background);
-        box-shadow: unset;
-        outline: 1px solid var(--b3-border-color-trans);
         .neo-visual-frostedglass & {
             background-color: oklch(from var(--b3-theme-background) l c h / 0.6);
         }
