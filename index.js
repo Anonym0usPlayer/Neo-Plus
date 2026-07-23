@@ -281,11 +281,13 @@ Details: https://developer.mozilla.org/en/docs/Web/HTML/CORS_enabled_image`));re
 #preview,
 .export-img {
   [data-node-id],
-  .protyle-title,
   .protyle-action,
   .callout-info {
     animation: none !important;
   }
+}
+.neo-sidememo-protyle .protyle-title {
+  animation: none !important;
 }
 .protyle-breadcrumb ~ .protyle-content {
   [data-node-id],
@@ -297,8 +299,7 @@ Details: https://developer.mozilla.org/en/docs/Web/HTML/CORS_enabled_image`));re
     animation-timeline: view(block), view(block);
     animation-range: entry 0% entry 120px, exit calc(100% - 120px) exit 100%;
   }
-  .protyle-wysiwyg > [data-node-id]:first-child,
-  .protyle-title {
+  .protyle-wysiwyg > [data-node-id]:first-child {
     animation: neo-scroll-reveal-exit cubic-bezier(0.46, 0.03, 0.52, 0.96) forwards;
     animation-timeline: view(block);
     animation-range: exit calc(100% - 50px) exit 100%;

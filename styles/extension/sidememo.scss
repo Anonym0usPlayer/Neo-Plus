@@ -45,7 +45,7 @@
 .neo-sidememo-filememo-item {
     width: var(--neo-sidememo-container-width);
     max-width: calc(var(--b3-width-protyle-content) - 2 * var(--neo-sidememo-re));
-    @include superellipse(12px);
+    @include superellipse(8px);
     outline: 0.75px solid var(--b3-border-color-trans);
     outline-width: -0.75px;
     font-size: 0.8125em;
