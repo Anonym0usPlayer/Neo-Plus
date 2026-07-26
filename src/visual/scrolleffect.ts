@@ -11,7 +11,8 @@ const scrollEffectCSS = `
   color: var(--b3-theme-accent);
 }
 #preview,
-.export-img {
+.export-img,
+.sy__backlink {
   [data-node-id],
   .protyle-action,
   .callout-info {

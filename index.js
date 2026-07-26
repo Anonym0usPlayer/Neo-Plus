@@ -279,7 +279,8 @@ Details: https://developer.mozilla.org/en/docs/Web/HTML/CORS_enabled_image`));re
   color: var(--b3-theme-accent);
 }
 #preview,
-.export-img {
+.export-img,
+.sy__backlink {
   [data-node-id],
   .protyle-action,
   .callout-info {
