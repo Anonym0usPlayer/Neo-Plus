@@ -26,8 +26,9 @@
         @for $i from 1 through 6 {
             $hue-offset: #{$i * 50};
             .b3-list-item[data-type=NodeHeading][data-subtype=h#{$i}] {
-                .b3-list-item__text,
-                .b3-list-item__graphic {
+                .b3-list-item__graphic,
+                .b3-list-item__number,
+                .b3-list-item__text {
                     color: oklch(from var(--b3-theme-accent) var(--_coloredheadings-outline-l) 0.08 calc(h + #{$hue-offset}));
                 }
             }
