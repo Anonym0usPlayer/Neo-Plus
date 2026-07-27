@@ -37,6 +37,17 @@ const scrollEffectCSS = `
     animation-timeline: view(block);
     animation-range: exit calc(100% - 50px) exit 100%;
   }
+  .protyle-wysiwyg > [data-node-id]:last-child {
+    animation: neo-scroll-reveal-entry cubic-bezier(0.46, 0.03, 0.52, 0.96) forwards;
+    animation-timeline: view(block);
+    animation-range: entry 50px entry 100%;
+  }
+  .protyle-wysiwyg > [data-node-id]:only-child {
+    animation-timeline: unset;
+    [data-node-id] {
+      animation: none;
+    }
+  }
 }
 @keyframes neo-scroll-reveal-entry {
   from {
