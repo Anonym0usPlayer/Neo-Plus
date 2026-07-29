@@ -205,7 +205,5 @@
   "galleryMemoEditTip": "該備註為資料庫檢視的預覽，需在源備註處修改",
   "embedMemoEditTip": "該備註為嵌入塊的預覽，需在源備註處修改",
   "uninstallConfirmTitle": "是否刪除Neo+設定檔",
-  "uninstallConfirmMessage": "是否刪除Neo+設定檔（包括特性的開關和參數設定、自訂圖片紋理設定）",
-  "uninstallKeepConfig": "保留設定",
-  "uninstallDeleteConfig": "刪除設定"
+  "uninstallConfirmMessage": "是否刪除Neo+設定檔（包括特性的開關和參數設定、自訂圖片紋理設定）"
 }

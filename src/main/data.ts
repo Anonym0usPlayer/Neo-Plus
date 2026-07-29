@@ -1,4 +1,3 @@
-import { Dialog } from 'siyuan';
 import { getPlugin } from './guard';
 export const configKey = 'config';
 export interface Config {
@@ -103,25 +102,4 @@ export async function deleteConfigKeys(keys: string[]): Promise<void> {
     delete (configCache as Record<string, any>)[k];
   }
   await plugin.saveData(configKey, configCache);
-}
-export function showUninstallConfirmDialog(): void {
-  const plugin = getPluginOrNull();
-  if (!plugin) return;
-  const dialog = new Dialog({
-    title: plugin.i18n.uninstallConfirmTitle || 'Uninstall Confirmation',
-    content: `<div class="b3-dialog__content">
-      <div class="b3-label__text">${plugin.i18n.uninstallConfirmMessage || 'Delete all plugin configuration data as well?'}</div>
-    </div>
-    <div class="b3-dialog__action">
-      <button class="b3-button b3-button--cancel" id="neo-uninstall-cancel">${plugin.i18n.uninstallKeepConfig}</button>
-      <span class="fn__space"></span>
-      <button class="b3-button b3-button--text" id="neo-uninstall-confirm">${plugin.i18n.uninstallDeleteConfig}</button>
-    </div>`,
-  });
-  dialog.element.setAttribute('data-key', 'dialog-neo-uninstall-confirm');
-  dialog.element.querySelector('#neo-uninstall-cancel')?.addEventListener('click', () => dialog.destroy());
-  dialog.element.querySelector('#neo-uninstall-confirm')?.addEventListener('click', () => {
-    plugin.removeData(configKey);
-    dialog.destroy();
-  });
 }

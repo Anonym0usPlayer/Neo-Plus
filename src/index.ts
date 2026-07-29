@@ -1,6 +1,6 @@
-import { Plugin } from 'siyuan';
+import { confirm, Plugin } from 'siyuan';
 import { NeoPlusController } from './main/guard';
-import { showUninstallConfirmDialog } from './main/data';
+import { configKey } from './main/data';
 export default class NeoPlusPlugin extends Plugin {
   private controller: NeoPlusController | null = null;
   onload(): void {
@@ -12,6 +12,12 @@ export default class NeoPlusPlugin extends Plugin {
     this.controller = null;
   }
   uninstall(): void {
-    showUninstallConfirmDialog();
+    confirm(
+      this.i18n.uninstallConfirmTitle,
+      this.i18n.uninstallConfirmMessage,
+      () => {
+        this.removeData(configKey);
+      }
+    );
   }
 }
