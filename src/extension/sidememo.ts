@@ -120,7 +120,7 @@ function renderKatexInContainer(container: HTMLElement) {
     });
   } catch (_e) {}
 }
-let _connectorState: { sourceEl: HTMLElement; targetEl: HTMLElement; container: HTMLElement } | null = null;
+let _connectorState: { sourceEl: HTMLElement; targetEl: HTMLElement; container: HTMLElement; targetEdge?: 'top' } | null = null;
 let _scrollHandler: (() => void) | null = null;
 let _rafId: number | null = null;
 function getConnectorSvg(container: HTMLElement): SVGElement | null {
@@ -156,7 +156,7 @@ function clearConnector(container: HTMLElement): void {
   }
   _connectorState = null;
 }
-function updateConnectorPath(sourceEl: HTMLElement, targetEl: HTMLElement, container: HTMLElement): void {
+function updateConnectorPath(sourceEl: HTMLElement, targetEl: HTMLElement, container: HTMLElement, targetEdge?: 'top'): void {
   const svg = getConnectorSvg(container);
   if (!svg) return;
   const sourceRect = sourceEl.getBoundingClientRect();
@@ -167,7 +167,19 @@ function updateConnectorPath(sourceEl: HTMLElement, targetEl: HTMLElement, conta
   const isSourceLeftOfTarget = sourceCenterX < targetCenterX;
   let x1: number, y1: number, x2: number, y2: number;
   let cpX1: number, cpX2: number;
-  if (isSourceLeftOfTarget) {
+  if (targetEdge === 'top') {
+    if (isSourceLeftOfTarget) {
+      x1 = sourceRect.right - svgRect.left;
+    } else {
+      x1 = sourceRect.left - svgRect.left;
+    }
+    y1 = sourceRect.top + sourceRect.height / 2 - svgRect.top;
+    x2 = targetRect.left + targetRect.width / 2 - svgRect.left;
+    y2 = targetRect.top - svgRect.top;
+    const cpOffsetX = Math.min(150, Math.abs(x2 - x1) / 2);
+    cpX1 = isSourceLeftOfTarget ? x1 + cpOffsetX : x1 - cpOffsetX;
+    cpX2 = isSourceLeftOfTarget ? x2 - cpOffsetX : x2 + cpOffsetX;
+  } else if (isSourceLeftOfTarget) {
     x1 = sourceRect.right - svgRect.left;
     y1 = sourceRect.top + sourceRect.height / 2 - svgRect.top;
     x2 = targetRect.left - svgRect.left;
@@ -189,23 +201,23 @@ function updateConnectorPath(sourceEl: HTMLElement, targetEl: HTMLElement, conta
   const path = getConnectorPath(svg);
   path.setAttribute('d', `M${x1},${y1} C${cpX1},${cpY1} ${cpX2},${cpY2} ${x2},${y2}`);
 }
-function drawConnector(sourceEl: HTMLElement, targetEl: HTMLElement, container: HTMLElement): void {
+function drawConnector(sourceEl: HTMLElement, targetEl: HTMLElement, container: HTMLElement, targetEdge?: 'top'): void {
   if (container.classList.contains('neo-sidememo-container-resize')) return;
-  updateConnectorPath(sourceEl, targetEl, container);
-  _connectorState = { sourceEl, targetEl, container };
+  updateConnectorPath(sourceEl, targetEl, container, targetEdge);
+  _connectorState = { sourceEl, targetEl, container, targetEdge };
   if (!_scrollHandler) {
     _scrollHandler = () => {
       if (_rafId !== null) return;
       _rafId = requestAnimationFrame(() => {
         _rafId = null;
         if (_connectorState?.container) {
-          const { sourceEl, targetEl, container } = _connectorState;
+          const { sourceEl, targetEl, container, targetEdge: edge } = _connectorState;
           if (
             sourceEl && targetEl &&
             document.contains(sourceEl) &&
             document.contains(targetEl)
           ) {
-            updateConnectorPath(sourceEl, targetEl, container);
+            updateConnectorPath(sourceEl, targetEl, container, edge);
           } else {
             clearConnector(container);
           }
@@ -723,7 +735,7 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
         if (shouldDrawConnector && relatedEls[0] && it.el) {
           const anchor = getConnectorAnchor();
           if (anchor) {
-            drawConnector(anchor, it.el, container);
+            drawConnector(anchor, it.el, container, it.type === 'file' ? 'top' : undefined);
           }
         }
       };
@@ -781,7 +793,7 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
             it.el.setAttribute('neo-sidememo-highlight', '');
             if (shouldDrawConnector && it.el) {
               titleMemoAttr.setAttribute('neo-sidememo-highlight', '');
-              drawConnector(titleMemoAttr, it.el, container);
+              drawConnector(titleMemoAttr, it.el, container, 'top');
             }
           };
           const onTitleMemoLeave = () => {
