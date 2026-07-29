@@ -202,5 +202,7 @@
   "sidememoPositionLeft": "左侧",
   "sidememoConnector": "连线",
   "sidememoConnectorTip": "在侧边备注和源备注之间连线",
-  "mergedSideMemoEditTip": "这是多个行内备注合并显示的侧边备注卡片，需在每个源行内备注处分别修改"
+  "mergedSideMemoEditTip": "该备注被多个行内元素拆分，需在源备注处修改",
+  "galleryMemoEditTip": "该备注为数据库视图的预览，需在源备注处修改",
+  "embedMemoEditTip": "该备注为嵌入块的预览，需在源备注处修改"
 }

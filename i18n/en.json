@@ -202,5 +202,7 @@
   "sidememoPositionLeft": "Left",
   "sidememoConnector": "Connector",
   "sidememoConnectorTip": "Draw connector lines between side memos and source memos",
-  "mergedSideMemoEditTip": "This is a merged side memo card from multiple inline memos. Edit each source inline memo individually."
+  "mergedSideMemoEditTip": "This memo is split across multiple inline elements. Edit at the source.",
+  "galleryMemoEditTip": "This memo is a preview from a database view. Edit at the source.",
+  "embedMemoEditTip": "This memo is a preview from an embedded block. Edit at the source."
 }

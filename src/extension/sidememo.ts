@@ -252,6 +252,21 @@ function ensureMemoUid(memoEl: HTMLElement): string {
   }
   return uid;
 }
+function queryMemoElementsInWysiwyg(protyleContent: HTMLElement): HTMLElement[] {
+  const wysiwyg = protyleContent.querySelector<HTMLElement>('.protyle-wysiwyg');
+  if (!wysiwyg) return [];
+  const descendants = Array.from(wysiwyg.querySelectorAll<HTMLElement>('[data-type*=\'inline-memo\'], [memo]'));
+  if (wysiwyg.matches('[data-type*=\'inline-memo\'], [memo]')) {
+    return [wysiwyg, ...descendants];
+  }
+  return descendants;
+}
+function hasMemoInWysiwyg(protyleContent: HTMLElement): boolean {
+  const wysiwyg = protyleContent.querySelector<HTMLElement>('.protyle-wysiwyg');
+  if (!wysiwyg) return false;
+  return wysiwyg.matches('[data-type*=\'inline-memo\'], [memo]') ||
+         wysiwyg.querySelector('[data-type*=\'inline-memo\'], [memo]') !== null;
+}
 function calcMemoTop(sourceEl: HTMLElement, container: HTMLElement, protyleContent: HTMLElement): number {
   const sourceRect = sourceEl.getBoundingClientRect();
   const titleRect = container.parentElement?.getBoundingClientRect();
@@ -436,7 +451,7 @@ function syncSidememoState(): void {
   const protyleContents = Array.from(document.querySelectorAll<HTMLElement>('.protyle-content'));
   protyleContents.forEach((el) => {
     try {
-      const hasInlineOrBlockMemo = el.querySelector('[data-type*=\'inline-memo\'], [memo]') !== null;
+      const hasInlineOrBlockMemo = hasMemoInWysiwyg(el);
       const hasTitle = el.querySelector('.protyle-title:not(.fn__none)') !== null;
       const breadcrumb = el.previousElementSibling as HTMLElement | null;
       const btn = breadcrumb?.querySelector<HTMLElement>('.neo-sidememo-btn');
@@ -495,9 +510,7 @@ async function refreshSidememoContainers(): Promise<void> {
   });
 }
 async function populateSidememoContainer(container: HTMLElement, protyleContent: HTMLElement): Promise<void> {
-  const existingMemoEls = Array.from(
-    protyleContent.querySelectorAll<HTMLElement>('[data-type*=\'inline-memo\'], [memo]'),
-  );
+  const existingMemoEls = queryMemoElementsInWysiwyg(protyleContent);
   existingMemoEls.forEach((m) => {
     try {
       const handlers = _sidememoState.get(m);
@@ -543,9 +556,7 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
     } catch (_e) {}
     container.removeChild(child);
   }
-  const memoElements = Array.from(
-    protyleContent.querySelectorAll<HTMLElement>('[data-type*=\'inline-memo\'], [memo]'),
-  );
+  const memoElements = queryMemoElementsInWysiwyg(protyleContent);
   const items: Array<{
     el: HTMLElement;
     top: number;
@@ -558,8 +569,7 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
   }> = [];
   const inlineMemoElements = memoElements.filter(memoEl =>
     memoEl.hasAttribute('data-type') &&
-    memoEl.getAttribute('data-type')?.split(/\s+/).includes('inline-memo') &&
-    !memoEl.closest('.av__gallery-content')
+    memoEl.getAttribute('data-type')?.split(/\s+/).includes('inline-memo')
   );
   const processedInlineMemos = new Set<HTMLElement>();
   const mergedInlineMemos: Array<{ elements: HTMLElement[]; content: string }> = [];
@@ -879,6 +889,14 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
           onTitleLeftClick = (ev: MouseEvent) => {
             try { ev.preventDefault(); ev.stopPropagation(); } catch (_e) {}
             try {
+              if (relatedEls.some(el => el.closest('.av__gallery-content'))) {
+                showGalleryMemoTip();
+                return;
+              }
+              if (relatedEls.some(el => el.closest('.render-node[data-type="NodeBlockQueryEmbed"]'))) {
+                showEmbedMemoTip();
+                return;
+              }
               if (it.type === 'file') {
                 const firstRelated = relatedEls[0];
                 try {
@@ -949,6 +967,26 @@ function showMergeMemoTip(): void {
     }, () => {});
   } catch (_e) {}
 }
+function showGalleryMemoTip(): void {
+  try {
+    const plugin = getPlugin();
+    if (!plugin) return;
+    fetchPost('/api/notification/pushMsg', {
+      msg: plugin.i18n?.galleryMemoEditTip || '',
+      timeout: 3000
+    }, () => {});
+  } catch (_e) {}
+}
+function showEmbedMemoTip(): void {
+  try {
+    const plugin = getPlugin();
+    if (!plugin) return;
+    fetchPost('/api/notification/pushMsg', {
+      msg: plugin.i18n?.embedMemoEditTip || '',
+      timeout: 3000
+    }, () => {});
+  } catch (_e) {}
+}
 export function cleanupSideMemo(): void {
   try {
     if (_rafId !== null) {
@@ -1006,7 +1044,7 @@ export function cleanupSideMemo(): void {
     protyles.forEach((el) => {
       try {
         el.classList.remove('neo-sidememo-protyle');
-        const memos = Array.from(el.querySelectorAll<HTMLElement>('[data-type*=\'inline-memo\'], [memo]'));
+        const memos = queryMemoElementsInWysiwyg(el);
         memos.forEach((m) => {
           try {
             const handlers = _sidememoState.get(m);

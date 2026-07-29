@@ -201,5 +201,7 @@
   "sidememoPositionLeft": "左側",
   "sidememoConnector": "連線",
   "sidememoConnectorTip": "在側邊備註和源備註之間連線",
-  "mergedSideMemoEditTip": "這是多個行內備註合併顯示的側邊備註卡片，需在每個源行內備註處分別修改"
+  "mergedSideMemoEditTip": "該備註被多個行內元素拆分，需在源備註處修改",
+  "galleryMemoEditTip": "該備註為資料庫檢視的預覽，需在源備註處修改",
+  "embedMemoEditTip": "該備註為嵌入塊的預覽，需在源備註處修改"
 }
