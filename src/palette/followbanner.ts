@@ -1,8 +1,7 @@
 import type { Config } from '../main/data';
-import { FastAverageColor } from 'fast-average-color';
+import { getColor } from 'colorthief';
 import { fetchListener } from '../modules/fetchmonitor';
 import { isMobile } from '../modules/env';
-let facInstance: FastAverageColor | null = null;
 let lastValidHex: string | null = null;
 let destroyed = false;
 let _initTimer: ReturnType<typeof setTimeout> | null = null;
@@ -24,13 +23,23 @@ _fetchListener.on('setUILayout', () => { scheduleExtract(); });
 _fetchListener.on('setBlockAttrs', () => { scheduleExtract(); });
 const fallbackHex = 'var(--neo-default-base-color)';
 function parseHex(hex: string): { r: number; g: number; b: number } | null {
-  const m = hex.match(/^#?([0-9a-fA-F]{6})$/);
-  if (!m) return null;
-  return {
-    r: parseInt(m[1].slice(0, 2), 16),
-    g: parseInt(m[1].slice(2, 4), 16),
-    b: parseInt(m[1].slice(4, 6), 16),
-  };
+  let m = hex.match(/^#?([0-9a-fA-F]{6})$/);
+  if (m) {
+    return {
+      r: parseInt(m[1].slice(0, 2), 16),
+      g: parseInt(m[1].slice(2, 4), 16),
+      b: parseInt(m[1].slice(4, 6), 16),
+    };
+  }
+  m = hex.match(/^#?([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])$/);
+  if (m) {
+    return {
+      r: parseInt(m[1] + m[1], 16),
+      g: parseInt(m[2] + m[2], 16),
+      b: parseInt(m[3] + m[3], 16),
+    };
+  }
+  return null;
 }
 function parseRgb(str: string): { r: number; g: number; b: number } | null {
   const m = str.match(/rgb(a?)\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
@@ -201,27 +210,20 @@ async function extractBannerAverageColor(): Promise<void> {
     } catch {}
     if (destroyed) return;
   }
-  if (!facInstance) facInstance = new FastAverageColor();
   try {
-    const result = await facInstance.getColorAsync(source, {
-      algorithm: 'dominant',
-      step: 5,
-    });
+    const result = await getColor(source, { ignoreWhite: true, minSaturation: 0.01 });
     if (destroyed) return;
-    if (!result || result.error) {
+    if (!result) {
       applyFallback();
       return;
     }
-    const [r, g, b, a] = result.value;
-    if (a === 0) {
-      applyFallback();
-      return;
-    }
+    const { r, g, b } = result.rgb();
     if (isInvalidColor(r, g, b)) {
       applyFallback();
     } else {
-      lastValidHex = result.hex;
-      applyColor(result.hex);
+      const hex = result.hex();
+      lastValidHex = hex;
+      applyColor(hex);
     }
   } catch {
     applyFallback();
@@ -252,11 +254,5 @@ export function destroyFollowBanner(): void {
   }
   _fetchListener.detach();
   document.documentElement.style.removeProperty('--neo-followbanner-base-color');
-  if (facInstance) {
-    try {
-      facInstance.destroy();
-    } catch {}
-    facInstance = null;
-  }
   lastValidHex = null;
 }
