@@ -204,5 +204,9 @@
   "sidememoConnectorTip": "Draw connector lines between side memos and source memos",
   "mergedSideMemoEditTip": "This memo is split across multiple inline elements. Edit at the source.",
   "galleryMemoEditTip": "This memo is a preview from a database view. Edit at the source.",
-  "embedMemoEditTip": "This memo is a preview from an embedded block. Edit at the source."
+  "embedMemoEditTip": "This memo is a preview from an embedded block. Edit at the source.",
+  "uninstallConfirmTitle": "Delete Neo+ configuration?",
+  "uninstallConfirmMessage": "Delete Neo+ configuration files (including feature toggles, parameter settings, and custom image texture settings)?",
+  "uninstallKeepConfig": "Keep Configuration",
+  "uninstallDeleteConfig": "Delete Configuration"
 }
