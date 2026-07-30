@@ -1,9 +1,13 @@
 @use "manager" as *;
 .neo-mode-light {
-    --_coloredheadings-outline-l: calc(l - 0.05);
+    --_coloredheadings-l: l;
+    --_coloredheadings-c: 0.08;
+    --_coloredheadings-outline-l: calc(var(--_coloredheadings-l) - 0.05);
 }
 .neo-mode-dark {
-    --_coloredheadings-outline-l: calc(l + 0.05);
+    --_coloredheadings-l: l;
+    --_coloredheadings-c: 0.08;
+    --_coloredheadings-outline-l: calc(var(--_coloredheadings-l) + 0.05);
 }
 .neo-element-coloredheadings {
     @include element-common('[data-id="neo-colored-headings-button"]', '[data-id="neo-element-button"]');
@@ -14,7 +18,7 @@
             h#{$i},
             [data-type=NodeHeading].h#{$i},
             [data-type=NodeHeading][data-subtype=h#{$i}] [spellcheck] {
-                color: oklch(from var(--b3-theme-accent) l 0.08 calc(h + #{$hue-offset}));
+                color: oklch(from var(--b3-theme-accent) var(--_coloredheadings-l) var(--_coloredheadings-c) calc(h + #{$hue-offset}));
                 --neo-kbd-color: var(--neo-coloredlists-color);
                 --neo-inline-code-color: var(--neo-coloredlists-color);
                 --neo-tag-color: var(--neo-coloredlists-color);
@@ -29,7 +33,7 @@
                 .b3-list-item__graphic,
                 .b3-list-item__number,
                 .b3-list-item__text {
-                    color: oklch(from var(--b3-theme-accent) var(--_coloredheadings-outline-l) 0.08 calc(h + #{$hue-offset}));
+                    color: oklch(from var(--b3-theme-accent) var(--_coloredheadings-outline-l) var(--_coloredheadings-c) calc(h + #{$hue-offset}));
                 }
             }
         }

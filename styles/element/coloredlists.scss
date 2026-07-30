@@ -1,4 +1,12 @@
 @use "manager" as *;
+.neo-mode-light {
+    --_coloredlists-l: l;
+    --_coloredlists-c: 0.08;
+}
+.neo-mode-dark {
+    --_coloredlists-l: l;
+    --_coloredlists-c: 0.08;
+}
 .neo-element-coloredlists {
     @include element-common('[data-id="neo-colored-lists-button"]', '[data-id="neo-element-button"]');
     .protyle-wysiwyg [data-node-id].list:not(.list .list):not(.protyle-wysiwyg > .li .list) {
@@ -6,7 +14,7 @@
             @for $i from 0 through 7 {
                 $hue-offset: #{$i * 45};
                 &:nth-child(8n + #{$i + 1}) {
-                    --neo-coloredlists-color: oklch(from var(--b3-theme-accent) l 0.08 calc(h + #{$hue-offset}));
+                    --neo-coloredlists-color: oklch(from var(--b3-theme-accent) var(--_coloredlists-l) var(--_coloredlists-c) calc(h + #{$hue-offset}));
                     --neo-kbd-color: var(--neo-coloredlists-color);
                     --neo-inline-code-color: var(--neo-coloredlists-color);
                     --neo-tag-color: var(--neo-coloredlists-color);
