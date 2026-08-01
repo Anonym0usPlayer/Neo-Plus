@@ -25,7 +25,7 @@
         --b3-list-active: oklch(from var(--b3-theme-primary) l 0 h / 0.2);
         --neo-switch-primary: #13aa00;
         --b3-list-hover: oklch(from var(--b3-theme-on-background) l c h / 0.15);
-        --neo-main-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 0 0.5px oklch(from var(--b3-theme-on-background) var(--_shadow-l) c h / 0.22), 0 1px 0 0 oklch(from var(--b3-theme-on-background) var(--_shadow-l) c h / 0.35), 0 -0.5px 0 0 oklch(from var(--b3-theme-on-background) var(--_shadow-l) c h / 0.22);
+        --neo-main-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 0 0.5px oklch(from var(--b3-theme-on-background) var(--_shadow-l) c h / 0.25), 0 1px 0 0 oklch(from var(--b3-theme-on-background) var(--_shadow-l) c h / 0.3), 0 -0.75px 0 0 oklch(from var(--b3-theme-on-background) var(--_shadow-l) c h / 0.28);
         &.neo-palette-invert {
             --b3-theme-background: #010101;
             --b3-theme-surface: #232323;
