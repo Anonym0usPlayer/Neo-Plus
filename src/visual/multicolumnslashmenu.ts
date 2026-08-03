@@ -1,7 +1,10 @@
 import { isMobile } from '../modules/env';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
+import { getPlugin } from '../main/guard';
+import { Dialog } from 'siyuan';
 type Direction = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
+let arrowKeysOn = true;
 interface CenterPoint {
   el: HTMLElement;
   x: number;
@@ -200,6 +203,7 @@ const onKeyDownCapture = (evt: KeyboardEvent): void => {
   if (!directionKeys.includes(evt.key as Direction)) {
     return;
   }
+  if (!arrowKeysOn) return;
   const menu = activeMenuElement || findHintMenu();
   if (!menu || !isMenuVisible(menu)) {
     endSession();
@@ -242,15 +246,27 @@ const onKeyDownCapture = (evt: KeyboardEvent): void => {
     moveFocus(fallbackTarget);
   }
 };
+function ensureKeydownHandler(enable: boolean): void {
+  if (enable) {
+    if (!keydownHandler) {
+      keydownHandler = onKeyDownCapture;
+      document.addEventListener('keydown', keydownHandler, { capture: true });
+    }
+  } else {
+    if (keydownHandler) {
+      document.removeEventListener('keydown', keydownHandler, { capture: true });
+      keydownHandler = null;
+    }
+  }
+}
 export function initMulticolumnSlashMenu(): void {
+  (window as any).__neoOpenMulticolumnSlashMenuSettings = showMulticolumnSlashMenuSettings;
   if (isMobile()) return;
   loadConfig().then((config) => {
+    arrowKeysOn = config['multicolumn-slash-menu-arrowkeys'] !== false;
     if (config['multicolumn-slash-menu'] === true) {
       document.documentElement.classList.add('neo-visual-multicolumnslashmenu');
-      if (!keydownHandler) {
-        keydownHandler = onKeyDownCapture;
-        document.addEventListener('keydown', keydownHandler, { capture: true });
-      }
+      ensureKeydownHandler(arrowKeysOn);
     }
   });
 }
@@ -263,18 +279,69 @@ export function onMulticolumnSlashMenuClick(): void {
     saveConfig({ 'multicolumn-slash-menu': false } as Partial<Config>);
   } else {
     htmlEl.classList.add('neo-visual-multicolumnslashmenu');
-    if (!keydownHandler) {
-      keydownHandler = onKeyDownCapture;
-      document.addEventListener('keydown', keydownHandler, { capture: true });
-    }
+    ensureKeydownHandler(arrowKeysOn);
     saveConfig({ 'multicolumn-slash-menu': true } as Partial<Config>);
   }
 }
+function buildMulticolumnSlashMenuSettingsHTML(i18n: Record<string, string>): string {
+  return `<div class="b3-dialog__content">
+    <div class="config__tab-container">
+      <div class="config-group">
+        <div class="config-items">
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.multicolumnSlashMenuArrowKeys}
+              <div class="b3-label__text">${i18n.multicolumnSlashMenuArrowKeysTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <input class="b3-switch fn__flex-center" id="neo-multicolumn-slash-menu-arrowkeys" type="checkbox">
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="b3-dialog__action">
+    <button class="b3-button b3-button--cancel" id="neo-multicolumn-slash-menu-cancel">${i18n.cancel}</button>
+    <span class="fn__space"></span>
+    <button class="b3-button b3-button--text" id="neo-multicolumn-slash-menu-confirm">${i18n.confirm}</button>
+  </div>`;
+}
+export function showMulticolumnSlashMenuSettings(): void {
+  const plugin = getPlugin();
+  if (!plugin) return;
+  const dialog = new Dialog({
+    title: plugin.i18n.multicolumnSlashMenuSettings || 'Configure Multicolumn Slash Menu',
+    content: buildMulticolumnSlashMenuSettingsHTML(plugin.i18n),
+  });
+  dialog.element.setAttribute('data-key', 'dialog-neo-multicolumn-slash-menu-settings');
+  dialog.element.classList.add('neo-settings-dialog');
+  loadConfig().then((config) => {
+    const arrowKeysCheckbox = dialog.element.querySelector('#neo-multicolumn-slash-menu-arrowkeys') as HTMLInputElement;
+    if (arrowKeysCheckbox) arrowKeysCheckbox.checked = config['multicolumn-slash-menu-arrowkeys'] !== false;
+  });
+  dialog.element.querySelector('#neo-multicolumn-slash-menu-cancel')?.addEventListener('click', () => dialog.destroy());
+  dialog.element.querySelector('#neo-multicolumn-slash-menu-confirm')?.addEventListener('click', () => {
+    const arrowKeysCheckbox = dialog.element.querySelector('#neo-multicolumn-slash-menu-arrowkeys') as HTMLInputElement;
+    if (arrowKeysCheckbox) {
+      const newValue = arrowKeysCheckbox.checked;
+      arrowKeysOn = newValue;
+      saveConfig({ 'multicolumn-slash-menu-arrowkeys': newValue } as Partial<Config>);
+      if (document.documentElement.classList.contains('neo-visual-multicolumnslashmenu')) {
+        ensureKeydownHandler(arrowKeysOn);
+      }
+    }
+    dialog.destroy();
+  });
+}
+export function createMulticolumnSlashMenuLabelHTML(i18n: Record<string, string>): string {
+  return `<span class="fn__flex fn__pointer">
+    <span>${i18n.multicolumnSlashMenu}</span>
+    <span class="fn__space fn__flex-1 neo-menu-item-second-icon-space"></span>
+    <svg class="b3-menu__icon neo-menu-item-second-icon ariaLabel" aria-label="${i18n.multicolumnSlashMenuSettings}" onclick="event.stopPropagation();__neoOpenMulticolumnSlashMenuSettings()"><use xlink:href="#iconSettings"></use></svg>
+  </span>`;
+}
 export function destroyMulticolumnSlashMenu(): void {
-  if (keydownHandler) {
-    document.removeEventListener('keydown', keydownHandler, { capture: true });
-    keydownHandler = null;
-  }
+  ensureKeydownHandler(false);
   endSession();
   document.documentElement?.classList.remove('neo-visual-multicolumnslashmenu');
 }

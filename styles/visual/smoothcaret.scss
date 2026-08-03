@@ -34,7 +34,8 @@
     }
     body.neo-visual-smooth-caret-style-neon {
         #neo-smooth-caret-item {
-            box-shadow: 0 0 4px var(--neo-smooth-caret-color, var(--b3-theme-accent)), 0 0 10px var(--neo-smooth-caret-color, var(--b3-theme-accent)), 0 0 20px var(--neo-smooth-caret-color, var(--b3-theme-accent));
+            --_smooth-caret-neno-color: oklch(from var(--neo-smooth-caret-color, var(--b3-theme-accent)) calc(l + 0.15) c h);
+            box-shadow: 0 0 4px var(--_smooth-caret-neno-color), 0 0 10px var(--_smooth-caret-neno-color), 0 0 20px var(--_smooth-caret-neno-color);
         }
     }
     body.neo-visual-smooth-caret-style-rainbow {

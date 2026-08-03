@@ -33,15 +33,16 @@
                     }
                     &::before {
                         content: "";
+                        --_status-dot-color: oklch(from var(--b3-theme-on-background) l c h / 0.5);
                         position: absolute;
                         left: 50%;
                         top: 50%;
                         width: 4px;
                         height: 4px;
-                        background-color: var(--b3-theme-on-surface-light);
+                        background-color: var(--_status-dot-color);
                         border-radius: 50%;
                         transform: translate(-50%, -50%);
-                        box-shadow: -8px 0 0 0 var(--b3-theme-on-surface-light), 8px 0 0 0 var(--b3-theme-on-surface-light);
+                        box-shadow: -8px 0 0 0 var(--_status-dot-color), 8px 0 0 0 var(--_status-dot-color);
                         animation: neo-status-dot 0.75s var(--neo-ease-spring-5) forwards;
                         animation-delay: 0.1s;
                         opacity: 0;

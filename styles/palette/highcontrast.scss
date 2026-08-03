@@ -73,7 +73,7 @@
                 --b3-theme-on-surface: oklch(from var(--neo-highcontrast-on-bg) l c h / 0.75);
                 --b3-theme-on-background: var(--neo-highcontrast-on-bg);
                 &::before {
-                    --b3-theme-on-surface-light: var(--neo-highcontrast-on-bg);
+                    --_status-dot-color: var(--neo-highcontrast-on-bg);
                 }
                 .toolbar__item {
                     @include neo-highcontrast-icon;

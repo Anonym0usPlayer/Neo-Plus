@@ -63,6 +63,7 @@ export interface Config {
   'sidebar-mute'?: boolean;
   'ide'?: boolean;
   'multicolumn-slash-menu'?: boolean;
+  'multicolumn-slash-menu-arrowkeys'?: boolean;
   'sidememo'?: boolean;
   'sidememo-position'?: 'left' | 'right';
   'sidememo-connector'?: boolean;

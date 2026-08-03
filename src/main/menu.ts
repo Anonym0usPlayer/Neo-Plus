@@ -17,7 +17,7 @@ import { onSuperFusionClick, createSuperFusionLabelHTML } from '../superfusion/s
 import { isMobile } from '../modules/env';
 import { onSidebarMuteClick } from '../sidebarmute/sidebarmute';
 import { onCardSearchListClick } from '../visual/cardsearchlist';
-import { onMulticolumnSlashMenuClick } from '../visual/multicolumnslashmenu';
+import { onMulticolumnSlashMenuClick, createMulticolumnSlashMenuLabelHTML } from '../visual/multicolumnslashmenu';
 import { onColoredListsClick } from '../element/coloredlists';
 import { onPinnedToolbarClick, createPinnedToolbarLabelHTML } from '../extension/pinnedtoolbar';
 import { onSideMemoClick, createSideMemoLabelHTML } from '../extension/sidememo';
@@ -214,7 +214,7 @@ export function buildMenu(
         {
           id: 'neo-multicolumn-slash-menu-button',
           icon: 'iconNeoMulticolumnSlashMenu',
-          label: i18n.multicolumnSlashMenu,
+          label: createMulticolumnSlashMenuLabelHTML(i18n),
           click: () => {
             onMulticolumnSlashMenuClick();
             return true;
