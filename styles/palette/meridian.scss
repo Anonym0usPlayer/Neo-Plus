@@ -14,7 +14,7 @@
     }
     &.neo-mode-dark {
         --b3-base-color: #fefefe;
-        --b3-theme-primary: #fefefe;
+        --b3-theme-primary: #919191;
         --b3-theme-accent: #4fff2d;
         --b3-theme-background: #010101;
         --b3-theme-surface: #232323;
@@ -27,6 +27,9 @@
         &.neo-palette-invert {
             --b3-theme-background: #010101;
             --b3-theme-surface: #232323;
+        }
+        .protyle-title__input {
+            color: var(--b3-base-color);
         }
     }
     body {

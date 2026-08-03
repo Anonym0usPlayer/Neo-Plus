@@ -15,6 +15,9 @@
                     & > [data-type=wnd] {
                         box-shadow: unset;
                         background-color: transparent;
+                        &::before {
+                            display: none;
+                        }
                     }
                 }
                 .layout__resize {

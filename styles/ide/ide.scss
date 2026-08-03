@@ -36,9 +36,15 @@
             box-shadow: unset !important;
             border-radius: 0 !important;
             padding: unset !important;
+            &::before {
+                display: none;
+            }
             & > .layout-tab-container {
                 box-shadow: unset !important;
                 border-radius: 0 !important;
+                &::before {
+                    display: none;
+                }
             }
         }
     }
