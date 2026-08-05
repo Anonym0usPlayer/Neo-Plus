@@ -254,6 +254,10 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
     .av__row--header[style*="transform"] {
         top: var(--_superfusion-av-header-top) !important;
     }
+    // 伪文档面包屑插件
+    .og-fake-doc-breadcrumb-container.protyle-breadcrumb {
+        z-index: 3;
+    }
 }
 :root {
     --_superfusion-av-header-top: 72px;
