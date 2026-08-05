@@ -1,12 +1,7 @@
 .neo-settings-dialog {
-    .b3-dialog__container {
-        max-width: 90vw;
-        max-height: 90vh;
-        min-width: 400px;
-    }
     .config-group {
-        margin-left: 16px;
-        margin-right: 16px;
+        margin-left: 0;
+        margin-right: 0;
         &:only-child {
             margin-top: 0;
             margin-bottom: 0;
