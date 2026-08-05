@@ -14,8 +14,11 @@
     @include visual-common('[data-id="neo-smooth-caret-button"]', '[data-id="neo-visual-button"]');
     .protyle-wysiwyg,
     .protyle-title__input,
-    .agent-chat__input-area {
+    body:not(.neo-mobile) .agent-chat__input-area {
         caret-color: transparent !important;
+    }
+    .neo-mobile .agent-chat__input-area .protyle-wysiwyg {
+        caret-color: currentColor !important;
     }
     #neo-smooth-caret-item {
         position: fixed;
