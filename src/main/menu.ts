@@ -7,7 +7,7 @@ import { onSmoothCaretClick, createSmoothCaretLabelHTML } from '../visual/smooth
 import { onFluidCursorClick, createFluidCursorLabelHTML } from '../visual/fluidcursor';
 import { onListBulletLineClick } from '../extension/listbulletline';
 import { onFocusBlockIndicatorClick, createFocusBlockIndicatorLabelHTML } from '../extension/focusblockindicator';
-import { onFrostedGlassClick } from '../visual/frostedglass';
+import { onFrostedGlassClick, createFrostedGlassLabelHTML } from '../visual/frostedglass';
 import { onScrollEffectClick } from '../visual/scrolleffect';
 import { onIdeClick } from '../ide/ide';
 import { onColoredFoldersClick, createColoredFoldersLabelHTML } from '../visual/coloredfolders';
@@ -186,7 +186,7 @@ export function buildMenu(
       {
         id: 'neo-frosted-glass-button',
         icon: 'iconNeoFrostedGlass',
-        label: i18n.frostedGlass,
+        label: createFrostedGlassLabelHTML(i18n),
         click: () => {
           onFrostedGlassClick();
           return true;

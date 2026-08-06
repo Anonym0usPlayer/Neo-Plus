@@ -48,6 +48,7 @@ export interface Config {
   'colored-headings'?: boolean;
   'colorful-selection'?: boolean;
   'frosted-glass'?: boolean;
+  'frosted-glass-scope'?: 'light' | 'global';
   'scroll-effect'?: boolean;
   'vertical-tabs'?: boolean;
   'vertical-tabs-mode'?: 'topLeftOnly' | 'all';

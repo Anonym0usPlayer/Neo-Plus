@@ -65,7 +65,10 @@
         }
         &.layout--float {
             margin: 0;
-            --_ide-dock-bg: oklch(from var(--b3-theme-background) l c h / 0.7);
+            --_ide-dock-bg: var(--b3-theme-background);
+            .neo-visual-frostedglass-global & {
+                --_ide-dock-bg: oklch(from var(--b3-theme-background) l c h / 0.7);
+            }
         }
     }
     .layout__dockl {
