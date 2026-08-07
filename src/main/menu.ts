@@ -129,8 +129,8 @@ export function buildMenu(
       },
     });
   }
+  menu.addSeparator();
   if (!isMobile()) {
-    menu.addSeparator();
     menu.addItem({
       id: 'neo-ide-button',
       icon: 'iconNeoIde',
@@ -140,15 +140,17 @@ export function buildMenu(
         return true;
       },
     });
-    menu.addItem({
-      id: 'neo-super-fusion-button',
-      icon: 'iconNeoSuperFusion',
-      label: createSuperFusionLabelHTML(i18n),
-      click: () => {
-        onSuperFusionClick();
-        return true;
-      },
-    });
+  }
+  menu.addItem({
+    id: 'neo-super-fusion-button',
+    icon: 'iconNeoSuperFusion',
+    label: createSuperFusionLabelHTML(i18n),
+    click: () => {
+      onSuperFusionClick();
+      return true;
+    },
+  });
+  if (!isMobile()) {
     menu.addItem({
       id: 'neo-sidebar-mute-button',
       icon: 'iconNeoSidebarMute',
