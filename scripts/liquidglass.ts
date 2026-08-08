@@ -285,7 +285,7 @@ const presets: LiquidGlassConfig[] = [
     filterId: 'neo-superfusion-liquid-glass',
   },
   {
-    width: 500,
+    width: 400,
     height: 80,
     borderRadius: 0,
     bezelWidth: 20,
