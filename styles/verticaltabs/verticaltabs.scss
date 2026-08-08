@@ -74,12 +74,7 @@
                         & > .fn__flex-1 {
                             flex: 1;
                             display: block;
-                        }
-                        & > [data-type="new"] {
-                            margin: 0 0 0 10px;
-                        }
-                        & > [data-type="more"] {
-                            margin: 0 10px 0 0;
+                            max-width: unset;
                         }
                     }
                 }
