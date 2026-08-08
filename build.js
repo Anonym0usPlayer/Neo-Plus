@@ -4,7 +4,6 @@ import { writeFileSync, unlinkSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
-// 0. 液态玻璃滤镜 codegen：生成 src/modules/liquidglassfilter.ts
 const codegenEntry = resolve(__dirname, 'scripts/liquidglass.ts');
 const codegenOut = resolve(__dirname, 'scripts/.gen-liquidglass.mjs');
 await build({
