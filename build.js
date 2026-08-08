@@ -1,9 +1,22 @@
 import { compile } from 'sass';
 import { build } from 'esbuild';
-import { writeFileSync } from 'fs';
+import { writeFileSync, unlinkSync } from 'fs';
 import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
+// 0. 液态玻璃滤镜 codegen：生成 src/modules/liquidglassfilter.ts
+const codegenEntry = resolve(__dirname, 'scripts/liquidglass.ts');
+const codegenOut = resolve(__dirname, 'scripts/.gen-liquidglass.mjs');
+await build({
+  entryPoints: [codegenEntry],
+  outfile: codegenOut,
+  bundle: true,
+  format: 'esm',
+  platform: 'node',
+  target: 'node18',
+});
+await import(pathToFileURL(codegenOut).href);
+unlinkSync(codegenOut);
 const scssPath = resolve(__dirname, 'styles/index.scss');
 const cssPath = resolve(__dirname, 'index.css');
 const cssResult = compile(scssPath, { style: 'compressed' });

@@ -12,11 +12,17 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
     --_superfusion-frosted-glass-filter: blur(6px) brightness(1.05);
     --_superfusion-frosted-glass-strip: 0 1px 0 0 oklch(from var(--b3-theme-background) 0.99 c h / 0.88), 0 2px 8px 1px oklch(from var(--b3-theme-on-background) calc(l - 0.035) c h / 0.08);
     --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) saturate(1.5);
+    .neo-mobile {
+        --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass-mobile) saturate(1.5);
+    }
 }
 .neo-mode-dark {
     --_superfusion-frosted-glass-filter: blur(6px) brightness(0.9);
     --_superfusion-frosted-glass-strip: 0 1px 0 0 oklch(from var(--b3-theme-on-background) l c h / 0.18), 0 2px 8px 1px oklch(from var(--b3-theme-background) calc(l - 0.1) c h / 0.42);
     --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass) saturate(1.5);
+    .neo-mobile {
+        --_superfusion-liquid-glass-filter: url(#neo-superfusion-liquid-glass-mobile) saturate(1.5);
+    }
 }
 @mixin scrim-gradient(
     $color: var(--b3-theme-background),
