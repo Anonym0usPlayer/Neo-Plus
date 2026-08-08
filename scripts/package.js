@@ -3,6 +3,7 @@ import { existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const root = resolve(__dirname, '..');
 const files = [
   'i18n',
   'icon.png',
@@ -15,12 +16,12 @@ const files = [
   'README.md'
 ];
 for (const file of files) {
-  const fullPath = resolve(__dirname, file);
+  const fullPath = resolve(root, file);
   if (!existsSync(fullPath)) {
     console.error(`Error: ${file} not found at ${fullPath}`);
     process.exit(1);
   }
 }
 console.log('Creating package.zip...');
-execSync(`zip -r package.zip ${files.join(' ')}`, { cwd: __dirname, stdio: 'inherit' });
+execSync(`zip -r package.zip ${files.join(' ')}`, { cwd: root, stdio: 'inherit' });
 console.log('Package created: package.zip');

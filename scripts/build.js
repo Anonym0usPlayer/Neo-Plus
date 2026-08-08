@@ -4,8 +4,9 @@ import { writeFileSync, unlinkSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const codegenEntry = resolve(__dirname, 'scripts/liquidglass.ts');
-const codegenOut = resolve(__dirname, 'scripts/.gen-liquidglass.mjs');
+const root = resolve(__dirname, '..');
+const codegenEntry = resolve(__dirname, 'liquidglass.ts');
+const codegenOut = resolve(__dirname, '.gen-liquidglass.mjs');
 await build({
   entryPoints: [codegenEntry],
   outfile: codegenOut,
@@ -16,13 +17,13 @@ await build({
 });
 await import(pathToFileURL(codegenOut).href);
 unlinkSync(codegenOut);
-const scssPath = resolve(__dirname, 'styles/index.scss');
-const cssPath = resolve(__dirname, 'index.css');
+const scssPath = resolve(root, 'styles/index.scss');
+const cssPath = resolve(root, 'index.css');
 const cssResult = compile(scssPath, { style: 'compressed' });
 writeFileSync(cssPath, cssResult.css);
 console.log('Build complete: index.css');
-const tsEntry = resolve(__dirname, 'src/index.ts');
-const jsOut = resolve(__dirname, 'index.js');
+const tsEntry = resolve(root, 'src/index.ts');
+const jsOut = resolve(root, 'index.js');
 await build({
   entryPoints: [tsEntry],
   outfile: jsOut,
