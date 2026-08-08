@@ -17,6 +17,12 @@
                 animation: neo-focusblock-entrance-vertical-line 0.3s var(--neo-ease-spring-2) forwards;
             }
         }
+        .agent-chat__composer-host,
+        .agent-chat__edit-editor {
+            .protyle-wysiwyg [neo-focus-block]::before {
+                inset-inline-start: -2px;
+            }
+        }
     }
     body.neo-extension-focusblockindicator-shadow {
         .protyle-wysiwyg [neo-focus-block] {

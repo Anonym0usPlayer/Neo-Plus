@@ -110,7 +110,7 @@ $border-width: 3px;
             & > .fn__flex-1 {
                 & > ul {
                     margin: 0 10px;
-                    @include superellipse(7px);
+                    @include superellipse-use(8px);
                     outline-offset: -1px;
                     &:not(:last-child) {
                         margin-bottom: 3px;

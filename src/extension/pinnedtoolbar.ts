@@ -12,7 +12,7 @@ let pinnedToolbarPosition: 'top' | 'bottom' | 'left' | 'right' = 'top';
 let pinnedToolbarStyle: 'frostedGlass' | 'liquidGlass' = 'frostedGlass';
 let contextMenuHandler: ((e: MouseEvent) => void) | null = null;
 function shouldNotPin(el: HTMLElement): boolean {
-  return !!el.parentElement?.matches('#searchPreview, .card__block');
+  return !!el.parentElement?.matches('#searchPreview, .card__block, .agent-chat__composer-host, .agent-chat__edit-editor');
 }
 function setEnableState(el: HTMLElement): void {
   if (shouldNotPin(el)) return;

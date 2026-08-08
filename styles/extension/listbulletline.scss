@@ -1,4 +1,5 @@
 @use "manager" as *;
+@use "../utils" as *;
 @use "sass:map";
 $fix-u: 0.25px;
 $fix-o: 10.25px;
@@ -20,8 +21,7 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
     box-sizing: border-box;
     border-left: calc(1.5px + 0.1 * #{$fix-fontsize}) solid var(--neo-coloredlists-color, var(--_list-fold-color));
     border-bottom: calc(1.5px + 0.1 * #{$fix-fontsize}) solid var(--neo-coloredlists-color, var(--_list-fold-color));
-    border-radius: unset;
-    border-bottom-left-radius: 12px;
+    @include superellipse-use(0 0 0 10px);
     position: absolute;
     left: -18px;
     animation: neo-listbulletline-entrance 0.3s;
@@ -30,8 +30,7 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
   .list[style*="direction: rtl"] #{$selector}::after {
     border-left: none;
     border-right: calc(1.5px + 0.1 * #{$fix-fontsize}) solid var(--neo-coloredlists-color, var(--_list-fold-color));
-    border-bottom-left-radius: unset;
-    border-bottom-right-radius: 12px;
+    @include superellipse-use(0 0 10px 0);
     left: auto;
     right: -18px;
   }

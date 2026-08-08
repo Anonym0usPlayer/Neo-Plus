@@ -68,11 +68,12 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
     @include superfusion-common('[data-id="neo-super-fusion-button"]');
     .protyle {
         & > .protyle-breadcrumb {
+            padding-left: $tab-offset;
             margin-top: calc($breadcrumb-height * -1);
             padding-top: calc($breadcrumb-height + $breadcrumb-offset);
             z-index: 2;
             .protyle-breadcrumb__bar {
-                @include superellipse(8px);
+                @include superellipse-use(9px);
                 background-color: oklch(from var(--b3-theme-background) l c h / 0.6);
                 backdrop-filter: blur(6px);
                 padding: 0 4px;
