@@ -59,7 +59,7 @@ export interface Config {
   'super-fusion-mode'?: 'blur' | 'frostedGlass' | 'liquidGlass';
   'pinned-toolbar'?: boolean;
   'pinned-toolbar-position'?: 'top' | 'bottom' | 'left' | 'right';
-  'pinned-toolbar-style'?: 'frostedGlass' | 'liquidGlass';
+  'pinned-toolbar-liquid-glass'?: boolean;
   'card-searchlist'?: boolean;
   'sidebar-mute'?: boolean;
   'ide'?: boolean;

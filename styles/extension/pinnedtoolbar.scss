@@ -99,14 +99,6 @@
         }
     }
 }
-.neo-extension-pinnedtoolbar-style-frosted-glass {
-    .fn__flex-1.protyle > .protyle-toolbar {
-        &.neo-extension-pinnedtoolbar-enable {
-            backdrop-filter: blur(6px);
-            background-color: oklch(from var(--b3-menu-background) l c h / 0.6) !important;
-        }
-    }
-}
 .neo-extension-pinnedtoolbar-style-liquid-glass {
     .fn__flex-1.protyle > .protyle-toolbar {
         &.neo-extension-pinnedtoolbar-position-top,
