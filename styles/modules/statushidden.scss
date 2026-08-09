@@ -8,55 +8,42 @@
 }
 .neo-enabled {
     @supports (bottom: anchor(--a bottom)) {
-        .status {
-            transform-origin: 100% 50%;
+        body:not(.neo-mobile) .status {
+            transform-origin: 100% 100%;
             &:not(.neo-status-hidden) {
-                animation: neo-status-expand 0.45s var(--neo-ease-spring-3);
+                animation: neo-status-expand 0.4s var(--neo-ease-spring-2);
                 @include status-child {
-                    animation: neo-status-content 0.75s var(--neo-ease-spring-5) forwards;
-                    animation-delay: 0.05s;
-                    opacity: 0;
+                    animation: neo-status-content-fadein 0.3s var(--neo-ease-out-3), neo-status-content-transform 0.5s var(--neo-ease-spring-3);
                 }
             }
             &.neo-status-hidden {
                 &:not(:hover) {
-                    height: 15px;
-                    width: 30px;
-                    border-radius: 32px;
-                    corner-shape: unset;
-                    animation: neo-status-hidden 0.45s var(--neo-ease-spring-3);
+                    height: 16px;
+                    width: 32px;
+                    animation: neo-status-hidden 0.5s var(--neo-ease-spring-3);
                     @include status-child {
-                        transition: none;
-                        opacity: 0;
-                        visibility: hidden;
-                        pointer-events: none;
+                        display: none;
                     }
                     &::before {
-                        content: "";
                         --_status-dot-color: oklch(from var(--b3-theme-on-background) l c h / 0.5);
+                        content: "";
                         position: absolute;
+                        top: 6px;
                         left: 50%;
-                        top: 50%;
                         width: 4px;
                         height: 4px;
                         background-color: var(--_status-dot-color);
+                        box-shadow: 8px 0 0 0 var(--_status-dot-color), 16px 0 0 0 var(--_status-dot-color);
                         border-radius: 50%;
-                        transform: translate(-50%, -50%);
-                        box-shadow: -8px 0 0 0 var(--_status-dot-color), 8px 0 0 0 var(--_status-dot-color);
-                        animation: neo-status-dot 0.75s var(--neo-ease-spring-5) forwards;
-                        animation-delay: 0.1s;
-                        opacity: 0;
+                        transform: translateX(-10px);
+                        transform-origin: top center;
+                        animation: neo-status-dot-fadein 0.4s var(--neo-ease-out-3), neo-status-dot-transform 0.5s var(--neo-ease-spring-3);
                     }
                 }
                 &:hover {
-                    animation: neo-status-expand 0.45s var(--neo-ease-spring-3);
+                    animation: neo-status-expand 0.4s var(--neo-ease-spring-2);
                     @include status-child {
-                        opacity: 1;
-                        visibility: visible;
-                        pointer-events: auto;
-                        animation: neo-status-content 0.75s var(--neo-ease-spring-5) forwards;
-                        animation-delay: 0.05s;
-                        opacity: 0;
+                        animation: neo-status-content-fadein 0.3s var(--neo-ease-out-3), neo-status-content-transform 0.5s var(--neo-ease-spring-3);
                     }
                 }
             }
@@ -65,7 +52,7 @@
 }
 @keyframes neo-status-expand {
     from {
-        transform: scaleX(0.255) scaleY(0.5769);
+        transform: scaleX(0.4) scaleY(0.6153846154);
     }
     to {
         transform: scaleX(1) scaleY(1);
@@ -73,29 +60,41 @@
 }
 @keyframes neo-status-hidden {
     from {
-        transform: scaleX(2.5) scaleY(1.7333);
+        transform: scaleX(2.5) scaleY(1.625);
     }
     to {
         transform: scaleX(1) scaleY(1);
     }
 }
-@keyframes neo-status-dot {
+@keyframes neo-status-dot-fadein {
     from {
-        transform: translate(-50%, -50%) translateX(-10px);
-        opacity: 1;
+        opacity: 0;
     }
     to {
-        transform: translate(-50%, -50%) translateX(0);
         opacity: 1;
     }
 }
-@keyframes neo-status-content {
+@keyframes neo-status-dot-transform {
     from {
-        transform: translateX(25px);
+        transform: translateX(-25px);
+    }
+    to {
+        transform: translateX(-10px);
+    }
+}
+@keyframes neo-status-content-fadein {
+    from {
+        opacity: 0;
+    }
+    to {
         opacity: 1;
+    }
+}
+@keyframes neo-status-content-transform {
+    from {
+        transform: translateX(30px);
     }
     to {
         transform: translateX(0);
-        opacity: 1;
     }
 }
