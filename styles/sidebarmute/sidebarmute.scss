@@ -6,6 +6,18 @@
 }
 .neo-sidebar-mute {
     @include sidebarmute-common('[data-id="neo-sidebar-mute-button"]');
+    &:not(.neo-palette-highcontrast.neo-mode-light) {
+        .file-tree {
+            .b3-list-item:not(.b3-list-item--focus) {
+                .b3-list-item__text,
+                .counter,
+                .b3-list-item__action,
+                .b3-list-item__graphic {
+                    color: var(--b3-theme-on-surface);
+                }
+            }
+        }
+    }
     &:not(.neo-palette-highcontrast.neo-mode-light):not(.neo-ide) {
         .layout__dockl,
         .layout__dockr,
