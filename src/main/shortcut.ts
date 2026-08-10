@@ -1,23 +1,23 @@
 import { getPlugin } from './guard';
 import { switchToPlan } from '../palette/manager';
 import { onImmersiveModeClick } from '../extension/immersivemode';
-import { onVerticalTabsClick } from '../verticaltabs/verticaltabs';
-const shortcutLangKeys = ['random', 'verticalTabs', 'immersiveMode'];
+import { openNeoMenu } from './topbar';
+const shortcutLangKeys = ['neoMenu', 'random', 'immersiveMode'];
 export function initShortcuts(): void {
   const plugin = getPlugin();
   if (!plugin) return;
+  plugin.addCommand({
+    langKey: 'neoMenu',
+    hotkey: '',
+    callback: () => {
+      openNeoMenu();
+    },
+  });
   plugin.addCommand({
     langKey: 'random',
     hotkey: '',
     callback: () => {
       switchToPlan('random');
-    },
-  });
-  plugin.addCommand({
-    langKey: 'verticalTabs',
-    hotkey: '',
-    callback: () => {
-      onVerticalTabsClick();
     },
   });
   plugin.addCommand({

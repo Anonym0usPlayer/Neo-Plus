@@ -8,20 +8,22 @@ export function initTopBarButton(): HTMLElement | null {
     icon: 'iconNeo',
     title: 'Neo+',
     position: 'right',
-    callback: () => {
-        let rect = button.getBoundingClientRect();
-        if (rect.width === 0) {
-          rect = document.querySelector('#barMore')?.getBoundingClientRect() as DOMRect;
-        }
-        if (rect.width === 0) {
-          rect = document.querySelector('#barPlugins')?.getBoundingClientRect() as DOMRect;
-        }
-        const menu = buildMenu();
-        menu.open({ x: rect.right, y: rect.bottom, isLeft: true });
-    },
+    callback: openNeoMenu,
   });
   topBarButton = button;
   return button;
+}
+export function openNeoMenu(): void {
+  let rect = topBarButton?.getBoundingClientRect();
+  if (!rect || rect.width === 0) {
+    rect = document.querySelector('#barMore')?.getBoundingClientRect();
+  }
+  if (!rect || rect.width === 0) {
+    rect = document.querySelector('#barPlugins')?.getBoundingClientRect();
+  }
+  if (!rect) return;
+  const menu = buildMenu();
+  menu.open({ x: rect.right, y: rect.bottom, isLeft: true });
 }
 export function destroyTopBarButton(): void {
   if (topBarButton) {
