@@ -37,7 +37,7 @@ export function buildMenu(
   });
   menu.addItem({
     id: 'neo-random-button',
-    icon: 'iconNeoRandom',
+    icon: 'iconDices',
     label: i18n.random,
     click: () => {
       switchToPlan('random');
