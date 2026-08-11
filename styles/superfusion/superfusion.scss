@@ -203,6 +203,22 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
     @include superfusion-tab-not-protyle {
         margin-top: $tab-height;
     }
+    .block__popover {
+        & > .block__icons {
+            @include superellipse-use(12px 12px 0 0);
+        }
+        & > .block__content {
+            @include superellipse-use(12px 12px 0 0);
+            overflow: unset;
+            min-height: 0;
+            & > .protyle:not(.fullscreen)::before {
+                @include superellipse-use(12px 12px 0 0);
+            }
+            .protyle-content {
+                @include superellipse-use(12px 12px 0 0);
+            }
+        }
+    }
 }
 // 渐进模糊
 .neo-visual-superfusion-blur {
