@@ -24,7 +24,8 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
     @include superellipse-use(0 0 0 10px);
     position: absolute;
     left: -18px;
-    animation: neo-listbulletline-entrance 0.3s;
+    animation: neo-listbulletline-entrance 0.45s var(--neo-ease-spring-3);
+    transform-origin: left;
   }
   .rtl #{$selector}::after,
   .list[style*="direction: rtl"] #{$selector}::after {
@@ -33,6 +34,7 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
     @include superellipse-use(0 0 10px 0);
     left: auto;
     right: -18px;
+    transform-origin: right;
   }
   .protyle-wysiwyg [data-node-id].li[neo-listbulletline-node] {
     &[data-subtype="o"],
@@ -83,9 +85,9 @@ $selector: "[neo-listbulletline-current]:not(.protyle-wysiwyg--select):not(.prot
 }
 @keyframes neo-listbulletline-entrance {
     0% {
-      opacity: 0;
+      transform: scaleX(0) scaleY(0.8);
     }
     100% {
-      opacity: 1;
+      transform: scaleX(1) scaleY(1);
     }
 }
