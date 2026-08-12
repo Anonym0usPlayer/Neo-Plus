@@ -10,9 +10,6 @@
                 min-width: $min-width;
                 column-rule: 1px outset var(--b3-border-color-trans);
                 column-width: $column-width;
-                .emojis__item {
-                    margin: 6px;
-                }
                 & > .b3-menu__separator { 
                     margin: 4px 4px;
                     width: calc(100% - 8px);

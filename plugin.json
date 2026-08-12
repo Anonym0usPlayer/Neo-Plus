@@ -2,8 +2,8 @@
   "name": "Neo-Plus",
   "author": "QYL",
   "url": "https://github.com/QYLexpired/Neo-Plus",
-  "version": "1.4.2",
-  "minAppVersion": "3.8.0-beta.1",
+  "version": "1.4.3",
+  "minAppVersion": "3.8.0",
   "backends": [
     "all"
   ],
@@ -28,5 +28,10 @@
     "custom": [
       "https://icnmjy02sv9g.feishu.cn/wiki/FekNwrtB7ia1WckYelRckwzZnig?from=from_copylink"
     ]
-  }
+  },
+  "keywords": [
+    "Apple",
+    "macOS",
+    "Cupertino"
+  ]
 }
