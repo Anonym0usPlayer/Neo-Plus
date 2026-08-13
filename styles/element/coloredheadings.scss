@@ -33,7 +33,7 @@
                 .b3-list-item__graphic,
                 .b3-list-item__number,
                 .b3-list-item__text {
-                    color: oklch(from var(--b3-theme-accent) var(--_coloredheadings-outline-l) var(--_coloredheadings-c) calc(h + #{$hue-offset}));
+                    color: oklch(from var(--b3-theme-accent) var(--_coloredheadings-outline-l) var(--_coloredheadings-c) calc(h + #{$hue-offset})) !important;
                 }
             }
         }
