@@ -1,5 +1,7 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { Dialog } from 'siyuan';
 import { getPlugin } from '../main/guard';
 let superFusionMode: 'blur' | 'frostedGlass' | 'liquidGlass' = 'blur';
@@ -79,6 +81,7 @@ export function initSuperFusion(): void {
   loadConfig().then((config) => {
     superFusionMode = config['super-fusion-mode'] || 'blur';
     if (config['super-fusion'] === true) {
+      ensureCss('superfusion', featureCss['superfusion']);
       document.documentElement.classList.add('neo-visual-superfusion');
       applyModeClass();
     }
@@ -92,6 +95,7 @@ export function onSuperFusionClick(): void {
       destroySuperFusion();
       saveConfig({ 'super-fusion': false } as Partial<Config>);
     } else {
+      ensureCss('superfusion', featureCss['superfusion']);
       htmlEl.classList.add('neo-visual-superfusion');
       applyModeClass();
       saveConfig({ 'super-fusion': true } as Partial<Config>);
@@ -99,6 +103,7 @@ export function onSuperFusionClick(): void {
   });
 }
 export function destroySuperFusion(): void {
+  removeCss('superfusion');
   document.documentElement?.classList.remove('neo-visual-superfusion');
   document.body?.classList.remove('neo-visual-superfusion-blur', 'neo-visual-superfusion-frosted-glass', 'neo-visual-superfusion-liquid-glass');
 }

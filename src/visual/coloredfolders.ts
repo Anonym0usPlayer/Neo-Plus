@@ -1,5 +1,7 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { getPlugin } from '../main/guard';
 import { Dialog } from 'siyuan';
 let coloredFoldersStyle: 'partition' | 'simple' | 'card' = 'partition';
@@ -13,6 +15,7 @@ export function initColoredFolders(): void {
   loadConfig().then((config) => {
     coloredFoldersStyle = config['colored-folders-style'] || 'partition';
     if (config['colored-folders'] === true) {
+      ensureCss('visual-coloredfolders', featureCss['visual-coloredfolders']);
       document.documentElement.classList.add('neo-visual-coloredfolders');
       applyStyle();
     }
@@ -25,6 +28,7 @@ export function onColoredFoldersClick(): void {
     destroyColoredFolders();
     saveConfig({ 'colored-folders': false } as Partial<Config>);
   } else {
+    ensureCss('visual-coloredfolders', featureCss['visual-coloredfolders']);
     htmlEl.classList.add('neo-visual-coloredfolders');
     applyStyle();
     saveConfig({ 'colored-folders': true } as Partial<Config>);
@@ -91,6 +95,7 @@ export function createColoredFoldersLabelHTML(i18n: Record<string, string>): str
   </span>`;
 }
 export function destroyColoredFolders(): void {
+  removeCss('visual-coloredfolders');
   document.documentElement?.classList.remove('neo-visual-coloredfolders');
   document.body.classList.remove('neo-visual-coloredfolders-partition', 'neo-visual-coloredfolders-simple', 'neo-visual-coloredfolders-card');
 }

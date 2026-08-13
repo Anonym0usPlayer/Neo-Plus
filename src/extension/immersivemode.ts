@@ -2,6 +2,8 @@ import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
 import { getCursorRect, getTextColor, getScrollContainer } from '../modules/getselection';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { Dialog } from 'siyuan';
 const scrollDuration = 600;
 const scrollThrottle = 100;
@@ -237,6 +239,7 @@ export function initImmersiveMode(): void {
     if (config['immersive-typewriter'] !== undefined) typewriterEnabled = config['immersive-typewriter'];
     if (config['immersive-highlight'] !== undefined) highlightEnabled = config['immersive-highlight'];
     if (config['immersive-mode'] === true) {
+      ensureCss('extension-immersivemode', featureCss['extension-immersivemode']);
       document.documentElement.classList.add('neo-extension-immersivemode');
       applyHighlightState();
       startObserving();
@@ -250,6 +253,7 @@ export function onImmersiveModeClick(): void {
     destroyImmersiveMode();
     saveConfig({ 'immersive-mode': false } as Partial<Config>);
   } else {
+    ensureCss('extension-immersivemode', featureCss['extension-immersivemode']);
     htmlEl.classList.add('neo-extension-immersivemode');
     applyHighlightState();
     saveConfig({ 'immersive-mode': true } as Partial<Config>);
@@ -257,6 +261,7 @@ export function onImmersiveModeClick(): void {
   }
 }
 export function destroyImmersiveMode(): void {
+  removeCss('extension-immersivemode');
   document.documentElement?.classList.remove('neo-extension-immersivemode');
   document.body.classList.remove('neo-extension-immersivemode-highlight', 'neo-extension-immersivemode-no-highlight');
   stopObserving();

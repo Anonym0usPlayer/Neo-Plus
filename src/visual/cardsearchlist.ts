@@ -1,4 +1,6 @@
 import { fetchListener } from '../modules/fetchmonitor';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 const _fetchListener = fetchListener();
@@ -27,6 +29,7 @@ _fetchListener.on('getRecentUpdatedBlocks', updateCardSearchListClass);
 export function initCardSearchList(): void {
   loadConfig().then((config) => {
     if (config['card-searchlist'] === true) {
+      ensureCss('visual-cardsearchlist', featureCss['visual-cardsearchlist']);
       document.documentElement.classList.add('neo-visual-cardsearchlist');
       _fetchListener.attach();
       requestAnimationFrame(() => {
@@ -42,6 +45,7 @@ export function onCardSearchListClick(): void {
     destroyCardSearchList();
     saveConfig({ 'card-searchlist': false } as Partial<Config>);
   } else {
+    ensureCss('visual-cardsearchlist', featureCss['visual-cardsearchlist']);
     htmlEl.classList.add('neo-visual-cardsearchlist');
     saveConfig({ 'card-searchlist': true } as Partial<Config>);
     _fetchListener.attach();
@@ -52,6 +56,7 @@ export function onCardSearchListClick(): void {
 }
 export function destroyCardSearchList(): void {
   try {
+    removeCss('visual-cardsearchlist');
     _fetchListener.detach();
     document.documentElement?.classList.remove('neo-visual-cardsearchlist');
     _searchListSelectors.forEach(selector => {

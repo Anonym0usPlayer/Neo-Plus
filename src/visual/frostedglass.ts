@@ -1,5 +1,7 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { Dialog } from 'siyuan';
 import { getPlugin } from '../main/guard';
 let frostedGlassScope: 'light' | 'global' = 'global';
@@ -79,6 +81,7 @@ export function initFrostedGlass(): void {
     loadConfig().then((config) => {
         frostedGlassScope = config['frosted-glass-scope'] || 'global';
         if (config['frosted-glass'] === true) {
+            ensureCss('visual-frostedglass', featureCss['visual-frostedglass']);
             applyScopeClass();
         }
     });
@@ -91,11 +94,13 @@ export function onFrostedGlassClick(): void {
             destroyFrostedGlass();
             saveConfig({ 'frosted-glass': false } as Partial<Config>);
         } else {
+            ensureCss('visual-frostedglass', featureCss['visual-frostedglass']);
             applyScopeClass();
             saveConfig({ 'frosted-glass': true } as Partial<Config>);
         }
     });
 }
 export function destroyFrostedGlass(): void {
+    removeCss('visual-frostedglass');
     document.documentElement?.classList.remove('neo-visual-frostedglass', 'neo-visual-frostedglass-global');
 }

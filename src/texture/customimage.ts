@@ -2,6 +2,8 @@ import { Dialog, showMessage } from 'siyuan';
 import { getPlugin } from '../main/guard';
 import { saveConfig, loadConfig, deleteConfigKeys } from '../main/data';
 import type { Config } from '../main/data';
+import { ensureCss, removeCssByPrefix } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 export interface CustomImageField {
   configKey: string;
   cssVar: string;
@@ -56,6 +58,8 @@ export async function toggleCustomImage(enabled: boolean): Promise<void> {
   const config = await loadConfig();
   if (enabled) {
     document.documentElement.classList.add('neo-texture-customimage');
+    removeCssByPrefix('texture-');
+    ensureCss('texture-customimage', featureCss['texture-customimage']);
     const key = getCurrentPresetKey();
     const name = (config?.[key] as string) || '';
     const preset = getPreset(config, name);
@@ -67,6 +71,7 @@ export async function toggleCustomImage(enabled: boolean): Promise<void> {
     );
   } else {
     document.documentElement.classList.remove('neo-texture-customimage');
+    removeCssByPrefix('texture-');
     clearCustomImageCss();
     const mode = getCurrentThemeMode();
     await saveConfig({ [mode === 'dark' ? 'texture-dark' : 'texture-light']: 'none' } as Partial<Config>);
@@ -316,7 +321,9 @@ export function showCustomImageSettings(): void {
       html.classList.remove(
         ...Array.from(html.classList).filter(cls => cls.startsWith('neo-texture-'))
       );
+      removeCssByPrefix('texture-');
       if (textureKey && textureKey !== 'none') {
+        ensureCss(`texture-${textureKey}`, featureCss[`texture-${textureKey}`]);
         if (textureKey === 'customimage') {
           html.classList.add('neo-texture-customimage');
           const currentKey = mode === 'dark' ? 'customimage-preset-current-dark' : 'customimage-preset-current-light';

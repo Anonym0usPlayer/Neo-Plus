@@ -32,6 +32,8 @@ import { initImmersiveMode, destroyImmersiveMode } from '../extension/immersivem
 import { initPinnedToolbar, destroyPinnedToolbar } from '../extension/pinnedtoolbar';
 import { initSideMemo, destroySideMemo } from '../extension/sidememo';
 import { initModeTransition, destroyModeTransition } from '../modules/modetransition';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { baseCss } from '../modules/csschunks';
 function isNeoTheme(): boolean {
   const mode = document.documentElement.getAttribute('data-theme-mode');
   if (mode === 'dark') {
@@ -52,6 +54,12 @@ function initNeoRootClass(): void {
 function destroyNeoRootClass(): void {
   document.documentElement.classList.remove('neo-enabled');
   document.documentElement.classList.remove('neo-mode-light', 'neo-mode-dark');
+}
+function initBaseCss(): void {
+  ensureCss('base', baseCss);
+}
+function destroyBaseCss(): void {
+  removeCss('base');
 }
 let _plugin: Plugin | null = null;
 export function getPlugin(): Plugin | null {
@@ -101,6 +109,7 @@ export class NeoPlusController {
   }
   private initNeoPlus(): void {
     const modules: Array<[string, () => void]> = [
+      ['baseCss', initBaseCss],
       ['rootClass', initNeoRootClass],
       ['env', initEnv],
       ['icons', initNeoIcons],
@@ -176,6 +185,7 @@ export class NeoPlusController {
       ['env', destroyEnv],
       ['rootClass', destroyNeoRootClass],
       ['modeTransition', destroyModeTransition],
+      ['baseCss', destroyBaseCss],
     ];
     for (const [name, fn] of modules) {
       try { fn(); } catch { }

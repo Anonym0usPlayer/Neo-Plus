@@ -1,5 +1,7 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 let selectionChangeHandler: (() => void) | null = null;
 let clickHandler: ((event: MouseEvent) => void) | null = null;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -139,6 +141,7 @@ function unbindSelectionChange(): void {
 export function initListBulletLine(): void {
   loadConfig().then((config) => {
     if (config['list-bullet-line'] === true) {
+      ensureCss('extension-listbulletline', featureCss['extension-listbulletline']);
       document.documentElement.classList.add('neo-extension-listbulletline');
       bindSelectionChange();
     }
@@ -151,12 +154,14 @@ export function onListBulletLineClick(): void {
     destroyListBulletLine();
     saveConfig({ 'list-bullet-line': false } as Partial<Config>);
   } else {
+    ensureCss('extension-listbulletline', featureCss['extension-listbulletline']);
     htmlEl.classList.add('neo-extension-listbulletline');
     saveConfig({ 'list-bullet-line': true } as Partial<Config>);
     bindSelectionChange();
   }
 }
 export function destroyListBulletLine(): void {
+  removeCss('extension-listbulletline');
   document.documentElement?.classList.remove('neo-extension-listbulletline');
   unbindSelectionChange();
 }

@@ -1,4 +1,6 @@
 import { isMobile } from '../modules/env';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { fetchListener } from '../modules/fetchmonitor';
@@ -230,6 +232,7 @@ export function initVerticalTabs(): void {
   (window as any).__neoOpenVerticalTabsSettings = showVerticalTabsSettings;
   loadConfig().then((config) => {
     if (config['vertical-tabs'] === true) {
+      ensureCss('verticaltabs', featureCss['verticaltabs']);
       document.documentElement.classList.add('neo-verticaltabs');
       destroyed = false;
       topLeftOnlyLastWidth = null;
@@ -249,6 +252,7 @@ export function onVerticalTabsClick(): void {
       destroyVerticalTabs();
       saveConfig({ 'vertical-tabs': false } as Partial<Config>);
     } else {
+      ensureCss('verticaltabs', featureCss['verticaltabs']);
       htmlEl.classList.add('neo-verticaltabs');
       saveConfig({ 'vertical-tabs': true } as Partial<Config>);
       destroyed = false;
@@ -260,6 +264,7 @@ export function onVerticalTabsClick(): void {
   });
 }
 export function destroyVerticalTabs(): void {
+  removeCss('verticaltabs');
   destroyed = true;
   _fetchListener.detach();
   destroyResizeHandle();

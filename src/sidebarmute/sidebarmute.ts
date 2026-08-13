@@ -1,4 +1,6 @@
 import { isMobile } from '../modules/env';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 function withViewTransition(callback: () => void): void {
@@ -12,6 +14,7 @@ export function initSidebarMute(): void {
   if (isMobile()) return;
   loadConfig().then((config) => {
     if (config['sidebar-mute'] === true) {
+      ensureCss('sidebarmute', featureCss['sidebarmute']);
       document.documentElement.classList.add('neo-sidebar-mute');
     }
   });
@@ -25,11 +28,13 @@ export function onSidebarMuteClick(): void {
       destroySidebarMute();
       saveConfig({ 'sidebar-mute': false } as Partial<Config>);
     } else {
+      ensureCss('sidebarmute', featureCss['sidebarmute']);
       htmlEl.classList.add('neo-sidebar-mute');
       saveConfig({ 'sidebar-mute': true } as Partial<Config>);
     }
   });
 }
 export function destroySidebarMute(): void {
+  removeCss('sidebarmute');
   document.documentElement?.classList.remove('neo-sidebar-mute');
 }

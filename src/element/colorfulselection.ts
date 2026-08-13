@@ -1,34 +1,12 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
-const styleId = 'neo-colorful-selection-style';
-const selectionCSS = `
-:root {
-    ::selection {
-        color: currentColor;
-        background-color: oklch(from currentColor l c h / 0.2);
-    }
-    .hljs ::selection {
-        color: currentColor;
-        background-color: oklch(from currentColor l c h / 0.2);
-    }
-}
-`;
-function injectSelectionStyle(): void {
-  if (document.getElementById(styleId)) return;
-  const style = document.createElement('style');
-  style.id = styleId;
-  style.textContent = selectionCSS;
-  document.head.appendChild(style);
-}
-function removeSelectionStyle(): void {
-  const style = document.getElementById(styleId);
-  if (style) style.remove();
-}
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 export function initColorfulSelection(): void {
   loadConfig().then((config) => {
     if (config['colorful-selection'] === true) {
+      ensureCss('element-colorfulselection', featureCss['element-colorfulselection']);
       document.documentElement.classList.add('neo-element-colorfulselection');
-      injectSelectionStyle();
     }
   });
 }
@@ -39,12 +17,12 @@ export function onColorfulSelectionClick(): void {
     destroyColorfulSelection();
     saveConfig({ 'colorful-selection': false } as Partial<Config>);
   } else {
+    ensureCss('element-colorfulselection', featureCss['element-colorfulselection']);
     htmlEl.classList.add('neo-element-colorfulselection');
-    injectSelectionStyle();
     saveConfig({ 'colorful-selection': true } as Partial<Config>);
   }
 }
 export function destroyColorfulSelection(): void {
+  removeCss('element-colorfulselection');
   document.documentElement?.classList.remove('neo-element-colorfulselection');
-  removeSelectionStyle();
 }

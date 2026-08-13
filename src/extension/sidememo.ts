@@ -3,6 +3,8 @@ import { getPlugin } from '../main/guard';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { isMobile } from '../modules/env';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { fetchListener } from '../modules/fetchmonitor';
 const _fetchListener = fetchListener();
 interface SidememoState {
@@ -1103,6 +1105,7 @@ export function onSideMemoClick(): void {
     destroySideMemo();
   } else {
     _destroyed = false;
+    ensureCss('extension-sidememo', featureCss['extension-sidememo']);
     htmlEl.classList.add('neo-extension-sidememo');
     saveConfig({ 'sidememo': true } as Partial<Config>);
     initSidememoRely();
@@ -1197,6 +1200,7 @@ export function initSideMemo(): void {
     sideMemoConnector = savedConnector;
     if (config?.['sidememo'] === true) {
       _destroyed = false;
+      ensureCss('extension-sidememo', featureCss['extension-sidememo']);
       document.documentElement.classList.add('neo-extension-sidememo');
       updateSideMemoPositionClass(savedPosition);
       initSidememoRely();
@@ -1206,6 +1210,7 @@ export function initSideMemo(): void {
   });
 }
 export function destroySideMemo(): void {
+  removeCss('extension-sidememo');
   _destroyed = true;
   _rafPending = false;
   _lute = null;

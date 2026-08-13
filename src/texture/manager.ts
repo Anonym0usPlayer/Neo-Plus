@@ -1,5 +1,7 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
+import { ensureCss, removeCssByPrefix } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { toggleCustomImage, showCustomImageSettings, applyCustomImageCss, clearCustomImageCss } from './customimage';
 export interface Texture {
   key: string;
@@ -57,6 +59,7 @@ function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>): a
     click: () => {
       if (html.classList.contains(className)) {
         html.classList.remove(className);
+        removeCssByPrefix('texture-');
         const mode = getCurrentThemeMode();
         const texKey = getTextureKey(mode);
         saveConfig({ [texKey]: 'none' } as Partial<Config>);
@@ -65,6 +68,9 @@ function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>): a
           ...Array.from(html.classList).filter((cls) => cls.startsWith('neo-texture-'))
         );
         html.classList.add(className);
+        removeCssByPrefix('texture-');
+        clearCustomImageCss();
+        ensureCss(`texture-${texture.key}`, featureCss[`texture-${texture.key}`]);
         const mode = getCurrentThemeMode();
         const texKey = getTextureKey(mode);
         saveConfig({ [texKey]: texture.key } as Partial<Config>);
@@ -95,6 +101,10 @@ export function applyTexture(config: Config): void {
   html.classList.remove(
     ...Array.from(html.classList).filter((cls) => cls.startsWith('neo-texture-'))
   );
+  removeCssByPrefix('texture-');
+  if (textureKey && textureKey !== 'none') {
+    ensureCss(`texture-${textureKey}`, featureCss[`texture-${textureKey}`]);
+  }
   if (textureKey && textureKey !== 'none') {
     if (textureKey === 'customimage') {
       html.classList.add('neo-texture-customimage');
@@ -136,6 +146,7 @@ export function initTexture(): void {
   });
 }
 export function destroyTexture(): void {
+  removeCssByPrefix('texture-');
   const html = document.documentElement;
   html.classList.remove(
     ...Array.from(html.classList).filter((cls) => cls.startsWith('neo-texture-'))

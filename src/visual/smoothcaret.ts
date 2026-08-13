@@ -2,6 +2,8 @@ import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
 import { getCursorRect, getTextColor, getScrollContainer, getCharWidthAtCursor } from '../modules/getselection';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { Dialog } from 'siyuan';
 let smoothCaretEventHandler: (() => void) | null = null;
 let throttledCaretEventHandler: (() => void) | null = null;
@@ -274,6 +276,7 @@ export function showSmoothCaretSettings(): void {
   });
 }
 export function destroySmoothCaret(): void {
+  removeCss('visual-smoothcaret');
   document.getElementById('neo-smooth-caret-item')?.remove();
   document.documentElement.classList.remove('neo-visual-smooth-caret');
   document.body.classList.remove(
@@ -312,6 +315,7 @@ export function initSmoothCaret(): void {
     smoothCaretEase = config['smooth-caret-ease'] || 'elegant';
     smoothCaretStyle = config['smooth-caret-style'] || 'default';
     if (config['smooth-caret'] === true) {
+      ensureCss('visual-smoothcaret', featureCss['visual-smoothcaret']);
       document.documentElement.classList.add('neo-visual-smooth-caret');
       applySmoothCaretMotion();
       applySmoothCaretStyle();
@@ -326,6 +330,7 @@ export function onSmoothCaretClick(): void {
     destroySmoothCaret();
     saveConfig({ 'smooth-caret': false } as Partial<Config>);
   } else {
+    ensureCss('visual-smoothcaret', featureCss['visual-smoothcaret']);
     htmlEl.classList.add('neo-visual-smooth-caret');
     applySmoothCaretMotion();
     applySmoothCaretStyle();

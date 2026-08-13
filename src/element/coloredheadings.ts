@@ -1,8 +1,11 @@
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 export function initColoredHeadings(): void {
   loadConfig().then((config) => {
     if (config['colored-headings'] === true) {
+      ensureCss('element-coloredheadings', featureCss['element-coloredheadings']);
       document.documentElement.classList.add('neo-element-coloredheadings');
     }
   });
@@ -14,10 +17,12 @@ export function onColoredHeadingsClick(): void {
     destroyColoredHeadings();
     saveConfig({ 'colored-headings': false } as Partial<Config>);
   } else {
+    ensureCss('element-coloredheadings', featureCss['element-coloredheadings']);
     htmlEl.classList.add('neo-element-coloredheadings');
     saveConfig({ 'colored-headings': true } as Partial<Config>);
   }
 }
 export function destroyColoredHeadings(): void {
+  removeCss('element-coloredheadings');
   document.documentElement?.classList.remove('neo-element-coloredheadings');
 }

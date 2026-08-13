@@ -1,4 +1,6 @@
 import { isMobile } from '../modules/env';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { saveConfig, loadConfig } from '../main/data';
 import { getPlugin } from '../main/guard';
 import { Dialog } from 'siyuan';
@@ -331,6 +333,7 @@ function startFluidCursor(_trail = true, _wave = true): void {
   animationFrameId = window.requestAnimationFrame(animate);
 }
 export function destroyFluidCursor(): void {
+  removeCss('visual-fluidcursor');
   const existingCanvas = document.getElementById('neo-fluid-cursor-canvas');
   if (existingCanvas) {
     existingCanvas.remove();
@@ -436,6 +439,7 @@ export function showFluidCursorSettings(): void {
         'fluid-cursor-wave': waveCheckbox.checked,
       } as Partial<Config>);
       destroyFluidCursor();
+      ensureCss('visual-fluidcursor', featureCss['visual-fluidcursor']);
       document.documentElement.classList.add('neo-visual-fluid-cursor');
       startFluidCursor(trailCheckbox.checked, waveCheckbox.checked);
     }
@@ -447,6 +451,7 @@ export function initFluidCursor(): void {
   if (isMobile()) return;
   loadConfig().then((config) => {
     if (config['fluid-cursor'] === true) {
+      ensureCss('visual-fluidcursor', featureCss['visual-fluidcursor']);
       document.documentElement.classList.add('neo-visual-fluid-cursor');
       startFluidCursor(
         config['fluid-cursor-trail'] !== false,
@@ -463,6 +468,7 @@ export function onFluidCursorClick(): void {
     destroyFluidCursor();
     saveConfig({ 'fluid-cursor': false } as Partial<Config>);
   } else {
+    ensureCss('visual-fluidcursor', featureCss['visual-fluidcursor']);
     htmlEl.classList.add('neo-visual-fluid-cursor');
     saveConfig({ 'fluid-cursor': true } as Partial<Config>);
     startFluidCursor();

@@ -1,4 +1,6 @@
 import { isMobile } from '../modules/env';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
@@ -61,6 +63,7 @@ export function initPinnedToolbar(): void {
     pinnedToolbarPosition = config['pinned-toolbar-position'] || 'top';
     pinnedToolbarLiquidGlass = config['pinned-toolbar-liquid-glass'] === true;
     if (config['pinned-toolbar'] === true) {
+      ensureCss('extension-pinnedtoolbar', featureCss['extension-pinnedtoolbar']);
       document.documentElement.classList.add('neo-extension-pinnedtoolbar');
       startObserving();
     }
@@ -74,6 +77,7 @@ export function onPinnedToolbarClick(): void {
     destroyPinnedToolbar();
     saveConfig({ 'pinned-toolbar': false } as Partial<Config>);
   } else {
+    ensureCss('extension-pinnedtoolbar', featureCss['extension-pinnedtoolbar']);
     htmlEl.classList.add('neo-extension-pinnedtoolbar');
     saveConfig({ 'pinned-toolbar': true } as Partial<Config>);
     startObserving();
@@ -210,6 +214,7 @@ export function showPinnedToolbarSettings(): void {
   });
 }
 export function destroyPinnedToolbar(): void {
+  removeCss('extension-pinnedtoolbar');
   document.documentElement?.classList.remove('neo-extension-pinnedtoolbar');
   stopObserving();
   const toolbars = document.querySelectorAll<HTMLElement>('.protyle-toolbar');

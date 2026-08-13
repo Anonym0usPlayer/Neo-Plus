@@ -1,4 +1,6 @@
 import { isMobile } from '../modules/env';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
@@ -265,6 +267,7 @@ export function initMulticolumnSlashMenu(): void {
   loadConfig().then((config) => {
     arrowKeysOn = config['multicolumn-slash-menu-arrowkeys'] !== false;
     if (config['multicolumn-slash-menu'] === true) {
+      ensureCss('visual-multicolumnslashmenu', featureCss['visual-multicolumnslashmenu']);
       document.documentElement.classList.add('neo-visual-multicolumnslashmenu');
       ensureKeydownHandler(arrowKeysOn);
     }
@@ -278,6 +281,7 @@ export function onMulticolumnSlashMenuClick(): void {
     destroyMulticolumnSlashMenu();
     saveConfig({ 'multicolumn-slash-menu': false } as Partial<Config>);
   } else {
+    ensureCss('visual-multicolumnslashmenu', featureCss['visual-multicolumnslashmenu']);
     htmlEl.classList.add('neo-visual-multicolumnslashmenu');
     ensureKeydownHandler(arrowKeysOn);
     saveConfig({ 'multicolumn-slash-menu': true } as Partial<Config>);
@@ -341,6 +345,7 @@ export function createMulticolumnSlashMenuLabelHTML(i18n: Record<string, string>
   </span>`;
 }
 export function destroyMulticolumnSlashMenu(): void {
+  removeCss('visual-multicolumnslashmenu');
   ensureKeydownHandler(false);
   endSession();
   document.documentElement?.classList.remove('neo-visual-multicolumnslashmenu');

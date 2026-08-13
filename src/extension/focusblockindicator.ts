@@ -2,6 +2,8 @@ import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
 import { getTextColor } from '../modules/getselection';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { Dialog } from 'siyuan';
 const debounceDelay = 200;
 let focusBlockEffect: 'vertical-line' | 'shadow' | 'background' = 'vertical-line';
@@ -76,6 +78,7 @@ export function initFocusBlockIndicator(): void {
   loadConfig().then((config) => {
     focusBlockEffect = config['focus-block-effect'] || 'vertical-line';
     if (config['focus-block-indicator'] === true) {
+      ensureCss('extension-focusblockindicator', featureCss['extension-focusblockindicator']);
       document.documentElement.classList.add('neo-extension-focusblockindicator');
       applyFocusBlockEffect();
       startObserving();
@@ -89,6 +92,7 @@ export function onFocusBlockIndicatorClick(): void {
     destroyFocusBlockIndicator();
     saveConfig({ 'focus-block-indicator': false } as Partial<Config>);
   } else {
+    ensureCss('extension-focusblockindicator', featureCss['extension-focusblockindicator']);
     htmlEl.classList.add('neo-extension-focusblockindicator');
     applyFocusBlockEffect();
     saveConfig({ 'focus-block-indicator': true } as Partial<Config>);
@@ -156,6 +160,7 @@ export function createFocusBlockIndicatorLabelHTML(i18n: Record<string, string>)
   </span>`;
 }
 export function destroyFocusBlockIndicator(): void {
+  removeCss('extension-focusblockindicator');
   document.documentElement?.classList.remove('neo-extension-focusblockindicator');
   document.body.classList.remove('neo-extension-focusblockindicator-shadow', 'neo-extension-focusblockindicator-vertical-line', 'neo-extension-focusblockindicator-background');
   document.documentElement?.style.removeProperty('--neo-focusblock-text-color');

@@ -1,6 +1,6 @@
 import { compile } from 'sass';
 import { build } from 'esbuild';
-import { writeFileSync, unlinkSync } from 'fs';
+import { writeFileSync, unlinkSync, readdirSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -17,11 +17,46 @@ await build({
 });
 await import(pathToFileURL(codegenOut).href);
 unlinkSync(codegenOut);
-const scssPath = resolve(root, 'styles/index.scss');
-const cssPath = resolve(root, 'index.css');
-const cssResult = compile(scssPath, { style: 'compressed' });
-writeFileSync(cssPath, cssResult.css);
-console.log('Build complete: index.css');
+const stylesDir = resolve(root, 'styles');
+function scanFeatureEntries(dir, prefix) {
+  const files = readdirSync(resolve(stylesDir, dir)).sort().filter((f) => {
+    if (!f.endsWith('.scss')) return false;
+    if (f.startsWith('_')) return false;
+    if (f === 'manager.scss') return false;
+    return true;
+  });
+  return files.map((f) => {
+    const name = f.slice(0, -5);
+    const key = files.length === 1 ? prefix : `${prefix}-${name}`;
+    return [key, `${dir}/${f}`];
+  });
+}
+const featureEntries = [
+  ...scanFeatureEntries('visual', 'visual'),
+  ...scanFeatureEntries('element', 'element'),
+  ...scanFeatureEntries('extension', 'extension'),
+  ...scanFeatureEntries('sidebarmute', 'sidebarmute'),
+  ...scanFeatureEntries('ide', 'ide'),
+  ...scanFeatureEntries('superfusion', 'superfusion'),
+  ...scanFeatureEntries('verticaltabs', 'verticaltabs'),
+  ...scanFeatureEntries('texture', 'texture'),
+];
+const featureCss = {};
+for (const [key, rel] of featureEntries) {
+  const scssPath = resolve(stylesDir, rel);
+  const result = compile(scssPath, { style: 'compressed' });
+  featureCss[key] = result.css;
+}
+const baseCss = [
+  compile(resolve(stylesDir, 'modules/_index.scss'), { style: 'compressed' }).css,
+  compile(resolve(stylesDir, 'palette/_index.scss'), { style: 'compressed' }).css,
+].join('');
+const chunkSource = `export const baseCss: string = ${JSON.stringify(baseCss)};
+export const featureCss: Record<string, string> = ${JSON.stringify(featureCss)};
+`;
+writeFileSync(resolve(root, 'src/modules/csschunks.ts'), chunkSource);
+writeFileSync(resolve(root, 'index.css'), '');
+console.log(`Build complete: ${Object.keys(featureCss).length} css chunks + base`);
 const tsEntry = resolve(root, 'src/index.ts');
 const jsOut = resolve(root, 'index.js');
 await build({

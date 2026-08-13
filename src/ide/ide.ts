@@ -1,4 +1,6 @@
 import { isMobile } from '../modules/env';
+import { ensureCss, removeCss } from '../modules/cssloader';
+import { featureCss } from '../modules/csschunks';
 import { saveConfig, loadConfig } from '../main/data';
 import type { Config } from '../main/data';
 import { getPlugin } from '../main/guard';
@@ -92,6 +94,7 @@ export function initIde(): void {
   if (isMobile()) return;
   loadConfig().then((config) => {
     if (config['ide'] === true) {
+      ensureCss('ide', featureCss['ide']);
       document.documentElement.classList.add('neo-ide');
       document.body.classList.add('neo-ide-body');
       attachEvents();
@@ -112,6 +115,7 @@ export function onIdeClick(): void {
       destroyIde();
       saveConfig({ 'ide': false } as Partial<Config>);
     } else {
+      ensureCss('ide', featureCss['ide']);
       htmlEl.classList.add('neo-ide');
       document.body.classList.add('neo-ide-body');
       saveConfig({ 'ide': true } as Partial<Config>);
@@ -125,6 +129,7 @@ export function onIdeClick(): void {
   });
 }
 export function destroyIde(): void {
+  removeCss('ide');
   if (_fallbackTimer !== null) {
     clearTimeout(_fallbackTimer);
     _fallbackTimer = null;
