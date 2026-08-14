@@ -26,15 +26,25 @@ let currentHueOffset = 0;
 let targetHueOffset = 0;
 let cachedDisplayColor = '#f44336';
 let cachedBaseColor = '';
+let lastColorFetchTime = 0;
+const colorRefreshInterval = 500;
 let trailOn = true;
 let waveOn = true;
 function getCursorColor(): string {
   const computedStyle = getComputedStyle(document.documentElement);
-  const color = computedStyle.getPropertyValue('--b3-theme-primary').trim();
-  return color || '#f44336';
+  const color = computedStyle.getPropertyValue('--b3-base-color').trim();
+  return color || '#6a85e3';
+}
+function refreshBaseColor(force: boolean = false): string {
+  const now = performance.now();
+  if (force || !cachedBaseColor || now - lastColorFetchTime >= colorRefreshInterval) {
+    cachedBaseColor = getCursorColor();
+    lastColorFetchTime = now;
+  }
+  return cachedBaseColor;
 }
 function waveColor(invert: boolean, noChangeProb = 0.5): string {
-  const base = getCursorColor();
+  const base = refreshBaseColor();
   const offset = invert ? '180' : '0';
   if (Math.random() < noChangeProb) return `oklch(from ${base} l c calc(h + ${offset}))`;
   const rand = Math.random();
@@ -51,10 +61,7 @@ function waveColor(invert: boolean, noChangeProb = 0.5): string {
   return `oklch(from ${base} l c calc(h + ${offset} + ${hue}))`;
 }
 function updateDisplayColor(): void {
-  const baseColor = getCursorColor();
-  if (baseColor !== cachedBaseColor) {
-    cachedBaseColor = baseColor;
-  }
+  const baseColor = refreshBaseColor();
   const baseHue = isMouseDown ? 180 : 0;
   cachedDisplayColor = `oklch(from ${baseColor} l c calc(h + ${baseHue} + ${currentHueOffset}))`;
 }
@@ -109,7 +116,8 @@ function startFluidCursor(_trail = true, _wave = true): void {
   document.body.appendChild(canvas);
   ctx = canvas.getContext('2d');
   isMouseDown = false;
-  cachedBaseColor = getCursorColor();
+  lastColorFetchTime = 0;
+  refreshBaseColor(true);
   randomCursorColor();
   mouse = { x: -100, y: -100 };
   points = [];
@@ -130,6 +138,12 @@ function startFluidCursor(_trail = true, _wave = true): void {
   }
   resizeHandler = resize;
   resize();
+  function resumeAnimation(): void {
+    if (animationFrameId !== null) return;
+    if (!canvas || !ctx) return;
+    lastTime = performance.now();
+    animationFrameId = window.requestAnimationFrame(animate);
+  }
   mouseMoveHandler = (e: MouseEvent) => {
     if (trailOn) {
       if (isFirstMouseMove) {
@@ -149,9 +163,16 @@ function startFluidCursor(_trail = true, _wave = true): void {
         clearTimeout(hideCursorTimeout);
       }
       hideCursorTimeout = window.setTimeout(() => {
+        hideCursorTimeout = null;
+        if (isFirstMouseMove || points.length === 0) {
+          isShrinking = false;
+          return;
+        }
         isShrinking = true;
         shrinkStartTime = performance.now();
+        resumeAnimation();
       }, 200);
+      resumeAnimation();
     }
   };
   window.addEventListener('resize', resizeHandler);
@@ -178,14 +199,21 @@ function startFluidCursor(_trail = true, _wave = true): void {
       clearTimeout(hideCursorTimeout);
       hideCursorTimeout = null;
     }
+    resumeAnimation();
   };
   mouseUpHandler = () => {
     isMouseDown = false;
     targetHueOffset = 0;
     if (trailOn && !isShrinking && waves.length === 0 && hideCursorTimeout === null) {
       hideCursorTimeout = window.setTimeout(() => {
+        hideCursorTimeout = null;
+        if (isFirstMouseMove || points.length === 0) {
+          isShrinking = false;
+          return;
+        }
         isShrinking = true;
         shrinkStartTime = performance.now();
+        resumeAnimation();
       }, 200);
     }
   };
@@ -293,8 +321,14 @@ function startFluidCursor(_trail = true, _wave = true): void {
       } catch (_) {  }
       if (hadWaves && waves.length === 0 && trailOn && !isShrinking && !isMouseDown) {
         hideCursorTimeout = window.setTimeout(() => {
+          hideCursorTimeout = null;
+          if (isFirstMouseMove || points.length === 0) {
+            isShrinking = false;
+            return;
+          }
           isShrinking = true;
           shrinkStartTime = performance.now();
+          resumeAnimation();
         }, 200);
       }
     }
@@ -327,7 +361,22 @@ function startFluidCursor(_trail = true, _wave = true): void {
         c.stroke();
       }
     }
-    animationFrameId = window.requestAnimationFrame(animate);
+    let trailMoving = false;
+    if (trailOn && !isFirstMouseMove) {
+      for (let i = 0; i < points.length; i++) {
+        const dx = points[i].x - mouse.x;
+        const dy = points[i].y - mouse.y;
+        if (dx * dx + dy * dy > 2.25) {
+          trailMoving = true;
+          break;
+        }
+      }
+    }
+    if (waves.length > 0 || isShrinking || trailMoving) {
+      animationFrameId = window.requestAnimationFrame(animate);
+    } else {
+      animationFrameId = null;
+    }
   }
   lastTime = performance.now();
   animationFrameId = window.requestAnimationFrame(animate);
@@ -369,6 +418,8 @@ export function destroyFluidCursor(): void {
   points = [];
   mouse = { x: 0, y: 0 };
   lastTime = 0;
+  lastColorFetchTime = 0;
+  cachedBaseColor = '';
   canvas = null;
   ctx = null;
   const htmlEl = document.documentElement;
