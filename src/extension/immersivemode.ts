@@ -5,18 +5,15 @@ import { getCursorRect, getTextColor, getScrollContainer } from '../modules/gets
 import { ensureCss, removeCss } from '../modules/cssloader';
 import { featureCss } from '../modules/csschunks';
 import { Dialog } from 'siyuan';
-const scrollDuration = 600;
+const scrollDurationTiers = [180, 260, 360, 480, 600];
 const maskMoveThreshold = 3;
 const maskUpdateInterval = 100;
-const minScrollDuration = 260;
 const typewriterDeadzone = 12;
-const scrollDurationScale = 400;
 let typewriterEnabled = true;
 let highlightEnabled = true;
 let selectionChangeHandler: (() => void) | null = null;
 let scrollHandler: (() => void) | null = null;
 let scrollEndTimer: number | null = null;
-let scrollRafId: number | null = null;
 let lastMaskPosition: string | null = null;
 let lastMaskHeight: string | null = null;
 let lastTextColorKey: { node: Node | null; fallback: Element | null } | null = null;
@@ -25,11 +22,7 @@ let lastMaskCursorTop = -Infinity;
 let lastMaskUpdateTime = 0;
 let pendingUpdate = false;
 let isAnimationFramePending = false;
-let scrollStartTop = 0;
-let scrollStartTime = 0;
-let scrollAnimDuration = scrollDuration;
-let scrollTargetTop: number | null = null;
-let activeScrollContainer: HTMLElement | null = null;
+const scrollTween = createScrollTween();
 function getCachedTextColor(focusNode: Node | null, fallbackElement: Element): string | null {
   if (lastTextColorKey === null || lastTextColorKey.node !== focusNode || lastTextColorKey.fallback !== fallbackElement) {
     lastTextColorKey = { node: focusNode, fallback: fallbackElement };
@@ -64,47 +57,100 @@ function updateMaskPosition(cursorRect: DOMRect, containerRect: DOMRect, scrollC
   lastMaskCursorTop = cursorRect.top;
   lastMaskUpdateTime = performance.now();
 }
+const easeX1 = 0.25;
+const easeY1 = 0.1;
+const easeX2 = 0.25;
+const easeY2 = 1;
+function cubicBezierPoint(t: number, p1: number, p2: number): number {
+  const inv = 1 - t;
+  return 3 * inv * inv * t * p1 + 3 * inv * t * t * p2 + t * t * t;
+}
+function easeStandard(progress: number): number {
+  if (progress <= 0) return 0;
+  if (progress >= 1) return 1;
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 12; i++) {
+    const mid = (lo + hi) / 2;
+    if (cubicBezierPoint(mid, easeX1, easeX2) < progress) {
+      lo = mid;
+    } else {
+      hi = mid;
+    }
+  }
+  return cubicBezierPoint((lo + hi) / 2, easeY1, easeY2);
+}
 function computeScrollDuration(distance: number): number {
-  return Math.max(minScrollDuration, Math.min(scrollDuration, (Math.abs(distance) / scrollDurationScale) * scrollDuration));
+  const dist = Math.abs(distance);
+  if (dist < 20) return scrollDurationTiers[0];
+  if (dist < 60) return scrollDurationTiers[1];
+  if (dist < 150) return scrollDurationTiers[2];
+  if (dist < 400) return scrollDurationTiers[3];
+  return scrollDurationTiers[4];
+}
+function createScrollTween(): {
+  active: boolean;
+  to(container: HTMLElement, targetScrollTop: number): void;
+  cancel(): void;
+} {
+  let rafId: number | null = null;
+  let startTop = 0;
+  let startTime = 0;
+  let duration = scrollDurationTiers[4];
+  let targetTop: number | null = null;
+  let container: HTMLElement | null = null;
+  function animate(currentTime: number): void {
+    if (targetTop === null || !container) return;
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const easeProgress = easeStandard(progress);
+    container.scrollTop = startTop + (targetTop - startTop) * easeProgress;
+    if (progress < 1) {
+      rafId = requestAnimationFrame(animate);
+    } else {
+      rafId = null;
+      targetTop = null;
+      const doneContainer = container;
+      container = null;
+      if (highlightEnabled && doneContainer) {
+        const currentRect = getCursorRect();
+        if (currentRect) {
+          updateMaskPosition(currentRect, doneContainer.getBoundingClientRect(), doneContainer);
+        }
+      }
+    }
+  }
+  return {
+    get active(): boolean {
+      return rafId !== null;
+    },
+    to(nextContainer: HTMLElement, nextTarget: number): void {
+      const animating = rafId !== null && targetTop !== null;
+      startTop = nextContainer.scrollTop;
+      startTime = performance.now();
+      targetTop = nextTarget;
+      duration = computeScrollDuration(nextTarget - startTop);
+      container = nextContainer;
+      if (!animating) {
+        rafId = requestAnimationFrame(animate);
+      }
+    },
+    cancel(): void {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      targetTop = null;
+      container = null;
+    },
+  };
 }
 function scrollToLineCenter(cursorRect: DOMRect, container: HTMLElement, containerRect: DOMRect): void {
   const targetOffset = containerRect.height / 2;
   const targetScrollTop = container.scrollTop + cursorRect.top - containerRect.top - targetOffset + cursorRect.height / 2;
   const distance = targetScrollTop - container.scrollTop;
   if (distance === 0) return;
-  const animating = scrollRafId !== null && scrollTargetTop !== null;
-  const now = performance.now();
-  scrollStartTop = container.scrollTop;
-  scrollStartTime = now;
-  scrollTargetTop = targetScrollTop;
-  scrollAnimDuration = computeScrollDuration(targetScrollTop - scrollStartTop);
-  activeScrollContainer = container;
-  if (!animating) {
-    scrollRafId = requestAnimationFrame(animateScroll);
-  }
-}
-function animateScroll(currentTime: number): void {
-  if (scrollTargetTop === null || !activeScrollContainer) return;
-  const elapsed = currentTime - scrollStartTime;
-  const progress = Math.min(elapsed / scrollAnimDuration, 1);
-  const easeProgress = progress < 0.5
-    ? 4 * progress * progress * progress
-    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-  activeScrollContainer.scrollTop = scrollStartTop + (scrollTargetTop - scrollStartTop) * easeProgress;
-  if (progress < 1) {
-    scrollRafId = requestAnimationFrame(animateScroll);
-  } else {
-    scrollRafId = null;
-    scrollTargetTop = null;
-    const container = activeScrollContainer;
-    activeScrollContainer = null;
-    if (highlightEnabled && container) {
-      const currentRect = getCursorRect();
-      if (currentRect) {
-        updateMaskPosition(currentRect, container.getBoundingClientRect(), container);
-      }
-    }
-  }
+  scrollTween.to(container, targetScrollTop);
 }
 function applyPendingUpdate(): void {
   if (!pendingUpdate) return;
@@ -148,7 +194,7 @@ function scheduleUpdate(): void {
 }
 function scheduleMaskUpdate(): void {
   if (!highlightEnabled) return;
-  if (scrollRafId !== null) return;
+  if (scrollTween.active) return;
   if (scrollEndTimer !== null) {
     clearTimeout(scrollEndTimer);
   }
@@ -165,10 +211,7 @@ function startObserving(): void {
   scheduleUpdate();
 }
 function stopObserving(): void {
-  if (scrollRafId !== null) {
-    cancelAnimationFrame(scrollRafId);
-    scrollRafId = null;
-  }
+  scrollTween.cancel();
   if (scrollEndTimer !== null) {
     clearTimeout(scrollEndTimer);
     scrollEndTimer = null;
@@ -189,11 +232,6 @@ function stopObserving(): void {
   cachedTextColor = null;
   lastMaskCursorTop = -Infinity;
   lastMaskUpdateTime = 0;
-  scrollStartTop = 0;
-  scrollStartTime = 0;
-  scrollAnimDuration = scrollDuration;
-  scrollTargetTop = null;
-  activeScrollContainer = null;
   clearHighlightCss();
 }
 export function createImmersiveModeLabelHTML(i18n: Record<string, string>): string {
