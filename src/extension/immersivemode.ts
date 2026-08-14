@@ -6,26 +6,50 @@ import { ensureCss, removeCss } from '../modules/cssloader';
 import { featureCss } from '../modules/csschunks';
 import { Dialog } from 'siyuan';
 const scrollDuration = 600;
-const scrollThrottle = 100;
+const maskMoveThreshold = 3;
+const maskUpdateInterval = 100;
+const minScrollDuration = 260;
+const typewriterDeadzone = 12;
+const scrollDurationScale = 400;
 let typewriterEnabled = true;
 let highlightEnabled = true;
 let selectionChangeHandler: (() => void) | null = null;
 let scrollHandler: (() => void) | null = null;
-let scrollTimeout: number | null = null;
 let scrollEndTimer: number | null = null;
 let scrollRafId: number | null = null;
 let lastMaskPosition: string | null = null;
 let lastMaskHeight: string | null = null;
-let isScrolling = false;
+let lastTextColorKey: { node: Node | null; fallback: Element | null } | null = null;
+let cachedTextColor: string | null = null;
+let lastMaskCursorTop = -Infinity;
+let lastMaskUpdateTime = 0;
 let pendingUpdate = false;
 let isAnimationFramePending = false;
+let scrollStartTop = 0;
+let scrollStartTime = 0;
+let scrollAnimDuration = scrollDuration;
+let scrollTargetTop: number | null = null;
+let activeScrollContainer: HTMLElement | null = null;
+function getCachedTextColor(focusNode: Node | null, fallbackElement: Element): string | null {
+  if (lastTextColorKey === null || lastTextColorKey.node !== focusNode || lastTextColorKey.fallback !== fallbackElement) {
+    lastTextColorKey = { node: focusNode, fallback: fallbackElement };
+    cachedTextColor = getTextColor(focusNode, fallbackElement);
+  }
+  return cachedTextColor;
+}
+function shouldThrottleMaskUpdate(cursorTop: number): boolean {
+  if (lastMaskUpdateTime === 0) return false;
+  const now = performance.now();
+  if (now - lastMaskUpdateTime < maskUpdateInterval) return true;
+  return Math.abs(cursorTop - lastMaskCursorTop) < maskMoveThreshold;
+}
 function updateMaskPosition(cursorRect: DOMRect, containerRect: DOMRect, scrollContainer: HTMLElement): void {
   const cursorCenterY = cursorRect.top + cursorRect.height / 2;
   const cursorRelativeY = cursorCenterY - containerRect.top;
   const positionPercent = (cursorRelativeY / containerRect.height) * 100;
   const newMaskPosition = `${positionPercent}%`;
   const newMaskHeight = `${cursorRect.height * 0.75}px`;
-  const textColor = getTextColor(window.getSelection()?.focusNode ?? null, scrollContainer);
+  const textColor = getCachedTextColor(window.getSelection()?.focusNode ?? null, scrollContainer);
   if (textColor) {
     scrollContainer.style.setProperty('--neo-immersive-text-color', textColor);
   } else {
@@ -37,45 +61,50 @@ function updateMaskPosition(cursorRect: DOMRect, containerRect: DOMRect, scrollC
     scrollContainer.style.setProperty('--neo-immersive-mask-position', newMaskPosition);
     scrollContainer.style.setProperty('--neo-immersive-mask-height', newMaskHeight);
   }
+  lastMaskCursorTop = cursorRect.top;
+  lastMaskUpdateTime = performance.now();
+}
+function computeScrollDuration(distance: number): number {
+  return Math.max(minScrollDuration, Math.min(scrollDuration, (Math.abs(distance) / scrollDurationScale) * scrollDuration));
 }
 function scrollToLineCenter(cursorRect: DOMRect, container: HTMLElement, containerRect: DOMRect): void {
   const targetOffset = containerRect.height / 2;
   const targetScrollTop = container.scrollTop + cursorRect.top - containerRect.top - targetOffset + cursorRect.height / 2;
-  const startScrollTop = container.scrollTop;
-  const distance = targetScrollTop - startScrollTop;
+  const distance = targetScrollTop - container.scrollTop;
   if (distance === 0) return;
-  isScrolling = true;
-  const startTime = performance.now();
-  if (scrollRafId !== null) {
-    cancelAnimationFrame(scrollRafId);
+  const animating = scrollRafId !== null && scrollTargetTop !== null;
+  const now = performance.now();
+  scrollStartTop = container.scrollTop;
+  scrollStartTime = now;
+  scrollTargetTop = targetScrollTop;
+  scrollAnimDuration = computeScrollDuration(targetScrollTop - scrollStartTop);
+  activeScrollContainer = container;
+  if (!animating) {
+    scrollRafId = requestAnimationFrame(animateScroll);
   }
-  function animateScroll(currentTime: number): void {
-    const elapsed = currentTime - startTime;
-    const progress = Math.min(elapsed / scrollDuration, 1);
-    const easeProgress = progress < 0.5
-      ? 4 * progress * progress * progress
-      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-    container.scrollTop = startScrollTop + distance * easeProgress;
-    if (progress < 1) {
-      scrollRafId = requestAnimationFrame(animateScroll);
-    } else {
-      scrollRafId = null;
-      if (highlightEnabled) {
-        const currentRect = getCursorRect();
-        if (currentRect) {
-          updateMaskPosition(currentRect, container.getBoundingClientRect(), container);
-        }
+}
+function animateScroll(currentTime: number): void {
+  if (scrollTargetTop === null || !activeScrollContainer) return;
+  const elapsed = currentTime - scrollStartTime;
+  const progress = Math.min(elapsed / scrollAnimDuration, 1);
+  const easeProgress = progress < 0.5
+    ? 4 * progress * progress * progress
+    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+  activeScrollContainer.scrollTop = scrollStartTop + (scrollTargetTop - scrollStartTop) * easeProgress;
+  if (progress < 1) {
+    scrollRafId = requestAnimationFrame(animateScroll);
+  } else {
+    scrollRafId = null;
+    scrollTargetTop = null;
+    const container = activeScrollContainer;
+    activeScrollContainer = null;
+    if (highlightEnabled && container) {
+      const currentRect = getCursorRect();
+      if (currentRect) {
+        updateMaskPosition(currentRect, container.getBoundingClientRect(), container);
       }
-      if (scrollTimeout !== null) {
-        clearTimeout(scrollTimeout);
-      }
-      scrollTimeout = window.setTimeout(() => {
-        isScrolling = false;
-        scrollTimeout = null;
-      }, scrollThrottle);
     }
   }
-  scrollRafId = requestAnimationFrame(animateScroll);
 }
 function applyPendingUpdate(): void {
   if (!pendingUpdate) return;
@@ -86,9 +115,15 @@ function applyPendingUpdate(): void {
   const container = getScrollContainer();
   if (!container) return;
   const containerRect = container.getBoundingClientRect();
-  if (!isScrolling && typewriterEnabled && scrollRafId === null) {
-    scrollToLineCenter(cursorRect, container, containerRect);
-  } else if (highlightEnabled) {
+  if (typewriterEnabled) {
+    const cursorCenterY = cursorRect.top + cursorRect.height / 2;
+    const viewCenterY = containerRect.top + containerRect.height / 2;
+    if (Math.abs(cursorCenterY - viewCenterY) > typewriterDeadzone) {
+      scrollToLineCenter(cursorRect, container, containerRect);
+      return;
+    }
+  }
+  if (highlightEnabled && !shouldThrottleMaskUpdate(cursorRect.top)) {
     updateMaskPosition(cursorRect, containerRect, container);
   }
 }
@@ -113,6 +148,7 @@ function scheduleUpdate(): void {
 }
 function scheduleMaskUpdate(): void {
   if (!highlightEnabled) return;
+  if (scrollRafId !== null) return;
   if (scrollEndTimer !== null) {
     clearTimeout(scrollEndTimer);
   }
@@ -137,10 +173,6 @@ function stopObserving(): void {
     clearTimeout(scrollEndTimer);
     scrollEndTimer = null;
   }
-  if (scrollTimeout !== null) {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = null;
-  }
   if (selectionChangeHandler) {
     document.removeEventListener('selectionchange', selectionChangeHandler);
     selectionChangeHandler = null;
@@ -149,11 +181,19 @@ function stopObserving(): void {
     document.removeEventListener('scroll', scrollHandler, { capture: true, passive: true } as EventListenerOptions);
     scrollHandler = null;
   }
-  isScrolling = false;
   pendingUpdate = false;
   isAnimationFramePending = false;
   lastMaskPosition = null;
   lastMaskHeight = null;
+  lastTextColorKey = null;
+  cachedTextColor = null;
+  lastMaskCursorTop = -Infinity;
+  lastMaskUpdateTime = 0;
+  scrollStartTop = 0;
+  scrollStartTime = 0;
+  scrollAnimDuration = scrollDuration;
+  scrollTargetTop = null;
+  activeScrollContainer = null;
   clearHighlightCss();
 }
 export function createImmersiveModeLabelHTML(i18n: Record<string, string>): string {
