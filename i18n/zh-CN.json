@@ -211,7 +211,5 @@
   "sidememoConnectorTip": "在侧边备注和源备注之间连线",
   "mergedSideMemoEditTip": "该备注被多个行内元素拆分，需在源备注处修改",
   "galleryMemoEditTip": "该备注为数据库视图的预览，需在源备注处修改",
-  "embedMemoEditTip": "该备注为嵌入块的预览，需在源备注处修改",
-  "uninstallConfirmTitle": "是否删除Neo+配置文件",
-  "uninstallConfirmMessage": "是否删除Neo+配置文件（包括特性的开关和参数配置、自定义图片纹理配置）"
+  "embedMemoEditTip": "该备注为嵌入块的预览，需在源备注处修改"
 }

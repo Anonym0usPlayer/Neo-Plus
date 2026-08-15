@@ -211,7 +211,5 @@
   "sidememoConnectorTip": "在側邊備註和源備註之間連線",
   "mergedSideMemoEditTip": "該備註被多個行內元素拆分，需在源備註處修改",
   "galleryMemoEditTip": "該備註為資料庫檢視的預覽，需在源備註處修改",
-  "embedMemoEditTip": "該備註為嵌入塊的預覽，需在源備註處修改",
-  "uninstallConfirmTitle": "是否刪除Neo+設定檔",
-  "uninstallConfirmMessage": "是否刪除Neo+設定檔（包括特性的開關和參數設定、自訂圖片紋理設定）"
+  "embedMemoEditTip": "該備註為嵌入塊的預覽，需在源備註處修改"
 }
