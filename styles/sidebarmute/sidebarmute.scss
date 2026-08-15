@@ -3,10 +3,14 @@
     .neo-palette-highcontrast.neo-mode-light & {
         opacity: 0.38;      
     }
+    .body--toolbar-hide.neo-ide-body & {
+        opacity: 1;      
+    }
 }
 .neo-sidebar-mute {
     @include sidebarmute-common('[data-id="neo-sidebar-mute-button"]');
-    &:not(.neo-palette-highcontrast.neo-mode-light) {
+    &:not(.neo-palette-highcontrast.neo-mode-light),
+    .body--toolbar-hide.neo-ide-body {
         .file-tree {
             .b3-list-item:not(.b3-list-item--focus) {
                 .b3-list-item__text,
