@@ -12,7 +12,7 @@
 .neo-palette-followtime,
 .neo-palette-followbanner,
 .neo-palette-followsystem,
-.neo-palette-highcontrast.neo-mode-light {
+.neo-palette-highcontrast.neo-mode-light body:not(.neo-ide-body.body--toolbar-hide) {
     .b3-menu__item[data-id="neo-saturation-button"] {
         opacity: 1;
         pointer-events: auto;
