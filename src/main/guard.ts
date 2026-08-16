@@ -5,7 +5,6 @@ import { initTopBarButton, destroyTopBarButton } from './topbar';
 import { initShortcuts, destroyShortcuts } from './shortcut';
 import { initStatusHidden, destroyStatusHidden } from '../modules/statushidden';
 import { initHideScrollbar, destroyHideScrollbar } from '../modules/hidescrollbar';
-import { initRemoveStyle, destroyRemoveStyle } from '../modules/removestyle';
 import { initLayout, destroyLayout } from '../modules/layout';
 import { initFetchMonitor, destroyFetchMonitor } from '../modules/fetchmonitor';
 import { initPerformanceTuning, destroyPerformanceTuning } from '../modules/performancetuning';
@@ -117,7 +116,6 @@ export class NeoPlusController {
       ['shortcuts', initShortcuts],
       ['statusHidden', initStatusHidden],
       ['hideScrollbar', initHideScrollbar],
-      ['removeStyle', initRemoveStyle],
       ['layout', initLayout],
       ['fetchMonitor', initFetchMonitor],
       ['performanceTuning', initPerformanceTuning],
@@ -176,7 +174,6 @@ export class NeoPlusController {
       ['performanceTuning', destroyPerformanceTuning],
       ['fetchMonitor', destroyFetchMonitor],
       ['layout', destroyLayout],
-      ['removeStyle', destroyRemoveStyle],
       ['hideScrollbar', destroyHideScrollbar],
       ['statusHidden', destroyStatusHidden],
       ['shortcuts', destroyShortcuts],
