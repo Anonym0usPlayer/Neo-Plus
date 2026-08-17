@@ -4,7 +4,7 @@ import { ensureCss, removeCss } from '../modules/cssloader';
 import { featureCss } from '../modules/csschunks';
 import { Dialog } from 'siyuan';
 import { getPlugin } from '../main/guard';
-let frostedGlassScope: 'light' | 'global' = 'global';
+let frostedGlassScope: 'light' | 'global' = 'light';
 function withViewTransition(callback: () => void): void {
     if (document.startViewTransition) {
         document.startViewTransition(callback);
@@ -79,7 +79,7 @@ export function showFrostedGlassSettings(): void {
 export function initFrostedGlass(): void {
     (window as any).__neoOpenFrostedGlassSettings = showFrostedGlassSettings;
     loadConfig().then((config) => {
-        frostedGlassScope = config['frosted-glass-scope'] || 'global';
+        frostedGlassScope = config['frosted-glass-scope'] || 'light';
         if (config['frosted-glass'] === true) {
             ensureCss('visual-frostedglass', featureCss['visual-frostedglass']);
             applyScopeClass();
