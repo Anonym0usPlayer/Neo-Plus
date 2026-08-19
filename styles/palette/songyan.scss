@@ -1,6 +1,15 @@
 @use "manager" as *;
 .neo-palette-songyan {
     @include palette-common("[data-id="neo-palette-songyan-button"]", "[data-id="neo-scheme-button"]");
+    &.neo-mode-light {
+        --b3-base-color: #575149;
+        --b3-theme-primary: #575149;
+        --b3-theme-accent: #b59634;
+        --b3-theme-background: #fdfcfc;
+        --b3-theme-surface: #f7f3f0;
+        --b3-theme-on-background: #333231;
+        --b3-theme-on-surface: #3d3834be;
+    }
     &.neo-mode-dark {
         --b3-base-color: #fff29d;
         --b3-theme-primary: #a89e60;

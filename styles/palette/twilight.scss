@@ -1,6 +1,15 @@
 @use "manager" as *;
 .neo-palette-twilight {
     @include palette-common("[data-id="neo-palette-twilight-button"]", "[data-id="neo-scheme-button"]");
+    &.neo-mode-light {
+        --b3-base-color: #6175de;
+        --b3-theme-primary: #6175de;
+        --b3-theme-accent: #6175de;
+        --b3-theme-background: #ffffff;
+        --b3-theme-surface: #f5f6f8;
+        --b3-theme-on-background: #273159;
+        --b3-theme-on-surface: #273159b0;
+    }
     &.neo-mode-dark {
         --b3-base-color: #b7c9ff;
         --b3-theme-primary: #8297d6;
