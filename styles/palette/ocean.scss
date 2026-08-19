@@ -1,6 +1,18 @@
 @use "manager" as *;
 .neo-palette-ocean {
     @include palette-common("[data-id="neo-palette-ocean-button"]", "[data-id="neo-scheme-button"]");
+    &.neo-mode-light {
+        --b3-base-color: #74dbff;
+        --b3-theme-primary: #9b866c;
+        --b3-theme-accent: #ff6f61;
+        --b3-theme-background: #f8fafc;
+        --b3-theme-surface: #edf2f6;
+        --b3-theme-on-background: #0b2c47;
+        --b3-theme-on-surface: #55708a;
+        --neo-switch-primary: #ff6f61;
+        --neo-button-primary: #ff6f61;
+        --neo-input-primary: #ffa59c;
+    }
     &.neo-mode-dark {
         --b3-base-color: #b8e53f;
         --b3-theme-primary: #8eb22d;
