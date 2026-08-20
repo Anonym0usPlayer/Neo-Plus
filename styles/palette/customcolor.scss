@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-custom:not(.neo-palette-random) {
-    @include palette-common("[data-id="neo-custom-color-button"]");
+    @include palette-common("[data-id=\"neo-custom-color-button\"]");
     [data-id="neo-custom-color-button"]::before {
         content: "";
     }

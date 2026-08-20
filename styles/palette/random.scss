@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-random {
-    @include palette-common("[data-id="neo-random-button"]");
+    @include palette-common("[data-id=\"neo-random-button\"]");
     .b3-menu__item[data-id="neo-random-button"]:not(.b3-menu__item--show):not(.b3-menu__item--current) {
         color: var(--b3-theme-accent) !important;
         & .b3-menu__icon {

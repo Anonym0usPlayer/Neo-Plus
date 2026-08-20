@@ -1,6 +1,6 @@
 import { compile } from 'sass';
 import { build } from 'esbuild';
-import { writeFileSync, unlinkSync, readdirSync } from 'fs';
+import { writeFileSync, unlinkSync, readdirSync, readFileSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -18,6 +18,29 @@ await build({
 await import(pathToFileURL(codegenOut).href);
 unlinkSync(codegenOut);
 const stylesDir = resolve(root, 'styles');
+const presetsSource = readFileSync(resolve(root, 'src/palette/presets.ts'), 'utf8');
+const keyRegex = /key:\s*'([a-z0-9-]+)'/g;
+const presetKeys = [];
+let keyMatch;
+while ((keyMatch = keyRegex.exec(presetsSource)) !== null) {
+  presetKeys.push(keyMatch[1]);
+}
+const pinnedKeys = ['default', 'classic'];
+const volKeys = presetKeys.filter((k) => !pinnedKeys.includes(k));
+const volChunkSize = 10;
+const volEntries = [];
+for (let i = 0; i < volKeys.length; i += volChunkSize) {
+  const vol = Math.floor(i / volChunkSize) + 1;
+  const chunk = volKeys.slice(i, i + volChunkSize);
+  for (const key of chunk) {
+    volEntries.push(`    '${key}': ${vol},`);
+  }
+}
+const volmapSource = `$palette-vol-map: (
+${volEntries.join('\n')}
+);
+`;
+writeFileSync(resolve(stylesDir, 'palette/_volmap.scss'), volmapSource);
 function scanFeatureEntries(dir, prefix) {
   const files = readdirSync(resolve(stylesDir, dir)).sort().filter((f) => {
     if (!f.endsWith('.scss')) return false;

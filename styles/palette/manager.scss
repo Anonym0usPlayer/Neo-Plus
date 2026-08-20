@@ -1,5 +1,26 @@
+@use "sass:map";
+@use "sass:list";
+@use "sass:string";
+@use "_volmap" as volmap;
 @mixin palette-common($selectors...) {
+    $all-selectors: $selectors;
+    $palette-key: null;
     @each $selector in $selectors {
+        $marker: 'neo-palette-';
+        $marker-index: string.index($selector, $marker);
+        @if $marker-index != null {
+            $start: $marker-index + string.length($marker);
+            $end: string.index($selector, '-button');
+            @if $end != null and $end > $start {
+                $palette-key: string.slice($selector, $start, $end - 1);
+            }
+        }
+    }
+    @if $palette-key != null and map.has-key(volmap.$palette-vol-map, $palette-key) {
+        $vol: map.get(volmap.$palette-vol-map, $palette-key);
+        $all-selectors: list.append($all-selectors, "[data-id=\"neo-palette-vol#{$vol}-button\"]");
+    }
+    @each $selector in $all-selectors {
         .b3-menu__item#{$selector} {
             &:not(.b3-menu__item--show):not(.b3-menu__item--current) {
                 color: var(--b3-theme-accent);

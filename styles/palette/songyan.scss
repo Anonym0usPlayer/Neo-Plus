@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-songyan {
-    @include palette-common("[data-id="neo-palette-songyan-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-songyan-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #575149;
         --b3-theme-primary: #575149;

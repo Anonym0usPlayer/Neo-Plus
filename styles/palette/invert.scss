@@ -5,5 +5,5 @@
     }
 }
 .neo-palette-invert {
-    @include palette-common("[data-id="neo-invert-button"]");
+    @include palette-common("[data-id=\"neo-invert-button\"]");
 }

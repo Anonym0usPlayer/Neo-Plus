@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-amber {
-    @include palette-common("[data-id="neo-palette-amber-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-amber-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #eecb9e;
 		--b3-theme-primary: #b79d7b;

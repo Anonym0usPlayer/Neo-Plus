@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-sakura {
-    @include palette-common("[data-id="neo-palette-sakura-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-sakura-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #ffcaca;
         --b3-theme-primary: #e68e94;

@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-firefly {
-    @include palette-common("[data-id="neo-palette-firefly-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-firefly-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #9dc238;
         --b3-theme-primary: #9fb022;

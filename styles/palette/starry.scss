@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-starry {
-    @include palette-common("[data-id="neo-palette-starry-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-starry-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #5e6090;
         --b3-theme-primary: #5e6090;

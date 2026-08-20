@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-aerisland {
-    @include palette-common("[data-id="neo-palette-aerisland-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-aerisland-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #a7e1da;
         --b3-theme-primary: #4fbdb0;

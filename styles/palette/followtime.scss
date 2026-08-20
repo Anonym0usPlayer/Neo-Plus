@@ -13,7 +13,7 @@
     }
 }
 .neo-palette-followtime {
-    @include palette-common("[data-id="neo-followtime-button"]");
+    @include palette-common("[data-id=\"neo-followtime-button\"]");
     [data-id="neo-followtime-button"]::before {
         content: "";
     }

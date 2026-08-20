@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-everbliss {
-    @include palette-common("[data-id="neo-palette-everbliss-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-everbliss-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #de6358;
         --b3-theme-primary: #f06255;

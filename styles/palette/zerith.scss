@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-zerith {
-    @include palette-common("[data-id="neo-palette-zerith-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-zerith-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #d6eb53;
         --b3-theme-primary: #8bc600;

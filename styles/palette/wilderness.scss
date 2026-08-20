@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-wilderness {
-    @include palette-common("[data-id="neo-palette-wilderness-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-wilderness-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #beea9d;
         --b3-theme-primary: #74b49a;

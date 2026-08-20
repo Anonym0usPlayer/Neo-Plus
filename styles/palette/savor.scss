@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-savor {
-    @include palette-common("[data-id="neo-palette-savor-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-savor-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #ee705b;
         --b3-theme-primary: #ee705b;

@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-dusk {
-    @include palette-common("[data-id="neo-palette-dusk-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-dusk-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #c9917c;
         --b3-theme-primary: #c9917c;

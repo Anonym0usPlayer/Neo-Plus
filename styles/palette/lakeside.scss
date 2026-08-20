@@ -1,6 +1,6 @@
 @use "manager" as *;
 .neo-palette-lakeside {
-    @include palette-common("[data-id="neo-palette-lakeside-button"]", "[data-id="neo-scheme-button"]");
+    @include palette-common("[data-id=\"neo-palette-lakeside-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
         --b3-base-color: #bde0e7;
         --b3-theme-primary: #56bacb;
