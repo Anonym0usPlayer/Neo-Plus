@@ -2,8 +2,8 @@
 .neo-palette-midnight {
     @include palette-common("[data-id=\"neo-palette-midnight-button\"]", "[data-id=\"neo-scheme-button\"]");
     &.neo-mode-light {
-        --b3-base-color: #2c4c7c;
-        --b3-theme-primary: #345b94;
+        --b3-base-color: #2e3340;
+        --b3-theme-primary: #2e3340;
         --b3-theme-accent: #0e5fb6;
         --b3-theme-background: #fafafa;
         --b3-theme-surface: #e8e8eb;
