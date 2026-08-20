@@ -116,6 +116,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
                     }
                 }
                 // 视差滚动
+                overflow-x: clip;
                 scroll-timeline-name: --protyle-conten-scroll;
                 scroll-timeline-axis: block;
                 .protyle-background__img {
