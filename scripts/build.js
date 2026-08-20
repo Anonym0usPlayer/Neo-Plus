@@ -27,7 +27,8 @@ while ((keyMatch = keyRegex.exec(presetsSource)) !== null) {
 }
 const pinnedKeys = ['default', 'classic'];
 const volKeys = presetKeys.filter((k) => !pinnedKeys.includes(k));
-const volChunkSize = 10;
+const sizeMatch = presetsSource.match(/volChunkSize\s*=\s*(\d+)/);
+const volChunkSize = sizeMatch ? Number(sizeMatch[1]) : 10;
 const volEntries = [];
 for (let i = 0; i < volKeys.length; i += volChunkSize) {
   const vol = Math.floor(i / volChunkSize) + 1;

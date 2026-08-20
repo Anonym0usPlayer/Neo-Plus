@@ -13,6 +13,7 @@ import {
   applyPreset,
   applyCurrentPlan,
   destroyPaletteClasses,
+  volChunkSize,
 } from './presets';
 import { initCustomColor, destroyCustomColor } from './customcolor';
 import { initFollowTime, destroyFollowTime } from './followtime';
@@ -107,7 +108,7 @@ export function getPresetMenuItems(i18n: Record<string, string>): any[] {
   });
   const items: any[] = topLevelPresets.map(makeItem);
   items.push({ type: 'separator' });
-  const chunkSize = 10;
+  const chunkSize = volChunkSize;
   const groups: Preset[][] = [];
   for (let i = 0; i < restPresets.length; i += chunkSize) {
     groups.push(restPresets.slice(i, i + chunkSize));

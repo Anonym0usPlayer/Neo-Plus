@@ -2,6 +2,7 @@ import { saveConfig } from '../main/data';
 import type { Config } from '../main/data';
 export type ThemeMode = 'light' | 'dark';
 export type PresetMode = ThemeMode | 'all';
+export const volChunkSize = 10;
 export interface Preset {
   key: string;
   nameKey: string;
