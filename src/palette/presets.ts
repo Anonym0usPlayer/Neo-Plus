@@ -39,6 +39,7 @@ const presets: Preset[] = [
   { key: 'firefly',  nameKey: 'colorSchemeFirefly',  mode: 'all' },
   { key: 'songyan', nameKey: 'colorSchemeSongyan', mode: 'all' },
   { key: 'lakeside', nameKey: 'colorSchemeLakeside', mode: 'all' },
+  { key: 'voyage', nameKey: 'colorSchemeVoyage', mode: 'all' },
 ];
 export function getPresetsByMode(mode: ThemeMode): Preset[] {
   return presets.filter((p) => p.mode === 'all' || p.mode === mode);
