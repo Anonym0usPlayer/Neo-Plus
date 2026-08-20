@@ -34,6 +34,7 @@
   "colorSchemeFirefly": "萤火",
   "colorSchemeSongyan": "松烟",
   "colorSchemeLakeside": "湖畔",
+  "colorSchemeVol": "配色辑 ${n}",
   "followTime": "跟随时间",
   "followBanner": "跟随题头图",
   "followSystem": "跟随系统",

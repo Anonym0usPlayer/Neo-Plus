@@ -93,47 +93,43 @@ export function switchToPlan(plan: Plan): void {
 export function getPresetMenuItems(i18n: Record<string, string>): any[] {
   const mode = getCurrentThemeMode();
   const availablePresets = getPresetsByMode(mode);
-  const [firstPreset, secondPreset, ...restPresets] = availablePresets;
-  const items: any[] = [
-    {
-      id: `neo-palette-${firstPreset.key}-button`,
-      icon: 'iconNeoPalette',
-      label: i18n[firstPreset.nameKey],
-      click: () => {
-        switchToPreset(firstPreset.key);
-        return true;
-      },
+  const pinnedKeys = ['default', 'classic'];
+  const topLevelPresets = availablePresets.filter((p) => pinnedKeys.includes(p.key));
+  const restPresets = availablePresets.filter((p) => !pinnedKeys.includes(p.key));
+  const makeItem = (preset: Preset): any => ({
+    id: `neo-palette-${preset.key}-button`,
+    icon: 'iconNeoPalette',
+    label: i18n[preset.nameKey],
+    click: () => {
+      switchToPreset(preset.key);
+      return true;
     },
-  ];
-  if (secondPreset) {
-    items.push({
-      id: `neo-palette-${secondPreset.key}-button`,
-      icon: 'iconNeoPalette',
-      label: i18n[secondPreset.nameKey],
-      click: () => {
-        switchToPreset(secondPreset.key);
-        return true;
-      },
-    });
-  }
+  });
+  const items: any[] = topLevelPresets.map(makeItem);
   items.push({ type: 'separator' });
-  for (let i = 0; i < restPresets.length; i += 5) {
-    const chunk = restPresets.slice(i, i + 5);
-    for (const preset of chunk) {
-      items.push({
-        id: `neo-palette-${preset.key}-button`,
-        icon: 'iconNeoPalette',
-        label: i18n[preset.nameKey],
-        click: () => {
-          switchToPreset(preset.key);
-          return true;
-        },
-      });
-    }
-    if (i + 5 < restPresets.length) {
-      items.push({ type: 'separator' });
-    }
+  const chunkSize = 10;
+  const groups: Preset[][] = [];
+  for (let i = 0; i < restPresets.length; i += chunkSize) {
+    groups.push(restPresets.slice(i, i + chunkSize));
   }
+  groups.forEach((group, index) => {
+    if (group.length === 0) return;
+    const submenuItems: any[] = [];
+    for (let i = 0; i < group.length; i += 5) {
+      const chunk = group.slice(i, i + 5);
+      submenuItems.push(...chunk.map(makeItem));
+      if (i + 5 < group.length) {
+        submenuItems.push({ type: 'separator' });
+      }
+    }
+    const label = (i18n['colorSchemeVol'] || '').replace('${n}', String(index + 1));
+    items.push({
+      id: `neo-palette-vol${index + 1}-button`,
+      icon: 'iconNeoPalette',
+      label,
+      submenu: submenuItems,
+    });
+  });
   return items;
 }
 export function handleColorInput(value: string, cssVar: string, colorKey: string, plan: string): void {
