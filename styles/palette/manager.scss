@@ -2,6 +2,7 @@
 @use "sass:list";
 @use "sass:string";
 @use "_volmap" as volmap;
+@use "_groupmap" as groupmap;
 @mixin palette-common($selectors...) {
     $all-selectors: $selectors;
     $palette-key: null;
@@ -19,6 +20,10 @@
     @if $palette-key != null and map.has-key(volmap.$palette-vol-map, $palette-key) {
         $vol: map.get(volmap.$palette-vol-map, $palette-key);
         $all-selectors: list.append($all-selectors, "[data-id=\"neo-palette-vol#{$vol}-button\"]");
+    }
+    @if $palette-key != null and map.has-key(groupmap.$palette-group-map, $palette-key) {
+        $group: map.get(groupmap.$palette-group-map, $palette-key);
+        $all-selectors: list.append($all-selectors, "[data-id=\"neo-palette-group-#{$group}-button\"]");
     }
     @each $selector in $all-selectors {
         .b3-menu__item#{$selector} {

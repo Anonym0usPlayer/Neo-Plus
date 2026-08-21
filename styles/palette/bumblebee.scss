@@ -1,0 +1,35 @@
+@use "manager" as *;
+.neo-palette-bumblebee {
+    @include palette-common("[data-id=\"neo-palette-bumblebee-button\"]", "[data-id=\"neo-scheme-button\"]");
+    &.neo-mode-light {
+        --b3-base-color: #17181c;
+        --b3-theme-primary: #17181c;
+        --b3-theme-accent: #c67313;
+        --b3-theme-background: #fff7c2;
+        --b3-theme-surface: #ffdd00;
+        --b3-theme-on-background: #17181c;
+        --b3-theme-on-surface: #55553f;
+        --neo-button-primary: #ffcb00;
+        --_heading-color: #17181c;
+        --_brutalism-black: #17181c;
+        --_brutalism-gray: #ffdd00;
+    }
+    &.neo-mode-dark {
+        --b3-base-color: #ddce78;
+        --b3-theme-primary: #b3a76c;
+        --b3-theme-accent: #ffd470;
+        --b3-theme-background: #2a2822;
+        --b3-theme-surface: #373329;
+        --b3-theme-on-background: #fffbe0;
+        --b3-theme-on-surface: #dcd5b2bc;
+        --_heading-color: #f5edbd;
+        --_brutalism-black: black;
+        --_brutalism-gray: #75673d;
+        &.neo-palette-invert {
+            --b3-theme-background: #373329;
+            --b3-theme-surface: #2a2822;
+            --b3-theme-on-background: #f5edbd;
+            --b3-theme-on-surface: #c4bd98bc;
+        }
+    }
+}

@@ -106,31 +106,56 @@ export function getPresetMenuItems(i18n: Record<string, string>): any[] {
       return true;
     },
   });
-  const items: any[] = topLevelPresets.map(makeItem);
-  items.push({ type: 'separator' });
-  const chunkSize = volChunkSize;
-  const groups: Preset[][] = [];
-  for (let i = 0; i < restPresets.length; i += chunkSize) {
-    groups.push(restPresets.slice(i, i + chunkSize));
-  }
-  groups.forEach((group, index) => {
-    if (group.length === 0) return;
+  const makeSubmenu = (presets: Preset[]): any[] => {
     const submenuItems: any[] = [];
-    for (let i = 0; i < group.length; i += 5) {
-      const chunk = group.slice(i, i + 5);
-      submenuItems.push(...chunk.map(makeItem));
-      if (i + 5 < group.length) {
+    for (let i = 0; i < presets.length; i += 5) {
+      submenuItems.push(...presets.slice(i, i + 5).map(makeItem));
+      if (i + 5 < presets.length) {
         submenuItems.push({ type: 'separator' });
       }
     }
+    return submenuItems;
+  };
+  const items: any[] = topLevelPresets.map(makeItem);
+  items.push({ type: 'separator' });
+  const groupedPresets = new Map<string, Preset[]>();
+  const ungroupedPresets: Preset[] = [];
+  for (const preset of restPresets) {
+    if (preset.group) {
+      const list = groupedPresets.get(preset.group);
+      if (list) {
+        list.push(preset);
+      } else {
+        groupedPresets.set(preset.group, [preset]);
+      }
+    } else {
+      ungroupedPresets.push(preset);
+    }
+  }
+  const chunkSize = volChunkSize;
+  const groups: Preset[][] = [];
+  for (let i = 0; i < ungroupedPresets.length; i += chunkSize) {
+    groups.push(ungroupedPresets.slice(i, i + chunkSize));
+  }
+  groups.forEach((group, index) => {
+    if (group.length === 0) return;
     const label = (i18n['colorSchemeVol'] || '').replace('${n}', String(index + 1));
     items.push({
       id: `neo-palette-vol${index + 1}-button`,
       icon: 'iconNeoPalette',
       label,
-      submenu: submenuItems,
+      submenu: makeSubmenu(group),
     });
   });
+  for (const [groupKey, groupPresets] of groupedPresets) {
+    const nameKey = `colorSchemeGroup${groupKey.charAt(0).toUpperCase()}${groupKey.slice(1)}`;
+    items.push({
+      id: `neo-palette-group-${groupKey}-button`,
+      icon: 'iconNeoPalette',
+      label: i18n[nameKey] || groupKey,
+      submenu: makeSubmenu(groupPresets),
+    });
+  }
   return items;
 }
 export function handleColorInput(value: string, cssVar: string, colorKey: string, plan: string): void {

@@ -19,14 +19,20 @@ await import(pathToFileURL(codegenOut).href);
 unlinkSync(codegenOut);
 const stylesDir = resolve(root, 'styles');
 const presetsSource = readFileSync(resolve(root, 'src/palette/presets.ts'), 'utf8');
-const keyRegex = /key:\s*'([a-z0-9-]+)'/g;
+const presetEntryRegex = /\{\s*key:\s*'([a-z0-9-]+)'[^}]*\}/g;
 const presetKeys = [];
-let keyMatch;
-while ((keyMatch = keyRegex.exec(presetsSource)) !== null) {
-  presetKeys.push(keyMatch[1]);
+const presetGroupMap = new Map();
+let entryMatch;
+while ((entryMatch = presetEntryRegex.exec(presetsSource)) !== null) {
+  const key = entryMatch[1];
+  presetKeys.push(key);
+  const groupMatch = entryMatch[0].match(/group:\s*'([a-z0-9-]+)'/);
+  if (groupMatch) {
+    presetGroupMap.set(key, groupMatch[1]);
+  }
 }
 const pinnedKeys = ['default', 'classic'];
-const volKeys = presetKeys.filter((k) => !pinnedKeys.includes(k));
+const volKeys = presetKeys.filter((k) => !pinnedKeys.includes(k) && !presetGroupMap.has(k));
 const sizeMatch = presetsSource.match(/volChunkSize\s*=\s*(\d+)/);
 const volChunkSize = sizeMatch ? Number(sizeMatch[1]) : 10;
 const volEntries = [];
@@ -42,6 +48,15 @@ ${volEntries.join('\n')}
 );
 `;
 writeFileSync(resolve(stylesDir, 'palette/_volmap.scss'), volmapSource);
+const groupEntries = [];
+for (const [key, group] of presetGroupMap) {
+  groupEntries.push(`    '${key}': '${group}',`);
+}
+const groupmapSource = `$palette-group-map: (
+${groupEntries.join('\n')}
+);
+`;
+writeFileSync(resolve(stylesDir, 'palette/_groupmap.scss'), groupmapSource);
 function scanFeatureEntries(dir, prefix) {
   const files = readdirSync(resolve(stylesDir, dir)).sort().filter((f) => {
     if (!f.endsWith('.scss')) return false;

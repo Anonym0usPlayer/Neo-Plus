@@ -2,11 +2,13 @@ import { saveConfig } from '../main/data';
 import type { Config } from '../main/data';
 export type ThemeMode = 'light' | 'dark';
 export type PresetMode = ThemeMode | 'all';
+export type PresetGroup = 'neuebrutalism';
 export const volChunkSize = 10;
 export interface Preset {
   key: string;
   nameKey: string;
   mode: PresetMode;
+  group?: PresetGroup;
 }
 const presets: Preset[] = [
   { key: 'default', nameKey: 'colorSchemeDefault', mode: 'all' },
@@ -40,7 +42,11 @@ const presets: Preset[] = [
   { key: 'songyan', nameKey: 'colorSchemeSongyan', mode: 'all' },
   { key: 'lakeside', nameKey: 'colorSchemeLakeside', mode: 'all' },
   { key: 'voyage', nameKey: 'colorSchemeVoyage', mode: 'all' },
-  { key: 'brutalism', nameKey: 'colorSchemeBrutalism', mode: 'all' },
+  { key: 'zine', nameKey: 'colorSchemeZine', mode: 'all', group: 'neuebrutalism' },
+  { key: 'retroconsole', nameKey: 'colorSchemeRetroconsole', mode: 'all', group: 'neuebrutalism' },
+  { key: 'bumblebee', nameKey: 'colorSchemeBumblebee', mode: 'all', group: 'neuebrutalism' },
+  { key: 'glitch', nameKey: 'colorSchemeGlitch', mode: 'all', group: 'neuebrutalism' },
+  { key: 'acid', nameKey: 'colorSchemeAcid', mode: 'all', group: 'neuebrutalism' },
 ];
 export function getPresetsByMode(mode: ThemeMode): Preset[] {
   return presets.filter((p) => p.mode === 'all' || p.mode === mode);
