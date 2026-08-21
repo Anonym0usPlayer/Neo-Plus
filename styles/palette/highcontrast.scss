@@ -67,7 +67,6 @@
                 background-color: oklch(from var(--b3-theme-background) l c h / 0.5) !important;
             }
             .status {
-                box-shadow: unset;
                 color: var(--neo-highcontrast-on-bg);
                 background-color: var(--neo-highcontrast-bg) !important;
                 --b3-theme-on-surface: oklch(from var(--neo-highcontrast-on-bg) l c h / 0.75);
