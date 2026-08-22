@@ -23,14 +23,23 @@ function isCssImageFunction(raw: string): boolean {
   }
   return depth === 0;
 }
-function toImageValue(raw: string | undefined): string {
-  if (!raw) return 'unset';
+const colorFnNames = ['rgb', 'rgba', 'hsl', 'hsla', 'hwb', 'lab', 'lch', 'oklch', 'oklab', 'color', 'light-dark', 'color-mix'];
+function isColorValue(raw: string): boolean {
+  if (/^#[0-9a-fA-F]{3,8}$/.test(raw)) return true;
+  const name = /^([\w-]+)\(/.exec(raw)?.[1];
+  return !!name && colorFnNames.includes(name.toLowerCase());
+}
+function toImageValue(raw: string | undefined): { url: string; color: string } {
+  const unset = { url: 'unset', color: 'unset' };
+  if (!raw) return unset;
   const v = raw.trim().replace(/;+$/, '');
-  if (!v) return 'unset';
-  return isCssImageFunction(v) ? v : `url(${v})`;
+  if (!v) return unset;
+  if (isColorValue(v)) return { url: 'unset', color: v };
+  return { url: isCssImageFunction(v) ? v : `url(${v})`, color: 'unset' };
 }
 const fieldDefs: CustomImageField[] = [
-  { configKey: 'customimage-url',        cssVar: '--neo-customimage-url',        toCss: toImageValue, inputId: 'neo-customimage-path',        tooltipId: '',                             event: 'input',  tooltipSuffix: ''   },
+  { configKey: 'customimage-url',        cssVar: '--neo-customimage-url',        toCss: raw => toImageValue(raw).url, inputId: 'neo-customimage-path',        tooltipId: '',                             event: 'input',  tooltipSuffix: ''   },
+  { configKey: 'customimage-url',        cssVar: '--neo-customimage-color',      toCss: raw => toImageValue(raw).color, inputId: 'neo-customimage-path',      tooltipId: '',                             event: 'input',  tooltipSuffix: ''   },
   { configKey: 'customimage-blur',       cssVar: '--neo-customimage-blur',       toCss: raw => (raw ?? '0') + 'px',                                                                            inputId: 'neo-customimage-blur',           tooltipId: 'neo-customimage-blur-tooltip',          event: 'input',  tooltipSuffix: 'px' },
   { configKey: 'customimage-frosted',    cssVar: '--neo-customimage-frosted',    toCss: raw => raw === 'true' ? 'block' : 'none',                                                               inputId: 'neo-customimage-frosted',        tooltipId: '',                             event: 'change', tooltipSuffix: ''   },
   { configKey: 'customimage-x',          cssVar: '--neo-customimage-x',          toCss: raw => (raw ?? '50') + '%',                                                                            inputId: 'neo-customimage-x',              tooltipId: 'neo-customimage-x-tooltip',             event: 'input',  tooltipSuffix: '%'  },

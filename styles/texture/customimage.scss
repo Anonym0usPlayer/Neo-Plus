@@ -11,7 +11,7 @@
             background-repeat: var(--neo-customimage-repeat, no-repeat);
             background-size: var(--neo-customimage-size, cover);
             background-position: var(--neo-customimage-x, 50%) var(--neo-customimage-y, 50%);
-            background-color: var(--b3-theme-background);
+            background-color: var(--neo-customimage-color, var(--b3-theme-background));
             mix-blend-mode: var(--neo-customimage-effect, normal);
             opacity: var(--neo-customimage-opacity, 0.12);
             filter: blur(var(--neo-customimage-blur, 0px))
