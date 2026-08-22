@@ -192,6 +192,8 @@
   "verticaltabsModeTip": "設定垂直頁籤的應用模式",
   "verticaltabsModeTopLeftOnly": "僅左上角窗口",
   "verticaltabsModeAll": "全部窗口",
+  "verticaltabsWidth": "寬度",
+  "verticaltabsWidthTip": "設定垂直頁籤欄的預設寬度",
   "pinnedToolbar": "釘住工具欄",
   "pinnedToolbarSettings": "配置釘住工具欄",
   "pinnedToolbarSettingsTip": "配置釘住工具欄設置",

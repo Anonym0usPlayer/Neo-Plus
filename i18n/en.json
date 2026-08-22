@@ -192,6 +192,8 @@
   "verticaltabsModeTip": "Set the application mode for vertical tabs",
   "verticaltabsModeTopLeftOnly": "Top-left window only",
   "verticaltabsModeAll": "All windows",
+  "verticaltabsWidth": "Width",
+  "verticaltabsWidthTip": "Set the default width of the vertical tabs bar",
   "pinnedToolbar": "Pinned Toolbar",
   "pinnedToolbarSettings": "Pinned Toolbar Settings",
   "pinnedToolbarSettingsTip": "Configure the pinned toolbar settings",

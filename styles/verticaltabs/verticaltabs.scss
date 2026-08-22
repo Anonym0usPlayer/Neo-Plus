@@ -1,10 +1,5 @@
 @use "manager" as *;
 @use "../utils" as *;
-.b3-menu__item[data-id="neo-vertical-tabs-button"] {
-    .body--toolbar-hide & {
-        opacity: 0.38;
-    }
-}
 .neo-verticaltabs {
     @include verticaltabs-common('[data-id="neo-vertical-tabs-button"]');
     body:not(.body--toolbar-hide) {
@@ -20,6 +15,7 @@
                 flex-direction: column;
                 height: 100%;
                 animation: none;
+                max-width: 80%;
                 & > .layout-tab-bar:not(.layout-tab-bar--readonly) {
                     flex: 1;
                     flex-direction: column;

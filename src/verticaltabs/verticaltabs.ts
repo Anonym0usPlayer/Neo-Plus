@@ -11,8 +11,16 @@ let mouseDownHandler: ((e: MouseEvent) => void) | null = null;
 let dblClickHandler: ((e: MouseEvent) => void) | null = null;
 const defaultWidth = 150;
 const minWidth = 100;
-const maxWidth = 350;
+const maxWidth = 400;
+function clampWidth(value: number): number {
+  return Math.max(minWidth, Math.min(maxWidth, Math.round(value)));
+}
+function readConfigWidth(config: Config): number | null {
+  const raw = config['vertical-tabs-width'];
+  return typeof raw === 'number' && !Number.isNaN(raw) ? clampWidth(raw) : null;
+}
 let topLeftOnlyLastWidth: number | null = null;
+let configWidth: number | null = null;
 let currentMode: 'topLeftOnly' | 'all' = 'topLeftOnly';
 const wndSelector = '.layout__center [data-type="wnd"]';
 function queryWnds(): NodeListOf<HTMLElement> {
@@ -56,7 +64,7 @@ function doUpdateTopLeftOnly(): void {
   topLeftWnd.classList.add('neo-verticaltabs-wnd');
   const firstFlex = topLeftWnd.querySelector<HTMLElement>('.fn__flex:first-child');
   if (!firstFlex || firstFlex.classList.contains('fn__none')) return;
-  firstFlex.style.width = `${topLeftOnlyLastWidth ?? defaultWidth}px`;
+  firstFlex.style.width = `${topLeftOnlyLastWidth ?? configWidth ?? defaultWidth}px`;
   addResizeElement(topLeftWnd, firstFlex);
 }
 function doUpdateAll(): void {
@@ -71,7 +79,7 @@ function doUpdateAll(): void {
     const firstFlex = wnd.querySelector<HTMLElement>('.fn__flex:first-child');
     if (firstFlex && !firstFlex.classList.contains('fn__none')) {
       if (!firstFlex.style.width) {
-        firstFlex.style.width = `${defaultWidth}px`;
+        firstFlex.style.width = `${configWidth ?? defaultWidth}px`;
       }
       addResizeElement(wnd, firstFlex);
     }
@@ -130,9 +138,9 @@ function initResizeHandle(): void {
     if (wnd) {
       const firstFlex = wnd.querySelector<HTMLElement>('.fn__flex:first-child');
       if (firstFlex) {
-        firstFlex.style.width = `${defaultWidth}px`;
+        firstFlex.style.width = `${configWidth ?? defaultWidth}px`;
         if (currentMode === 'topLeftOnly') {
-          topLeftOnlyLastWidth = defaultWidth;
+          topLeftOnlyLastWidth = configWidth ?? defaultWidth;
         }
       }
     }
@@ -161,6 +169,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   const modeOptions = ['topLeftOnly', 'all']
     .map(v => `<option value="${v}">${i18n[`verticaltabsMode${v.charAt(0).toUpperCase() + v.slice(1)}`]}</option>`)
     .join('');
+  const width = configWidth ?? defaultWidth;
   return `<div class="b3-dialog__content">
     <div class="config__tab-container">
       <div class="config-group">
@@ -174,6 +183,16 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
             <select class="b3-select fn__flex-center fn__size200" id="neo-verticaltabs-mode">
               ${modeOptions}
             </select>
+          </label>
+          <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+              ${i18n.verticaltabsWidth}
+              <div class="b3-label__text">${i18n.verticaltabsWidthTip}</div>
+            </div>
+            <span class="fn__space"></span>
+            <div class="b3-tooltips b3-tooltips__n fn__flex-center" id="neo-verticaltabs-width-tooltip" aria-label="${width}px">
+              <input class="b3-slider fn__size200" id="neo-verticaltabs-width" max="${maxWidth}" min="${minWidth}" step="1" type="range" value="${width}">
+            </div>
           </label>
         </div>
       </div>
@@ -197,6 +216,14 @@ export function showVerticalTabsSettings(): void {
   dialog.element.classList.add('neo-settings-dialog');
   const modeSelect = dialog.element.querySelector('#neo-verticaltabs-mode') as HTMLSelectElement;
   if (modeSelect) modeSelect.value = currentMode;
+  const widthSlider = dialog.element.querySelector('#neo-verticaltabs-width') as HTMLInputElement;
+  const widthTooltip = dialog.element.querySelector('#neo-verticaltabs-width-tooltip') as HTMLElement;
+  if (widthSlider) {
+    widthSlider.value = String(configWidth ?? defaultWidth);
+    widthSlider.addEventListener('input', () => {
+      if (widthTooltip) widthTooltip.setAttribute('aria-label', `${widthSlider.value}px`);
+    });
+  }
   dialog.element.querySelector('#neo-verticaltabs-cancel')?.addEventListener('click', () => dialog.destroy());
   dialog.element.querySelector('#neo-verticaltabs-confirm')?.addEventListener('click', () => {
     if (modeSelect) {
@@ -211,6 +238,27 @@ export function showVerticalTabsSettings(): void {
         saveConfig({ 'vertical-tabs-mode': newMode } as Partial<Config>);
         if (document.documentElement.classList.contains('neo-verticaltabs')) {
           doUpdate();
+        }
+      }
+    }
+    if (widthSlider) {
+      const newWidth = clampWidth(Number(widthSlider.value));
+      const currentWidth = configWidth ?? defaultWidth;
+      if (newWidth !== currentWidth) {
+        configWidth = newWidth;
+        topLeftOnlyLastWidth = null;
+        saveConfig({ 'vertical-tabs-width': newWidth } as Partial<Config>);
+        if (document.documentElement.classList.contains('neo-verticaltabs')) {
+          if (currentMode === 'all') {
+            queryWnds().forEach((wnd) => {
+              const firstFlex = wnd.querySelector<HTMLElement>('.fn__flex:first-child');
+              if (firstFlex && !firstFlex.classList.contains('fn__none')) {
+                firstFlex.style.width = `${newWidth}px`;
+              }
+            });
+          } else {
+            doUpdate();
+          }
         }
       }
     }
@@ -236,6 +284,7 @@ export function initVerticalTabs(): void {
       document.documentElement.classList.add('neo-verticaltabs');
       destroyed = false;
       topLeftOnlyLastWidth = null;
+      configWidth = readConfigWidth(config);
       currentMode = config['vertical-tabs-mode'] || 'topLeftOnly';
       initResizeHandle();
       _fetchListener.attach();
@@ -257,6 +306,13 @@ export function onVerticalTabsClick(): void {
       saveConfig({ 'vertical-tabs': true } as Partial<Config>);
       destroyed = false;
       topLeftOnlyLastWidth = null;
+      configWidth = null;
+      loadConfig().then((config) => {
+        configWidth = readConfigWidth(config);
+        if (document.documentElement.classList.contains('neo-verticaltabs')) {
+          doUpdate();
+        }
+      });
       initResizeHandle();
       _fetchListener.attach();
       doUpdate();

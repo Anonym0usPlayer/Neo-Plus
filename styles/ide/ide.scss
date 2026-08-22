@@ -1,9 +1,4 @@
 @use "manager" as *;
-.b3-menu__item[data-id="neo-ide-button"] {
-    body:not(.body--toolbar-hide) & {
-        opacity: 0.38;      
-    }
-}
 .neo-ide {
     @include ide-common('[data-id="neo-ide-button"]');
     --_ide-dockitem-margin-top: 8px;

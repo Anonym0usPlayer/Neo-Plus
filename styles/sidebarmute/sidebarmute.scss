@@ -1,12 +1,4 @@
 @use "manager" as *;
-.b3-menu__item[data-id="neo-sidebar-mute-button"] {
-    .neo-palette-highcontrast.neo-mode-light & {
-        opacity: 0.38;      
-    }
-    .body--toolbar-hide.neo-ide-body & {
-        opacity: 1;      
-    }
-}
 .neo-sidebar-mute {
     @include sidebarmute-common('[data-id="neo-sidebar-mute-button"]');
     &:not(.neo-palette-highcontrast.neo-mode-light),

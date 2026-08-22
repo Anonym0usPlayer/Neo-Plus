@@ -1,0 +1,21 @@
+// 垂直页签
+.b3-menu__item[data-id="neo-vertical-tabs-button"] {
+    .body--toolbar-hide & {
+        opacity: 0.38;
+    }
+}
+// IDE
+.b3-menu__item[data-id="neo-ide-button"] {
+    body:not(.body--toolbar-hide) & {
+        opacity: 0.38;      
+    }
+}
+// 侧栏静音
+.b3-menu__item[data-id="neo-sidebar-mute-button"] {
+    .neo-palette-highcontrast.neo-mode-light & {
+        opacity: 0.38;      
+    }
+    .body--toolbar-hide.neo-ide-body & {
+        opacity: 1;      
+    }
+}

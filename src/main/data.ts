@@ -52,6 +52,7 @@ export interface Config {
   'scroll-effect'?: boolean;
   'vertical-tabs'?: boolean;
   'vertical-tabs-mode'?: 'topLeftOnly' | 'all';
+  'vertical-tabs-width'?: number;
   'immersive-mode'?: boolean;
   'immersive-typewriter'?: boolean;
   'immersive-highlight'?: boolean;

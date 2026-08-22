@@ -192,6 +192,8 @@
   "verticaltabsModeTip": "设置垂直页签的应用模式",
   "verticaltabsModeTopLeftOnly": "仅左上角窗口",
   "verticaltabsModeAll": "全部窗口",
+  "verticaltabsWidth": "宽度",
+  "verticaltabsWidthTip": "设置垂直页签栏的默认宽度",
   "pinnedToolbar": "钉住工具栏",
   "pinnedToolbarSettings": "配置钉住工具栏",
   "pinnedToolbarSettingsTip": "配置钉住工具栏设置",
