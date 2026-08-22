@@ -13,8 +13,24 @@ export interface CustomImageField {
   event: 'input' | 'change';
   tooltipSuffix: string;
 }
+function isCssImageFunction(raw: string): boolean {
+  if (!/^[\w-]+\(/.test(raw)) return false;
+  let depth = 0;
+  for (const ch of raw) {
+    if (ch === '(') depth++;
+    else if (ch === ')') depth--;
+    if (depth < 0) return false;
+  }
+  return depth === 0;
+}
+function toImageValue(raw: string | undefined): string {
+  if (!raw) return 'unset';
+  const v = raw.trim().replace(/;+$/, '');
+  if (!v) return 'unset';
+  return isCssImageFunction(v) ? v : `url(${v})`;
+}
 const fieldDefs: CustomImageField[] = [
-  { configKey: 'customimage-url',        cssVar: '--neo-customimage-url',        toCss: raw => !raw ? 'unset' : raw.startsWith('url(') ? raw : `url(${raw})`, inputId: 'neo-customimage-path',        tooltipId: '',                             event: 'input',  tooltipSuffix: ''   },
+  { configKey: 'customimage-url',        cssVar: '--neo-customimage-url',        toCss: toImageValue, inputId: 'neo-customimage-path',        tooltipId: '',                             event: 'input',  tooltipSuffix: ''   },
   { configKey: 'customimage-blur',       cssVar: '--neo-customimage-blur',       toCss: raw => (raw ?? '0') + 'px',                                                                            inputId: 'neo-customimage-blur',           tooltipId: 'neo-customimage-blur-tooltip',          event: 'input',  tooltipSuffix: 'px' },
   { configKey: 'customimage-frosted',    cssVar: '--neo-customimage-frosted',    toCss: raw => raw === 'true' ? 'block' : 'none',                                                               inputId: 'neo-customimage-frosted',        tooltipId: '',                             event: 'change', tooltipSuffix: ''   },
   { configKey: 'customimage-x',          cssVar: '--neo-customimage-x',          toCss: raw => (raw ?? '50') + '%',                                                                            inputId: 'neo-customimage-x',              tooltipId: 'neo-customimage-x-tooltip',             event: 'input',  tooltipSuffix: '%'  },
@@ -138,7 +154,17 @@ function sliderHTML(i18n: Record<string, string>, sc: SliderConfig): string {
     </div>
   </label>`;
 }
-function textFieldHTML(i18n: Record<string, string>, id: string, className: string, i18nKey: string, i18nTipKey: string): string {
+function textFieldHTML(i18n: Record<string, string>, id: string, className: string, i18nKey: string, i18nTipKey: string, multiline = false): string {
+  if (multiline) {
+    return `<div class="b3-label config-item ${className}" data-config-item-id="${id}">
+    <div class="fn__block">
+        <div class="config-name">${t(i18n, i18nKey)}</div>
+        <div class="b3-label__text">${t(i18n, i18nTipKey)}</div>
+        <div class="fn__hr--small"></div>
+        <textarea class="b3-text-field fn__block" id="${id}" spellcheck="true"></textarea>
+    </div>
+</div>`;
+  }
   return `<label class="fn__flex b3-label ${className}">
     <div class="fn__flex-1">
       ${t(i18n, i18nKey)}
@@ -213,7 +239,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
     <div class="config-group">
       <div class="config-title">${t(i18n, 'customimageImageInfo')}</div>
       <div class="config-items">
-        ${textFieldHTML(i18n, 'neo-customimage-path', 'config__item-neo-customimage-path', 'customimagePath', 'customimagePathTip')}
+        ${textFieldHTML(i18n, 'neo-customimage-path', 'config__item-neo-customimage-path', 'customimagePath', 'customimagePathTip', true)}
       </div>
     </div>
     <div class="config-group">
