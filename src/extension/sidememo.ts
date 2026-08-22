@@ -425,10 +425,14 @@ function attachNoRightClick(el: HTMLElement): void {
   el.addEventListener('mousedown', stopAll, { capture: true, passive: false });
   el.addEventListener('mouseup', stopAll, { capture: true, passive: false });
 }
+function findBreadcrumb(protyleContent: HTMLElement): HTMLElement | null {
+  const protyle = protyleContent.closest('.protyle');
+  return protyle ? protyle.querySelector<HTMLElement>('.protyle-breadcrumb') : null;
+}
 function syncBreadcrumbButton(protyleContent: HTMLElement, show: boolean): void {
   try {
-    const breadcrumb = protyleContent.previousElementSibling as HTMLElement | null;
-    if (!breadcrumb || !breadcrumb.classList.contains('protyle-breadcrumb')) return;
+    const breadcrumb = findBreadcrumb(protyleContent);
+    if (!breadcrumb) return;
     const existingBtn = breadcrumb.querySelector<HTMLElement>('.neo-sidememo-btn');
     if (!show) {
       if (existingBtn) existingBtn.remove();
@@ -467,7 +471,7 @@ function syncSidememoState(): void {
     try {
       const hasInlineOrBlockMemo = hasMemoInWysiwyg(el);
       const hasTitle = el.querySelector('.protyle-title:not(.fn__none)') !== null;
-      const breadcrumb = el.previousElementSibling as HTMLElement | null;
+      const breadcrumb = findBreadcrumb(el);
       const btn = breadcrumb?.querySelector<HTMLElement>('.neo-sidememo-btn');
       const manuallyHidden = !!(btn && !btn.classList.contains('neo-sidememo-btn-active'));
       if (isActive && hasInlineOrBlockMemo && hasTitle && !manuallyHidden) {
@@ -644,9 +648,10 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
         if (isFileMemo) {
           titleText = '';
           try {
-            const prevSibling = memoEl.previousElementSibling;
-            if (prevSibling && prevSibling.classList.contains('protyle-top')) {
-              const titleInput = prevSibling.querySelector<HTMLElement>('.protyle-title .protyle-title__input');
+            const protyleEl = memoEl.closest('.protyle');
+            const protyleTop = protyleEl ? protyleEl.querySelector<HTMLElement>('.protyle-top') : null;
+            if (protyleTop) {
+              const titleInput = protyleTop.querySelector<HTMLElement>('.protyle-title .protyle-title__input');
               if (titleInput) titleText = (titleInput.textContent || '').trim();
             }
           } catch (_e) {}
@@ -699,8 +704,9 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
       if (!isInlineMemo) return;
       const protyleWysiwyg = relatedEl.closest('.protyle-wysiwyg') as HTMLElement | null;
       if (!protyleWysiwyg) return;
-      const prev = protyleWysiwyg.previousElementSibling as HTMLElement | null;
-      if (!prev || !prev.classList?.contains('protyle-top')) return;
+      const protyle = protyleWysiwyg.closest('.protyle');
+      const protyleTop = protyle ? protyle.querySelector<HTMLElement>('.protyle-top') : null;
+      if (!protyleTop) return;
       const neoParent = protyleWysiwyg.closest('.neo-sidememo-protyle') as HTMLElement | null;
       if (!neoParent) return;
       const tooltip = document.querySelector('.tooltip--memo#tooltip') as HTMLElement | null;
@@ -914,9 +920,10 @@ async function populateSidememoContainer(container: HTMLElement, protyleContent:
               if (it.type === 'file') {
                 const firstRelated = relatedEls[0];
                 try {
-                  const prevSibling = firstRelated.previousElementSibling;
-                  if (prevSibling && prevSibling.classList.contains('protyle-top')) {
-                    const memoAttr = prevSibling.querySelector<HTMLElement>('.protyle-title .protyle-attr--memo');
+                  const protyleEl = firstRelated.closest('.protyle');
+                  const protyleTop = protyleEl ? protyleEl.querySelector<HTMLElement>('.protyle-top') : null;
+                  if (protyleTop) {
+                    const memoAttr = protyleTop.querySelector<HTMLElement>('.protyle-title .protyle-attr--memo');
                     if (memoAttr) {
                       memoAttr.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window, button: 0 }));
                       return;
