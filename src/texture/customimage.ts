@@ -238,11 +238,9 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
 <div class="b3-dialog__action">
   <button class="b3-button b3-button--cancel" id="neo-customimage-cancel">${t(i18n, 'cancel')}</button>
   <span class="fn__space"></span>
-  <button class="b3-button b3-button--cancel" id="neo-customimage-reset-preset">${t(i18n, 'customimageResetPreset')}</button>
-  <span class="fn__space"></span>
   <button class="b3-button b3-button--remove" id="neo-customimage-delete-preset">${t(i18n, 'customimageDeletePreset')}</button>
   <span class="fn__space"></span>
-  <button class="b3-button b3-button--text" id="neo-customimage-save-preset">${t(i18n, 'customimageSavePreset')}</button>
+  <button class="b3-button" id="neo-customimage-new-preset">${t(i18n, 'customimageNewPreset')}</button>
   <span class="fn__space"></span>
   <button class="b3-button b3-button--text" id="neo-customimage-update-preset">${t(i18n, 'customimageUpdateApply')}</button>
 </div>`;
@@ -251,7 +249,13 @@ export function showCustomImageSettings(): void {
   const plugin = getPlugin();
   if (!plugin) return;
   const dialog = new Dialog({
-    title: plugin.i18n.customimageSettings || 'Custom Image Settings',
+    title: `<div class="fn__flex">
+    <div class="fn__ellipsis" style="white-space: nowrap">${plugin.i18n.customimageSettings || 'Custom Image Settings'}</div>
+    <div class="fn__space"></div>
+    <button class="b3-button b3-button--small fn__flex-center" id="neo-customimage-reset-preset">${plugin.i18n.customimageResetPreset}</button>
+    <span class="fn__space" style="width: 8px"></span>
+    <button class="b3-button b3-button--small fn__flex-center" id="neo-customimage-save-preset">${plugin.i18n.customimageSavePreset}</button>
+  </div>`,
     content: buildSettingsHTML(plugin.i18n),
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;
@@ -290,9 +294,15 @@ export function showCustomImageSettings(): void {
     });
   }
   const btn = (id: string) => dialog.element.querySelector(id) as HTMLButtonElement | null;
-  btn('#neo-customimage-reset-preset')?.addEventListener('click', () => {
+  const resetFormToDefaults = (): void => {
     for (const { field, input, tooltip } of fieldDom) {
-      if (!input || field.configKey === 'customimage-url' || field.configKey === 'customimage-fill-mode') continue;
+      if (!input) continue;
+      if (field.configKey === 'customimage-url') {
+        (input as HTMLInputElement).value = '';
+        style.setProperty(field.cssVar, 'unset');
+        continue;
+      }
+      if (field.configKey === 'customimage-fill-mode') continue;
       const def = field.toCss(undefined);
       let disp = def;
       if (input instanceof HTMLInputElement && input.type === 'checkbox') input.checked = def === 'block';
@@ -309,7 +319,8 @@ export function showCustomImageSettings(): void {
       style.setProperty('--neo-customimage-repeat', 'no-repeat');
       style.setProperty('--neo-customimage-size', 'cover');
     }
-  });
+  };
+  btn('#neo-customimage-reset-preset')?.addEventListener('click', resetFormToDefaults);
   const originalDestroy = dialog.destroy.bind(dialog);
   dialog.destroy = async () => {
     try {
@@ -368,6 +379,10 @@ export function showCustomImageSettings(): void {
           Array.from(presetSelect.options).find(o => o.value === name)?.remove();
           presetSelect.value = '';
         }
+        const otherKey = getCurrentPresetKey() === currentPresetKeyLight ? currentPresetKeyDark : currentPresetKeyLight;
+        const patch: Record<string, any> = {};
+        if ((updatedCfg as Record<string, any>)?.[otherKey] === name) patch[otherKey] = '';
+        if (Object.keys(patch).length) await saveConfig(patch as Partial<Config>);
         populateDialog(updatedCfg, presetSelect, fieldDom, plugin.i18n);
         clearCustomImageCss();
         showMessage((plugin.i18n.customimagePresetDeleted || '').replace('${name}', name), 3000);
@@ -393,9 +408,9 @@ export function showCustomImageSettings(): void {
     showMessage((plugin.i18n.customimagePresetUpdated || '').replace('${name}', name), 3000);
     dialog.destroy();
   });
-  btn('#neo-customimage-save-preset')?.addEventListener('click', () => {
+  const askPresetName = (title: string, onConfirm: (name: string) => Promise<boolean>): void => {
     const pd = new Dialog({
-      title: plugin.i18n.customimageSavePresetTitle,
+      title,
       content: `<div class="b3-dialog__content"><div class="fn__flex b3-label config__item"><div class="fn__flex-1">${plugin.i18n.customimagePresetName}<div class="b3-label__text">${plugin.i18n.customimagePresetNameTip}</div></div><span class="fn__space"></span><input class="b3-text-field fn__flex-center fn__size200" id="neo-customimage-preset-name" spellcheck="false"></div></div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="npc-cancel">${plugin.i18n.cancel}</button><span class="fn__space"></span><button class="b3-button b3-button--text" id="npc-confirm">${plugin.i18n.confirm}</button></div>`,
     });
     pd.element.classList.add('neo-settings-dialog');
@@ -403,14 +418,51 @@ export function showCustomImageSettings(): void {
     pd.element.querySelector('#npc-confirm')?.addEventListener('click', async () => {
       const name = (pd.element.querySelector('#neo-customimage-preset-name') as HTMLInputElement)?.value?.trim();
       if (!name) { showMessage(plugin.i18n.customimagePresetNameEmpty, 3000); return; }
-      const preset = buildPresetFromDom();
-      await savePresetToConfig(preset, name);
-      showMessage((plugin.i18n.customimagePresetSaved || '').replace('${name}', name), 3000);
-      if (presetSelect && !Array.from(presetSelect.options).some(o => o.value === name)) {
-        const opt = document.createElement('option'); opt.value = name; opt.textContent = name;
-        presetSelect.appendChild(opt); presetSelect.value = name;
+      if (['current', 'current-light', 'current-dark'].includes(name.toLowerCase())) {
+        showMessage(plugin.i18n.customimagePresetNameReserved || 'Preset name cannot be "current"', 3000);
+        return;
       }
-      pd.destroy();
+      const saved = await onConfirm(name);
+      if (saved) pd.destroy();
+    });
+  };
+  const savePresetAs = async (name: string): Promise<boolean> => {
+    const cfg = await loadConfig();
+    const exists = (cfg as Record<string, any>)[`customimage-preset-${name}`] !== undefined;
+    if (exists) {
+      const confirmed = await new Promise<boolean>(resolve => {
+        const cd = new Dialog({
+          title: plugin.i18n.customimagePresetOverwriteTitle,
+          content: `<div class="b3-dialog__content">${plugin.i18n.customimagePresetOverwriteContent?.replace('${name}', name)}</div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="npo-cancel">${plugin.i18n.cancel}</button><span class="fn__space"></span><button class="b3-button b3-button--text" id="npo-confirm">${plugin.i18n.confirm}</button></div>`,
+        });
+        cd.element.classList.add('neo-settings-dialog');
+        const resolveFalse = () => resolve(false);
+        const origDestroy = cd.destroy.bind(cd);
+        cd.destroy = () => { resolveFalse(); origDestroy(); };
+        cd.element.querySelector('#npo-cancel')?.addEventListener('click', () => cd.destroy());
+        cd.element.querySelector('#npo-confirm')?.addEventListener('click', async () => {
+          resolve(true);
+          cd.destroy();
+        });
+      });
+      if (!confirmed) return false;
+    }
+    const preset = buildPresetFromDom();
+    await savePresetToConfig(preset, name);
+    showMessage((plugin.i18n.customimagePresetSaved || '').replace('${name}', name), 3000);
+    if (presetSelect && !Array.from(presetSelect.options).some(o => o.value === name)) {
+      const opt = document.createElement('option'); opt.value = name; opt.textContent = name;
+      presetSelect.appendChild(opt); presetSelect.value = name;
+    }
+    return true;
+  };
+  btn('#neo-customimage-save-preset')?.addEventListener('click', () => {
+    askPresetName(plugin.i18n.customimageSavePresetTitle, savePresetAs);
+  });
+  btn('#neo-customimage-new-preset')?.addEventListener('click', () => {
+    askPresetName(plugin.i18n.customimageNewPresetTitle, async (name) => {
+      resetFormToDefaults();
+      return savePresetAs(name);
     });
   });
   presetSelect?.addEventListener('change', async () => {
@@ -445,18 +497,32 @@ function populateDialog(
         presetSelect.appendChild(o);
       }
     });
-    if (cpk && Array.from(presetSelect.options).some(o => o.value === cpk)) {
+  }
+  const presetAvailable = !!cpk && presetSelect !== null && Array.from(presetSelect.options).some(o => o.value === cpk);
+  if (presetSelect) {
+    if (presetAvailable) {
       presetSelect.value = cpk;
     } else {
       presetSelect.selectedIndex = -1;
     }
   }
-  if (!cpk) return;
+  if (!presetAvailable) {
+    for (const { field, input, tooltip } of fieldDom) {
+      if (!input) continue;
+      if (input instanceof HTMLInputElement && input.type === 'checkbox') input.checked = false;
+      else (input as HTMLInputElement | HTMLSelectElement).value = '';
+      if (tooltip && field.tooltipSuffix !== undefined) tooltip.setAttribute('aria-label', field.toCss(undefined));
+    }
+    return;
+  }
   const preset = getPreset(config || null, cpk);
   for (const { field, input, tooltip } of fieldDom) {
     if (!input) continue;
     const raw = preset[field.configKey] as string | undefined;
-    if (raw === undefined || raw === '') continue;
+    if (raw === undefined || raw === '') {
+      if (field.configKey === 'customimage-url') (input as HTMLInputElement).value = '';
+      continue;
+    }
     if (input instanceof HTMLInputElement && input.type === 'checkbox') input.checked = raw === 'true';
     else (input as HTMLInputElement | HTMLSelectElement).value = raw;
     if (tooltip && field.tooltipSuffix !== undefined) tooltip.setAttribute('aria-label', raw + field.tooltipSuffix);
