@@ -528,6 +528,14 @@
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+    <filter id="neo-brutalism-emoji" x="-50%" y="-50%" width="200%" height="200%">
+      <feColorMatrix in="SourceGraphic" type="matrix" values="0.25 0 0 0 0 0 0.25 0 0 0 0 0 0.25 0 0 0 0 0 1 0" result="darkened"/>
+      <feOffset in="darkened" dx="8" dy="10" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
     ${Object.values(lc).join(`
     `)}
   </defs>`,document.head.appendChild(e)}function Rm(){let e=document.getElementById(Xa);e&&e.remove()}function cc(){Um()}function sc(){Rm()}async function dc(){if(!document.startViewTransition)return;let e=document.createElement("style");e.textContent=`
