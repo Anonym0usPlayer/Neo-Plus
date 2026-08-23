@@ -115,7 +115,7 @@
     &.neo-dockl-not-expand,
     &.neo-dockl-expand.neo-dockl-float {
         #dockLeft {
-            background-color: unset;
+            background-color: var(--b3-theme-background);
             &::after {
                 content: "";
                 position: absolute;
@@ -132,7 +132,7 @@
     &.neo-dockr-not-expand,
     &.neo-dockr-expand.neo-dockr-float {
         #dockRight {
-            background-color: unset;
+            background-color: var(--b3-theme-background);
             &::after {
                 content: "";
                 position: absolute;

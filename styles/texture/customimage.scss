@@ -21,7 +21,7 @@
                     grayscale(var(--neo-customimage-grayscale, 0))
                     hue-rotate(var(--neo-customimage-hue-rotate, 0deg));
             pointer-events: none;
-            z-index: 99;
+            z-index: var(--neo-customimage-zlevel, 99);
         }
         &::after {
             display: var(--neo-customimage-frosted, none);
@@ -34,7 +34,7 @@
             mix-blend-mode: multiply;
             opacity: 0.25;
             pointer-events: none;
-            z-index: 99;
+            z-index: var(--neo-customimage-zlevel, 99);
         }
     }
     &.neo-mode-dark {

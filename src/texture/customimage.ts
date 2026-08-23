@@ -60,6 +60,11 @@ function toInfoValue(raw: string | undefined): string {
     })
     .join(', ');
 }
+const zLevelMap: Record<string, string> = { backdrop: '-99', content: '1', topmost: '99' };
+function toZLevelOption(raw: string | undefined): string {
+  if (raw === 'backdrop' || raw === 'content' || raw === 'topmost') return raw;
+  return 'topmost';
+}
 const fieldDefs: CustomImageField[] = [
   { configKey: 'customimage-info',       cssVar: '--neo-customimage-info',       toCss: raw => toInfoValue(raw),                                                                              inputId: 'neo-customimage-path',           tooltipId: '',                             event: 'input',  tooltipSuffix: ''   },
   { configKey: 'customimage-blur',       cssVar: '--neo-customimage-blur',       toCss: raw => (raw ?? '0') + 'px',                                                                            inputId: 'neo-customimage-blur',           tooltipId: 'neo-customimage-blur-tooltip',          event: 'input',  tooltipSuffix: 'px' },
@@ -74,6 +79,7 @@ const fieldDefs: CustomImageField[] = [
   { configKey: 'customimage-contrast',   cssVar: '--neo-customimage-contrast',   toCss: raw => raw ?? '1',                                                                                    inputId: 'neo-customimage-contrast',       tooltipId: 'neo-customimage-contrast-tooltip',      event: 'input',  tooltipSuffix: ''   },
   { configKey: 'customimage-grayscale',  cssVar: '--neo-customimage-grayscale',  toCss: raw => raw ?? '0',                                                                                    inputId: 'neo-customimage-grayscale',      tooltipId: 'neo-customimage-grayscale-tooltip',     event: 'input',  tooltipSuffix: ''   },
   { configKey: 'customimage-hue-rotate', cssVar: '--neo-customimage-hue-rotate', toCss: raw => (raw ?? '0') + 'deg',                                                                         inputId: 'neo-customimage-hue-rotate',     tooltipId: 'neo-customimage-hue-rotate-tooltip',    event: 'input',  tooltipSuffix: 'deg'},
+  { configKey: 'customimage-zlevel',    cssVar: '--neo-customimage-zlevel',    toCss: raw => zLevelMap[raw ?? 'topmost'] ?? '99',                                                              inputId: 'neo-customimage-zlevel',         tooltipId: '',                             event: 'change', tooltipSuffix: ''   },
   { configKey: 'customimage-fill-mode', cssVar: '--neo-customimage-repeat', toCss: (raw, config) => {
       if (raw === 'tile') return 'repeat';
       if (raw === 'custom') return (config?.['customimage-fill-repeat'] ?? 'false') === 'true' ? 'repeat' : 'no-repeat';
@@ -261,6 +267,19 @@ function blendModeSelectHTML(i18n: Record<string, string>, id: string, i18nKey: 
     <select class="b3-select fn__flex-center fn__size200" id="${id}">${opts}</select>
   </label>`;
 }
+function zLevelSelectHTML(i18n: Record<string, string>, id: string, i18nKey: string): string {
+  const opts = ['backdrop', 'content', 'topmost']
+    .map(v => `<option value="${v}">${t(i18n, `customimageZLevel${v.charAt(0).toUpperCase() + v.slice(1)}`)}</option>`)
+    .join('');
+  return `<label class="fn__flex b3-label config-item">
+    <div class="fn__flex-1 config-item__main">
+      <div class="config-name">${t(i18n, i18nKey)}</div>
+      <div class="b3-label__text">${t(i18n, 'customDefaultValue')}${t(i18n, 'customimageZLevelTopmost')}</div>
+    </div>
+    <span class="fn__space"></span>
+    <select class="b3-select fn__flex-center fn__size200" id="${id}">${opts}</select>
+  </label>`;
+}
 function fillModeSelectHTML(i18n: Record<string, string>, id: string, i18nKey: string): string {
   const opts = ['scale', 'tile', 'custom']
     .map(v => `<option value="${v}">${t(i18n, `customimageFillMode${v.charAt(0).toUpperCase() + v.slice(1)}`)}</option>`)
@@ -354,6 +373,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
     <div class="config-group">
       <div class="config-title">${t(i18n, 'customimageBasicParams')}</div>
       <div class="config-items">
+        ${zLevelSelectHTML(i18n, 'neo-customimage-zlevel', 'customimageZLevel')}
         ${effectSelect}
         ${fillModeSelectHTML(i18n, 'neo-customimage-fill-mode', 'customimageFillMode')}
         ${opacitySlider}
@@ -467,6 +487,7 @@ export function showCustomImageSettings(): void {
       if (!input) continue;
       if (field.configKey === 'customimage-info') continue;
       if (field.configKey === 'customimage-fill-mode') continue;
+      if (field.configKey === 'customimage-zlevel') continue;
       const def = field.toCss(undefined);
       let disp = def;
       if (input instanceof HTMLInputElement && input.type === 'checkbox') input.checked = def === 'block';
@@ -483,6 +504,11 @@ export function showCustomImageSettings(): void {
       updateFillCustomVisibility('scale');
       style.setProperty('--neo-customimage-repeat', 'no-repeat');
       style.setProperty('--neo-customimage-size', 'cover');
+    }
+    const zLevelInput = dialog.element.querySelector('#neo-customimage-zlevel') as HTMLSelectElement | null;
+    if (zLevelInput) {
+      zLevelInput.value = 'topmost';
+      style.setProperty('--neo-customimage-zlevel', '99');
     }
   };
   const resetFormFully = (): void => {
@@ -726,6 +752,7 @@ function populateDialog(
       continue;
     }
     if (input instanceof HTMLInputElement && input.type === 'checkbox') input.checked = raw === 'true';
+    else if (field.configKey === 'customimage-zlevel') (input as HTMLSelectElement).value = toZLevelOption(raw);
     else (input as HTMLInputElement | HTMLSelectElement).value = raw;
     if (tooltip && field.tooltipSuffix !== undefined) tooltip.setAttribute('aria-label', raw + field.tooltipSuffix);
   }
