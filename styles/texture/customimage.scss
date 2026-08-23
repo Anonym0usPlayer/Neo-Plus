@@ -7,19 +7,19 @@
             content: "";
             position: absolute;
             inset: 0;
-            background-image: var(--neo-customimage-url, unset);
+            background: var(--neo-customimage-info, none);
             background-repeat: var(--neo-customimage-repeat, no-repeat);
             background-size: var(--neo-customimage-size, cover);
             background-position: var(--neo-customimage-x, 50%) var(--neo-customimage-y, 50%);
-            background-color: var(--neo-customimage-color, var(--b3-theme-background));
+            background-blend-mode: var(--neo-customimage-background-blend-mode, normal);
             mix-blend-mode: var(--neo-customimage-effect, normal);
             opacity: var(--neo-customimage-opacity, 0.12);
             filter: blur(var(--neo-customimage-blur, 0px))
-                     brightness(var(--neo-customimage-brightness, 1))
-                     saturate(var(--neo-customimage-saturation, 1))
-                     contrast(var(--neo-customimage-contrast, 1))
-                     grayscale(var(--neo-customimage-grayscale, 0))
-                     hue-rotate(var(--neo-customimage-hue-rotate, 0deg));
+                    brightness(var(--neo-customimage-brightness, 1))
+                    saturate(var(--neo-customimage-saturation, 1))
+                    contrast(var(--neo-customimage-contrast, 1))
+                    grayscale(var(--neo-customimage-grayscale, 0))
+                    hue-rotate(var(--neo-customimage-hue-rotate, 0deg));
             pointer-events: none;
             z-index: 99;
         }

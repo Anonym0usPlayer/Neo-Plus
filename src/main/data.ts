@@ -17,7 +17,7 @@ export interface Config {
   'followtime-base-color-dark'?: string;
   'texture-light'?: string;
   'texture-dark'?: string;
-  'customimage-url'?: string;
+  'customimage-info'?: string;
   'customimage-opacity'?: string;
   'customimage-blur'?: string;
   'customimage-frosted'?: string;
@@ -30,6 +30,11 @@ export interface Config {
   'customimage-grayscale'?: string;
   'customimage-hue-rotate'?: string;
   'customimage-fill-mode'?: string;
+  'customimage-fill-width'?: string;
+  'customimage-fill-height'?: string;
+  'customimage-fill-unit'?: string;
+  'customimage-fill-repeat'?: string;
+  'customimage-background-blend-mode'?: string;
   'customimage-preset-current-light'?: string;
   'customimage-preset-current-dark'?: string;
   'smooth-caret'?: boolean;

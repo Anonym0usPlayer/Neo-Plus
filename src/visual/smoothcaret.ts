@@ -187,8 +187,8 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
     <div class="config__tab-container">
       <div class="config-group">
         <div class="config-items">
-          <label class="fn__flex b3-label">
-            <div class="fn__flex-1">
+          <label class="fn__flex b3-label config-item">
+            <div class="fn__flex-1 config-item__main">
               <div class="config-name">${i18n.smoothCaretEase}</div>
               <div class="b3-label__text">${i18n.smoothCaretEaseTip}</div>
             </div>
@@ -197,8 +197,8 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
               ${easeOptions}
             </select>
           </label>
-          <label class="fn__flex b3-label">
-            <div class="fn__flex-1">
+          <label class="fn__flex b3-label config-item">
+            <div class="fn__flex-1 config-item__main">
               <div class="config-name">${i18n.smoothCaretMotion}</div>
               <div class="b3-label__text">${i18n.smoothCaretMotionTip}</div>
             </div>
@@ -207,8 +207,8 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
               ${motionOptions}
             </select>
           </label>
-          <label class="fn__flex b3-label">
-            <div class="fn__flex-1">
+          <label class="fn__flex b3-label config-item">
+            <div class="fn__flex-1 config-item__main">
               <div class="config-name">${i18n.smoothCaretStyle}</div>
               <div class="b3-label__text">${i18n.smoothCaretStyleTip}</div>
             </div>

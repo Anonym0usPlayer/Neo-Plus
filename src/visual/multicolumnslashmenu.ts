@@ -292,8 +292,8 @@ function buildMulticolumnSlashMenuSettingsHTML(i18n: Record<string, string>): st
     <div class="config__tab-container">
       <div class="config-group">
         <div class="config-items">
-          <label class="fn__flex b3-label">
-            <div class="fn__flex-1">
+          <label class="fn__flex b3-label config-item">
+            <div class="fn__flex-1 config-item__main">
               <div class="config-name">${i18n.multicolumnSlashMenuArrowKeys}</div>
               <div class="b3-label__text">${i18n.multicolumnSlashMenuArrowKeysTip}</div>
             </div>

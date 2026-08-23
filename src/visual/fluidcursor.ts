@@ -439,16 +439,16 @@ function buildFluidCursorSettingsHTML(i18n: Record<string, string>): string {
     <div class="config__tab-container">
       <div class="config-group">
         <div class="config-items">
-          <label class="fn__flex b3-label">
-            <div class="fn__flex-1">
+          <label class="fn__flex b3-label config-item">
+            <div class="fn__flex-1 config-item__main">
               <div class="config-name">${i18n.fluidCursorTrail}</div>
               <div class="b3-label__text">${i18n.fluidCursorTrailTip}</div>
             </div>
             <span class="fn__space"></span>
             <input class="b3-switch fn__flex-center" id="neo-fluid-cursor-trail" type="checkbox">
           </label>
-          <label class="fn__flex b3-label">
-            <div class="fn__flex-1">
+          <label class="fn__flex b3-label config-item">
+            <div class="fn__flex-1 config-item__main">
               <div class="config-name">${i18n.fluidCursorWave}</div>
               <div class="b3-label__text">${i18n.fluidCursorWaveTip}</div>
             </div>

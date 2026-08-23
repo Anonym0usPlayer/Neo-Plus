@@ -246,16 +246,16 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
     <div class="config__tab-container">
       <div class="config-group">
         <div class="config-items">
-          <label class="fn__flex b3-label">
-            <div class="fn__flex-1">
+          <label class="fn__flex b3-label config-item">
+            <div class="fn__flex-1 config-item__main">
               <div class="config-name">${i18n.immersiveTypewriterMode}</div>
               <div class="b3-label__text">${i18n.immersiveTypewriterModeTip}</div>
             </div>
             <span class="fn__space"></span>
             <input class="b3-switch fn__flex-center" id="neo-immersive-typewriter" type="checkbox"${typewriterEnabled ? ' checked' : ''}>
           </label>
-          <label class="fn__flex b3-label">
-            <div class="fn__flex-1">
+          <label class="fn__flex b3-label config-item">
+            <div class="fn__flex-1 config-item__main">
               <div class="config-name">${i18n.immersiveHighlight}</div>
               <div class="b3-label__text">${i18n.immersiveHighlightTip}</div>
             </div>
