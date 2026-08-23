@@ -36,6 +36,7 @@ export interface Config {
   'customimage-fill-repeat'?: string;
   'customimage-background-blend-mode'?: string;
   'customimage-zlevel'?: string;
+  'customimage-layout-opacity'?: string;
   'customimage-preset-current-light'?: string;
   'customimage-preset-current-dark'?: string;
   'smooth-caret'?: boolean;

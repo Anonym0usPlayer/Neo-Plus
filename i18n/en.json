@@ -129,6 +129,7 @@
   "customimageZLevelBackdrop": "Backdrop",
   "customimageZLevelContent": "Content",
   "customimageZLevelTopmost": "Topmost",
+  "customimageLayoutOpacity": "Content Opacity",
   "customimageBrightness": "Brightness",
   "customimageSaturation": "Saturation",
   "customimageContrast": "Contrast",

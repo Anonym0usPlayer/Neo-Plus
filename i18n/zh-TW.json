@@ -128,6 +128,7 @@
   "customimageZLevelBackdrop": "底層",
   "customimageZLevelContent": "內容層",
   "customimageZLevelTopmost": "頂層",
+  "customimageLayoutOpacity": "內容層可見度",
   "customimageBrightness": "亮度",
   "customimageSaturation": "飽和度",
   "customimageContrast": "對比度",

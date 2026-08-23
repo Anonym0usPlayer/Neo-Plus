@@ -80,6 +80,7 @@ const fieldDefs: CustomImageField[] = [
   { configKey: 'customimage-grayscale',  cssVar: '--neo-customimage-grayscale',  toCss: raw => raw ?? '0',                                                                                    inputId: 'neo-customimage-grayscale',      tooltipId: 'neo-customimage-grayscale-tooltip',     event: 'input',  tooltipSuffix: ''   },
   { configKey: 'customimage-hue-rotate', cssVar: '--neo-customimage-hue-rotate', toCss: raw => (raw ?? '0') + 'deg',                                                                         inputId: 'neo-customimage-hue-rotate',     tooltipId: 'neo-customimage-hue-rotate-tooltip',    event: 'input',  tooltipSuffix: 'deg'},
   { configKey: 'customimage-zlevel',    cssVar: '--neo-customimage-zlevel',    toCss: raw => zLevelMap[raw ?? 'topmost'] ?? '99',                                                              inputId: 'neo-customimage-zlevel',         tooltipId: '',                             event: 'change', tooltipSuffix: ''   },
+  { configKey: 'customimage-layout-opacity', cssVar: '--neo-customimage-layout-opacity', toCss: raw => raw ?? '1', inputId: 'neo-customimage-layout-opacity', tooltipId: 'neo-customimage-layout-opacity-tooltip', event: 'input', tooltipSuffix: '' },
   { configKey: 'customimage-fill-mode', cssVar: '--neo-customimage-repeat', toCss: (raw, config) => {
       if (raw === 'tile') return 'repeat';
       if (raw === 'custom') return (config?.['customimage-fill-repeat'] ?? 'false') === 'true' ? 'repeat' : 'no-repeat';
@@ -174,6 +175,7 @@ const sliderDefs = [
   { key: 'customimage-contrast',   defaultVal: 1,    min: 0, max: 2,   step: 0.01, suffix: ''   },
   { key: 'customimage-grayscale',  defaultVal: 0,    min: 0, max: 1,   step: 0.01, suffix: ''   },
   { key: 'customimage-hue-rotate', defaultVal: 0,    min: 0, max: 360, step: 1,    suffix: 'deg'},
+  { key: 'customimage-layout-opacity', defaultVal: 1, min: 0.5, max: 1, step: 0.01, suffix: '' },
 ];
 function getSliderConfig(key: string): SliderConfig | null {
   const def = sliderDefs.find(d => d.key === key);
@@ -271,6 +273,7 @@ function zLevelSelectHTML(i18n: Record<string, string>, id: string, i18nKey: str
   const opts = ['backdrop', 'content', 'topmost']
     .map(v => `<option value="${v}">${t(i18n, `customimageZLevel${v.charAt(0).toUpperCase() + v.slice(1)}`)}</option>`)
     .join('');
+  const layoutOpacitySlider = sliderHTML(i18n, getSliderConfig('customimage-layout-opacity')!);
   return `<label class="fn__flex b3-label config-item">
     <div class="fn__flex-1 config-item__main">
       <div class="config-name">${t(i18n, i18nKey)}</div>
@@ -278,7 +281,10 @@ function zLevelSelectHTML(i18n: Record<string, string>, id: string, i18nKey: str
     </div>
     <span class="fn__space"></span>
     <select class="b3-select fn__flex-center fn__size200" id="${id}">${opts}</select>
-  </label>`;
+  </label>
+  <div class="fn__none" id="neo-customimage-zlevel-backdrop">
+    ${layoutOpacitySlider}
+  </div>`;
 }
 function fillModeSelectHTML(i18n: Record<string, string>, id: string, i18nKey: string): string {
   const opts = ['scale', 'tile', 'custom']
@@ -446,8 +452,12 @@ export function showCustomImageSettings(): void {
   const updateFillCustomVisibility = (mode: string): void => {
     customFillWrap?.classList.toggle('fn__none', mode !== 'custom');
   };
+  const zlevelBackdropWrap = dialog.element.querySelector('#neo-customimage-zlevel-backdrop') as HTMLElement | null;
+  const updateZLevelBackdropVisibility = (level: string): void => {
+    zlevelBackdropWrap?.classList.toggle('fn__none', level !== 'backdrop');
+  };
   loadConfig().then(c => {
-    populateDialog(c, presetSelect, fieldDom, plugin.i18n, customFillWrap);
+    populateDialog(c, presetSelect, fieldDom, plugin.i18n, customFillWrap, zlevelBackdropWrap);
   }).catch(() => {});
   const style = document.documentElement.style;
   let dirty = false;
@@ -478,6 +488,7 @@ export function showCustomImageSettings(): void {
       else v = (input as HTMLInputElement | HTMLSelectElement).value;
       if (tooltip && field.tooltipSuffix !== undefined) tooltip.setAttribute('aria-label', v + field.tooltipSuffix);
       if (field.configKey === 'customimage-fill-mode') updateFillCustomVisibility(v);
+      if (field.configKey === 'customimage-zlevel') updateZLevelBackdropVisibility(v);
       applyCssFromDom();
     });
   }
@@ -510,6 +521,7 @@ export function showCustomImageSettings(): void {
       zLevelInput.value = 'topmost';
       style.setProperty('--neo-customimage-zlevel', '99');
     }
+    updateZLevelBackdropVisibility('topmost');
   };
   const resetFormFully = (): void => {
     resetFormToDefaults();
@@ -603,7 +615,7 @@ export function showCustomImageSettings(): void {
         const patch: Record<string, any> = {};
         if ((updatedCfg as Record<string, any>)?.[otherKey] === name) patch[otherKey] = '';
         if (Object.keys(patch).length) await saveConfig(patch as Partial<Config>);
-        populateDialog(updatedCfg, presetSelect, fieldDom, plugin.i18n, customFillWrap);
+        populateDialog(updatedCfg, presetSelect, fieldDom, plugin.i18n, customFillWrap, zlevelBackdropWrap);
         clearCustomImageCss();
         showMessage(plugin.i18n.customimagePresetDeleted.replace('${name}', name), 3000);
       } catch {} finally { cd.destroy(); }
@@ -696,7 +708,7 @@ export function showCustomImageSettings(): void {
       await saveConfig(patch as Partial<Config>);
       const updatedCfg = await loadConfig();
       const preset = getPreset(updatedCfg, name);
-      populateDialog(updatedCfg, presetSelect, fieldDom, plugin.i18n, customFillWrap);
+      populateDialog(updatedCfg, presetSelect, fieldDom, plugin.i18n, customFillWrap, zlevelBackdropWrap);
       applyCustomImageCss(preset);
     } catch {}
   });
@@ -707,6 +719,7 @@ function populateDialog(
   fieldDom: Array<{ field: CustomImageField; input: HTMLInputElement | HTMLSelectElement | null; tooltip: HTMLElement | null }>,
   i18n: Record<string, string>,
   customWrap: HTMLElement | null,
+  zlevelWrap: HTMLElement | null,
 ): void {
   const currentKey = getCurrentPresetKey();
   const cpk = (config?.[currentKey] as string) || '';
@@ -735,6 +748,7 @@ function populateDialog(
       if (input instanceof HTMLInputElement && input.type === 'checkbox') input.checked = false;
       else if (field.configKey === 'customimage-fill-width' || field.configKey === 'customimage-fill-height') (input as HTMLInputElement).value = '1';
       else if (field.configKey === 'customimage-fill-unit') (input as HTMLSelectElement).value = 'px';
+      else if (field.configKey === 'customimage-layout-opacity') (input as HTMLInputElement).value = '1';
       else (input as HTMLInputElement | HTMLSelectElement).value = '';
       if (tooltip && field.tooltipSuffix !== undefined) tooltip.setAttribute('aria-label', field.toCss(undefined));
     }
@@ -758,4 +772,6 @@ function populateDialog(
   }
   const fillModeRaw = (preset['customimage-fill-mode'] as string) || '';
   customWrap?.classList.toggle('fn__none', fillModeRaw !== 'custom');
+  const zlevelRaw = (preset['customimage-zlevel'] as string) || '';
+  zlevelWrap?.classList.toggle('fn__none', zlevelRaw !== 'backdrop');
 }
