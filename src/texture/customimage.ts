@@ -170,7 +170,7 @@ function textFieldHTML(i18n: Record<string, string>, id: string, className: stri
         <div class="config-name">${t(i18n, i18nKey)}</div>
         <div class="b3-label__text">${t(i18n, i18nTipKey)}</div>
         <div class="fn__hr--small"></div>
-        <textarea class="b3-text-field fn__block" id="${id}" spellcheck="true"></textarea>
+        <textarea class="b3-text-field fn__block" id="${id}" spellcheck="false"></textarea>
     </div>
 </div>`;
   }
@@ -254,17 +254,17 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
     <div class="config-group">
       <div class="config-title">${t(i18n, 'customimageBasicParams')}</div>
       <div class="config-items">
-        ${fillModeSelectHTML(i18n, 'neo-customimage-fill-mode', 'config__item-neo-customimage-fill-mode', 'customimageFillMode')}
-        ${basicSliders}
-        ${opacitySlider}
         ${effectSelect}
-        ${frosted}
+        ${fillModeSelectHTML(i18n, 'neo-customimage-fill-mode', 'config__item-neo-customimage-fill-mode', 'customimageFillMode')}
+        ${opacitySlider}
+        ${basicSliders}
         ${positionSliders}
       </div>
     </div>
     <div class="config-group">
       <div class="config-title">${t(i18n, 'customimageMoreParams')}</div>
       <div class="config-items">
+        ${frosted}
         ${moreSliders}
       </div>
     </div>
@@ -318,9 +318,11 @@ export function showCustomImageSettings(): void {
     populateDialog(c, presetSelect, fieldDom, plugin.i18n);
   }).catch(() => {});
   const style = document.documentElement.style;
+  let dirty = false;
   for (const { field, input, tooltip } of fieldDom) {
     if (!input) continue;
     input.addEventListener(field.event, () => {
+      dirty = true;
       let v: string;
       if (input instanceof HTMLInputElement && input.type === 'checkbox') v = input.checked ? 'true' : 'false';
       else v = (input as HTMLInputElement | HTMLSelectElement).value;
@@ -332,11 +334,7 @@ export function showCustomImageSettings(): void {
   const resetFormToDefaults = (): void => {
     for (const { field, input, tooltip } of fieldDom) {
       if (!input) continue;
-      if (field.configKey === 'customimage-url') {
-        (input as HTMLInputElement).value = '';
-        style.setProperty(field.cssVar, 'unset');
-        continue;
-      }
+      if (field.configKey === 'customimage-url') continue;
       if (field.configKey === 'customimage-fill-mode') continue;
       const def = field.toCss(undefined);
       let disp = def;
@@ -355,9 +353,22 @@ export function showCustomImageSettings(): void {
       style.setProperty('--neo-customimage-size', 'cover');
     }
   };
-  btn('#neo-customimage-reset-preset')?.addEventListener('click', resetFormToDefaults);
+  const resetFormFully = (): void => {
+    resetFormToDefaults();
+    const pathInput = dialog.element.querySelector('#neo-customimage-path') as HTMLTextAreaElement | HTMLInputElement | null;
+    if (pathInput) {
+      pathInput.value = '';
+      style.setProperty('--neo-customimage-url', 'unset');
+      style.setProperty('--neo-customimage-color', 'unset');
+    }
+  };
+  btn('#neo-customimage-reset-preset')?.addEventListener('click', () => {
+    resetFormToDefaults();
+    dirty = true;
+  });
   const originalDestroy = dialog.destroy.bind(dialog);
-  dialog.destroy = async () => {
+  const doDestroy = (): void => { originalDestroy(); };
+  const performDestroyWithRestore = async (): Promise<void> => {
     try {
       const c = await loadConfig();
       const mode = document.documentElement.getAttribute('data-theme-mode') === 'dark' ? 'dark' : 'light';
@@ -392,7 +403,24 @@ export function showCustomImageSettings(): void {
         clearCustomImageCss();
       }
     } catch {}
-    originalDestroy();
+    doDestroy();
+  };
+  dialog.destroy = (): void => {
+    if (!dirty) {
+      performDestroyWithRestore();
+      return;
+    }
+    const cd = new Dialog({
+      title: plugin.i18n.customimageUnsavedTitle,
+      content: `<div class="b3-dialog__content">${plugin.i18n.customimageUnsavedContent}</div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="ncu-back">${plugin.i18n.customimageUnsavedBack}</button><span class="fn__space"></span><button class="b3-button b3-button--remove" id="ncu-exit">${plugin.i18n.customimageUnsavedExit}</button></div>`,
+    });
+    cd.element.classList.add('neo-settings-dialog');
+    cd.element.querySelector('#ncu-back')?.addEventListener('click', () => cd.destroy());
+    cd.element.querySelector('#ncu-exit')?.addEventListener('click', () => {
+      dirty = false;
+      cd.destroy();
+      performDestroyWithRestore();
+    });
   };
   btn('#neo-customimage-cancel')?.addEventListener('click', () => dialog.destroy());
   btn('#neo-customimage-delete-preset')?.addEventListener('click', async () => {
@@ -401,7 +429,7 @@ export function showCustomImageSettings(): void {
     if (!name) { showMessage(plugin.i18n.customimagePresetNotSelected || '未选择任何方案', 3000); return; }
     const cd = new Dialog({
       title: plugin.i18n.customimagePresetDeleteConfirmTitle,
-      content: `<div class="b3-dialog__content">${plugin.i18n.customimagePresetDeleteConfirmContent?.replace('${name}', name)}</div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="ndc-cancel">${plugin.i18n.cancel}</button><span class="fn__space"></span><button class="b3-button b3-button--text" id="ndc-confirm">${plugin.i18n.confirm}</button></div>`,
+      content: `<div class="b3-dialog__content">${plugin.i18n.customimagePresetDeleteConfirmContent?.replace('${name}', name)}</div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="ndc-cancel">${plugin.i18n.cancel}</button><span class="fn__space"></span><button class="b3-button b3-button--remove" id="ndc-confirm">${plugin.i18n.customimageDelete}</button></div>`,
     });
     cd.element.classList.add('neo-settings-dialog');
     cd.element.querySelector('#ndc-cancel')?.addEventListener('click', () => cd.destroy());
@@ -440,6 +468,7 @@ export function showCustomImageSettings(): void {
     if (!name) { showMessage(plugin.i18n.customimagePresetNotSelected || '未选择任何方案', 3000); return; }
     const preset = buildPresetFromDom();
     await savePresetToConfig(preset, name);
+    dirty = false;
     showMessage((plugin.i18n.customimagePresetUpdated || '').replace('${name}', name), 3000);
     dialog.destroy();
   });
@@ -484,6 +513,7 @@ export function showCustomImageSettings(): void {
     }
     const preset = buildPresetFromDom();
     await savePresetToConfig(preset, name);
+    dirty = false;
     showMessage((plugin.i18n.customimagePresetSaved || '').replace('${name}', name), 3000);
     if (presetSelect && !Array.from(presetSelect.options).some(o => o.value === name)) {
       const opt = document.createElement('option'); opt.value = name; opt.textContent = name;
@@ -496,7 +526,7 @@ export function showCustomImageSettings(): void {
   });
   btn('#neo-customimage-new-preset')?.addEventListener('click', () => {
     askPresetName(plugin.i18n.customimageNewPresetTitle, async (name) => {
-      resetFormToDefaults();
+      resetFormFully();
       return savePresetAs(name);
     });
   });
