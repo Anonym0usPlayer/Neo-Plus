@@ -441,7 +441,7 @@ function buildFluidCursorSettingsHTML(i18n: Record<string, string>): string {
         <div class="config-items">
           <label class="fn__flex b3-label">
             <div class="fn__flex-1">
-              ${i18n.fluidCursorTrail}
+              <div class="config-name">${i18n.fluidCursorTrail}</div>
               <div class="b3-label__text">${i18n.fluidCursorTrailTip}</div>
             </div>
             <span class="fn__space"></span>
@@ -449,7 +449,7 @@ function buildFluidCursorSettingsHTML(i18n: Record<string, string>): string {
           </label>
           <label class="fn__flex b3-label">
             <div class="fn__flex-1">
-              ${i18n.fluidCursorWave}
+              <div class="config-name">${i18n.fluidCursorWave}</div>
               <div class="b3-label__text">${i18n.fluidCursorWaveTip}</div>
             </div>
             <span class="fn__space"></span>

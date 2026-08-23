@@ -189,7 +189,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
         <div class="config-items">
           <label class="fn__flex b3-label">
             <div class="fn__flex-1">
-              ${i18n.smoothCaretEase}
+              <div class="config-name">${i18n.smoothCaretEase}</div>
               <div class="b3-label__text">${i18n.smoothCaretEaseTip}</div>
             </div>
             <span class="fn__space"></span>
@@ -199,7 +199,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
           </label>
           <label class="fn__flex b3-label">
             <div class="fn__flex-1">
-              ${i18n.smoothCaretMotion}
+              <div class="config-name">${i18n.smoothCaretMotion}</div>
               <div class="b3-label__text">${i18n.smoothCaretMotionTip}</div>
             </div>
             <span class="fn__space"></span>
@@ -209,7 +209,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
           </label>
           <label class="fn__flex b3-label">
             <div class="fn__flex-1">
-              ${i18n.smoothCaretStyle}
+              <div class="config-name">${i18n.smoothCaretStyle}</div>
               <div class="b3-label__text">${i18n.smoothCaretStyleTip}</div>
             </div>
             <span class="fn__space"></span>

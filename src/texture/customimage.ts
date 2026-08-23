@@ -113,7 +113,6 @@ interface SliderConfig {
   val: number | string;
   suffix: string;
   tooltipSuffix: string;
-  className: string;
 }
 const sliderDefs = [
   { key: 'customimage-opacity',    defaultVal: 0.12, min: 0, max: 0.8, step: 0.01, suffix: ''   },
@@ -145,16 +144,15 @@ function getSliderConfig(key: string): SliderConfig | null {
     i18nTipKey: 'customDefaultValue',
     min: def.min, max: def.max, step: def.step, val,
     suffix: def.suffix, tooltipSuffix: def.suffix,
-    className: 'config__item-neo-' + key,
   };
 }
 function t(i18n: Record<string, string>, key: string): string {
   return i18n[key] || key;
 }
 function sliderHTML(i18n: Record<string, string>, sc: SliderConfig): string {
-  return `<label class="fn__flex b3-label ${sc.className}">
+  return `<label class="fn__flex b3-label">
     <div class="fn__flex-1">
-      ${t(i18n, sc.i18nKey)}
+      <div class="config-name">${t(i18n, sc.i18nKey)}</div>
       <div class="b3-label__text">${t(i18n, 'customDefaultValue')}${sc.val}${sc.tooltipSuffix}</div>
     </div>
     <span class="fn__space"></span>
@@ -163,9 +161,9 @@ function sliderHTML(i18n: Record<string, string>, sc: SliderConfig): string {
     </div>
   </label>`;
 }
-function textFieldHTML(i18n: Record<string, string>, id: string, className: string, i18nKey: string, i18nTipKey: string, multiline = false): string {
+function textFieldHTML(i18n: Record<string, string>, id: string, i18nKey: string, i18nTipKey: string, multiline = false): string {
   if (multiline) {
-    return `<div class="b3-label config-item ${className}" data-config-item-id="${id}">
+    return `<div class="b3-label config-item" data-config-item-id="${id}">
     <div class="fn__block">
         <div class="config-name">${t(i18n, i18nKey)}</div>
         <div class="b3-label__text">${t(i18n, i18nTipKey)}</div>
@@ -174,45 +172,45 @@ function textFieldHTML(i18n: Record<string, string>, id: string, className: stri
     </div>
 </div>`;
   }
-  return `<label class="fn__flex b3-label ${className}">
+  return `<label class="fn__flex b3-label">
     <div class="fn__flex-1">
-      ${t(i18n, i18nKey)}
+      <div class="config-name">${t(i18n, i18nKey)}</div>
       <div class="b3-label__text">${t(i18n, i18nTipKey)}</div>
     </div>
     <span class="fn__space"></span>
     <input class="b3-text-field fn__flex-center fn__size200" id="${id}" spellcheck="false">
   </label>`;
 }
-function switchHTML(i18n: Record<string, string>, id: string, className: string, i18nKey: string, i18nTipKey: string): string {
-  return `<label class="fn__flex b3-label ${className}">
+function switchHTML(i18n: Record<string, string>, id: string, i18nKey: string, i18nTipKey: string): string {
+  return `<label class="fn__flex b3-label">
     <div class="fn__flex-1">
-      ${t(i18n, i18nKey)}
+      <div class="config-name">${t(i18n, i18nKey)}</div>
       <div class="b3-label__text">${t(i18n, i18nTipKey)}</div>
     </div>
     <span class="fn__space"></span>
     <input class="b3-switch fn__flex-center" id="${id}" type="checkbox">
   </label>`;
 }
-function effectSelectHTML(i18n: Record<string, string>, id: string, className: string, i18nKey: string): string {
+function effectSelectHTML(i18n: Record<string, string>, id: string, i18nKey: string): string {
   const opts = ['normal', 'multiply', 'luminosity', 'screen', 'color', 'overlay', 'soft-light', 'color-burn', 'color-dodge']
     .map(v => `<option value="${v}">${t(i18n, `customimageEffect${v.charAt(0).toUpperCase() + v.slice(1).replace(/-(\w)/g, (_, c) => c.toUpperCase())}`)}</option>`)
     .join('');
-  return `<label class="fn__flex b3-label ${className}">
+  return `<label class="fn__flex b3-label">
     <div class="fn__flex-1">
-      ${t(i18n, i18nKey)}
+      <div class="config-name">${t(i18n, i18nKey)}</div>
       <div class="b3-label__text">${t(i18n, 'customDefaultValue')}${t(i18n, 'customimageEffectNormal')}</div>
     </div>
     <span class="fn__space"></span>
     <select class="b3-select fn__flex-center fn__size200" id="${id}">${opts}</select>
   </label>`;
 }
-function fillModeSelectHTML(i18n: Record<string, string>, id: string, className: string, i18nKey: string): string {
+function fillModeSelectHTML(i18n: Record<string, string>, id: string, i18nKey: string): string {
   const opts = ['scale', 'tile']
     .map(v => `<option value="${v}">${t(i18n, `customimageFillMode${v.charAt(0).toUpperCase() + v.slice(1)}`)}</option>`)
     .join('');
-  return `<label class="fn__flex b3-label ${className}">
+  return `<label class="fn__flex b3-label">
     <div class="fn__flex-1">
-      ${t(i18n, i18nKey)}
+      <div class="config-name">${t(i18n, i18nKey)}</div>
       <div class="b3-label__text">${t(i18n, 'customDefaultValue')}${t(i18n, 'customimageFillModeScale')}</div>
     </div>
     <span class="fn__space"></span>
@@ -223,8 +221,8 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   const basicSliderKeys = ['customimage-blur'];
   const basicSliders = basicSliderKeys.map(k => sliderHTML(i18n, getSliderConfig(k)!)).join('');
   const opacitySlider = sliderHTML(i18n, getSliderConfig('customimage-opacity')!);
-  const effectSelect = effectSelectHTML(i18n, 'neo-customimage-effect', 'config__item-neo-customimage-effect', 'customimageEffect');
-  const frosted = switchHTML(i18n, 'neo-customimage-frosted', 'config__item-neo-customimage-frosted', 'customimageFrosted', 'customimageFrostedTip');
+  const effectSelect = effectSelectHTML(i18n, 'neo-customimage-effect', 'customimageEffect');
+  const frosted = switchHTML(i18n, 'neo-customimage-frosted', 'customimageFrosted', 'customimageFrostedTip');
   const positionSliderKeys = ['customimage-x', 'customimage-y'];
   const positionSliders = positionSliderKeys.map(k => sliderHTML(i18n, getSliderConfig(k)!)).join('');
   const moreSliderKeys = ['customimage-hue-rotate', 'customimage-brightness', 'customimage-saturation', 'customimage-contrast', 'customimage-grayscale'];
@@ -236,7 +234,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
       <div class="config-items">
         <label class="fn__flex b3-label">
           <div class="fn__flex-1">
-            ${t(i18n, 'customimagePresetSelect')}
+            <div class="config-name">${t(i18n, 'customimagePresetSelect')}</div>
             <div class="b3-label__text">${t(i18n, 'customimagePresetSelectTip')}</div>
           </div>
           <span class="fn__space"></span>
@@ -248,14 +246,14 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
     <div class="config-group">
       <div class="config-title">${t(i18n, 'customimageImageInfo')}</div>
       <div class="config-items">
-        ${textFieldHTML(i18n, 'neo-customimage-path', 'config__item-neo-customimage-path', 'customimagePath', 'customimagePathTip', true)}
+        ${textFieldHTML(i18n, 'neo-customimage-path', 'customimagePath', 'customimagePathTip', true)}
       </div>
     </div>
     <div class="config-group">
       <div class="config-title">${t(i18n, 'customimageBasicParams')}</div>
       <div class="config-items">
         ${effectSelect}
-        ${fillModeSelectHTML(i18n, 'neo-customimage-fill-mode', 'config__item-neo-customimage-fill-mode', 'customimageFillMode')}
+        ${fillModeSelectHTML(i18n, 'neo-customimage-fill-mode', 'customimageFillMode')}
         ${opacitySlider}
         ${basicSliders}
         ${positionSliders}
@@ -475,7 +473,7 @@ export function showCustomImageSettings(): void {
   const askPresetName = (title: string, onConfirm: (name: string) => Promise<boolean>): void => {
     const pd = new Dialog({
       title,
-      content: `<div class="b3-dialog__content"><div class="fn__flex b3-label config__item"><div class="fn__flex-1">${plugin.i18n.customimagePresetName}<div class="b3-label__text">${plugin.i18n.customimagePresetNameTip}</div></div><span class="fn__space"></span><input class="b3-text-field fn__flex-center fn__size200" id="neo-customimage-preset-name" spellcheck="false"></div></div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="npc-cancel">${plugin.i18n.cancel}</button><span class="fn__space"></span><button class="b3-button b3-button--text" id="npc-confirm">${plugin.i18n.confirm}</button></div>`,
+      content: `<div class="b3-dialog__content"><div class="fn__flex b3-label config-item"><div class="fn__flex-1"><div class="config-name">${plugin.i18n.customimagePresetName}</div><div class="b3-label__text">${plugin.i18n.customimagePresetNameTip}</div></div><span class="fn__space"></span><input class="b3-text-field fn__flex-center fn__size200" id="neo-customimage-preset-name" spellcheck="false"></div></div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="npc-cancel">${plugin.i18n.cancel}</button><span class="fn__space"></span><button class="b3-button b3-button--text" id="npc-confirm">${plugin.i18n.confirm}</button></div>`,
     });
     pd.element.classList.add('neo-settings-dialog');
     pd.element.querySelector('#npc-cancel')?.addEventListener('click', () => pd.destroy());

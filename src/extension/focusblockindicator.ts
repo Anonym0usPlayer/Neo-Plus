@@ -109,7 +109,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
         <div class="config-items">
           <label class="fn__flex b3-label">
             <div class="fn__flex-1">
-              ${i18n.focusBlockEffect}
+              <div class="config-name">${i18n.focusBlockEffect}</div>
               <div class="b3-label__text">${i18n.focusBlockEffectTip}</div>
             </div>
             <span class="fn__space"></span>
