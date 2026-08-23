@@ -155,7 +155,6 @@
   "customimagePresetNameTip": "Enter preset name",
   "customimagePresetNameEmpty": "Preset name cannot be empty",
   "customimagePresetNameReserved": "Preset name cannot be 'current'",
-  "customimagePresetDeleteForbidden": "'default' preset cannot be deleted",
   "customimagePresetDeleteConfirmTitle": "Confirm deletion?",
   "customimagePresetDeleteConfirmContent": "Preset '${name}' will be deleted",
   "customimagePresetDeleted": "Preset '${name}' has been deleted",
