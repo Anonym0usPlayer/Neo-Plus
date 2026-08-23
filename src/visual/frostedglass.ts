@@ -56,7 +56,7 @@ export function showFrostedGlassSettings(): void {
     const plugin = getPlugin();
     if (!plugin) return;
     const dialog = new Dialog({
-        title: plugin.i18n.frostedGlassSettings || 'Frosted Glass Settings',
+        title: plugin.i18n.frostedGlassSettings,
         content: buildSettingsHTML(plugin.i18n),
     });
     dialog.element.setAttribute('data-key', 'dialog-neo-frosted-glass-settings');

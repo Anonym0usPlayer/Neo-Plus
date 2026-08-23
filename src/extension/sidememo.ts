@@ -1162,7 +1162,7 @@ export function showSideMemoSettings(): void {
   const plugin = getPlugin();
   if (!plugin) return;
   const dialog = new Dialog({
-    title: plugin.i18n.sidememoSettings || 'Side Memo Settings',
+    title: plugin.i18n.sidememoSettings,
     content: buildSettingsHTML(plugin.i18n),
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;

@@ -469,7 +469,7 @@ export function showFluidCursorSettings(): void {
   const plugin = getPlugin();
   if (!plugin) return;
   const dialog = new Dialog({
-    title: plugin.i18n.fluidCursorSettings || 'Configure Fluid Cursor',
+    title: plugin.i18n.fluidCursorSettings,
     content: buildFluidCursorSettingsHTML(plugin.i18n),
   });
   dialog.element.setAttribute('data-key', 'dialog-neo-fluid-cursor-settings');

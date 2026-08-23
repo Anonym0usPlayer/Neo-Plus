@@ -56,7 +56,7 @@ export function showSuperFusionSettings(): void {
   const plugin = getPlugin();
   if (!plugin) return;
   const dialog = new Dialog({
-    title: plugin.i18n.superFusionSettings || 'Super Fusion Settings',
+    title: plugin.i18n.superFusionSettings,
     content: buildSettingsHTML(plugin.i18n),
   });
   dialog.element.setAttribute('data-key', 'dialog-neo-superfusion-settings');

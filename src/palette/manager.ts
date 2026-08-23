@@ -139,7 +139,7 @@ export function getPresetMenuItems(i18n: Record<string, string>): any[] {
   }
   groups.forEach((group, index) => {
     if (group.length === 0) return;
-    const label = (i18n['colorSchemeVol'] || '').replace('${n}', String(index + 1));
+    const label = i18n['colorSchemeVol'].replace('${n}', String(index + 1));
     items.push({
       id: `neo-palette-vol${index + 1}-button`,
       icon: 'iconNeoPalette',
@@ -152,7 +152,7 @@ export function getPresetMenuItems(i18n: Record<string, string>): any[] {
     items.push({
       id: `neo-palette-group-${groupKey}-button`,
       icon: 'iconNeoPalette',
-      label: i18n[nameKey] || groupKey,
+      label: i18n[nameKey],
       submenu: makeSubmenu(groupPresets),
     });
   }

@@ -231,7 +231,7 @@ export function showSmoothCaretSettings(): void {
   const plugin = getPlugin();
   if (!plugin) return;
   const dialog = new Dialog({
-    title: plugin.i18n.smoothCaretSettings || 'Smooth Caret Settings',
+    title: plugin.i18n.smoothCaretSettings,
     content: buildSettingsHTML(plugin.i18n),
   });
   dialog.element.setAttribute('data-key', 'dialog-neo-smooth-caret-settings');

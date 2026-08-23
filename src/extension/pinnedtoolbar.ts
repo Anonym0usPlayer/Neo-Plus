@@ -180,7 +180,7 @@ export function showPinnedToolbarSettings(): void {
   const plugin = getPlugin();
   if (!plugin) return;
   const dialog = new Dialog({
-    title: plugin.i18n.pinnedToolbarSettings || 'Pinned Toolbar Settings',
+    title: plugin.i18n.pinnedToolbarSettings,
     content: buildSettingsHTML(plugin.i18n),
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;

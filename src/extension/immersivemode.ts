@@ -287,7 +287,7 @@ export function showImmersiveModeSettings(): void {
   const plugin = getPlugin();
   if (!plugin) return;
   const dialog = new Dialog({
-    title: plugin.i18n.immersiveModeSettings || 'Immersive Mode Settings',
+    title: plugin.i18n.immersiveModeSettings,
     content: buildSettingsHTML(plugin.i18n),
   });
   const container = dialog.element.querySelector('.b3-dialog__container') as HTMLElement;

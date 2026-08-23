@@ -314,7 +314,7 @@ export function showMulticolumnSlashMenuSettings(): void {
   const plugin = getPlugin();
   if (!plugin) return;
   const dialog = new Dialog({
-    title: plugin.i18n.multicolumnSlashMenuSettings || 'Configure Multicolumn Slash Menu',
+    title: plugin.i18n.multicolumnSlashMenuSettings,
     content: buildMulticolumnSlashMenuSettingsHTML(plugin.i18n),
   });
   dialog.element.setAttribute('data-key', 'dialog-neo-multicolumn-slash-menu-settings');
