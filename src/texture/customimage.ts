@@ -755,7 +755,7 @@ export function showCustomImageSettings(): void {
     }
     const sd = new Dialog({
       title: plugin.i18n.customimagePresetSwitchTitle,
-      content: `<div class="b3-dialog__content">${plugin.i18n.customimagePresetSwitchContent}</div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="nps-cancel">${plugin.i18n.customimagePresetSwitchCancel}</button><span class="fn__space"></span><button class="b3-button b3-button--text" id="nps-confirm">${plugin.i18n.customimagePresetSwitchConfirm}</button></div>`,
+      content: `<div class="b3-dialog__content">${plugin.i18n.customimagePresetSwitchContent}</div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="nps-cancel">${plugin.i18n.customimagePresetSwitchCancel}</button><span class="fn__space"></span><button class="b3-button b3-button--remove" id="nps-confirm">${plugin.i18n.customimagePresetSwitchConfirm}</button></div>`,
     });
     sd.element.classList.add('neo-settings-dialog');
     const restorePresetSelect = (): void => {

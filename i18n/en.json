@@ -179,7 +179,7 @@
   "customimageUnsavedExit": "Discard and Exit",
   "customimagePresetSwitchTitle": "Unsaved Parameters",
   "customimagePresetSwitchContent": "The current preset has unsaved changes that will be lost after switching. Switch anyway?",
-  "customimagePresetSwitchCancel": "Cancel",
+  "customimagePresetSwitchCancel": "Back",
   "customimagePresetSwitchConfirm": "Discard and Switch",
   "extension": "Extensions",
   "smoothCaret": "Smooth Caret",
