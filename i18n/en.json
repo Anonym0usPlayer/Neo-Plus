@@ -90,8 +90,6 @@
   "customimagePath": "Different types of image input",
   "customimagePathTip": "1. Relative path in the assets folder, e.g. assets/image.png or url(assets/image.png)<br>2. Web image URL, e.g. https://picsum.photos/1920/1080 or url(https://picsum.photos/1920/1080)<br>3. CSS function, e.g. linear-gradient(to right in oklch, #f59e0b, #06b6d4 66%, #6366f1)<br>4. Solid color, e.g. red, #06b6d4, oklch(from blue calc(l + 0.1) c h), color-mix(in hsl, #f59e0b, transparent)<br>5. Combine the above types, separated by English commas, e.g. repeating-linear-gradient(-45deg, transparent, transparent 20px, oklch(60% 0.2 10 / 0.15) 20px, oklch(60% 0.2 10 / 0.15) 40px), #8effce",
   "customimageBlur": "Blur",
-  "customimageFrosted": "Frosted",
-  "customimageFrostedTip": "Frosted glass effect for background",
   "customimageOpacity": "Opacity",
   "customimageEffect": "Blend Mode",
   "customimageEffectNormal": "Normal",

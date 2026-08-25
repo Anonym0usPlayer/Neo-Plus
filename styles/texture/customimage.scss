@@ -1,7 +1,6 @@
 @use "manager" as *;
 .neo-texture-customimage {
     @include texture-common('[data-id="neo-texture-customimage-button"]', '[data-id="neo-texture-button"]');
-    --neo-customimage-frosted-texture: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='noise'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' /></filter><rect width='100%' height='100%' filter='url(%23noise)' /></svg>");
     body {
         .layout__center .layout-tab-container {
             background-color: oklch(from var(--b3-theme-background) l c h / var(--neo-customimage-layout-opacity, 1));
@@ -22,26 +21,5 @@
                 contrast(var(--neo-customimage-contrast, 1))
                 grayscale(var(--neo-customimage-grayscale, 0))
                 hue-rotate(var(--neo-customimage-hue-rotate, 0deg));
-        &::after {
-            display: var(--neo-customimage-frosted, none);
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: var(--neo-customimage-frosted-texture);
-            background-repeat: repeat;
-            background-color: var(--b3-theme-background);
-            mix-blend-mode: multiply;
-            opacity: 0.25;
-            pointer-events: none;
-            z-index: var(--neo-customimage-zlevel, 99);
-        }
-    }
-    &.neo-mode-dark {
-        #neo-texture-layer {
-            &::after {
-                opacity: 0.25;
-                mix-blend-mode: color-dodge;
-            }
-        }
     }
 }

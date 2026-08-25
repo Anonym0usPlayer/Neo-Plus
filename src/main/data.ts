@@ -20,7 +20,6 @@ export interface Config {
   'customimage-info'?: string;
   'customimage-opacity'?: string;
   'customimage-blur'?: string;
-  'customimage-frosted'?: string;
   'customimage-effect'?: string;
   'customimage-x'?: string;
   'customimage-y'?: string;

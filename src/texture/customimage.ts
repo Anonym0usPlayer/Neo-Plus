@@ -69,7 +69,6 @@ function toZlevelOption(raw: string | undefined): string {
 const fieldDefs: CustomImageField[] = [
   { configKey: 'customimage-info',       cssVar: '--neo-customimage-info',       toCss: raw => toInfoValue(raw),                                                                              inputId: 'neo-customimage-path',           tooltipId: '',                             event: 'input',  tooltipSuffix: ''   },
   { configKey: 'customimage-blur',       cssVar: '--neo-customimage-blur',       toCss: raw => (raw ?? '0') + 'px',                                                                            inputId: 'neo-customimage-blur',           tooltipId: 'neo-customimage-blur-tooltip',          event: 'input',  tooltipSuffix: 'px' },
-  { configKey: 'customimage-frosted',    cssVar: '--neo-customimage-frosted',    toCss: raw => raw === 'true' ? 'block' : 'none',                                                               inputId: 'neo-customimage-frosted',        tooltipId: '',                             event: 'change', tooltipSuffix: ''   },
   { configKey: 'customimage-x',          cssVar: '--neo-customimage-x',          toCss: raw => (raw ?? '50') + '%',                                                                            inputId: 'neo-customimage-x',              tooltipId: 'neo-customimage-x-tooltip',             event: 'input',  tooltipSuffix: '%'  },
   { configKey: 'customimage-y',          cssVar: '--neo-customimage-y',          toCss: raw => (raw ?? '50') + '%',                                                                            inputId: 'neo-customimage-y',              tooltipId: 'neo-customimage-y-tooltip',             event: 'input',  tooltipSuffix: '%'  },
   { configKey: 'customimage-opacity',    cssVar: '--neo-customimage-opacity',    toCss: raw => raw ?? '0.12',                                                                                  inputId: 'neo-customimage-opacity',        tooltipId: 'neo-customimage-opacity-tooltip',       event: 'input',  tooltipSuffix: ''   },
@@ -236,16 +235,6 @@ function textFieldHTML(i18n: Record<string, string>, id: string, i18nKey: string
     <input class="b3-text-field fn__flex-center fn__size200" id="${id}" spellcheck="false">
   </label>`;
 }
-function switchHTML(i18n: Record<string, string>, id: string, i18nKey: string, i18nTipKey: string): string {
-  return `<label class="fn__flex b3-label config-item">
-    <div class="fn__flex-1 config-item__main">
-      <div class="config-name">${t(i18n, i18nKey)}</div>
-      <div class="b3-label__text">${t(i18n, i18nTipKey)}</div>
-    </div>
-    <span class="fn__space"></span>
-    <input class="b3-switch fn__flex-center" id="${id}" type="checkbox">
-  </label>`;
-}
 function effectSelectHTML(i18n: Record<string, string>, id: string, i18nKey: string): string {
   const opts = ['normal', 'multiply', 'luminosity', 'screen', 'color', 'overlay', 'soft-light', 'color-burn', 'color-dodge']
     .map(v => `<option value="${v}">${t(i18n, `customimageEffect${v.charAt(0).toUpperCase() + v.slice(1).replace(/-(\w)/g, (_, c) => c.toUpperCase())}`)}</option>`)
@@ -352,7 +341,6 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   const opacitySlider = sliderHTML(i18n, getSliderConfig('customimage-opacity')!);
   const effectSelect = effectSelectHTML(i18n, 'neo-customimage-effect', 'customimageEffect');
   const blendModeSelect = blendModeSelectHTML(i18n, 'neo-customimage-background-blend-mode', 'customimageBackgroundBlendMode');
-  const frosted = switchHTML(i18n, 'neo-customimage-frosted', 'customimageFrosted', 'customimageFrostedTip');
   const moreSliderKeys = ['customimage-hue-rotate', 'customimage-brightness', 'customimage-saturation', 'customimage-contrast', 'customimage-grayscale'];
   const moreSliders = moreSliderKeys.map(k => sliderHTML(i18n, getSliderConfig(k)!)).join('');
   const positionSliderKeys = ['customimage-x', 'customimage-y'];
@@ -394,7 +382,6 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
       <div class="config-items">
         ${positionSliders}
         ${blendModeSelect}
-        ${frosted}
         ${moreSliders}
       </div>
     </div>
