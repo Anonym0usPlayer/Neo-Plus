@@ -1,27 +1,18 @@
 @use "manager" as *;
 .neo-texture-crossdot {
     @include texture-common("[data-id="neo-texture-crossdot-button"]", "[data-id="neo-texture-button"]");
-    body {
-        &::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-repeat: repeat;
-            mix-blend-mode: unset;
-            opacity: 0.065;
-            pointer-events: none;
-            z-index: 99;
-            background-image: radial-gradient(var(--b3-theme-on-background) 1.5px, transparent 1.5px), radial-gradient(var(--b3-theme-on-background) 1.5px, transparent 1.5px);
-            background-size: 40px 40px;
-            background-position: 0 0, 20px 20px;
-            background-color: transparent;
-        }
+    #neo-texture-layer {
+        background-repeat: repeat;
+        mix-blend-mode: unset;
+        opacity: 0.065;
+        background-image: radial-gradient(var(--b3-theme-on-background) 1.5px, transparent 1.5px), radial-gradient(var(--b3-theme-on-background) 1.5px, transparent 1.5px);
+        background-size: 40px 40px;
+        background-position: 0 0, 20px 20px;
+        background-color: transparent;
     }
     &.neo-mode-dark {
-        body {
-            &::before {
-                opacity: 0.045;
-            }
+        #neo-texture-layer {
+            opacity: 0.045;
         }
     }
 }

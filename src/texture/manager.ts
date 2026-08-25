@@ -3,6 +3,7 @@ import type { Config } from '../main/data';
 import { ensureCss, removeCssByPrefix } from '../modules/cssloader';
 import { featureCss } from '../modules/csschunks';
 import { toggleCustomImage, showCustomImageSettings, applyCustomImageCss, clearCustomImageCss } from './customimage';
+import { ensureTextureLayer, removeTextureLayer } from './layer';
 export interface Texture {
   key: string;
   nameKey: string;
@@ -60,6 +61,7 @@ function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>): a
       if (html.classList.contains(className)) {
         html.classList.remove(className);
         removeCssByPrefix('texture-');
+        removeTextureLayer();
         const mode = getCurrentThemeMode();
         const texKey = getTextureKey(mode);
         saveConfig({ [texKey]: 'none' } as Partial<Config>);
@@ -70,6 +72,7 @@ function buildTextureMenuItem(texture: Texture, i18n: Record<string, string>): a
         html.classList.add(className);
         removeCssByPrefix('texture-');
         clearCustomImageCss();
+        ensureTextureLayer();
         ensureCss(`texture-${texture.key}`, featureCss[`texture-${texture.key}`]);
         const mode = getCurrentThemeMode();
         const texKey = getTextureKey(mode);
@@ -103,6 +106,7 @@ export function applyTexture(config: Config): void {
   );
   removeCssByPrefix('texture-');
   if (textureKey && textureKey !== 'none') {
+    ensureTextureLayer();
     ensureCss(`texture-${textureKey}`, featureCss[`texture-${textureKey}`]);
   }
   if (textureKey && textureKey !== 'none') {
@@ -127,6 +131,7 @@ export function applyTexture(config: Config): void {
     }
   } else {
     clearCustomImageCss();
+    removeTextureLayer();
   }
 }
 let _mutationObserver: MutationObserver | null = null;
@@ -152,6 +157,7 @@ export function destroyTexture(): void {
     ...Array.from(html.classList).filter((cls) => cls.startsWith('neo-texture-'))
   );
   clearCustomImageCss();
+  removeTextureLayer();
   if (_mutationObserver) {
     _mutationObserver.disconnect();
     _mutationObserver = null;

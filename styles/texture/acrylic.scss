@@ -2,26 +2,17 @@
 .neo-texture-acrylic {
     @include texture-common("[data-id="neo-texture-acrylic-button"]", "[data-id="neo-texture-button"]");
     --neo-texture-acrylic: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='noise'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' /></filter><rect width='100%' height='100%' filter='url(%23noise)' /></svg>");
-    body {
-        &::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: var(--neo-texture-acrylic);
-            background-repeat: repeat;
-            background-color: var(--b3-theme-background);
-            mix-blend-mode: multiply;
-            opacity: 0.25;
-            pointer-events: none;
-            z-index: 99;
-        }
+    #neo-texture-layer {
+        background-image: var(--neo-texture-acrylic);
+        background-repeat: repeat;
+        background-color: var(--b3-theme-background);
+        mix-blend-mode: multiply;
+        opacity: 0.25;
     }
     &.neo-mode-dark {
-        body {
-            &::before {
-                opacity: 0.25;
-                mix-blend-mode: color-dodge;
-            }
+        #neo-texture-layer {
+            opacity: 0.25;
+            mix-blend-mode: color-dodge;
         }
     }
 }

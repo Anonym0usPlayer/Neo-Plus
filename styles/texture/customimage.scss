@@ -7,26 +7,21 @@
             background-color: oklch(from var(--b3-theme-background) l c h / var(--neo-customimage-layout-opacity, 1));
         }
         // todo 兼容IDE，status，顶栏，停靠栏，侧栏、没有任何页签打开、垂直页签、侧栏静音等等边界
-        &::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: var(--neo-customimage-info, none);
-            background-repeat: var(--neo-customimage-repeat, no-repeat);
-            background-size: var(--neo-customimage-size, cover);
-            background-position: var(--neo-customimage-x, 50%) var(--neo-customimage-y, 50%);
-            background-blend-mode: var(--neo-customimage-background-blend-mode, normal);
-            mix-blend-mode: var(--neo-customimage-effect, normal);
-            opacity: var(--neo-customimage-opacity, 0.12);
-            filter: blur(var(--neo-customimage-blur, 0px))
-                    brightness(var(--neo-customimage-brightness, 1))
-                    saturate(var(--neo-customimage-saturation, 1))
-                    contrast(var(--neo-customimage-contrast, 1))
-                    grayscale(var(--neo-customimage-grayscale, 0))
-                    hue-rotate(var(--neo-customimage-hue-rotate, 0deg));
-            pointer-events: none;
-            z-index: var(--neo-customimage-zlevel, 99);
-        }
+    }
+    #neo-texture-layer {
+        background: var(--neo-customimage-info, none);
+        background-repeat: var(--neo-customimage-repeat, no-repeat);
+        background-size: var(--neo-customimage-size, cover);
+        background-position: var(--neo-customimage-x, 50%) var(--neo-customimage-y, 50%);
+        background-blend-mode: var(--neo-customimage-background-blend-mode, normal);
+        mix-blend-mode: var(--neo-customimage-effect, normal);
+        opacity: var(--neo-customimage-opacity, 0.12);
+        filter: blur(var(--neo-customimage-blur, 0px))
+                brightness(var(--neo-customimage-brightness, 1))
+                saturate(var(--neo-customimage-saturation, 1))
+                contrast(var(--neo-customimage-contrast, 1))
+                grayscale(var(--neo-customimage-grayscale, 0))
+                hue-rotate(var(--neo-customimage-hue-rotate, 0deg));
         &::after {
             display: var(--neo-customimage-frosted, none);
             content: "";
@@ -42,7 +37,7 @@
         }
     }
     &.neo-mode-dark {
-        body {
+        #neo-texture-layer {
             &::after {
                 opacity: 0.25;
                 mix-blend-mode: color-dodge;

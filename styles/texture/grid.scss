@@ -1,26 +1,17 @@
 @use "manager" as *;
 .neo-texture-grid {
     @include texture-common("[data-id="neo-texture-grid-button"]", "[data-id="neo-texture-button"]");
-    body {
-        &::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-repeat: repeat;
-            mix-blend-mode: unset;
-            opacity: 0.032;
-            pointer-events: none;
-            z-index: 99;
-            background-image: linear-gradient(var(--b3-theme-on-background) 1px, transparent 1px), linear-gradient(to right, var(--b3-theme-on-background) 1px, transparent 1px);
-            background-size: 32px 32px;
-            background-color: transparent;
-        }
+    #neo-texture-layer {
+        background-repeat: repeat;
+        mix-blend-mode: unset;
+        opacity: 0.032;
+        background-image: linear-gradient(var(--b3-theme-on-background) 1px, transparent 1px), linear-gradient(to right, var(--b3-theme-on-background) 1px, transparent 1px);
+        background-size: 32px 32px;
+        background-color: transparent;
     }
     &.neo-mode-dark {
-        body {
-            &::before {
-                opacity: 0.025;
-            }
+        #neo-texture-layer {
+            opacity: 0.025;
         }
     }
 }

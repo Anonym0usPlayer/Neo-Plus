@@ -4,6 +4,7 @@ import { saveConfig, loadConfig, deleteConfigKeys } from '../main/data';
 import type { Config } from '../main/data';
 import { ensureCss, removeCssByPrefix } from '../modules/cssloader';
 import { featureCss } from '../modules/csschunks';
+import { ensureTextureLayer, removeTextureLayer } from './layer';
 export interface CustomImageField {
   configKey: string;
   cssVar: string;
@@ -135,6 +136,7 @@ export async function toggleCustomImage(enabled: boolean): Promise<void> {
   if (enabled) {
     document.documentElement.classList.add('neo-texture-customimage');
     removeCssByPrefix('texture-');
+    ensureTextureLayer();
     ensureCss('texture-customimage', featureCss['texture-customimage']);
     const key = getCurrentPresetKey();
     const name = (config?.[key] as string) || '';
@@ -149,6 +151,7 @@ export async function toggleCustomImage(enabled: boolean): Promise<void> {
     document.documentElement.classList.remove('neo-texture-customimage');
     removeCssByPrefix('texture-');
     clearCustomImageCss();
+    removeTextureLayer();
     const mode = getCurrentThemeMode();
     await saveConfig({ [mode === 'dark' ? 'texture-dark' : 'texture-light']: 'none' } as Partial<Config>);
   }
@@ -460,6 +463,8 @@ export function showCustomImageSettings(): void {
     populateDialog(c, presetSelect, fieldDom, plugin.i18n, customFillWrap, layoutOpacityWrap);
   }).catch(() => {});
   const style = document.documentElement.style;
+  const isCustomImagePreviewOn = (): boolean =>
+    document.documentElement.classList.contains('neo-texture-customimage');
   let dirty = false;
   const readDomValues = (): Record<string, string> => {
     const values: Record<string, string> = {};
@@ -471,6 +476,7 @@ export function showCustomImageSettings(): void {
     return values;
   };
   const applyCssFromDom = (): void => {
+    if (!isCustomImagePreviewOn()) return;
     const values = readDomValues();
     for (const { field } of fieldDom) {
       if (!field.cssVar) continue;
@@ -494,6 +500,7 @@ export function showCustomImageSettings(): void {
   }
   const btn = (id: string) => dialog.element.querySelector(id) as HTMLButtonElement | null;
   const resetFormToDefaults = (): void => {
+    const previewOn = isCustomImagePreviewOn();
     for (const { field, input, tooltip } of fieldDom) {
       if (!input) continue;
       if (field.configKey === 'customimage-info') continue;
@@ -507,19 +514,21 @@ export function showCustomImageSettings(): void {
         (input as HTMLInputElement | HTMLSelectElement).value = disp;
       }
       if (tooltip && field.tooltipSuffix !== undefined) tooltip.setAttribute('aria-label', def);
-      if (field.cssVar) style.setProperty(field.cssVar, def);
+      if (previewOn && field.cssVar) style.setProperty(field.cssVar, def);
     }
     const fillModeInput = dialog.element.querySelector('#neo-customimage-fill-mode') as HTMLSelectElement | null;
     if (fillModeInput) {
       fillModeInput.value = 'scale';
       updateFillCustomVisibility('scale');
-      style.setProperty('--neo-customimage-repeat', 'no-repeat');
-      style.setProperty('--neo-customimage-size', 'cover');
+      if (previewOn) {
+        style.setProperty('--neo-customimage-repeat', 'no-repeat');
+        style.setProperty('--neo-customimage-size', 'cover');
+      }
     }
     const zlevelInput = dialog.element.querySelector('#neo-customimage-zlevel') as HTMLSelectElement | null;
     if (zlevelInput) {
       zlevelInput.value = 'topmost';
-      style.setProperty('--neo-customimage-zlevel', '99');
+      if (previewOn) style.setProperty('--neo-customimage-zlevel', '99');
     }
     updateLayoutOpacityVisibility('topmost');
   };
@@ -528,7 +537,7 @@ export function showCustomImageSettings(): void {
     const pathInput = dialog.element.querySelector('#neo-customimage-path') as HTMLTextAreaElement | HTMLInputElement | null;
     if (pathInput) {
       pathInput.value = '';
-      style.setProperty('--neo-customimage-info', 'none');
+      if (isCustomImagePreviewOn()) style.setProperty('--neo-customimage-info', 'none');
     }
   };
   btn('#neo-customimage-reset-preset')?.addEventListener('click', () => {
@@ -549,6 +558,7 @@ export function showCustomImageSettings(): void {
       );
       removeCssByPrefix('texture-');
       if (textureKey && textureKey !== 'none') {
+        ensureTextureLayer();
         ensureCss(`texture-${textureKey}`, featureCss[`texture-${textureKey}`]);
         if (textureKey === 'customimage') {
           html.classList.add('neo-texture-customimage');
@@ -570,6 +580,7 @@ export function showCustomImageSettings(): void {
         }
       } else {
         clearCustomImageCss();
+        removeTextureLayer();
       }
     } catch {}
     doDestroy();
@@ -629,7 +640,9 @@ export function showCustomImageSettings(): void {
       [currentKey]: presetName,
     };
     await saveConfig(patch as Partial<Config>);
-    applyCustomImageCss(preset);
+    if (isCustomImagePreviewOn()) {
+      applyCustomImageCss(preset);
+    }
   };
   btn('#neo-customimage-update-preset')?.addEventListener('click', async () => {
     if (!presetSelect) return;
@@ -709,7 +722,9 @@ export function showCustomImageSettings(): void {
       const updatedCfg = await loadConfig();
       const preset = getPreset(updatedCfg, name);
       populateDialog(updatedCfg, presetSelect, fieldDom, plugin.i18n, customFillWrap, layoutOpacityWrap);
-      applyCustomImageCss(preset);
+      if (isCustomImagePreviewOn()) {
+        applyCustomImageCss(preset);
+      }
     } catch {}
   });
 }
