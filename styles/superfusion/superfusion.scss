@@ -166,7 +166,7 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
 }
 // 移动端特殊处理
 #mobileTopBar[aria-hidden="true"] ~ #editor {
-    --_superfusion-mobile-top-fold-fix: 46px;
+    --_superfusion-mobile-top-fold-fix: 94px;
 }
 .neo-visual-superfusion {
     @include superfusion-tab {
