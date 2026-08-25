@@ -1,25 +1,35 @@
 @use "manager" as *;
+.neo-customimage-detail-tip {
+    margin-left: 6px;
+    font-size: 0.8em;
+    color: var(--b3-theme-on-surface);
+    opacity: 0.68;
+    cursor: pointer;
+    user-select: none;
+    transition: var(--b3-transition);
+    &:hover {
+        opacity: 1;
+        color: var(--b3-theme-accent);
+    }
+}
 .neo-texture-customimage {
     @include texture-common('[data-id="neo-texture-customimage-button"]', '[data-id="neo-texture-button"]');
     body {
-        .layout__center .layout-tab-container {
-            background-color: oklch(from var(--b3-theme-background) l c h / var(--neo-customimage-layout-opacity, 1));
-        }
-        // todo 兼容IDE，status，顶栏，停靠栏，侧栏、没有任何页签打开、垂直页签、侧栏静音等等边界
+        opacity: var(--neo-customimage-layout-opacity);
     }
     #neo-texture-layer {
-        background: var(--neo-customimage-info, none);
-        background-repeat: var(--neo-customimage-repeat, no-repeat);
-        background-size: var(--neo-customimage-size, cover);
-        background-position: var(--neo-customimage-x, 50%) var(--neo-customimage-y, 50%);
-        background-blend-mode: var(--neo-customimage-background-blend-mode, normal);
-        mix-blend-mode: var(--neo-customimage-effect, normal);
-        opacity: var(--neo-customimage-opacity, 0.12);
-        filter: blur(var(--neo-customimage-blur, 0px))
-                brightness(var(--neo-customimage-brightness, 1))
-                saturate(var(--neo-customimage-saturation, 1))
-                contrast(var(--neo-customimage-contrast, 1))
-                grayscale(var(--neo-customimage-grayscale, 0))
-                hue-rotate(var(--neo-customimage-hue-rotate, 0deg));
+        background: var(--neo-customimage-info);
+        background-repeat: var(--neo-customimage-repeat);
+        background-size: var(--neo-customimage-size);
+        background-position: var(--neo-customimage-x) var(--neo-customimage-y);
+        background-blend-mode: var(--neo-customimage-background-blend-mode);
+        mix-blend-mode: var(--neo-customimage-effect);
+        opacity: var(--neo-customimage-opacity);
+        filter: blur(var(--neo-customimage-blur))
+                brightness(var(--neo-customimage-brightness))
+                saturate(var(--neo-customimage-saturation))
+                contrast(var(--neo-customimage-contrast))
+                grayscale(var(--neo-customimage-grayscale))
+                hue-rotate(var(--neo-customimage-hue-rotate));
     }
 }

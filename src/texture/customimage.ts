@@ -80,7 +80,7 @@ const fieldDefs: CustomImageField[] = [
   { configKey: 'customimage-grayscale',  cssVar: '--neo-customimage-grayscale',  toCss: raw => raw ?? '0',                                                                                    inputId: 'neo-customimage-grayscale',      tooltipId: 'neo-customimage-grayscale-tooltip',     event: 'input',  tooltipSuffix: ''   },
   { configKey: 'customimage-hue-rotate', cssVar: '--neo-customimage-hue-rotate', toCss: raw => (raw ?? '0') + 'deg',                                                                         inputId: 'neo-customimage-hue-rotate',     tooltipId: 'neo-customimage-hue-rotate-tooltip',    event: 'input',  tooltipSuffix: 'deg'},
   { configKey: 'customimage-zlevel',    cssVar: '--neo-customimage-zlevel',    toCss: raw => zlevelMap[raw ?? 'topmost'] ?? '99',                                                              inputId: 'neo-customimage-zlevel',         tooltipId: '',                             event: 'change', tooltipSuffix: ''   },
-  { configKey: 'customimage-layout-opacity', cssVar: '--neo-customimage-layout-opacity', toCss: raw => raw ?? '1', inputId: 'neo-customimage-layout-opacity', tooltipId: 'neo-customimage-layout-opacity-tooltip', event: 'input', tooltipSuffix: '' },
+  { configKey: 'customimage-layout-opacity', cssVar: '--neo-customimage-layout-opacity', toCss: raw => raw ?? '0.9', inputId: 'neo-customimage-layout-opacity', tooltipId: 'neo-customimage-layout-opacity-tooltip', event: 'input', tooltipSuffix: '' },
   { configKey: 'customimage-fill-mode', cssVar: '--neo-customimage-repeat', toCss: (raw, config) => {
       if (raw === 'tile') return 'repeat';
       if (raw === 'custom') return (config?.['customimage-fill-repeat'] ?? 'false') === 'true' ? 'repeat' : 'no-repeat';
@@ -103,9 +103,14 @@ const fieldDefs: CustomImageField[] = [
 ];
 export function applyCustomImageCss(config?: Partial<Config> | null): void {
   const style = document.documentElement.style;
+  const zlevel = config?.['customimage-zlevel'] as string | undefined;
   for (const field of fieldDefs) {
     if (!field.cssVar) continue;
     const raw = config?.[field.configKey as keyof Config] as string | undefined;
+    if (field.configKey === 'customimage-layout-opacity') {
+      style.setProperty(field.cssVar, zlevel === 'backdrop' ? field.toCss(raw) : '1');
+      continue;
+    }
     style.setProperty(field.cssVar, field.toCss(raw, config as Record<string, any> | undefined));
   }
 }
@@ -160,6 +165,8 @@ interface SliderConfig {
   tooltipId: string;
   i18nKey: string;
   i18nTipKey: string;
+  tipKey?: string;
+  tipTitleKey?: string;
   min: number;
   max: number;
   step: number;
@@ -177,7 +184,7 @@ const sliderDefs = [
   { key: 'customimage-contrast',   defaultVal: 1,    min: 0, max: 2,   step: 0.01, suffix: ''   },
   { key: 'customimage-grayscale',  defaultVal: 0,    min: 0, max: 1,   step: 0.01, suffix: ''   },
   { key: 'customimage-hue-rotate', defaultVal: 0,    min: 0, max: 360, step: 1,    suffix: 'deg'},
-  { key: 'customimage-layout-opacity', defaultVal: 1, min: 0.5, max: 1, step: 0.01, suffix: '' },
+  { key: 'customimage-layout-opacity', defaultVal: 0.9, min: 0.5, max: 1, step: 0.01, suffix: '' },
 ];
 function getSliderConfig(key: string): SliderConfig | null {
   const def = sliderDefs.find(d => d.key === key);
@@ -187,6 +194,8 @@ function getSliderConfig(key: string): SliderConfig | null {
     'customimage-y': 'customimagePositionY',
   };
   const i18nKey = i18nMap[key] || ('customimage' + key.replace('customimage-', '').replace(/(^\w|-\w)/g, s => s.replace('-', '').toUpperCase()));
+  const tipKey = key === 'customimage-layout-opacity' ? 'customimageLayoutOpacityTip' : undefined;
+  const tipTitleKey = key === 'customimage-layout-opacity' ? 'customimageLayoutOpacity' : undefined;
   const field = fieldDefs.find(f => f.configKey === key);
   const fallback = field ? field.toCss(undefined) : String(def.defaultVal);
   let val = fallback;
@@ -196,6 +205,8 @@ function getSliderConfig(key: string): SliderConfig | null {
     tooltipId: 'neo-' + key + '-tooltip',
     i18nKey,
     i18nTipKey: 'customDefaultValue',
+    tipKey,
+    tipTitleKey,
     min: def.min, max: def.max, step: def.step, val,
     suffix: def.suffix, tooltipSuffix: def.suffix,
   };
@@ -204,9 +215,10 @@ function t(i18n: Record<string, string>, key: string): string {
   return i18n[key] || key;
 }
 function sliderHTML(i18n: Record<string, string>, sc: SliderConfig): string {
+  const tip = sc.tipKey ? `<span class="neo-customimage-detail-tip" data-tip-key="${sc.tipKey}" data-tip-title="${sc.tipTitleKey ?? sc.i18nKey}">${t(i18n, 'customimagePathTipToggle')}</span>` : '';
   return `<label class="fn__flex b3-label config-item">
     <div class="fn__flex-1 config-item__main">
-      <div class="config-name">${t(i18n, sc.i18nKey)}</div>
+      <div class="config-name">${t(i18n, sc.i18nKey)}${tip}</div>
       <div class="b3-label__text">${t(i18n, 'customDefaultValue')}${sc.val}${sc.tooltipSuffix}</div>
     </div>
     <span class="fn__space"></span>
@@ -217,10 +229,11 @@ function sliderHTML(i18n: Record<string, string>, sc: SliderConfig): string {
 }
 function textFieldHTML(i18n: Record<string, string>, id: string, i18nKey: string, i18nTipKey: string, multiline = false): string {
   if (multiline) {
+    const tipTitleKey = i18nKey + 'TipTitle';
+    const tipTitle = tipTitleKey in i18n ? t(i18n, tipTitleKey) : t(i18n, i18nKey);
     return `<div class="b3-label config-item" data-config-item-id="${id}">
     <div class="fn__block">
-        <div class="config-name">${t(i18n, i18nKey)}</div>
-        <div class="b3-label__text">${t(i18n, i18nTipKey)}</div>
+        <div class="config-name">${t(i18n, i18nKey)}<span class="neo-customimage-detail-tip" data-tip-key="${i18nTipKey}" data-tip-title="${tipTitle}">${t(i18n, 'customimagePathTipToggle')}</span></div>
         <div class="fn__hr--small"></div>
         <textarea class="b3-text-field fn__block" id="${id}" spellcheck="false"></textarea>
     </div>
@@ -241,7 +254,7 @@ function effectSelectHTML(i18n: Record<string, string>, id: string, i18nKey: str
     .join('');
   return `<label class="fn__flex b3-label config-item">
     <div class="fn__flex-1 config-item__main">
-      <div class="config-name">${t(i18n, i18nKey)}</div>
+      <div class="config-name">${t(i18n, i18nKey)}<span class="neo-customimage-detail-tip" data-tip-key="customimageEffectTip" data-tip-title="customimageEffect">${t(i18n, 'customimagePathTipToggle')}</span></div>
       <div class="b3-label__text">${t(i18n, 'customDefaultValue')}${t(i18n, 'customimageEffectNormal')}</div>
     </div>
     <span class="fn__space"></span>
@@ -268,7 +281,7 @@ function zlevelSelectHTML(i18n: Record<string, string>, id: string, i18nKey: str
   const layoutOpacitySlider = sliderHTML(i18n, getSliderConfig('customimage-layout-opacity')!);
   return `<label class="fn__flex b3-label config-item">
     <div class="fn__flex-1 config-item__main">
-      <div class="config-name">${t(i18n, i18nKey)}</div>
+      <div class="config-name">${t(i18n, i18nKey)}<span class="neo-customimage-detail-tip" data-tip-key="customimageZLevelTip" data-tip-title="customimageZLevel">${t(i18n, 'customimagePathTipToggle')}</span></div>
       <div class="b3-label__text">${t(i18n, 'customDefaultValue')}${t(i18n, 'customimageZLevelTopmost')}</div>
     </div>
     <span class="fn__space"></span>
@@ -284,7 +297,7 @@ function fillModeSelectHTML(i18n: Record<string, string>, id: string, i18nKey: s
     .join('');
   return `<label class="fn__flex b3-label config-item">
     <div class="fn__flex-1 config-item__main">
-      <div class="config-name">${t(i18n, i18nKey)}</div>
+      <div class="config-name">${t(i18n, i18nKey)}<span class="neo-customimage-detail-tip" data-tip-key="customimageFillModeTip" data-tip-title="customimageFillMode">${t(i18n, 'customimagePathTipToggle')}</span></div>
       <div class="b3-label__text">${t(i18n, 'customDefaultValue')}${t(i18n, 'customimageFillModeScale')}</div>
     </div>
     <span class="fn__space"></span>
@@ -467,6 +480,10 @@ export function showCustomImageSettings(): void {
     const values = readDomValues();
     for (const { field } of fieldDom) {
       if (!field.cssVar) continue;
+      if (field.configKey === 'customimage-layout-opacity') {
+        style.setProperty(field.cssVar, values['customimage-zlevel'] === 'backdrop' ? field.toCss(values[field.configKey]) : '1');
+        continue;
+      }
       style.setProperty(field.cssVar, field.toCss(values[field.configKey], values));
     }
   };
@@ -501,7 +518,13 @@ export function showCustomImageSettings(): void {
         (input as HTMLInputElement | HTMLSelectElement).value = disp;
       }
       if (tooltip && field.tooltipSuffix !== undefined) tooltip.setAttribute('aria-label', def);
-      if (previewOn && field.cssVar) style.setProperty(field.cssVar, def);
+      if (previewOn && field.cssVar) {
+        if (field.configKey === 'customimage-layout-opacity') {
+          style.setProperty(field.cssVar, '1');
+        } else {
+          style.setProperty(field.cssVar, def);
+        }
+      }
     }
     const fillModeInput = dialog.element.querySelector('#neo-customimage-fill-mode') as HTMLSelectElement | null;
     if (fillModeInput) {
@@ -530,6 +553,17 @@ export function showCustomImageSettings(): void {
   btn('#neo-customimage-reset-preset')?.addEventListener('click', () => {
     resetFormToDefaults();
     dirty = true;
+  });
+  dialog.element.querySelectorAll<HTMLElement>('[data-tip-key]').forEach(btnEl => {
+    btnEl.addEventListener('click', () => {
+      const tipKey = btnEl.dataset.tipKey;
+      const titleKey = btnEl.dataset.tipTitle;
+      if (!tipKey) return;
+      new Dialog({
+        title: titleKey ? t(plugin.i18n, titleKey) : '',
+        content: `<div class="b3-dialog__content"><div class="b3-label__text">${t(plugin.i18n, tipKey)}</div></div>`,
+      });
+    });
   });
   const originalDestroy = dialog.destroy.bind(dialog);
   const doDestroy = (): void => { originalDestroy(); };
@@ -614,7 +648,7 @@ export function showCustomImageSettings(): void {
         if ((updatedCfg as Record<string, any>)?.[otherKey] === name) patch[otherKey] = '';
         if (Object.keys(patch).length) await saveConfig(patch as Partial<Config>);
         populateDialog(updatedCfg, presetSelect, fieldDom, plugin.i18n, customFillWrap, layoutOpacityWrap);
-        clearCustomImageCss();
+        applyCustomImageCss({});
         showMessage(plugin.i18n.customimagePresetDeleted.replace('${name}', name), 3000);
       } catch {} finally { cd.destroy(); }
     });
@@ -702,17 +736,45 @@ export function showCustomImageSettings(): void {
   presetSelect?.addEventListener('change', async () => {
     const name = presetSelect.value;
     if (!name) return;
-    try {
-      const currentKey = getCurrentPresetKey();
-      const patch: Record<string, any> = { [currentKey]: name };
-      await saveConfig(patch as Partial<Config>);
-      const updatedCfg = await loadConfig();
-      const preset = getPreset(updatedCfg, name);
-      populateDialog(updatedCfg, presetSelect, fieldDom, plugin.i18n, customFillWrap, layoutOpacityWrap);
-      if (isCustomImagePreviewOn()) {
-        applyCustomImageCss(preset);
-      }
-    } catch {}
+    const switchPreset = async (): Promise<void> => {
+      try {
+        const currentKey = getCurrentPresetKey();
+        const patch: Record<string, any> = { [currentKey]: name };
+        await saveConfig(patch as Partial<Config>);
+        const updatedCfg = await loadConfig();
+        const preset = getPreset(updatedCfg, name);
+        populateDialog(updatedCfg, presetSelect, fieldDom, plugin.i18n, customFillWrap, layoutOpacityWrap);
+        if (isCustomImagePreviewOn()) {
+          applyCustomImageCss(preset);
+        }
+      } catch {}
+    };
+    if (!dirty) {
+      await switchPreset();
+      return;
+    }
+    const sd = new Dialog({
+      title: plugin.i18n.customimagePresetSwitchTitle,
+      content: `<div class="b3-dialog__content">${plugin.i18n.customimagePresetSwitchContent}</div><div class="b3-dialog__action"><button class="b3-button b3-button--cancel" id="nps-cancel">${plugin.i18n.customimagePresetSwitchCancel}</button><span class="fn__space"></span><button class="b3-button b3-button--text" id="nps-confirm">${plugin.i18n.customimagePresetSwitchConfirm}</button></div>`,
+    });
+    sd.element.classList.add('neo-settings-dialog');
+    const restorePresetSelect = (): void => {
+      if (presetSelect) presetSelect.value = presetSelect.dataset.previousValue || '';
+    };
+    const origSdDestroy = sd.destroy.bind(sd);
+    sd.destroy = (): void => {
+      restorePresetSelect();
+      origSdDestroy();
+    };
+    sd.element.querySelector('#nps-cancel')?.addEventListener('click', () => {
+      restorePresetSelect();
+      sd.destroy();
+    });
+    sd.element.querySelector('#nps-confirm')?.addEventListener('click', async () => {
+      dirty = false;
+      origSdDestroy();
+      await switchPreset();
+    });
   });
 }
 function populateDialog(
@@ -740,8 +802,10 @@ function populateDialog(
   if (presetSelect) {
     if (presetAvailable) {
       presetSelect.value = cpk;
+      presetSelect.dataset.previousValue = cpk;
     } else {
       presetSelect.selectedIndex = -1;
+      delete presetSelect.dataset.previousValue;
     }
   }
   if (!presetAvailable) {
@@ -750,11 +814,12 @@ function populateDialog(
       if (input instanceof HTMLInputElement && input.type === 'checkbox') input.checked = false;
       else if (field.configKey === 'customimage-fill-width' || field.configKey === 'customimage-fill-height') (input as HTMLInputElement).value = '1';
       else if (field.configKey === 'customimage-fill-unit') (input as HTMLSelectElement).value = 'px';
-      else if (field.configKey === 'customimage-layout-opacity') (input as HTMLInputElement).value = '1';
+      else if (field.configKey === 'customimage-layout-opacity') (input as HTMLInputElement).value = '0.9';
       else (input as HTMLInputElement | HTMLSelectElement).value = '';
       if (tooltip && field.tooltipSuffix !== undefined) tooltip.setAttribute('aria-label', field.toCss(undefined));
     }
     customWrap?.classList.add('fn__none');
+    layoutOpacityWrap?.classList.add('fn__none');
     return;
   }
   const preset = getPreset(config || null, cpk);
