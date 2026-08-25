@@ -1,17 +1,4 @@
 @use "manager" as *;
-.neo-customimage-detail-tip {
-    margin-left: 6px;
-    font-size: 0.8em;
-    color: var(--b3-theme-on-surface);
-    opacity: 0.68;
-    cursor: pointer;
-    user-select: none;
-    transition: var(--b3-transition);
-    &:hover {
-        opacity: 1;
-        color: var(--b3-theme-accent);
-    }
-}
 .neo-texture-customimage {
     @include texture-common('[data-id="neo-texture-customimage-button"]', '[data-id="neo-texture-button"]');
     body {
