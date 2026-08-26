@@ -1,0 +1,36 @@
+@use "manager" as *;
+.neo-palette-paper {
+    @include palette-common("[data-id=\"neo-palette-paper-button\"]", "[data-id=\"neo-scheme-button\"]");
+    &.neo-mode-light {
+        --b3-base-color: #000000;
+        --b3-theme-primary: #000000;
+        --b3-theme-accent: #0b57d0;
+        --b3-theme-background: #ffffff;
+        --b3-theme-surface: #f2f2f2;
+        --b3-theme-on-background: #000000;
+        --b3-theme-on-surface: #4d4d4d;
+        --neo-button-primary: #000000;
+        --_heading-color: #000000;
+        --_brutalism-black: #000000;
+        --_brutalism-gray: #d9d9d9;
+    }
+    &.neo-mode-dark {
+        --b3-base-color: #d9d9d9;
+        --b3-theme-primary: #b3b3b3;
+        --b3-theme-accent: #8ab4ff;
+        --b3-theme-background: #161616;
+        --b3-theme-surface: #222222;
+        --b3-theme-on-background: #f2f2f2;
+        --b3-theme-on-surface: #b3b3b3bc;
+        --_heading-color: #ffffff;
+        --neo-button-primary: #4d4d4d;
+        --_brutalism-black: black;
+        --_brutalism-gray: #6b6b6b;
+        &.neo-palette-invert {
+            --b3-theme-background: #222222;
+            --b3-theme-surface: #161616;
+            --b3-theme-on-background: #ffffff;
+            --b3-theme-on-surface: #b8b8b8bc;
+        }
+    }
+}

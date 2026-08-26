@@ -43,6 +43,7 @@ const presets: Preset[] = [
   { key: 'lakeside', nameKey: 'colorSchemeLakeside', mode: 'all' },
   { key: 'voyage', nameKey: 'colorSchemeVoyage', mode: 'all' },
   { key: 'zine', nameKey: 'colorSchemeZine', mode: 'all', group: 'neuebrutalism' },
+  { key: 'paper', nameKey: 'colorSchemePaper', mode: 'all', group: 'neuebrutalism' },
   { key: 'retroconsole', nameKey: 'colorSchemeRetroconsole', mode: 'all', group: 'neuebrutalism' },
   { key: 'bumblebee', nameKey: 'colorSchemeBumblebee', mode: 'all', group: 'neuebrutalism' },
   { key: 'glitch', nameKey: 'colorSchemeGlitch', mode: 'all', group: 'neuebrutalism' },
