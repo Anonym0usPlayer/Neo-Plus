@@ -1,3 +1,4 @@
+@use "sass:list";
 @use "manager" as *;
 .neo-mode-light {
     --_coloredheadings-base: oklch(from var(--b3-base-color) clamp(0.55, l, 0.68) max(c, 0.2) h);
@@ -41,19 +42,16 @@
         }
     }
 }
-// 黑白配专属：固定蓝色色相，按层级做明度阶梯，层级清晰
+// 黑白配专属：彩虹式多彩标题，六档色相均匀分布，辨识度高
 .neo-palette-paper {
+    $paper-heading-hues: 30 90 150 210 270 330;
     &.neo-mode-light {
-        --_coloredheadings-paper-l: 0.32;
-        --_coloredheadings-paper-step: 0.065;
-        --_coloredheadings-paper-c: 0.18;
-        --_coloredheadings-paper-h: 261;
+        --_coloredheadings-paper-l: 0.58;
+        --_coloredheadings-paper-c: 0.2;
     }
     &.neo-mode-dark {
-        --_coloredheadings-paper-l: 0.85;
-        --_coloredheadings-paper-step: -0.06;
-        --_coloredheadings-paper-c: 0.12;
-        --_coloredheadings-paper-h: 261;
+        --_coloredheadings-paper-l: 0.78;
+        --_coloredheadings-paper-c: 0.16;
     }
     &.neo-element-coloredheadings {
         .b3-typography,
@@ -62,7 +60,7 @@
                 h#{$i},
                 [data-type=NodeHeading].h#{$i},
                 [data-type=NodeHeading][data-subtype=h#{$i}] [spellcheck] {
-                    color: oklch(calc(var(--_coloredheadings-paper-l) + #{$i - 1} * var(--_coloredheadings-paper-step)) var(--_coloredheadings-paper-c) var(--_coloredheadings-paper-h));
+                    color: oklch(var(--_coloredheadings-paper-l) var(--_coloredheadings-paper-c) list.nth($paper-heading-hues, $i));
                 }
             }
         }
@@ -72,7 +70,7 @@
                     .b3-list-item__graphic,
                     .b3-list-item__number,
                     .b3-list-item__text {
-                        color: oklch(calc(var(--_coloredheadings-paper-l) + #{$i - 1} * var(--_coloredheadings-paper-step)) var(--_coloredheadings-paper-c) var(--_coloredheadings-paper-h)) !important;
+                        color: oklch(var(--_coloredheadings-paper-l) var(--_coloredheadings-paper-c) list.nth($paper-heading-hues, $i)) !important;
                     }
                 }
             }
