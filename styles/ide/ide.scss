@@ -197,18 +197,4 @@
             display: block !important;
         }
     }
-    .status {
-        background-color: var(--b3-theme-background);
-        .neo-visual-frostedglass & {
-            background-color: oklch(from var(--b3-theme-background) l c h / 0.6);
-        }
-    }
-    .config__panel .config__side,
-    .config__panel .b3-tab-bar,
-    .config-bazaar__readme .item__side {
-        box-shadow: unset;
-    }
-    .config-bazaar__readme .item__main .b3-typography {
-        padding: 0 16px;
-    }
 }
