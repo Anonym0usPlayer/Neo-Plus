@@ -41,3 +41,41 @@
         }
     }
 }
+// 黑白配专属：固定蓝色色相，按层级做明度阶梯，层级清晰
+.neo-palette-paper {
+    &.neo-mode-light {
+        --_coloredheadings-paper-l: 0.32;
+        --_coloredheadings-paper-step: 0.065;
+        --_coloredheadings-paper-c: 0.18;
+        --_coloredheadings-paper-h: 261;
+    }
+    &.neo-mode-dark {
+        --_coloredheadings-paper-l: 0.85;
+        --_coloredheadings-paper-step: -0.06;
+        --_coloredheadings-paper-c: 0.12;
+        --_coloredheadings-paper-h: 261;
+    }
+    &.neo-element-coloredheadings {
+        .b3-typography,
+        .protyle-wysiwyg {
+            @for $i from 1 through 6 {
+                h#{$i},
+                [data-type=NodeHeading].h#{$i},
+                [data-type=NodeHeading][data-subtype=h#{$i}] [spellcheck] {
+                    color: oklch(calc(var(--_coloredheadings-paper-l) + #{$i - 1} * var(--_coloredheadings-paper-step)) var(--_coloredheadings-paper-c) var(--_coloredheadings-paper-h));
+                }
+            }
+        }
+        .sy__outline {
+            @for $i from 1 through 6 {
+                .b3-list-item[data-type=NodeHeading][data-subtype=h#{$i}] {
+                    .b3-list-item__graphic,
+                    .b3-list-item__number,
+                    .b3-list-item__text {
+                        color: oklch(calc(var(--_coloredheadings-paper-l) + #{$i - 1} * var(--_coloredheadings-paper-step)) var(--_coloredheadings-paper-c) var(--_coloredheadings-paper-h)) !important;
+                    }
+                }
+            }
+        }
+    }
+}
