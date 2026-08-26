@@ -136,16 +136,16 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
 // 页签/标题栏融合
 @mixin superfusion-tab { // 需要融合的页签选择器
     body:not(.body--toolbar-hide) .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) > .fn__flex:first-child:not(.fn__none),
-    .neo-ide-body.body--toolbar-hide .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) > .fn__flex:first-child:not(.fn__none),
-    #mobileTopBar
+    .neo-ide-body.body--toolbar-hide .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) > .fn__flex:first-child:not(.fn__none)
+    /*#mobileTopBar*/
     /*.block__popover > .block__icons*/ {
         @content;
     }
 }
 @mixin superfusion-tab-protyle { // 需要融合的protyle选择器
     body:not(.body--toolbar-hide) .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) > .fn__flex:first-child:not(.fn__none) + .layout-tab-container > .protyle:not(.fullscreen),
-    .neo-ide-body.body--toolbar-hide .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) > .fn__flex:first-child:not(.fn__none) + .layout-tab-container > .protyle:not(.fullscreen),
-    .neo-mobile #editor
+    .neo-ide-body.body--toolbar-hide .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) > .fn__flex:first-child:not(.fn__none) + .layout-tab-container > .protyle:not(.fullscreen)
+    /*.neo-mobile #editor*/
     /*.block__popover > .block__content > .protyle:not(.fullscreen):first-child*/ {
         @content;
     }
@@ -158,16 +158,16 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
 }
 @mixin superfusion-tab-protyle-x { // 需要融合的protyle选择器（顶层选择器为body类）
     &:not(.body--toolbar-hide) .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) > .fn__flex:first-child:not(.fn__none) + .layout-tab-container > .protyle:not(.fullscreen),
-    &.neo-ide-body.body--toolbar-hide .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) > .fn__flex:first-child:not(.fn__none) + .layout-tab-container > .protyle:not(.fullscreen),
-    &.neo-mobile #editor
+    &.neo-ide-body.body--toolbar-hide .layout__center [data-type="wnd"]:not(.neo-verticaltabs-wnd) > .fn__flex:first-child:not(.fn__none) + .layout-tab-container > .protyle:not(.fullscreen)
+    /*&.neo-mobile #editor*/
     /*.block__popover > .block__content > .protyle:not(.fullscreen):first-child*/ {
         @content;
     }
 }
-// 移动端特殊处理
+/* 移动端特殊处理
 #mobileTopBar[aria-hidden="true"] ~ #editor {
     --_superfusion-mobile-top-fold-fix: 94px;
-}
+}*/
 .neo-visual-superfusion {
     @include superfusion-tab {
         background-color: transparent;
@@ -189,7 +189,8 @@ $svg-shadow: drop-shadow(0 0 0.5px var(--b3-theme-background));
     }
     @include superfusion-tab-protyle {
         & > .protyle-breadcrumb {
-            padding-top: var(--_superfusion-mobile-top-fold-fix, calc($breadcrumb-height + $breadcrumb-offset + $tab-height - $breadcrumb-offset));
+            padding-top: calc($breadcrumb-height + $breadcrumb-offset + $tab-height - $breadcrumb-offset);
+            //padding-top: var(--_superfusion-mobile-top-fold-fix, calc($breadcrumb-height + $breadcrumb-offset + $tab-height - $breadcrumb-offset));
             transition: padding 180ms;
         }
         & > .protyle-content {

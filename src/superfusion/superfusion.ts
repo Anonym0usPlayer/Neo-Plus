@@ -4,6 +4,7 @@ import { ensureCss, removeCss } from '../modules/cssloader';
 import { featureCss } from '../modules/csschunks';
 import { Dialog } from 'siyuan';
 import { getPlugin } from '../main/guard';
+import { isMobile } from '../modules/env';
 let superFusionMode: 'blur' | 'frostedGlass' | 'liquidGlass' = 'blur';
 function withViewTransition(callback: () => void): void {
   if (document.startViewTransition) {
@@ -53,6 +54,7 @@ function buildSettingsHTML(i18n: Record<string, string>): string {
   </div>`;
 }
 export function showSuperFusionSettings(): void {
+  if (isMobile()) return;
   const plugin = getPlugin();
   if (!plugin) return;
   const dialog = new Dialog({
@@ -77,6 +79,7 @@ export function showSuperFusionSettings(): void {
   });
 }
 export function initSuperFusion(): void {
+  if (isMobile()) return;
   (window as any).__neoOpenSuperFusionSettings = showSuperFusionSettings;
   loadConfig().then((config) => {
     superFusionMode = config['super-fusion-mode'] || 'blur';
@@ -88,6 +91,7 @@ export function initSuperFusion(): void {
   });
 }
 export function onSuperFusionClick(): void {
+  if (isMobile()) return;
   const htmlEl = document.documentElement;
   const isActive = htmlEl.classList.contains('neo-visual-superfusion');
   withViewTransition(() => {
